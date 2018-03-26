@@ -1,0 +1,47 @@
+# --------------------------------------------------- #
+# CustomHeads - Headsconfig                           #
+# All Player saved Heads are stored in here           #
+# --------------------------------------------------- #
+# mainMenu: Sets the Main Menu when you type /heads   #
+# What do I put here? -> Use the ID of an Menu used   #
+# in the settings.json File under "menus"             #
+# --------------------------------------------------- #
+# maxUndoHistory: Maximizes how many times you        #
+# can Undo /heads write - default: 6                  #
+# --------------------------------------------------- #
+# updateNotify: Get Notified when the Plugin          #
+# has an Update ready - default: true                 #
+# --------------------------------------------------- #
+# history: Will act as an Search History and used     #
+# Heads from /heads get - default: true               #
+#                                                     #
+# seeown: Players can see their own History           #
+# default: false                                      #
+#                                                     #
+# historyMode can either be TEMP or FILE              #
+# Overflow: default: 18 max: 27                       #
+# --------------------------------------------------- #
+# langFile: Used to determin wich Language is used.   #
+# You can use the default Languages as template to    #
+# create your own Language Settings.                  #
+#                                                     #
+# Feel free to send me your Lagnuages so others can   #
+# use it too! (You will also be credited in the       #
+# description =])                                     #
+# --------------------------------------------------- #
+# I dont recommend using this Config to add Heads     #
+# --------------------------------------------------- #
+
+mainMenu: "main-menu"
+maxUndoHistory: 6
+history:
+  seeown: false
+  enabled: true
+  overflow: 18
+  historyMode: TEMP
+updateNotify: true
+langFile: none
+heads:
+  UUID:
+    headname:
+      texture: playername/texture

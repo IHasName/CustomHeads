@@ -1,0 +1,31 @@
+main: ${project.groupId}.${project.artifactId}
+name: ${project.artifactId}
+version: ${project.version}
+author: MrStein
+
+commands: 
+  heads: 
+    description: List of all aviable Utils
+    aliases: [cheads]
+  cedit:
+    description: Shh its a secret
+permissions:
+  heads.*:
+    description: Gives all Permission for the Plugin
+    children:
+      heads.use.*: true
+      heads.view.*: true
+      heads.viewCategory.*: true
+      heads.view.history.*: true
+    default: op
+  heads.use:
+    default: op
+  heads.view.history:
+    default: op
+  heads.viewCategory:
+    default: op
+  heads.admin:
+    description: Gives all Permission for the Plugin
+    children:
+      heads.*: true
+    default: op

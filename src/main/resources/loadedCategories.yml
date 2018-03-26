@@ -1,0 +1,17 @@
+# Categories are Case Sensitive!
+# ignoreInvalid will skip invalid Categories while loading
+ignoreInvalid: false
+categories:
+- "Alphabet"
+- "Blocks"
+- "Characters"
+- "Color"
+- "Devices"
+- "Emojis"
+- "Event Heads"
+- "Food"
+- "Games"
+- "Interior"
+- "Misc"
+- "Mobs"
+- "Pokemon"
