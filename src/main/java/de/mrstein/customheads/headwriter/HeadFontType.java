@@ -122,7 +122,7 @@ public class HeadFontType {
 
     public static void clearCache() {
         for(HeadFontType font : cache.values()) {
-            if(System.currentTimeMillis() - font.getCacheTime() < 6000) {
+            if(System.currentTimeMillis() - font.getCacheTime() > 600000) {
                 cache.remove(font.getCacheID());
             }
         }

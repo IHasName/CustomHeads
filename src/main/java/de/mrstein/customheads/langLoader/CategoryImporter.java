@@ -228,12 +228,12 @@ public class CategoryImporter {
             if (category.hasSubCategories()) {
                 for(SubCategory subCategory : category.getSubCategories()) {
                     for(ItemStack itemStack : Utils.getHeadsAsItemStacks(subCategory.getHeads())) {
-                        heads.add(CustomHeads.getTagEditor().setTags(new ItemEditor(itemStack).setLore(Arrays.asList("§7§o" + category.getId() + "-" + category.getName())).getItem(), "aHeads", subCategory.getOriginCategory().getId(), "index", "" + (++index), "wearable"));
+                        heads.add(CustomHeads.getTagEditor().addTags(new ItemEditor(itemStack).setLore(Arrays.asList("§7§o" + category.getId() + "-" + category.getName())).getItem(), "category", subCategory.getOriginCategory().getId(), "index", "" + (++index), "wearable"));
                     }
                 }
             } else {
                 for(ItemStack itemStack : Utils.getHeadsAsItemStacks(category.getHeads())) {
-                    heads.add(CustomHeads.getTagEditor().setTags(new ItemEditor(itemStack).setLore(Arrays.asList("§7§o" + category.getId() + "-" + category.getName())).getItem(), "aHeads", category.getId(), "index", "" + (++index), "wearable"));
+                    heads.add(CustomHeads.getTagEditor().addTags(new ItemEditor(itemStack).setLore(Arrays.asList("§7§o" + category.getId() + "-" + category.getName())).getItem(), "category", category.getId(), "index", "" + (++index), "wearable"));
                 }
             }
         }

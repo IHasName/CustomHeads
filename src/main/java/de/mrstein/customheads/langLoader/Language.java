@@ -60,6 +60,7 @@ public class Language {
     public String CYCLE_ARRANGEMENT_PREFIX;
     public String CYCLE_ARRANGEMENT_DEFAULT;
     public String CYCLE_ARRANGEMENT_ALPHABETICAL;
+    public String CYCLE_ARRANGEMENT_COLOR;
     public String SEARCH_TITLE;
     public String LOADING;
     public String NO_RESULTS;
@@ -168,8 +169,6 @@ public class Language {
     public List<String> ITEMS_SEARCHLORE;
     public String ITEMS_FIND_MORE;
     public List<String> ITEMS_FIND_MORELORE;
-    public String ITEMS_SUBMISSIONS;
-    public List<String> ITEMS_SUBMISSIONSLORE;
     public String ITEMS_INFO;
     public List<String> ITEMS_INFOLORE;
 
@@ -216,6 +215,7 @@ public class Language {
             CYCLE_ARRANGEMENT_PREFIX = format(lang.get().getString("CYCLE_ARRANGEMENT.PREFIX"));
             CYCLE_ARRANGEMENT_DEFAULT = format(lang.get().getString("CYCLE_ARRANGEMENT.DEFAULT"));
             CYCLE_ARRANGEMENT_ALPHABETICAL = format(lang.get().getString("CYCLE_ARRANGEMENT.ALPHABETICAL"));
+            CYCLE_ARRANGEMENT_COLOR = format(lang.get().getString("CYCLE_ARRANGEMENT.COLOR"));
             SEARCH_TITLE = format(lang.get().getString("SEARCH_TITLE"));
             LOADING = format(lang.get().getString("LOADING"));
             NO_RESULTS = format(lang.get().getString("NO_RESULTS"));
@@ -319,13 +319,11 @@ public class Language {
             ITEMS_YOUR_HEAD = format(lang.get().getString("ITEM_NAMES.YOUR_HEAD"));
             ITEMS_COLLECTION = format(lang.get().getString("ITEM_NAMES.COLLECTION"));
             ITEMS_HELP = format(lang.get().getString("ITEM_NAMES.HELP"));
-            ITEMS_HELPLORE = format(lang.get().getStringList("ITEM_NAMES.HELPLORE"));
+            ITEMS_HELPLORE = format(lang.get().getStringList("ITEM_NAMES.HELP_LORE"));
             ITEMS_SEARCH = format(lang.get().getString("ITEM_NAMES.SEARCH"));
-            ITEMS_SEARCHLORE = format(lang.get().getStringList("ITEM_NAMES.SEARCHLORE"));
+            ITEMS_SEARCHLORE = format(lang.get().getStringList("ITEM_NAMES.SEARCH_LORE"));
             ITEMS_FIND_MORE = format(lang.get().getString("ITEM_NAMES.FIND_MORE"));
-            ITEMS_FIND_MORELORE = format(lang.get().getStringList("ITEM_NAMES.FIND_MORELORE"));
-            ITEMS_SUBMISSIONS = format(lang.get().getString("ITEM_NAMES.SUBMISSIONS"));
-            ITEMS_SUBMISSIONSLORE = format(lang.get().getStringList("ITEM_NAMES.SUBMISSIONSLORE"));
+            ITEMS_FIND_MORELORE = format(lang.get().getStringList("ITEM_NAMES.FIND_MORE_LORE"));
             ITEMS_INFO = format(lang.get().getString("ITEM_NAMES.INFO"));
             ITEMS_INFOLORE = format(lang.get().getStringList("ITEM_NAMES.INFO_LORE"));
             LOCKED = ChatColor.stripColor(format(lang.get().getString("LOCKED")));

@@ -1,12 +1,10 @@
 # - Language File : en_EN -
 NO_PERMISSION: "&cYou don't have Permission to use this Command!"
 # Other
-# -- New --
 LANG_YES: 'Yes'
 LANG_NO: 'No'
 CONFIRM_NOTHINGFOUND: '&eConfirm: &7Nothing found to confirm right now'
 COMMAND_USAGE: '&cUsage: &7{COMMAND}'
-# -- New --
 LINK: '&7Link'
 RELOAD:
   CONFIG: '&eReload: &7Reloading Configs...'
@@ -43,6 +41,7 @@ CYCLE_ARRANGEMENT:
   PREFIX: '&7Arrangement: &e'
   DEFAULT: 'Default'
   ALPHABETICAL: 'Alphabetically'
+  COLOR: 'Color'
 # Title will be shorted to 32 Characters in 1.8
 # Also can be shorted by Putting {short} between
 SEARCH_TITLE: '&aSearch &8: &a{RESULTS} Result(s)'
@@ -51,7 +50,6 @@ NO_RESULTS: '&cNo Results found!'
 NO_RESULTS_TRY_AGAIN: '&cTry again'
 PAGE_GENERAL_PREFIX: '&cPage'
 # Categories Command
-# -- New --
 CATEGORIES:
   BASE_COMMAND:
     HEADER: '&eCurrently loaded Categories'
@@ -127,7 +125,6 @@ FONTS:
   - '&eYou can use BLANK for an Space Character'
   EDIT_SAVENEXIT: '&aSave Changes & Exit'
   EDIT_SAVE_SUCCESSFUL: '&eFonts: &a{FONT} &7has been saved and updated'
-# -- New --
 # More
 UNDO_INVALID_INPUT: "&eUndo: &7Invalid Input &c'{TIMES}'"
 UNDO_SUCCESSFUL: '&eUndo: &7Undo successful &7{TIMES}'
@@ -148,7 +145,7 @@ REMOVE_CONFIRMATION: '&cDelete {HEAD}?'
 WRITE_NOFONT: "&eWrite: &cThis Font doesn't exist"
 WRITE_TO_LONG: '&eWrite: &cYour Text can not be longer than 40 Characters'
 WRITE_WRITING: '&eWrite: &7Writing &b{TEXT}'
-# Back/Next Buttons
+# Buttons
 BACK_GENERAL: '&cBack'
 BACK_TO_PREVIOUS: '&7Back to Previous Menu'
 NEXT_PAGE: '&cNext Page'
@@ -174,7 +171,7 @@ ITEM_NAMES:
   COLLECTION: '&aMy Collection &7{SIZE}'
   HELP: '&aHelp'
   HELP_LORE:
-  - 'Shows you all the Commands'
+  - '&7Shows you all the Commands'
   INFO: '&aInfo'
   INFO_LORE:
   - '&7Shift + Right Click'
@@ -184,12 +181,8 @@ ITEM_NAMES:
   - '&cHelmet Item!'
   SEARCH: Search
   SEARCH_LORE:
-  - 'Search for an Head'
-  - 'in the Database'
+  - '&7Search for an Head'
+  - '&7in the Database'
   FIND_MORE: '&3Find more'
   FIND_MORE_LORE:
-  - 'Click me to get the Link'
-  SUBMISSIONS: Submissions
-  SUBMISSIONS_LORE:
-  - 'Heads that People submitted'
-  - 'to the Database'
+  - '&7Click me to get the Link'

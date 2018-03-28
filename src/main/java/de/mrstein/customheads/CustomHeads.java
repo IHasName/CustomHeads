@@ -11,6 +11,7 @@ import de.mrstein.customheads.reflection.TagEditor;
 import de.mrstein.customheads.stuff.CHCommand;
 import de.mrstein.customheads.stuff.CHTabCompleter;
 import de.mrstein.customheads.stuff.History;
+import de.mrstein.customheads.updaters.GitHubDownloader;
 import de.mrstein.customheads.utils.*;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -32,33 +33,28 @@ import java.util.Locale;
 
 public class CustomHeads extends JavaPlugin {
 
+    public static final String chPrefix = "§7[§eCustomHeads§7] ";
+    public static final String chWarning = chPrefix + "§6Warning §7: §6";
+    public static final String chError = chPrefix + "§cError §7: §c";
     public static int hisOverflow = 18;
-
     public static HashMap<String, String> uuidChache = new HashMap<>();
-
-    private List<String> versions = Arrays.asList("v1_8_R1", "v1_8_R2", "v1_8_R3", "v1_9_R1", "v1_9_R2", "v1_10_R1", "v1_11_R1", "v1_12_R1");
-
     public static Configs heads;
     public static Configs his;
-    private static Configs categoryLoaderConfig;
-
+    public static Configs update;
     public static boolean usetextures = true;
     public static boolean hisSeeOwn = false;
     public static boolean hisE = false;
-    private boolean isInit = false;
-
     public static History.HistoryMode hisMode;
+    private static Configs categoryLoaderConfig;
     private static CategoryImporter categoryImporter;
     private static TagEditor tagEditor;
     private static Language language;
     private static Plugin instance;
     private static Looks looks;
-
-    public static final String chPrefix = "§7[§eCustomHeads§7] ";
-    public static final String chWarning = chPrefix + "§6Warning §7: §6";
-    public static final String chError = chPrefix + "§cError §7: §c";
     private static String packet = Bukkit.getServer().getClass().getPackage().getName();
     public static String version = packet.substring(packet.lastIndexOf('.') + 1);
+    private List<String> versions = Arrays.asList("v1_8_R1", "v1_8_R2", "v1_8_R3", "v1_9_R1", "v1_9_R2", "v1_10_R1", "v1_11_R1", "v1_12_R1");
+    private boolean isInit = false;
     private String bukkitVersion = Bukkit.getVersion().substring(Bukkit.getVersion().lastIndexOf("("));
 
     public static void reloadHistoryData() {
@@ -103,11 +99,10 @@ public class CustomHeads extends JavaPlugin {
     public void onEnable() {
         instance = this;
         heads = new Configs(instance, "heads.yml", true);
+        update = new Configs(instance, "update.yml", true);
         tagEditor = new TagEditor("chTags");
 
-        boolean firstBoot = heads.get().getString("langFile").equals("none");
-
-        if (firstBoot) {
+        if (heads.get().getString("langFile").equals("none")) {
             heads.get().set("langFile", Locale.getDefault().toString());
             heads.save();
             heads.reload();
@@ -118,14 +113,17 @@ public class CustomHeads extends JavaPlugin {
             heads.get().set("langFile", "en_EN");
             heads.save();
             heads.reload();
-            if (!new File("plugins/CustomHeads/language/en_EN").exists() && firstBoot) {
-                new BukkitRunnable() {
-                    public void run() {
-                        getServer().getConsoleSender().sendMessage(chWarning + "I wasn't able to find the Default Languge File on your Server...");
-                        getServer().getConsoleSender().sendMessage("§7Make sure to download the latest language.zip from my GitHub Page =]");
-                        getServer().getConsoleSender().sendMessage("§7  -> https://github.com/MrSteinMC/CustomHeads/releases/latest");
+            if (!new File("plugins/CustomHeads/language/en_EN").exists()) {
+                if (new File("plugins/CustomHeads/downloads").listFiles() != null) {
+                    for (File file : new File("plugins/CustomHeads/downloads").listFiles()) {
+                        file.delete();
                     }
-                }.runTaskAsynchronously(instance);
+                }
+                getServer().getConsoleSender().sendMessage(chWarning + "I wasn't able to find the Default Languge File on your Server...");
+                getServer().getConsoleSender().sendMessage(chPrefix + "§7Downloading necessary Files...");
+                getServer().getConsoleSender().sendMessage(chPrefix + "§7Please reload your Server when the download is done");
+                GitHubDownloader gitHubDownloader = new GitHubDownloader("MrSteinMC", "CustomHeads").enableAutoUnzipping();
+                gitHubDownloader.downloadLatest("language.zip", getDataFolder());
                 return;
             }
         }
@@ -143,6 +141,7 @@ public class CustomHeads extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new OtherListeners(), this);
 
         reloadHistoryData();
+        heads.save();
         getCommand("heads").setExecutor(new CHCommand());
         getCommand("heads").setTabCompleter(new CHTabCompleter());
 
@@ -166,8 +165,9 @@ public class CustomHeads extends JavaPlugin {
                 uuidChache.clear();
                 ScrollableInventory.clearCache();
                 HeadFontType.clearCache();
+                GitHubDownloader.clearCache();
             }
-        }.runTaskTimer(instance, 300000, 300000);
+        }.runTaskTimer(instance, 6000, 6000);
 
         new BukkitRunnable() {
             public void run() {
@@ -176,7 +176,7 @@ public class CustomHeads extends JavaPlugin {
                         if (CustomHeads.getLooks().getMenuTitles().contains(player.getOpenInventory().getTitle())) {
                             ItemStack[] inventoryContent = player.getOpenInventory().getTopInventory().getContents();
                             for (int i = 0; i < inventoryContent.length; i++) {
-                                if(inventoryContent[i] == null) continue;
+                                if (inventoryContent[i] == null) continue;
                                 ItemStack contentItem = inventoryContent[i];
                                 if (CustomHeads.getTagEditor().getTags(contentItem).contains("openCategory") && CustomHeads.getTagEditor().getTags(contentItem).contains("icon-loop")) {
                                     String[] categoryArgs = CustomHeads.getTagEditor().getTags(contentItem).get(CustomHeads.getTagEditor().indexOf(contentItem, "openCategory") + 1).split("#>");

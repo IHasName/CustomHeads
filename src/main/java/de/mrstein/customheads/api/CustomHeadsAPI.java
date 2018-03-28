@@ -71,7 +71,7 @@ public class CustomHeadsAPI {
      * @param text Text that will appear on the Skulls
      * @param location Starting Location
      * @param fontType Font Type
-     * @throws UnsupportedOperationException when FontType does not support an Character
+     * @throws UnsupportedOperationException when fontType is missing an Character
      */
     public static void writeText(String text, Location location, HeadFontType fontType) { new HeadWriter(fontType, text).writeAt(location); }
 

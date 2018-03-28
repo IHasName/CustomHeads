@@ -48,22 +48,21 @@ public class CHCommand implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 
         if (sender instanceof ConsoleCommandSender) {
-            if (args.length == 0 || !(args[0].equalsIgnoreCase("reload") || args[0].equalsIgnoreCase("rl") || args[0].equalsIgnoreCase("info"))) {
-                Random rdm = new Random();
-                sender.sendMessage(rdmans[rdm.nextInt(rdmans.length)]);
-                return true;
+            if(args.length > 0) {
+                if (args[0].equalsIgnoreCase("rl") || args[0].equalsIgnoreCase("reload")) {
+                    return reload(sender);
+                }
+                if (args[0].equalsIgnoreCase("info")) {
+                    new BukkitRunnable() {
+                        public void run() {
+                            Object[] up = Updater.getLastUpdate(true);
+                            sender.sendMessage("§7Version: §e" + CustomHeads.getInstance().getDescription().getVersion() + " §7Update: §e" + (up.length == 5 ? up[4] : -1));
+                        }
+                    }.runTaskLaterAsynchronously(CustomHeads.getInstance(), 10);
+                }
             }
-            if (args[0].equalsIgnoreCase("rl") || args[0].equalsIgnoreCase("reload")) {
-                return reload(sender);
-            }
-            if (args[0].equalsIgnoreCase("info")) {
-                new BukkitRunnable() {
-                    public void run() {
-                        Object[] up = Updater.getLastUpdate(true);
-                        sender.sendMessage("§7Version: §e" + CustomHeads.getInstance().getDescription().getVersion() + " §7Update: §e" + (up.length == 5 ? up[4] : -1));
-                    }
-                }.runTaskLaterAsynchronously(CustomHeads.getInstance(), 10);
-            }
+            Random rdm = new Random();
+            sender.sendMessage(rdmans[rdm.nextInt(rdmans.length)]);
             return true;
         }
         Player player = (Player) sender;
@@ -675,7 +674,8 @@ public class CHCommand implements CommandExecutor {
             return false;
         }
         lg = CustomHeads.getLanguageManager();
-		sender.sendMessage((console ? CustomHeads.chPrefix : "") + lg.RELOAD_SUCCESSFUL);
+        ScrollableInventory.sortName = new ArrayList<>(Arrays.asList("invalid", lg.CYCLE_ARRANGEMENT_DEFAULT, lg.CYCLE_ARRANGEMENT_ALPHABETICAL, lg.CYCLE_ARRANGEMENT_COLOR));
+        sender.sendMessage((console ? CustomHeads.chPrefix : "") + lg.RELOAD_SUCCESSFUL);
         return true;
     }
 
@@ -695,6 +695,7 @@ public class CHCommand implements CommandExecutor {
                 if (query.getResults().isEmpty()) {
                     Inventory noRes = Bukkit.createInventory(player, 9 * 3, lg.NO_RESULTS);
                     noRes.setItem(13, CustomHeads.getTagEditor().setTags(Utils.createItem(Material.BARRIER, 1, lg.NO_RESULTS, "", (short) 0), "blockMoving"));
+//                    noRes.setItem(18, CustomHeads.getTagEditor().setTags(back, "invAction", "close#>"));
                     noRes.setItem(26, CustomHeads.getTagEditor().setTags(Utils.createHead(lg.NO_RESULTS_TRY_AGAIN, "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMWI2ZjFhMjViNmJjMTk5OTQ2NDcyYWVkYjM3MDUyMjU4NGZmNmY0ZTgzMjIxZTU5NDZiZDJlNDFiNWNhMTNiIn19fQ=="), "invAction", "retrySearch#>" + e.getName()));
                     player.openInventory(noRes);
                     return;

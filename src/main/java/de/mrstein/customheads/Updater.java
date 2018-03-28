@@ -1,6 +1,5 @@
 package de.mrstein.customheads;
 
-import de.mrstein.customheads.utils.Configs;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
@@ -42,12 +41,11 @@ public class Updater {
     }
 
     public static Object[] getLastUpdate(boolean... force) {
-        Configs update = new Configs(CustomHeads.getInstance(), "update.yml", true);
-        if((System.currentTimeMillis() - update.get().getLong("lastUpdateCheck")) >= 86400000) {
+        if((System.currentTimeMillis() - CustomHeads.update.get().getLong("lastUpdateCheck")) >= 86400000) {
             lastUpdate = null;
             lastChangelog = null;
-            update.get().set("lastUpdateCheck", System.currentTimeMillis());
-            update.save();
+            CustomHeads.update.get().set("lastUpdateCheck", System.currentTimeMillis());
+            CustomHeads.update.save();
         }
         if(lastUpdate != null) {
             return lastUpdate;
@@ -58,11 +56,11 @@ public class Updater {
             connection.setReadTimeout(5000);
 
             JSONArray versionsArray = (JSONArray) JSONValue.parseWithException(new InputStreamReader(connection.getInputStream()));
-            Double latestVersion = Double.parseDouble(((JSONObject) versionsArray.get(versionsArray.size() - 1)).get("name").toString());
-            double current = Double.parseDouble(CustomHeads.getInstance().getDescription().getVersion());
+            int latestVersion = Integer.parseInt(((JSONObject) versionsArray.get(versionsArray.size() - 1)).get("name").toString().replace(".", ""));
+            int current = Integer.parseInt(CustomHeads.getInstance().getDescription().getVersion().replace(".", ""));
             if (latestVersion > current || (force.length > 0 && force[0])) {
                 Object[] changeLog = getChangeLog();
-                int verbe = (int) (latestVersion * 10 - current * 10);
+                int verbe = (latestVersion - current);
                 lastUpdate = new Object[] { latestVersion, changeLog[0], changeLog[1], verbe, versionsArray.size()};
                 return lastUpdate;
             }

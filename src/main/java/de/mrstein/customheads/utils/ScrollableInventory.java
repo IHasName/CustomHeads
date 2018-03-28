@@ -17,7 +17,7 @@ public class ScrollableInventory {
     private HashMap<Integer, ItemStack> buttons = new HashMap<>();
 
     private static List<Comparator<ItemStack>> sorting = new ArrayList<>(Arrays.asList((o1, o2) -> 0, Comparator.comparing(item -> ChatColor.stripColor(Utils.format(item.getItemMeta().getDisplayName()))), Comparator.comparing(item -> item.getItemMeta().getDisplayName().substring(1, 2))));
-    public static List<String> sortName = new ArrayList<>(Arrays.asList("invalid", CustomHeads.getLanguageManager().CYCLE_ARRANGEMENT_DEFAULT, CustomHeads.getLanguageManager().CYCLE_ARRANGEMENT_ALPHABETICAL, "Color"));
+    public static List<String> sortName = new ArrayList<>(Arrays.asList("invalid", CustomHeads.getLanguageManager().CYCLE_ARRANGEMENT_DEFAULT, CustomHeads.getLanguageManager().CYCLE_ARRANGEMENT_ALPHABETICAL, CustomHeads.getLanguageManager().CYCLE_ARRANGEMENT_COLOR));
 
     private String title;
     private String uid;
@@ -160,13 +160,9 @@ public class ScrollableInventory {
             setPage(--currentPage);
     }
 
-    public boolean old() {
-        return cacheTime + 600000 < System.currentTimeMillis();
-    }
-
     public static void clearCache() {
         for(ScrollableInventory inventory : cachedInventories.values()) {
-            if(inventory.old()) {
+            if(System.currentTimeMillis() - inventory.cacheTime > 600000) {
                 cachedInventories.remove(inventory.getUid());
             }
         }

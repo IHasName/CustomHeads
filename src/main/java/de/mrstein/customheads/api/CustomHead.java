@@ -30,7 +30,7 @@ public class CustomHead {
 
     /**
      * @param url URL from textures.minecraft.net
-     * @author StoneGamer
+     * @author MrStein
      */
     public CustomHead(String url) {
         if(url == null) {

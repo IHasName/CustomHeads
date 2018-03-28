@@ -1,12 +1,10 @@
 # - Language File : de_DE -
 NO_PERMISSION: "&cDu hast nicht genug Rechte diesen Command zu verwenden!"
 # Andere
-# -- New --
 LANG_YES: 'Ja'
 LANG_NO: 'Nein'
 CONFIRM_NOTHINGFOUND: '&eConfirm: &7Nichts gefunden zum best{ae}tigen'
 COMMAND_USAGE: '&cSyntax: &7{COMMAND}'
-# -- New --
 LINK: '&7Link'
 RELOAD:
   CONFIG: '&eReload: &7Lade Configs neu...'
@@ -43,6 +41,7 @@ CYCLE_ARRANGEMENT:
   PREFIX: '&7Anordnung: &e'
   DEFAULT: 'Standard'
   ALPHABETICAL: 'Alphabetisch'
+  COLOR: 'Farbe'
 # Titel wird in der 1.8 auf 32 Zeichen gekürtzt
 # kann aber mit {short} schon früher gekürzt werden
 SEARCH_TITLE: '&aSuche &8: &a{RESULTS} Ergebnis(se)'
@@ -51,7 +50,6 @@ NO_RESULTS: '&cKeine Ergebnisse gefunden'
 NO_RESULTS_TRY_AGAIN: '&cNochmal versuchen'
 PAGE_GENERAL_PREFIX: '&cSeite'
 # Categories Befehl
-# -- New --
 CATEGORIES:
   BASE_COMMAND:
     HEADER: '&eMomentan geladene Kategorien'
@@ -130,7 +128,6 @@ FONTS:
   - '&everwendet'
   EDIT_SAVENEXIT: '&aSpeichern und Beenden'
   EDIT_SAVE_SUCCESSFUL: '&eFonts: &a{FONT} &7wurde gespeichert und aktualisiert'
-# -- New --
 # Mehr
 UNDO_INVALID_INPUT: "&eUndo: &7Ung{ue}lige Eingabe &c'{TIMES}'"
 UNDO_SUCCESSFUL: "&eUndo: &aR{ue}ckg{ae}ngig machen erfolgreich {TIMES}"
@@ -151,12 +148,12 @@ REMOVE_CONFIRMATION: '&e{HEAD} &cl{oe}schen?'
 WRITE_NOFONT: '&eWrite: &cDiese Schriftart exestiert nicht'
 WRITE_TO_LONG: '&eWrite: &cDein Text sollte nicht l{ae}nger als 20 Zeichen sein'
 WRITE_WRITING: '&eWrite: &7Schreibe {TEXT}.'
-# Back/Next Buttons
+# Buttons
 BACK_GENERAL: '&cZur{ue}ck'
 BACK_TO_PREVIOUS: '&7Zum vorherigen Men{ue}'
 NEXT_PAGE: '&cN{ae}chste Seite'
 PREVIOUS_PAGE: '&cVorherige Seite'
-# History
+# Verlauf
 HISTORY_INV_TITLE: '&aVerlauf von {PLAYER}'
 HISTORY_SEARCHHISTORY_ACTIVE: '&aSuchverlauf'
 HISTORY_SEARCHHISTORY: '&7Suchverlauf'
@@ -174,22 +171,18 @@ ITEM_NAMES:
   YOUR_HEAD: '&eDein Kopf'
   COLLECTION: '&aMeine Kollektion &7{SIZE}'
   HELP: '&aHilfe'
-  HELPLORE:
-  - 'Zeigt dir alle Commands'
-  SEARCH: Suche
-  SEARCHLORE:
-  - 'Suche nach einem Kopf'
-  - 'in der Datenbank'
-  FIND_MORE: '&3Finde mehr'
-  FIND_MORELORE:
-  - 'Klicken um den Link zu bekommen'
-  SUBMISSIONS: Einsendungen
-  SUBMISSIONSLORE:
-  - 'K{oe}pfe die von Spielern'
-  - 'eingesendet wurden'
+  HELP_LORE:
+  - '&7Zeigt dir alle Commands'
   INFO: '&aInfo'
-  INFOLORE:
+  INFO_LORE:
   - '&7Shift + Rechts Klick'
   - '&7um den Kopf anzuziehen'
   - '&cWarnung! Ersetzt deinen'
   - '&cHelm Slot!'
+  SEARCH: Suche
+  SEARCH_LORE:
+  - '&7Suche nach einem Kopf'
+  - '&7in der Datenbank'
+  FIND_MORE: '&3Finde mehr'
+  FIND_MORE_LORE:
+  - '&7Klicken um den Link zu bekommen'

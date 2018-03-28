@@ -1,0 +1,117 @@
+package de.mrstein.customheads.updaters;
+
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import de.mrstein.customheads.CustomHeads;
+import de.mrstein.customheads.utils.Utils;
+import org.apache.commons.io.FileUtils;
+import org.bukkit.Bukkit;
+
+import java.io.File;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.logging.Level;
+
+public class GitHubDownloader {
+
+    private static final String GITHUB_REPO_URL = "https://api.github.com/repos/{author}/{projectName}";
+    private String apiURLFormatted;
+
+    private boolean unzip = false;
+
+    private static final File downloadDir = new File(CustomHeads.getInstance().getDataFolder() + "/downloads");
+
+    private static HashMap<String, Object[]> responseCache = new HashMap<>();
+
+    public GitHubDownloader(String author, String projectName) {
+        apiURLFormatted = GITHUB_REPO_URL.replace("{author}", author).replace("{projectName}", projectName);
+    }
+
+    public GitHubDownloader enableAutoUnzipping() {
+        unzip = true;
+        return this;
+    }
+
+    public void download(String tagName, String assetName, File downloadTo) {
+        JsonArray releaseList = getResponseAsJson("/releases").getAsJsonArray();
+
+        JsonObject release = null;
+        for(JsonElement jsonElement : releaseList) {
+            if(jsonElement.getAsJsonObject().get("tag_name").getAsString().equals(tagName)) {
+                release = jsonElement.getAsJsonObject();
+                break;
+            }
+        }
+
+        if(release == null)
+            throw new NullPointerException("Cannot find release with Tag: " + tagName);
+
+        JsonArray assets = release.getAsJsonArray("assets");
+        for(JsonElement jsonElement : assets) {
+            JsonObject jsonObject = jsonElement.getAsJsonObject();
+            if(jsonObject.get("name").getAsString().equals(assetName)) {
+                AsyncFileDownloader downloader = new AsyncFileDownloader(jsonObject.get("browser_download_url").getAsString(), assetName, downloadDir.getPath());
+                downloader.startDownload(new FileDownloaderCallback() {
+                    public void complete() {
+                        Bukkit.getServer().getConsoleSender().sendMessage(CustomHeads.chPrefix + "Download of " + assetName + " complete.");
+                        if(unzip && assetName.endsWith(".zip")) {
+                            Utils.unzipFile(new File(downloadDir, assetName), downloadTo);
+                            return;
+                        }
+                        try {
+                            FileUtils.copyFile(new File(downloadDir, assetName), downloadTo);
+                        } catch (Exception e) {
+                            CustomHeads.getInstance().getLogger().log(Level.WARNING, "Failed to copy downloaded File", e);
+                        }
+                    }
+
+                    public void failed(AsyncFileDownloader.DownloaderStatus status) {
+                        if(status == AsyncFileDownloader.DownloaderStatus.ERROR) {
+                            Bukkit.getLogger().log(Level.WARNING, "Something went wrong while downloading " + assetName, status.getException());
+                        } else {
+                            Bukkit.getServer().getConsoleSender().sendMessage(CustomHeads.chError + "Failed to download " + assetName + " : " + status);
+                        }
+                    }
+                });
+                break;
+            }
+        }
+    }
+
+    public void downloadLatest(String assetName, File downloadTo) {
+        download(getResponseAsJson("/releases/latest").getAsJsonObject().get("tag_name").getAsString(), assetName, downloadTo);
+    }
+
+    public static void clearCache() {
+        for(String path : responseCache.keySet()) {
+            if(((long) responseCache.get(path)[0] - System.currentTimeMillis()) > 600000) {
+                responseCache.remove(path);
+            }
+        }
+    }
+
+    private JsonElement getResponseAsJson(String path) {
+        if(responseCache.containsKey(path)) {
+            return (JsonElement) responseCache.get(path)[1];
+        }
+        JsonElement response = null;
+        try {
+            HttpURLConnection apiConnection = (HttpURLConnection) new URL(apiURLFormatted + path).openConnection();
+            apiConnection.setReadTimeout(10000);
+
+            if(apiConnection.getResponseCode() != HttpURLConnection.HTTP_OK)
+                throw new NullPointerException("Server responded with " + apiConnection.getResponseCode());
+
+            response = new JsonParser().parse(new InputStreamReader(apiConnection.getInputStream()));
+
+            if(response.isJsonObject() && response.getAsJsonObject().has("message"))
+                throw new NullPointerException("GitHub API resopnded with: " + response.getAsJsonObject().get("message").getAsString());
+        } catch(Exception e) {}
+        return response;
+    }
+
+}

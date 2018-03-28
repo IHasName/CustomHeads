@@ -93,13 +93,10 @@ public class InventoryListener implements Listener {
     @EventHandler
     public void onInvClick(InventoryClickEvent event) {
         Player player = (Player) event.getWhoClicked();
-        if (event.getInventory() == null || event.getRawSlot() > event.getInventory().getSize() || event.getInventory().getType() != InventoryType.CHEST || event.getCurrentItem() == null)
+        if (event.getInventory() == null || event.getRawSlot() > event.getInventory().getSize() || event.getInventory().getType() != InventoryType.CHEST || event.getCurrentItem() == null || !hasPermission(player, "heads.use"))
             return;
-        if (!hasPermission(player, "heads.use")) {
-            return;
-        }
 
-//        player.sendMessage("§7[CHTags Tags] §r" + CustomHeads.getTagEditor().getTags(event.getCurrentItem()));
+        player.sendMessage("§7[CHTags Tags] §r" + CustomHeads.getTagEditor().getTags(event.getCurrentItem()));
 
         if (event.getInventory().getTitle().equals(CustomHeads.getLanguageManager().LOADING)) {
             event.setCancelled(true);
@@ -286,7 +283,7 @@ public class InventoryListener implements Listener {
                         } else {
                             openPreloader(player);
                             List<ItemStack> heads = new ArrayList<>();
-                            category.getHeads().forEach(customHead -> heads.add(customHead.toItem()));
+                            category.getHeads().forEach(customHead -> heads.add(CustomHeads.getTagEditor().setTags(customHead.toItem(), "wearable")));
                             ScrollableInventory inventory = new ScrollableInventory(category.getName(), heads).setContentsClonable(true);
                             inventory.setBarItem(1, Utils.getBackButton("openMenu", CustomHeads.getTagEditor().getTags(event.getCurrentItem()).get(CustomHeads.getTagEditor().indexOf(event.getCurrentItem(), "menuID") + 1).toLowerCase()));
                             inventory.setBarItem(3, CustomHeads.getTagEditor().setTags(new ItemEditor(Material.PAPER).setDisplayName(CustomHeads.getLanguageManager().ITEMS_INFO).setLore(CustomHeads.getLanguageManager().ITEMS_INFOLORE).getItem(), "dec", "info-item", "blockMoving"));
@@ -427,7 +424,7 @@ public class InventoryListener implements Listener {
             }
         }
 
-        if (CustomHeads.getTagEditor().getTags(event.getCurrentItem()).contains("aHeads") && CustomHeads.getTagEditor().getTags(event.getCurrentItem()).contains("wearable")) {
+        if (CustomHeads.getTagEditor().getTags(event.getCurrentItem()).contains("wearable")) {
             if (event.getClick() == ClickType.SHIFT_RIGHT) {
                 event.setCancelled(true);
                 player.sendMessage(CustomHeads.getLanguageManager().PUT_ON_HEAD.replace("{NAME}", event.getCurrentItem().getItemMeta().getDisplayName()));

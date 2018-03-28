@@ -13,6 +13,7 @@ import de.mrstein.customheads.reflection.TagEditor;
 import de.mrstein.customheads.stuff.CHSearchQuery;
 import de.mrstein.customheads.stuff.History;
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.io.FilenameUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -31,6 +32,8 @@ import java.net.URL;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 public class Utils {
 
@@ -502,6 +505,38 @@ public class Utils {
             Bukkit.getLogger().log(Level.WARNING, "Couldn't get UUID from " + name, whoops);
         }
         return "";
+    }
+
+    public static void unzipFile(File zipFile, File outputDir) {
+        try {
+            if (!outputDir.exists())
+                Files.createParentDirs(outputDir);
+            byte[] buffer = new byte[0x1000];
+            ZipInputStream inputStream = new ZipInputStream(new FileInputStream(zipFile));
+            ZipEntry zipEntry;
+            System.out.println("Unzipping " + zipFile.getName());
+            while ((zipEntry = inputStream.getNextEntry()) != null) {
+                File zipEntryFile = new File(outputDir, zipEntry.getName());
+                if (FilenameUtils.getExtension(zipEntry.getName()).length() > 0) {
+                    if (!zipEntryFile.exists())
+                        Files.createParentDirs(zipEntryFile);
+                    OutputStream streamOut = new FileOutputStream(zipEntryFile);
+                    int len;
+                    while ((len = inputStream.read(buffer)) > 0) {
+                        streamOut.write(buffer, 0, len);
+                    }
+                    streamOut.flush();
+                    streamOut.close();
+                }
+            }
+            inputStream.closeEntry();
+            inputStream.close();
+            System.out.println("Unzip finished");
+
+
+        } catch (Exception exception) {
+            CustomHeads.getInstance().getLogger().log(Level.WARNING, "Failed to unzip " + zipFile.getName(), exception);
+        }
     }
 
     public static String toConfigString(String string) {
