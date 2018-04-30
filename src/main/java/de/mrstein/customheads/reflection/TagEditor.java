@@ -4,7 +4,9 @@ import de.mrstein.customheads.CustomHeads;
 import de.mrstein.customheads.utils.Utils;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.logging.Level;
 
 // It all started as an simple idea >_>
@@ -16,12 +18,12 @@ public class TagEditor {
         this.tagname = tagname;
     }
 
-    public ItemStack removeAll(ItemStack itemStack) {
+    public static ItemStack removeAll(ItemStack itemStack) {
         try {
             Object copy = getAsMNSCopy(itemStack);
             Object itemTagCompound = hasNBTTag(itemStack) ? copy.getClass().getMethod("getTag").invoke(copy) : Utils.getClassbyName("NBTTagCompound").newInstance();
             Object nbtTagCompound = Utils.getClassbyName("NBTTagCompound").newInstance();
-            itemTagCompound.getClass().getMethod("set", String.class, Utils.getClassbyName("NBTBase")).invoke(itemTagCompound, "NBTEditorTags", nbtTagCompound);
+            itemTagCompound.getClass().getMethod("set", String.class, Utils.getClassbyName("NBTBase")).invoke(itemTagCompound, "tagEditor", nbtTagCompound);
             copy.getClass().getMethod("setTag", Utils.getClassbyName("NBTTagCompound")).invoke(copy, itemTagCompound);
             return (ItemStack) Utils.getCBClass("inventory.CraftItemStack").getMethod("asBukkitCopy", Utils.getClassbyName("ItemStack")).invoke(Utils.getCBClass("inventory.CraftItemStack"), copy);
         } catch (Exception e) {
@@ -54,13 +56,13 @@ public class TagEditor {
         try {
             Object copy = getAsMNSCopy(itemStack);
             Object itemTagCompound = hasNBTTag(itemStack) ? copy.getClass().getMethod("getTag").invoke(copy) : Utils.getClassbyName("NBTTagCompound").newInstance();
-            Object nbtTagCompound = Utils.getClassbyName("NBTTagCompound").newInstance();
+            Object nbtTagCompound = ((boolean) itemTagCompound.getClass().getMethod("hasKey", String.class).invoke(itemTagCompound, "tagEditor")) ? itemTagCompound.getClass().getMethod("get", String.class).invoke(itemTagCompound, "tagEditor") : Utils.getClassbyName("NBTTagCompound").newInstance();
             Object nbtTagList = Utils.getClassbyName("NBTTagList").newInstance();
             for (String tag : tags) {
                 nbtTagList.getClass().getMethod("add", Utils.getClassbyName("NBTBase")).invoke(nbtTagList, Utils.getClassbyName("NBTTagString").getConstructor(String.class).newInstance(tag));
             }
             nbtTagCompound.getClass().getMethod("set", String.class, Utils.getClassbyName("NBTBase")).invoke(nbtTagCompound, tagname, nbtTagList);
-            itemTagCompound.getClass().getMethod("set", String.class, Utils.getClassbyName("NBTBase")).invoke(itemTagCompound, "TagEditor", nbtTagCompound);
+            itemTagCompound.getClass().getMethod("set", String.class, Utils.getClassbyName("NBTBase")).invoke(itemTagCompound, "tagEditor", nbtTagCompound);
             copy.getClass().getMethod("setTag", Utils.getClassbyName("NBTTagCompound")).invoke(copy, itemTagCompound);
             return (ItemStack) Utils.getCBClass("inventory.CraftItemStack").getMethod("asBukkitCopy", Utils.getClassbyName("ItemStack")).invoke(Utils.getCBClass("inventory.CraftItemStack"), copy);
         } catch (Exception e) {
@@ -108,7 +110,7 @@ public class TagEditor {
             if (!(hasNBTTag(itemStack) && hasMyTags(itemStack))) return new ArrayList<>();
             Object copy = getAsMNSCopy(itemStack);
             Object tag = copy.getClass().getMethod("getTag").invoke(copy);
-            Object compound = tag.getClass().getMethod("getCompound", String.class).invoke(tag, "TagEditor");
+            Object compound = tag.getClass().getMethod("getCompound", String.class).invoke(tag, "tagEditor");
             Object list = compound.getClass().getMethod("getList", String.class, int.class).invoke(compound, tagname, 8);
             List<String> res = new ArrayList<>();
             for (int u = 0; u < (int) list.getClass().getMethod("size").invoke(list); u++) {
@@ -134,7 +136,7 @@ public class TagEditor {
             if (!hasNBTTag(item)) return false;
             Object copy = getAsMNSCopy(item);
             Object itemCompound = copy.getClass().getMethod("getTag").invoke(copy);
-            Object tagCompound = itemCompound.getClass().getMethod("getCompound", String.class).invoke(itemCompound, "TagEditor");
+            Object tagCompound = itemCompound.getClass().getMethod("getCompound", String.class).invoke(itemCompound, "tagEditor");
             return tagCompound != null && tagCompound.getClass().getMethod("getList", String.class, int.class).invoke(tagCompound, tagname, 8) != null;
         } catch (Exception e) {
         }
@@ -153,7 +155,7 @@ public class TagEditor {
     public static boolean hasNBTTag(ItemStack item) {
         try {
             Object copy = getAsMNSCopy(item);
-            return (boolean) copy.getClass().getMethod("hasTag").invoke(copy);
+            return copy != null && (boolean) copy.getClass().getMethod("hasTag").invoke(copy);
         } catch (Exception e) {
             e.printStackTrace();
         }

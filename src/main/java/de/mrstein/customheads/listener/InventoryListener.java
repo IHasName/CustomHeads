@@ -96,7 +96,7 @@ public class InventoryListener implements Listener {
         if (event.getInventory() == null || event.getRawSlot() > event.getInventory().getSize() || event.getInventory().getType() != InventoryType.CHEST || event.getCurrentItem() == null || !hasPermission(player, "heads.use"))
             return;
 
-        player.sendMessage("§7[CHTags Tags] §r" + CustomHeads.getTagEditor().getTags(event.getCurrentItem()));
+//        player.sendMessage("§7[CHTags Tags] §r" + CustomHeads.getTagEditor().getTags(event.getCurrentItem()));
 
         if (event.getInventory().getTitle().equals(CustomHeads.getLanguageManager().LOADING)) {
             event.setCancelled(true);
@@ -353,6 +353,8 @@ public class InventoryListener implements Listener {
                     if (originCategory != null && hasPermission(player, originCategory.getPermission()))
                         player.openInventory(CustomHeads.getLooks().subCategoryLooks.get(Integer.parseInt(originCategory.getId())));
                 }
+            } else if(args[0].equalsIgnoreCase("retrySearch")) {
+                openSearchGUI(player, args[1], event.getInventory().getItem(18) == null ? "close" : CustomHeads.getTagEditor().getTags(event.getInventory().getItem(18)).get(CustomHeads.getTagEditor().indexOf(event.getInventory().getItem(18), "")));
             }
         }
 

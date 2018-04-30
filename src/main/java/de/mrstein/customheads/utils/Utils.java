@@ -12,23 +12,30 @@ import de.mrstein.customheads.reflection.AnvilGUI;
 import de.mrstein.customheads.reflection.TagEditor;
 import de.mrstein.customheads.stuff.CHSearchQuery;
 import de.mrstein.customheads.stuff.History;
+import de.mrstein.customheads.updaters.AfterTask;
+import de.mrstein.customheads.updaters.GitHubDownloader;
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
@@ -224,7 +231,12 @@ public class Utils {
                         noRes.setItem(18, Utils.getBackButton("invAction", "close#>"));
                     }
                     noRes.setItem(26, CustomHeads.getTagEditor().setTags(Utils.createHead(CustomHeads.getLanguageManager().NO_RESULTS_TRY_AGAIN, "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMWI2ZjFhMjViNmJjMTk5OTQ2NDcyYWVkYjM3MDUyMjU4NGZmNmY0ZTgzMjIxZTU5NDZiZDJlNDFiNWNhMTNiIn19fQ=="), "invAction", "retrySearch#>" + event.getName()));
-                    event.getPlayer().openInventory(noRes);
+                    player.closeInventory();
+                    new BukkitRunnable() {
+                        public void run() {
+                            player.openInventory(noRes);
+                        }
+                    }.runTaskLater(CustomHeads.getInstance(), 20);
                     return;
                 }
                 query.viewTo(event.getPlayer(), "close");
@@ -532,11 +544,76 @@ public class Utils {
             inputStream.closeEntry();
             inputStream.close();
             System.out.println("Unzip finished");
-
-
         } catch (Exception exception) {
             CustomHeads.getInstance().getLogger().log(Level.WARNING, "Failed to unzip " + zipFile.getName(), exception);
         }
+    }
+
+    public static boolean reload(CommandSender sender) {
+        boolean console = sender instanceof ConsoleCommandSender;
+        sender.sendMessage((console ? CustomHeads.chPrefix : "") + CustomHeads.getLanguageManager().RELOAD_CONFIG);
+        CustomHeads.heads.reload();
+        sender.sendMessage((console ? CustomHeads.chPrefix : "") + CustomHeads.getLanguageManager().RELOAD_HISTORY);
+        CustomHeads.reloadHistoryData();
+        if (CustomHeads.hisE && CustomHeads.hisMode == History.HistoryMode.FILE) {
+            CustomHeads.his.reload();
+        }
+        sender.sendMessage((console ? CustomHeads.chPrefix : "") + CustomHeads.getLanguageManager().RELOAD_LANGUAGE);
+        if (!CustomHeads.reloadTranslations(CustomHeads.heads.get().getString("langFile"))) {
+            sender.sendMessage((console ? CustomHeads.chPrefix : "") + CustomHeads.getLanguageManager().RELOAD_FAILED);
+            return false;
+        }
+        ScrollableInventory.sortName = new ArrayList<>(Arrays.asList("invalid", CustomHeads.getLanguageManager().CYCLE_ARRANGEMENT_DEFAULT, CustomHeads.getLanguageManager().CYCLE_ARRANGEMENT_ALPHABETICAL, CustomHeads.getLanguageManager().CYCLE_ARRANGEMENT_COLOR));
+        sender.sendMessage((console ? CustomHeads.chPrefix : "") + CustomHeads.getLanguageManager().RELOAD_SUCCESSFUL);
+        return true;
+    }
+
+    public static boolean reload() {
+        CustomHeads.heads.reload();
+        CustomHeads.reloadHistoryData();
+        if (CustomHeads.hisE && CustomHeads.hisMode == History.HistoryMode.FILE) {
+            CustomHeads.his.reload();
+        }
+        if (!CustomHeads.reloadTranslations(CustomHeads.heads.get().getString("langFile"))) {
+            return false;
+        }
+        ScrollableInventory.sortName = new ArrayList<>(Arrays.asList("invalid", CustomHeads.getLanguageManager().CYCLE_ARRANGEMENT_DEFAULT, CustomHeads.getLanguageManager().CYCLE_ARRANGEMENT_ALPHABETICAL, CustomHeads.getLanguageManager().CYCLE_ARRANGEMENT_COLOR));
+        return true;
+    }
+
+    public static boolean redownloadLanguageFiles(CommandSender sender) {
+        boolean console = sender instanceof ConsoleCommandSender;
+
+        // Backing up jic >_>
+        sender.sendMessage((console ? CustomHeads.chPrefix : "") + CustomHeads.getLanguageManager().LANGUAGE_REDOWNLOAD_BACKING_UP);
+        try {
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+            Date date = new Date(System.currentTimeMillis());
+
+            File backUpRoot = new File("plugins/CustomHeads/language-backups/" + format.format(date));
+            int c = 0;
+            while(backUpRoot.exists()) {
+                backUpRoot = new File(backUpRoot + "_" + ++c);
+            }
+            File langRoot = new File("plugins/CustomHeads/language");
+
+            for (File langDir : langRoot.listFiles()) {
+                FileUtils.moveDirectory(langDir, new File(backUpRoot + "/" + langDir.getName()));
+            }
+
+        } catch(Exception e) {
+            CustomHeads.getInstance().getLogger().log(Level.WARNING, "Failed to move Directory", e);
+            sender.sendMessage((console ? CustomHeads.chPrefix : "") + CustomHeads.getLanguageManager().LANGUAGE_REDOWNLOAD_BACKUP_FAILED);
+            return false;
+        }
+
+        sender.sendMessage((console ? CustomHeads.chPrefix : "") + CustomHeads.getLanguageManager().LANGUAGE_REDOWNLOAD_DOWNLOADING);
+        GitHubDownloader gitGetter = new GitHubDownloader("MrSteinMC", "CustomHeads").enableAutoUnzipping();
+        gitGetter.download(CustomHeads.getInstance().getDescription().getVersion(), "language.zip", new File("plugins/CustomHeads"), (AfterTask) () -> {
+            reload();
+            sender.sendMessage((console ? CustomHeads.chPrefix : "") + CustomHeads.getLanguageManager().LANGUAGE_REDOWNLOAD_DONE);
+        });
+        return true;
     }
 
     public static String toConfigString(String string) {

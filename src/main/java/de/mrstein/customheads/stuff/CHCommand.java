@@ -8,8 +8,6 @@ import de.mrstein.customheads.category.Category;
 import de.mrstein.customheads.category.SubCategory;
 import de.mrstein.customheads.headwriter.HeadFontType;
 import de.mrstein.customheads.headwriter.HeadWriter;
-import de.mrstein.customheads.langLoader.Language;
-import de.mrstein.customheads.reflection.AnvilGUI;
 import de.mrstein.customheads.utils.*;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.*;
@@ -38,19 +36,18 @@ import static de.mrstein.customheads.utils.Utils.*;
 
 public class CHCommand implements CommandExecutor {
 
-    private static Language lg = CustomHeads.getLanguageManager();
     public HashMap<Player, String[]> haltedCommands = new HashMap<>();
     private Random ran = new Random();
     private BlockFace[] faces = {BlockFace.NORTH, BlockFace.NORTH_EAST, BlockFace.NORTH_NORTH_EAST};
     private FireworkEffect.Type[] fxtypes = {FireworkEffect.Type.BALL, FireworkEffect.Type.BALL_LARGE, FireworkEffect.Type.BURST, FireworkEffect.Type.STAR};
-    private String[] rdmans = {"CustomHeads says: Hmm", "CustomHeads says: Does the Console have an Inventory?", "CustomHeads says: That tickels!", "CustomHeads says: No", "CustomHeads says: Im lost", "CustomHeads says: I don't think this is what you are searching for", "CustomHeads says: Hold on... Nevermind", "CustomHeads says: Sorry"};
+    private String[] rdmans = {"CustomHeads says: Hmm", "CustomHeads says: Does the Console have an Inventory?", "CustomHeads says: That tickels!", "CustomHeads says: No", "CustomHeads says: Im lost", "CustomHeads says: I don't think this is what you are searching for", "CustomHeads says: Hold on... Nevermind", "CustomHeads says: Sorry", "CustomHeads says: Spoilers... There will be a new Command soon =]"};
 
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-
         if (sender instanceof ConsoleCommandSender) {
             if(args.length > 0) {
                 if (args[0].equalsIgnoreCase("rl") || args[0].equalsIgnoreCase("reload")) {
-                    return reload(sender);
+                    reload(sender);
+                    return true;
                 }
                 if (args[0].equalsIgnoreCase("info")) {
                     new BukkitRunnable() {
@@ -59,6 +56,11 @@ public class CHCommand implements CommandExecutor {
                             sender.sendMessage("§7Version: §e" + CustomHeads.getInstance().getDescription().getVersion() + " §7Update: §e" + (up.length == 5 ? up[4] : -1));
                         }
                     }.runTaskLaterAsynchronously(CustomHeads.getInstance(), 10);
+                    return true;
+                }
+                if(args[0].equalsIgnoreCase("redownload")) {
+                    redownloadLanguageFiles(sender);
+                    return true;
                 }
             }
             Random rdm = new Random();
@@ -80,7 +82,7 @@ public class CHCommand implements CommandExecutor {
                     player.openInventory(getHelpMenu(player));
                     return true;
                 }
-                player.sendMessage(lg.NO_PERMISSION);
+                player.sendMessage(CustomHeads.getLanguageManager().NO_PERMISSION);
                 return true;
             }
             if (args[0].equalsIgnoreCase("info")) {
@@ -97,19 +99,59 @@ public class CHCommand implements CommandExecutor {
                     }.runTaskAsynchronously(CustomHeads.getInstance());
                     return true;
                 }
-                player.sendMessage(lg.NO_PERMISSION);
+                player.sendMessage(CustomHeads.getLanguageManager().NO_PERMISSION);
                 return true;
             }
+
+            if(args[0].equalsIgnoreCase("language")) {
+                if(hasPermission(player, "heads.admin")) {
+                    if(args.length < 2) {
+                        player.sendMessage(CustomHeads.getLanguageManager().COMMAND_USAGE.replace("{COMMAND}", "/heads language <change, redownload>"));
+                        return true;
+                    }
+                    if(args[1].equalsIgnoreCase("change")) {
+                        if(args.length < 3) {
+                            player.sendMessage(CustomHeads.getLanguageManager().COMMAND_USAGE.replace("{COMMAND}", "/heads language change <language>"));
+                            return true;
+                        }
+                        if(CustomHeads.getLanguageManager().getCurrentLanguage().equalsIgnoreCase(args[2])) {
+                            player.sendMessage(CustomHeads.getLanguageManager().LANGUAGE_CHANGE_ALREADY_USED);
+                            return true;
+                        }
+                        player.sendMessage(CustomHeads.getLanguageManager().LANGUAGE_CHANGE_CHANGING.replace("{LANGUAGE}", args[2]));
+                        if(CustomHeads.reloadTranslations(args[2])) {
+                            CustomHeads.heads.get().set("langFile", args[2]);
+                            CustomHeads.heads.save();
+                            player.sendMessage(CustomHeads.getLanguageManager().LANGUAGE_CHANGE_SUCCESSFUL.replace("{LANGUAGE}", CustomHeads.getLanguageManager().DEFINITION));
+                            return true;
+                        } else {
+                            player.sendMessage(CustomHeads.getLanguageManager().LANGUAGE_CHANGE_FAILED);
+                            CustomHeads.reloadTranslations(CustomHeads.heads.get().getString("langFile"));
+                            return true;
+                        }
+                    }
+                    if(args[1].equalsIgnoreCase("redownload")) {
+                        redownloadLanguageFiles(sender);
+                        return true;
+                    }
+                    player.sendMessage(CustomHeads.getLanguageManager().COMMAND_USAGE.replace("{COMMAND}", "/heads language <change, redownload>"));
+                    return true;
+                }
+                player.sendMessage(CustomHeads.getLanguageManager().NO_PERMISSION);
+                return true;
+            }
+
             /* Test Command plez Ignore
             if (args[0].equalsIgnoreCase("test")) {
                 Configs tempcon = new Configs(CustomHeads.getInstance(), "test.yml", false, "testing");
                 return false;
             }
             */
+
             if (args[0].equalsIgnoreCase("categories")) {
                 if (hasPermission(player, "heads.admin")) {
                     if (args.length < 2) {
-                        player.sendMessage(lg.CATEGORIES_BASECOMMAND_HEADER);
+                        player.sendMessage(CustomHeads.getLanguageManager().CATEGORIES_BASECOMMAND_HEADER);
 
                         List<Category> sortedCategories = new ArrayList<>();
                         HashMap<Integer, Category> tempMap = new HashMap<>();
@@ -131,27 +173,27 @@ public class CHCommand implements CommandExecutor {
                         for (int i = 0; i < sortedCategories.size(); i++) {
                             Category cCategory = categories.get(i);
                             String hoverInfoCategoryBuilder = "{\"text\":\"";
-                            for (String hoverInfoCategory : lg.CATEGORIES_BASECOMMAND_HOVERINFO_CATEGORY) {
+                            for (String hoverInfoCategory : CustomHeads.getLanguageManager().CATEGORIES_BASECOMMAND_HOVERINFO_CATEGORY) {
                                 hoverInfoCategoryBuilder += hoverInfoCategory + "\n";
                             }
-                            hoverInfoCategoryBuilder = hoverInfoCategoryBuilder.replace("{ID}", "" + cCategory.getId()).replace("{CATEGORY}", cCategory.getName()).replace("{PERMISSION}", cCategory.getPermission()).replace("{USED}", cCategory.isUsed() ? lg.YES : lg.NO);
+                            hoverInfoCategoryBuilder = hoverInfoCategoryBuilder.replace("{ID}", "" + cCategory.getId()).replace("{CATEGORY}", cCategory.getName()).replace("{PERMISSION}", cCategory.getPermission()).replace("{USED}", cCategory.isUsed() ? CustomHeads.getLanguageManager().YES : CustomHeads.getLanguageManager().NO);
                             hoverInfoCategoryBuilder = hoverInfoCategoryBuilder.substring(0, hoverInfoCategoryBuilder.length() - 1);
                             hoverInfoCategoryBuilder += "\"}";
 
-                            Utils.sendJSONMessage("[\"\",{\"text\":\" §e" + (i == (categories.size() - 1) ? "┗╸" : "┣╸") + " \"},{\"text\":\"" + (cCategory.isUsed() ? "§a" : "§7") + ChatColor.stripColor(cCategory.getName()) + "\",\"hoverEvent\":{\"action\":\"show_text\",\"value\":{\"text\":\"\",\"extra\":[" + hoverInfoCategoryBuilder + "]}}}]", player);
+                            Utils.sendJSONMessage("[\"\",{\"text\":\" §e" + (i == (categories.size() - 1) ? "┗╸" : "┣╸") + " \"},{\"text\":\"" + (cCategory.isUsed() ? "§a" : "§7") + ChatColor.stripColor(cCategory.getName()) + "\"" +/*(CustomHeads.hasCategoryEditor() ? ",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/cedit " + cCategory.getId() + "\"}" : "") +*/",\"hoverEvent\":{\"action\":\"show_text\",\"value\":{\"text\":\"\",\"extra\":[" + hoverInfoCategoryBuilder +/*",{\"text\":\"\n" + (CustomHeads.hasCategoryEditor() ? "§eClick to open in Editor" : "§eGet CategoryCreator to\n§eopen an Editor") + "\"}" +*/"]}}}]", player);
                             if (cCategory.hasSubCategories()) {
                                 for (int j = 0; j < cCategory.getSubCategories().size(); j++) {
                                     SubCategory cSubCategory = cCategory.getSubCategories().get(j);
 
                                     String hoverInfoSubCategoryBuilder = "{\"text\":\"";
-                                    for (String hoverInfoSubCategory : lg.CATEGORIES_BASECOMMAND_HOVERINFO_SUBCATEGORY) {
+                                    for (String hoverInfoSubCategory : CustomHeads.getLanguageManager().CATEGORIES_BASECOMMAND_HOVERINFO_SUBCATEGORY) {
                                         hoverInfoSubCategoryBuilder += hoverInfoSubCategory + "\n";
                                     }
-                                    hoverInfoSubCategoryBuilder = hoverInfoSubCategoryBuilder.replace("{ID}", "" + cCategory.getId()).replace("{CATEGORY}", cCategory.getName()).replace("{USED}", cSubCategory.isUsed() ? lg.YES : lg.NO);
+                                    hoverInfoSubCategoryBuilder = hoverInfoSubCategoryBuilder.replace("{ID}", "" + cCategory.getId()).replace("{CATEGORY}", cCategory.getName()).replace("{USED}", cSubCategory.isUsed() ? CustomHeads.getLanguageManager().YES : CustomHeads.getLanguageManager().NO);
                                     hoverInfoSubCategoryBuilder = hoverInfoSubCategoryBuilder.substring(0, hoverInfoSubCategoryBuilder.length() - 1);
                                     hoverInfoSubCategoryBuilder += "\"}";
 
-                                    Utils.sendJSONMessage("[\"\",{\"text\":\" §e" + (i == (categories.size() - 1) ? " " : "┃ ") + "  " + (j == (cCategory.getSubCategories().size() - 1) ? "┗╸" : "┣╸") + " \"},{\"text\":\"" + (cCategory.isUsed() ? "§a" : "§7") + ChatColor.stripColor(cSubCategory.getName()) + "\",\"hoverEvent\":{\"action\":\"show_text\",\"value\":{\"text\":\"\",\"extra\":[" + hoverInfoSubCategoryBuilder + "]}}}]", player);
+                                    Utils.sendJSONMessage("[\"\",{\"text\":\" §e" + (i == (categories.size() - 1) ? " " : "┃ ") + "  " + (j == (cCategory.getSubCategories().size() - 1) ? "┗╸" : "┣╸") + " \"},{\"text\":\"" + (cCategory.isUsed() ? "§a" : "§7") + ChatColor.stripColor(cSubCategory.getName()) + "\"" +/*(CustomHeads.hasCategoryEditor() ? ",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/cedit " + cSubCategory.getId() + "\"}" : "") +*/",\"hoverEvent\":{\"action\":\"show_text\",\"value\":{\"text\":\"\",\"extra\":[" + hoverInfoSubCategoryBuilder +/*",{\"text\":\"\n" + (CustomHeads.hasCategoryEditor() ? "§eClick to open in Editor" : "§eGet CategoryCreator to\n§eopen an Editor") + "\"}" +*/"]}}}]", player);
                                 }
                             }
                         }
@@ -164,18 +206,18 @@ public class CHCommand implements CommandExecutor {
                         }
                         Category category = CustomHeads.getCategoryImporter().getCategory(args[2]);
                         if (category == null) {
-                            player.sendMessage(lg.CATEGORIES_REMOVE_NOTFOUND.replace("{ID}", args[2]));
+                            player.sendMessage(CustomHeads.getLanguageManager().CATEGORIES_REMOVE_NOTFOUND.replace("{ID}", args[2]));
                             return false;
                         }
                         if (category.isUsed()) {
-                            player.sendMessage(replace(lg.CATEGORIES_REMOVE_INUSE, category));
+                            player.sendMessage(replace(CustomHeads.getLanguageManager().CATEGORIES_REMOVE_INUSE, category));
                             return true;
                         }
                         if (CustomHeads.getCategoryImporter().removeCategory(category)) {
-                            player.sendMessage(replace(lg.CATEGORIES_REMOVE_SUCCESSFUL, category));
+                            player.sendMessage(replace(CustomHeads.getLanguageManager().CATEGORIES_REMOVE_SUCCESSFUL, category));
                             return true;
                         }
-                        player.sendMessage(replace(lg.CATEGORIES_REMOVE_FAILED, category));
+                        player.sendMessage(replace(CustomHeads.getLanguageManager().CATEGORIES_REMOVE_FAILED, category));
                         return true;
                     }
                     if (args[1].equalsIgnoreCase("delete")) {
@@ -186,14 +228,14 @@ public class CHCommand implements CommandExecutor {
                         if (args[2].equalsIgnoreCase("category")) {
                             Category category = CustomHeads.getCategoryImporter().getCategory(args[3]);
                             if (category == null) {
-                                player.sendMessage(lg.CATEGORIES_DELETE_CATEGORY_NOTFOUND.replace("{ID}", args[3]));
+                                player.sendMessage(CustomHeads.getLanguageManager().CATEGORIES_DELETE_CATEGORY_NOTFOUND.replace("{ID}", args[3]));
                                 return false;
                             }
                             if (category.isUsed()) {
-                                player.sendMessage(replace(lg.CATEGORIES_DELETE_CATEGORY_INUSE, category));
+                                player.sendMessage(replace(CustomHeads.getLanguageManager().CATEGORIES_DELETE_CATEGORY_INUSE, category));
                                 return true;
                             }
-                            player.sendMessage(replace(lg.CATEGORIES_DELETE_CATEGORY_CONFIRM, category));
+                            player.sendMessage(replace(CustomHeads.getLanguageManager().CATEGORIES_DELETE_CATEGORY_CONFIRM, category));
                             haltedCommands.put(player, args);
                             new BukkitRunnable() {
                                 public void run() {
@@ -207,14 +249,14 @@ public class CHCommand implements CommandExecutor {
                         if (args[2].equalsIgnoreCase("subcategory")) {
                             SubCategory subCategory = CustomHeads.getCategoryImporter().getSubCategory(args[3]);
                             if (subCategory == null) {
-                                player.sendMessage(lg.CATEGORIES_DELETE_SUBCATEGORY_NOTFOUND.replace("{ID}", args[3]));
+                                player.sendMessage(CustomHeads.getLanguageManager().CATEGORIES_DELETE_SUBCATEGORY_NOTFOUND.replace("{ID}", args[3]));
                                 return false;
                             }
                             if (subCategory.isUsed()) {
-                                player.sendMessage(replace(lg.CATEGORIES_DELETE_SUBCATEGORY_INUSE, subCategory));
+                                player.sendMessage(replace(CustomHeads.getLanguageManager().CATEGORIES_DELETE_SUBCATEGORY_INUSE, subCategory));
                                 return true;
                             }
-                            player.sendMessage(replace(lg.CATEGORIES_DELETE_SUBCATEGORY_CONFIRM, subCategory));
+                            player.sendMessage(replace(CustomHeads.getLanguageManager().CATEGORIES_DELETE_SUBCATEGORY_CONFIRM, subCategory));
                             haltedCommands.put(player, args);
                             new BukkitRunnable() {
                                 public void run() {
@@ -231,7 +273,7 @@ public class CHCommand implements CommandExecutor {
                     if (args[1].equalsIgnoreCase("import")) {
 
                         if (CustomHeads.getCategoryImporter().getLanguageRootDirectory().listFiles() == null) {
-                            player.sendMessage(lg.CATEGORIES_IMPORT_NOCATEGORYFOLDER);
+                            player.sendMessage(CustomHeads.getLanguageManager().CATEGORIES_IMPORT_NOCATEGORYFOLDER);
                         }
                         List<File> fileList = Arrays.stream(CustomHeads.getCategoryImporter().getLanguageRootDirectory().listFiles()).filter(file -> file.getName().endsWith(".json") && !CustomHeads.getCategoryLoaderConfig().get().getList("categories").contains(file.getName().substring(0, file.getName().lastIndexOf(".")))).collect(Collectors.toList());
 
@@ -246,10 +288,10 @@ public class CHCommand implements CommandExecutor {
                         if (args.length < 3) {
                             player.sendMessage(CustomHeads.getLanguageManager().COMMAND_USAGE.replace("{COMMAND}", "/heads categories import <filename>"));
                             if (files.isEmpty()) {
-                                player.sendMessage(lg.CATEGORIES_IMPORT_BASECOMMAND_NOFILES);
+                                player.sendMessage(CustomHeads.getLanguageManager().CATEGORIES_IMPORT_BASECOMMAND_NOFILES);
                             } else {
-                                player.sendMessage(lg.CATEGORIES_IMPORT_BASECOMMAND_LIST);
-                                files.forEach(file -> Utils.sendJSONMessage("[\"\",{\"text\":\"" + replace(lg.CATEGORIES_IMPORT_BASECOMMAND_LISTFORMAT + " - Size: {SIZE}", file) + "\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/cheads categories import " + file.getName() + "\"},\"hoverEvent\":{\"action\":\"show_text\",\"value\":{\"text\":\"\",\"extra\":[{\"text\":\"" + lg.CATEGORIES_IMPORT_BASECOMMAND_CLICKTOIMPORT + "\"}]}}}]", player));
+                                player.sendMessage(CustomHeads.getLanguageManager().CATEGORIES_IMPORT_BASECOMMAND_LIST);
+                                files.forEach(file -> Utils.sendJSONMessage("[\"\",{\"text\":\"" + replace(CustomHeads.getLanguageManager().CATEGORIES_IMPORT_BASECOMMAND_LISTFORMAT + " - Size: {SIZE}", file) + "\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/cheads categories import " + file.getName() + "\"},\"hoverEvent\":{\"action\":\"show_text\",\"value\":{\"text\":\"\",\"extra\":[{\"text\":\"" + CustomHeads.getLanguageManager().CATEGORIES_IMPORT_BASECOMMAND_CLICKTOIMPORT + "\"}]}}}]", player));
                             }
                             return true;
                         }
@@ -268,14 +310,14 @@ public class CHCommand implements CommandExecutor {
                                 category = Category.fromJson(new JsonFile(categoryFile).getJsonAsString());
                             }
                             player.sendMessage(
-                                    result == 0 ? replace(lg.CATEGORIES_IMPORT_SUCCESSFUL, categoryFile) :
-                                            result == 1 ? replace(lg.CATEGORIES_IMPORT_DUBLICATE_CATEGORY, category) :
-                                                    result == 2 ? replace(lg.CATEGORIES_IMPORT_DUBLICATE_SUBCATEGORY, categoryFile) :
-                                                            result == 3 ? replace(lg.CATEGORIES_IMPORT_INVALIDFILE, categoryFile) :
-                                                                    result == 4 ? replace(lg.CATEGORIES_IMPORT_ERROR, categoryFile) : "Uhm... this isn't supposed to happen...");
+                                    result == 0 ? replace(CustomHeads.getLanguageManager().CATEGORIES_IMPORT_SUCCESSFUL, categoryFile) :
+                                            result == 1 ? replace(CustomHeads.getLanguageManager().CATEGORIES_IMPORT_DUBLICATE_CATEGORY, category) :
+                                                    result == 2 ? replace(CustomHeads.getLanguageManager().CATEGORIES_IMPORT_DUBLICATE_SUBCATEGORY, categoryFile) :
+                                                            result == 3 ? replace(CustomHeads.getLanguageManager().CATEGORIES_IMPORT_INVALIDFILE, categoryFile) :
+                                                                    result == 4 ? replace(CustomHeads.getLanguageManager().CATEGORIES_IMPORT_ERROR, categoryFile) : "Uhm... this isn't supposed to happen...");
                             return true;
                         }
-                        player.sendMessage(lg.CATEGORIES_IMPORT_FILENOTFOUND.replace("{FILE}", args[2]));
+                        player.sendMessage(CustomHeads.getLanguageManager().CATEGORIES_IMPORT_FILENOTFOUND.replace("{FILE}", args[2]));
                         return true;
                     }
                     player.sendMessage(CustomHeads.getLanguageManager().COMMAND_USAGE.replace("{COMMAND}", "/heads categories <remove, delete, import>"));
@@ -291,25 +333,25 @@ public class CHCommand implements CommandExecutor {
                         if (haltedArgs[2].equalsIgnoreCase("category")) {
                             Category deleteCategory = CustomHeads.getCategoryImporter().getCategory(haltedArgs[3]);
                             if (CustomHeads.getCategoryImporter().deleteCategory(deleteCategory)) {
-                                player.sendMessage(replace(lg.CATEGORIES_DELETE_CATEGORY_SUCCESSFUL, deleteCategory));
+                                player.sendMessage(replace(CustomHeads.getLanguageManager().CATEGORIES_DELETE_CATEGORY_SUCCESSFUL, deleteCategory));
                                 return true;
                             }
-                            player.sendMessage(lg.CATEGORIES_DELETE_CATEGORY_FAILED);
+                            player.sendMessage(CustomHeads.getLanguageManager().CATEGORIES_DELETE_CATEGORY_FAILED);
                             return false;
                         }
                         if (haltedArgs[2].equalsIgnoreCase("subcategory")) {
                             SubCategory deleteSubCategory = CustomHeads.getCategoryImporter().getSubCategory(haltedArgs[3]);
                             if (CustomHeads.getCategoryImporter().deleteSubCategory(deleteSubCategory)) {
-                                player.sendMessage(replace(lg.CATEGORIES_DELETE_SUBCATEGORY_SUCCESSFUL, deleteSubCategory));
+                                player.sendMessage(replace(CustomHeads.getLanguageManager().CATEGORIES_DELETE_SUBCATEGORY_SUCCESSFUL, deleteSubCategory));
                                 return true;
                             }
-                            player.sendMessage(lg.CATEGORIES_DELETE_SUBCATEGORY_FAILED);
+                            player.sendMessage(CustomHeads.getLanguageManager().CATEGORIES_DELETE_SUBCATEGORY_FAILED);
                             return false;
                         }
                     }
                     return true;
                 }
-                player.sendMessage(lg.CONFIRM_NOTHINGFOUND);
+                player.sendMessage(CustomHeads.getLanguageManager().CONFIRM_NOTHINGFOUND);
                 return true;
             }
             if (args[0].equalsIgnoreCase("history")) {
@@ -324,37 +366,37 @@ public class CHCommand implements CommandExecutor {
                                         player.openInventory(new History(phis).getSearchHistory().getAsInventory());
                                         return true;
                                     }
-                                    player.sendMessage(lg.HISTORY_NO_VIEW_PERMISSION);
+                                    player.sendMessage(CustomHeads.getLanguageManager().HISTORY_NO_VIEW_PERMISSION);
                                     return true;
                                 }
                             }
-                            player.sendMessage(lg.HISTORY_INVALID_PLAYER.replace("{PLAYER}", args[1]));
+                            player.sendMessage(CustomHeads.getLanguageManager().HISTORY_INVALID_PLAYER.replace("{PLAYER}", args[1]));
                             return true;
                         }
                         player.sendMessage(CustomHeads.getLanguageManager().COMMAND_USAGE.replace("{COMMAND}", "/heads history <Player>"));
                         return true;
                     }
-                    player.sendMessage(lg.HISTORY_DISABLED);
+                    player.sendMessage(CustomHeads.getLanguageManager().HISTORY_DISABLED);
                     return true;
                 }
-                player.sendMessage(lg.NO_PERMISSION);
+                player.sendMessage(CustomHeads.getLanguageManager().NO_PERMISSION);
                 return true;
             }
             if (args[0].equalsIgnoreCase("firework")) {
                 if (hasPermission(player, "heads.use.more.firework")) {
                     if (player.getLocation().getBlock().getType() != Material.AIR) {
-                        player.sendMessage(lg.CANNOT_PLACE_IN_BLOCK);
+                        player.sendMessage(CustomHeads.getLanguageManager().CANNOT_PLACE_IN_BLOCK);
                         return true;
                     }
                     if (player.getLocation().getBlock().getRelative(BlockFace.DOWN).getType() == Material.AIR) {
-                        player.sendMessage(lg.CANNOT_PLACE_IN_AIR);
+                        player.sendMessage(CustomHeads.getLanguageManager().CANNOT_PLACE_IN_AIR);
                         return true;
                     }
                     if (saveLoc.containsKey(player)) {
-                        player.sendMessage(lg.ALREADY_IN_USE);
+                        player.sendMessage(CustomHeads.getLanguageManager().ALREADY_IN_USE);
                         return true;
                     }
-                    player.sendMessage(lg.STARTING);
+                    player.sendMessage(CustomHeads.getLanguageManager().STARTING);
                     final Player p2 = player;
                     CustomHeadsAPI.setSkullWithTexture(player.getLocation().getBlock(), "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOGEzZDVkNWIyY2YzMzEyOTllNjNkNzYxOGExNDI2NmU4Y2NjNjE1OGU5ZTMxZmNiMGJkOTExZTEyZmY3NzM2In19fQ==", faces[ran.nextInt(faces.length)]);
                     saveLoc.put(player, player.getLocation().getBlock().getLocation().add(.5, 0, .5));
@@ -402,7 +444,7 @@ public class CHCommand implements CommandExecutor {
             if (args[0].equalsIgnoreCase("search")) {
                 if (hasPermission(player, "heads.use.more.search")) {
                     if (args.length == 1) {
-                        openGUI(player, lg.CHANGE_SEARCH_STRING);
+                        openSearchGUI(player, CustomHeads.getLanguageManager().CHANGE_SEARCH_STRING);
                         player.updateInventory();
                         return true;
                     }
@@ -411,10 +453,10 @@ public class CHCommand implements CommandExecutor {
                     categories.removeAll(getAvailableCategories(player));
                     query.excludeCategories(categories);
                     if (query.getResults().isEmpty()) {
-                        Inventory noRes = Bukkit.createInventory(player, 9 * 3, lg.NO_RESULTS);
-                        noRes.setItem(13, CustomHeads.getTagEditor().setTags(Utils.createItem(Material.BARRIER, 1, lg.NO_RESULTS, "", (short) 0), "blockMoving"));
+                        Inventory noRes = Bukkit.createInventory(player, 9 * 3, CustomHeads.getLanguageManager().NO_RESULTS);
+                        noRes.setItem(13, CustomHeads.getTagEditor().setTags(Utils.createItem(Material.BARRIER, 1, CustomHeads.getLanguageManager().NO_RESULTS, "", (short) 0), "blockMoving"));
 //                        noRes.setItem(18, CustomHeads.getTagEditor().setTags(back, "invAction", "close#>"));
-                        noRes.setItem(26, CustomHeads.getTagEditor().setTags(Utils.createHead(lg.NO_RESULTS_TRY_AGAIN, "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMWI2ZjFhMjViNmJjMTk5OTQ2NDcyYWVkYjM3MDUyMjU4NGZmNmY0ZTgzMjIxZTU5NDZiZDJlNDFiNWNhMTNiIn19fQ=="), "invAction", "retrySearch#>" + args[1]));
+                        noRes.setItem(26, CustomHeads.getTagEditor().setTags(Utils.createHead(CustomHeads.getLanguageManager().NO_RESULTS_TRY_AGAIN, "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMWI2ZjFhMjViNmJjMTk5OTQ2NDcyYWVkYjM3MDUyMjU4NGZmNmY0ZTgzMjIxZTU5NDZiZDJlNDFiNWNhMTNiIn19fQ=="), "invAction", "retrySearch#>" + args[1]));
                         player.openInventory(noRes);
                         return true;
                     }
@@ -436,7 +478,7 @@ public class CHCommand implements CommandExecutor {
                     try {
                         HeadWriter.undoWriting(player, Integer.parseInt(args[1]), player);
                     } catch (Exception e) {
-                        player.sendMessage(lg.UNDO_INVALID_INPUT.replace("{TIMES}", args[1]));
+                        player.sendMessage(CustomHeads.getLanguageManager().UNDO_INVALID_INPUT.replace("{TIMES}", args[1]));
                     }
                     return true;
                 }
@@ -451,11 +493,11 @@ public class CHCommand implements CommandExecutor {
                         return true;
                     }
                     if (args[1].length() > 16 || args[1].length() < 3) {
-                        player.sendMessage(lg.GET_INVALID.replace("{PLAYER}", args[1]));
+                        player.sendMessage(CustomHeads.getLanguageManager().GET_INVALID.replace("{PLAYER}", args[1]));
                         return true;
                     }
                     new History(player).getGetHistory().addEntry(args[1]);
-                    player.getInventory().addItem(Utils.createPlayerHead(lg.GET_HEAD_NAME.replace("{PLAYER}", args[1]), args[1], ""));
+                    player.getInventory().addItem(Utils.createPlayerHead(CustomHeads.getLanguageManager().GET_HEAD_NAME.replace("{PLAYER}", args[1]), args[1], ""));
                     return true;
                 }
                 player.sendMessage(CustomHeads.getLanguageManager().NO_PERMISSION);
@@ -465,20 +507,20 @@ public class CHCommand implements CommandExecutor {
                 if (hasPermission(player, "heads.use.more.write")) {
                     // heads fonts <create, remove, edit> <fontname>
                     if (hasPermission(player, "heads.admin") && args.length <= 2) {
-                        player.sendMessage(lg.COMMAND_USAGE.replace("{COMMAND}", "/heads fonts <create, remove, edit> <fontname>"));
+                        player.sendMessage(CustomHeads.getLanguageManager().COMMAND_USAGE.replace("{COMMAND}", "/heads fonts <create, remove, edit> <fontname>"));
                     }
                     if (args.length <= 2 || !hasPermission(player, "heads.admin")) {
                         File fontRoot = new File("plugins/CustomHeads/fonts");
                         List<File> files;
                         if (fontRoot.exists() && fontRoot.listFiles() != null && (files = Arrays.stream(fontRoot.listFiles()).filter(file -> file.getName().endsWith(".yml")).collect(Collectors.toList())).size() > 0) {
-                            player.sendMessage(lg.FONTS_LIST_HEADER);
+                            player.sendMessage(CustomHeads.getLanguageManager().FONTS_LIST_HEADER);
                             for (File file : files) {
                                 Configs fontFile = new Configs(CustomHeads.getInstance(), file.getName(), false, "fonts");
-                                player.sendMessage(replace(lg.FONTS_LIST, file).replace(".yml", "").replace("{CHARACTERS}", (fontFile.get().isConfigurationSection("characters") ? fontFile.get().getConfigurationSection("characters").getKeys(false).size() + "" : "0")));
+                                player.sendMessage(replace(CustomHeads.getLanguageManager().FONTS_LIST, file).replace(".yml", "").replace("{CHARACTERS}", (fontFile.get().isConfigurationSection("characters") ? fontFile.get().getConfigurationSection("characters").getKeys(false).size() + "" : "0")));
                             }
                             return true;
                         }
-                        player.sendMessage(lg.FONTS_NOFONTS);
+                        player.sendMessage(CustomHeads.getLanguageManager().FONTS_NOFONTS);
                         return true;
                     }
                     HeadFontType font = new HeadFontType(args[2]);
@@ -527,7 +569,7 @@ public class CHCommand implements CommandExecutor {
                         return true;
                     }
                 }
-                player.sendMessage(lg.NO_PERMISSION);
+                player.sendMessage(CustomHeads.getLanguageManager().NO_PERMISSION);
                 return true;
             }
             if (args.length > 1) {
@@ -538,19 +580,19 @@ public class CHCommand implements CommandExecutor {
                             if (args[2].equalsIgnoreCase("-t")) {
                                 if (hasPermission(player, "heads.use.saveastexture")) {
                                     if (!saver.hasHead(args[1])) {
-                                        player.sendMessage(lg.SAVE_GET_TEXTURE);
+                                        player.sendMessage(CustomHeads.getLanguageManager().SAVE_GET_TEXTURE);
                                         try {
                                             String playertexture = Utils.getTextureFromProfile(GameProfileBuilder.fetch(player.getUniqueId()));
                                             args[1] = toConfigString(args[1]);
                                             saver.saveHead(playertexture, args[1]);
-                                            player.sendMessage(lg.SAVE_OWN_SUCCESSFUL.replace("{NAME}", format(args[1])));
+                                            player.sendMessage(CustomHeads.getLanguageManager().SAVE_OWN_SUCCESSFUL.replace("{NAME}", format(args[1])));
                                         } catch (Exception e) {
-                                            sender.sendMessage(lg.SAVE_OWN_FAILED);
+                                            sender.sendMessage(CustomHeads.getLanguageManager().SAVE_OWN_FAILED);
                                             Bukkit.getLogger().log(Level.WARNING, "Failed to get Playertexture", e);
                                         }
                                         return true;
                                     }
-                                    player.sendMessage(lg.SAVE_ALREADY_EXIST.replace("{NAME}", format(args[1])));
+                                    player.sendMessage(CustomHeads.getLanguageManager().SAVE_ALREADY_EXIST.replace("{NAME}", format(args[1])));
                                     return true;
                                 }
                             }
@@ -560,38 +602,38 @@ public class CHCommand implements CommandExecutor {
                                 ItemStack headstack = player.getItemInHand();
                                 if (((SkullMeta) headstack.getItemMeta()).getOwner() == null) {
                                     if (!CustomHeads.usetextures) {
-                                        player.sendMessage(lg.SAVE_UNAVIABLE);
+                                        player.sendMessage(CustomHeads.getLanguageManager().SAVE_UNAVIABLE);
                                         return true;
                                     }
                                     String nbtstring = CustomHeadsAPI.getSkullTexture(headstack);
                                     if (nbtstring == null || nbtstring.equals("")) {
-                                        player.sendMessage(lg.SAVE_NOT_CUSTOM_TEXTURE);
+                                        player.sendMessage(CustomHeads.getLanguageManager().SAVE_NOT_CUSTOM_TEXTURE);
                                         return true;
                                     }
                                     args[1] = toConfigString(args[1]);
                                     saver.saveHead(nbtstring, args[1]);
-                                    player.sendMessage(lg.SAVE_SUCCESSFUL.replace("{NAME}", format(args[1])));
+                                    player.sendMessage(CustomHeads.getLanguageManager().SAVE_SUCCESSFUL.replace("{NAME}", format(args[1])));
                                     return true;
                                 }
                                 saver.saveHead(((SkullMeta) headstack.getItemMeta()).getOwner(), args[1]);
-                                player.sendMessage(lg.SAVE_SUCCESSFUL.replace("{NAME}", format(args[1])));
+                                player.sendMessage(CustomHeads.getLanguageManager().SAVE_SUCCESSFUL.replace("{NAME}", format(args[1])));
                                 return true;
                             }
-                            player.sendMessage(lg.SAVE_ALREADY_EXIST.replace("{NAME}", format(args[1])));
+                            player.sendMessage(CustomHeads.getLanguageManager().SAVE_ALREADY_EXIST.replace("{NAME}", format(args[1])));
                             return true;
                         }
-                        player.sendMessage(lg.SAVE_NOT_SKULL);
+                        player.sendMessage(CustomHeads.getLanguageManager().SAVE_NOT_SKULL);
                         return true;
                     }
                     if (args[0].equalsIgnoreCase("remove")) {
                         CustomHeads.heads.save();
                         if (CustomHeads.heads.get().get("heads." + player.getUniqueId() + "." + args[1]) != null) {
                             CustomHeads.heads.get().set("heads." + player.getUniqueId() + "." + args[1], null);
-                            player.sendMessage(lg.REMOVE_SUCCESSFUL.replace("{NAME}", format(args[1])));
+                            player.sendMessage(CustomHeads.getLanguageManager().REMOVE_SUCCESSFUL.replace("{NAME}", format(args[1])));
                             CustomHeads.heads.save();
                             return true;
                         }
-                        player.sendMessage(lg.REMOVE_FAILED.replace("{NAME}", format(args[1])));
+                        player.sendMessage(CustomHeads.getLanguageManager().REMOVE_FAILED.replace("{NAME}", format(args[1])));
                         return true;
                     }
                     if (args[0].equalsIgnoreCase("write")) {
@@ -603,7 +645,7 @@ public class CHCommand implements CommandExecutor {
                             }
                             HeadFontType fontType = new HeadFontType(args[1]);
                             if (!fontType.exists()) {
-                                player.sendMessage(lg.WRITE_NOFONT);
+                                player.sendMessage(CustomHeads.getLanguageManager().WRITE_NOFONT);
                                 return true;
                             }
                             StringBuilder text = new StringBuilder();
@@ -615,7 +657,7 @@ public class CHCommand implements CommandExecutor {
                             writer.writeAt(player.getLocation());
                             return true;
                         }
-                        player.sendMessage(lg.NO_PERMISSION);
+                        player.sendMessage(CustomHeads.getLanguageManager().NO_PERMISSION);
                         return true;
                     }
                     StringBuilder builder = new StringBuilder();
@@ -629,7 +671,7 @@ public class CHCommand implements CommandExecutor {
                     player.sendMessage(CustomHeads.getLanguageManager().COMMAND_USAGE.replace("{COMMAND}", "/heads " + (builder.length() == 0 ? "" : "<" + builder.toString() + ">")));
                     return true;
                 }
-                player.sendMessage(lg.NO_PERMISSION);
+                player.sendMessage(CustomHeads.getLanguageManager().NO_PERMISSION);
                 return true;
             }
             StringBuilder builder = new StringBuilder();
@@ -643,93 +685,20 @@ public class CHCommand implements CommandExecutor {
             player.sendMessage(CustomHeads.getLanguageManager().COMMAND_USAGE.replace("{COMMAND}", "/heads " + (builder.length() == 0 ? "" : "<" + builder.toString() + ">")));
             return true;
         }
-        player.sendMessage(lg.NO_PERMISSION);
+        player.sendMessage(CustomHeads.getLanguageManager().NO_PERMISSION);
         return true;
     }
 
     private String replace(String string, Category category) {
-        return string.replace("{ID}", "" + category.getId()).replace("{CATEGORY}", category.getPlainName()).replace("{PERMISSION}", category.getPermission()).replace("{USED}", category.isUsed() ? lg.YES : lg.NO);
+        return string.replace("{ID}", "" + category.getId()).replace("{CATEGORY}", category.getPlainName()).replace("{PERMISSION}", category.getPermission()).replace("{USED}", category.isUsed() ? CustomHeads.getLanguageManager().YES : CustomHeads.getLanguageManager().NO);
     }
 
     private String replace(String string, SubCategory subCategory) {
-        return string.replace("{ID}", "" + subCategory.getId()).replace("{CATEGORY}", subCategory.getPlainName()).replace("{USED}", subCategory.isUsed() ? lg.YES : lg.NO);
+        return string.replace("{ID}", "" + subCategory.getId()).replace("{CATEGORY}", subCategory.getPlainName()).replace("{USED}", subCategory.isUsed() ? CustomHeads.getLanguageManager().YES : CustomHeads.getLanguageManager().NO);
     }
 
     private String replace(String string, File file) {
         return string.replace("{FILE}", file.getName()).replace("{SIZE}", (file.length() > 1000 ? file.length() > 1000000 ? Math.round((double) file.length() / 1000000.0) + "MB" : Math.round((double) file.length() / 1000.0) + "KB" : file.length() + "B")).replace("{PATH}", file.getPath()).replace("{PARENT}", file.getParent());
-    }
-
-    private boolean reload(CommandSender sender) {
-        boolean console = sender instanceof ConsoleCommandSender;
-        sender.sendMessage((console ? CustomHeads.chPrefix : "") + lg.RELOAD_CONFIG);
-        CustomHeads.heads.reload();
-        sender.sendMessage((console ? CustomHeads.chPrefix : "") + lg.RELOAD_HISTORY);
-        CustomHeads.reloadHistoryData();
-        if (CustomHeads.hisE && CustomHeads.hisMode == History.HistoryMode.FILE) {
-            CustomHeads.his.reload();
-        }
-        sender.sendMessage((console ? CustomHeads.chPrefix : "") + lg.RELOAD_LANGUAGE);
-        if (!CustomHeads.reloadTranslations(CustomHeads.heads.get().getString("langFile"))) {
-            sender.sendMessage((console ? CustomHeads.chPrefix : "") + lg.RELOAD_FAILED);
-            return false;
-        }
-        lg = CustomHeads.getLanguageManager();
-        ScrollableInventory.sortName = new ArrayList<>(Arrays.asList("invalid", lg.CYCLE_ARRANGEMENT_DEFAULT, lg.CYCLE_ARRANGEMENT_ALPHABETICAL, lg.CYCLE_ARRANGEMENT_COLOR));
-        sender.sendMessage((console ? CustomHeads.chPrefix : "") + lg.RELOAD_SUCCESSFUL);
-        return true;
-    }
-
-    public void openGUI(final Player player, String itemname) {
-        AnvilGUI gui = new AnvilGUI(player, e -> {
-            e.setCancelled(true);
-            if (e.getSlot() == AnvilGUI.AnvilSlot.OUTPUT) {
-                if (e.getName().equals("")) {
-                    return;
-                }
-                if (e.getName().length() > 16) {
-                    player.sendMessage(lg.TO_LONG_INPUT);
-                    return;
-                }
-                player.sendMessage(lg.SEARCHING.replace("{SEARCH}", e.getName()));
-                CHSearchQuery query = new CHSearchQuery(e.getName());
-                if (query.getResults().isEmpty()) {
-                    Inventory noRes = Bukkit.createInventory(player, 9 * 3, lg.NO_RESULTS);
-                    noRes.setItem(13, CustomHeads.getTagEditor().setTags(Utils.createItem(Material.BARRIER, 1, lg.NO_RESULTS, "", (short) 0), "blockMoving"));
-//                    noRes.setItem(18, CustomHeads.getTagEditor().setTags(back, "invAction", "close#>"));
-                    noRes.setItem(26, CustomHeads.getTagEditor().setTags(Utils.createHead(lg.NO_RESULTS_TRY_AGAIN, "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMWI2ZjFhMjViNmJjMTk5OTQ2NDcyYWVkYjM3MDUyMjU4NGZmNmY0ZTgzMjIxZTU5NDZiZDJlNDFiNWNhMTNiIn19fQ=="), "invAction", "retrySearch#>" + e.getName()));
-                    player.openInventory(noRes);
-                    return;
-                }
-                query.viewTo(player, "close");
-            }
-        });
-        gui.setSlot(AnvilGUI.AnvilSlot.OUTPUT, Utils.createItem(Material.PAPER, 1, itemname, lg.SEARCH_LORE));
-        gui.setSlot(AnvilGUI.AnvilSlot.INPUT_LEFT, Utils.createItem(Material.PAPER, 1, itemname, lg.SEARCH_LORE));
-        gui.open();
-    }
-
-    public void openGetGUI(final Player player) {
-        AnvilGUI gui = new AnvilGUI(player, e -> {
-            e.update();
-            if (e.getSlot() == AnvilGUI.AnvilSlot.OUTPUT) {
-                if (e.getItem().getType() == Material.PAPER) {
-                    e.setCancelled(true);
-                    if (e.getName().equals("")) {
-                        return;
-                    }
-                    if (e.getName().length() > 16) {
-                        player.sendMessage(lg.TO_LONG_INPUT);
-                        return;
-                    }
-                    new History(e.getPlayer()).getGetHistory().addEntry(e.getName());
-                    e.getPlayer().setItemOnCursor(Utils.createPlayerHead(lg.GET_HEAD_NAME.replace("{PLAYER}", e.getName()), e.getName(), ""));
-                }
-            } else if (e.getSlot() == AnvilGUI.AnvilSlot.INPUT_LEFT || e.getSlot() == AnvilGUI.AnvilSlot.INPUT_RIGHT) {
-                e.setCancelled(true);
-            }
-        });
-        gui.setSlot(AnvilGUI.AnvilSlot.INPUT_LEFT, Utils.createItem(Material.PAPER, 1, lg.CHANGE_SEARCH_STRING, lg.SEARCH_LORE));
-        gui.open();
     }
 
 }

@@ -1,11 +1,21 @@
 # - Language File : en_EN -
+DEFINITION: 'English'
 NO_PERMISSION: "&cYou don't have Permission to use this Command!"
-# Other
+# General Messages
 LANG_YES: 'Yes'
 LANG_NO: 'No'
 CONFIRM_NOTHINGFOUND: '&eConfirm: &7Nothing found to confirm right now'
 COMMAND_USAGE: '&cUsage: &7{COMMAND}'
 LINK: '&7Link'
+LANGUAGE:
+  CHANGE_CHANGING: '&eLanguage: &7Loading Language from &a{LANGUAGE}.yml'
+  CHANGE_SUCCESSFUL: '&eLanguage: &7Language has been set to &a{LANGUAGE}'
+  CHANGE_ALREADY_USED: '&eLanguage: &7Language already used. Try /heads reload to reload the Language'
+  CHANGE_FAILED: '&eLanguage: &7Failed to set Language... Restoring Language used before'
+  REDOWNLOAD_BACKING_UP: '&eLanguage: &7Backing up old Files...'
+  REDOWNLOAD_BACKUP_FAILED: '&eLanguage: &7Failed to backup Files'
+  REDOWNLOAD_DOWNLOADING: '&eLanguage: &7Downloading Language Files...'
+  REDOWNLOAD_DONE: '&eLanguage: &7Done'
 RELOAD:
   CONFIG: '&eReload: &7Reloading Configs...'
   HISTORY: '&eReload: &7Reloading History...'

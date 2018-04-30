@@ -1,11 +1,21 @@
 # - Language File : de_DE -
+DEFINITION: 'Deutsch'
 NO_PERMISSION: "&cDu hast nicht genug Rechte diesen Command zu verwenden!"
-# Andere
+# Allgemeine Nachrichten
 LANG_YES: 'Ja'
 LANG_NO: 'Nein'
 CONFIRM_NOTHINGFOUND: '&eConfirm: &7Nichts gefunden zum best{ae}tigen'
 COMMAND_USAGE: '&cSyntax: &7{COMMAND}'
 LINK: '&7Link'
+LANGUAGE:
+  CHANGE_CHANGING: '&eSprache: &7Lade Sprache aus &a{LANGUAGE}.yml'
+  CHANGE_SUCCESSFUL: '&eSprache: &7Sprache wurde auf &a{LANGUAGE} &7gesetzt'
+  CHANGE_ALREADY_USED: '&eSprache: &7Sprache wird bereits verwendet. Versuch es mit &c/heads reload &7um die Sprache neu zu laden'
+  CHANGE_FAILED: '&eSprache: &7Fehler beim setzten der Sprache. Stelle zuvor genutze Sprache wieder her'
+  REDOWNLOAD_BACKING_UP: '&eSprache: &7Sichere alte Sprachdatein...'
+  REDOWNLOAD_BACKUP_FAILED: '&eSprache: &7Fehler beim sichern'
+  REDOWNLOAD_DOWNLOADING: '&eSprache: &7Lade Sprachdatein herunter...'
+  REDOWNLOAD_DONE: '&eSprache: &7Fertig'
 RELOAD:
   CONFIG: '&eReload: &7Lade Configs neu...'
   HISTORY: '&eReload: &7Lade Verlauf neu...'
@@ -18,16 +28,16 @@ PUT_ON_HEAD: '&7Dein Kopf ist nun &r{NAME}'
 NO_PERMISSION_TO_VIEW:
 - "&cDu hast nicht genug Rechte"
 - "&cum dies zu anzuschauen"
-# History Messages
+# Verlauf
 HISTORY_DISABLED: '&cVerlauf wurde {ue}ber die Config deaktiviert'
 HISTORY_INVALID_PLAYER: "&cUng{ue}ltiger Spieler '{PLAYER}'"
 HISTORY_NO_VIEW_PERMISSION: '&cDu kannst dir den Verlauf von diesem Spieler nicht anschauen'
-# Firework Messages
+# Feuerwerk
 CANNOT_PLACE_IN_BLOCK: '&cKann Feuerwerk nicht in einem Block setzen'
 CANNOT_PLACE_IN_AIR: '&cKann Feuerwerk nicht in der Luft Plazieren'
 ALREADY_IN_USE: '&cWarte kurz bevor du noch ein Feuerwerk startest'
 STARTING: '&aStarte Feuerwerk...'
-# Search
+# Suche
 INVALID_INPUT: "&cUng{ue}lige Eingabe: '{INPUT}'"
 CHANGE_SEARCH_STRING: '{AE}ndern zum Suchen'
 SEARCH_LORE:
@@ -118,7 +128,7 @@ FONTS:
   EDIT_ADD_DROPPER_TOGGLE: '&bHinzuf{ue}gen erzwingen: &b{MODE}'
   EDIT_ADD_DROPPER_NAME: '&bHier Zeichen hinziehen'
   EDIT_ADD_DROPPER_LORE:
-  - '&7Um Zecihen hinzuzuf{ue}gen'
+  - '&7Um Zeichen hinzuzuf{ue}gen'
   - '&7nimmt man den Kopf mit der Textur'
   - '&7und nennt ihn wie das Zeichen was'
   - '&7hinzugef{ue}gt werden soll'

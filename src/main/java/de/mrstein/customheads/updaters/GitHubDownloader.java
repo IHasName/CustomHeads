@@ -36,7 +36,7 @@ public class GitHubDownloader {
         return this;
     }
 
-    public void download(String tagName, String assetName, File downloadTo) {
+    public void download(String tagName, String assetName, File downloadTo, AfterTask... afterTask) {
         JsonArray releaseList = getResponseAsJson("/releases").getAsJsonArray();
 
         JsonObject release = null;
@@ -60,10 +60,14 @@ public class GitHubDownloader {
                         Bukkit.getServer().getConsoleSender().sendMessage(CustomHeads.chPrefix + "Download of " + assetName + " complete.");
                         if(unzip && assetName.endsWith(".zip")) {
                             Utils.unzipFile(new File(downloadDir, assetName), downloadTo);
+                            if(afterTask.length > 0)
+                                afterTask[0].call();
                             return;
                         }
                         try {
                             FileUtils.copyFile(new File(downloadDir, assetName), downloadTo);
+                            if(afterTask.length > 0)
+                                afterTask[0].call();
                         } catch (Exception e) {
                             CustomHeads.getInstance().getLogger().log(Level.WARNING, "Failed to copy downloaded File", e);
                         }
@@ -82,8 +86,8 @@ public class GitHubDownloader {
         }
     }
 
-    public void downloadLatest(String assetName, File downloadTo) {
-        download(getResponseAsJson("/releases/latest").getAsJsonObject().get("tag_name").getAsString(), assetName, downloadTo);
+    public void downloadLatest(String assetName, File downloadTo, AfterTask... afterTask) {
+        download(getResponseAsJson("/releases/latest").getAsJsonObject().get("tag_name").getAsString(), assetName, downloadTo, afterTask);
     }
 
     public static void clearCache() {
@@ -109,7 +113,7 @@ public class GitHubDownloader {
             response = new JsonParser().parse(new InputStreamReader(apiConnection.getInputStream()));
 
             if(response.isJsonObject() && response.getAsJsonObject().has("message"))
-                throw new NullPointerException("GitHub API resopnded with: " + response.getAsJsonObject().get("message").getAsString());
+                throw new NullPointerException("Release API resopnded with: " + response.getAsJsonObject().get("message").getAsString());
         } catch(Exception e) {}
         return response;
     }

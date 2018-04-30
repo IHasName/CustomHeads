@@ -61,7 +61,7 @@ public class Updater {
             if (latestVersion > current || (force.length > 0 && force[0])) {
                 Object[] changeLog = getChangeLog();
                 int verbe = (latestVersion - current);
-                lastUpdate = new Object[] { latestVersion, changeLog[0], changeLog[1], verbe, versionsArray.size()};
+                lastUpdate = new Object[] { ((JSONObject) versionsArray.get(versionsArray.size() - 1)).get("name").toString(), changeLog[0], changeLog[1], verbe, versionsArray.size()};
                 return lastUpdate;
             }
         } catch (Exception e) {

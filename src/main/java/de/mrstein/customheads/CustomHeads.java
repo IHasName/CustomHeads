@@ -11,13 +11,12 @@ import de.mrstein.customheads.reflection.TagEditor;
 import de.mrstein.customheads.stuff.CHCommand;
 import de.mrstein.customheads.stuff.CHTabCompleter;
 import de.mrstein.customheads.stuff.History;
+import de.mrstein.customheads.updaters.AfterTask;
 import de.mrstein.customheads.updaters.GitHubDownloader;
 import de.mrstein.customheads.utils.*;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
@@ -34,33 +33,39 @@ import java.util.Locale;
 public class CustomHeads extends JavaPlugin {
 
     public static final String chPrefix = "§7[§eCustomHeads§7] ";
-    public static final String chWarning = chPrefix + "§6Warning §7: §6";
     public static final String chError = chPrefix + "§cError §7: §c";
+    public static final String chWarning = chPrefix + "§6Warning §7: §6";
+
     public static int hisOverflow = 18;
+
     public static HashMap<String, String> uuidChache = new HashMap<>();
-    public static Configs heads;
+
     public static Configs his;
+    public static Configs heads;
     public static Configs update;
-    public static boolean usetextures = true;
-    public static boolean hisSeeOwn = false;
-    public static boolean hisE = false;
-    public static History.HistoryMode hisMode;
     private static Configs categoryLoaderConfig;
-    private static CategoryImporter categoryImporter;
-    private static TagEditor tagEditor;
-    private static Language language;
-    private static Plugin instance;
+
     private static Looks looks;
+    private static Plugin instance;
+    private static Language language;
+    private static TagEditor tagEditor;
+    public static History.HistoryMode hisMode;
+    private static CategoryImporter categoryImporter;
+
     private static String packet = Bukkit.getServer().getClass().getPackage().getName();
     public static String version = packet.substring(packet.lastIndexOf('.') + 1);
-    private List<String> versions = Arrays.asList("v1_8_R1", "v1_8_R2", "v1_8_R3", "v1_9_R1", "v1_9_R2", "v1_10_R1", "v1_11_R1", "v1_12_R1");
-    private boolean isInit = false;
     private String bukkitVersion = Bukkit.getVersion().substring(Bukkit.getVersion().lastIndexOf("("));
+    private static List<String> versions = Arrays.asList("v1_8_R1", "v1_8_R2", "v1_8_R3", "v1_9_R1", "v1_9_R2", "v1_10_R1", "v1_11_R1", "v1_12_R1");
+
+    private boolean isInit = false;
+    public static boolean hisE = false;
+    public static boolean hisSeeOwn = false;
+    public static final boolean usetextures = versions.contains(version);
 
     public static void reloadHistoryData() {
         hisE = heads.get().getBoolean("history.enabled");
-        hisMode = History.HistoryMode.valueOf(heads.get().getString("history.historyMode"));
         hisSeeOwn = heads.get().getBoolean("history.seeown");
+        hisMode = History.HistoryMode.valueOf(heads.get().getString("history.historyMode"));
         hisOverflow = heads.get().getInt("history.overflow") > 27 ? 27 : heads.get().getInt("history.overflow");
         if (hisE && hisMode == History.HistoryMode.FILE) his = new Configs(instance, "history.yml", true);
     }
@@ -72,28 +77,28 @@ public class CustomHeads extends JavaPlugin {
         return Language.isLoaded() && CategoryImporter.isLoaded() && Looks.isLoaded();
     }
 
-    public static CategoryImporter getCategoryImporter() {
-        return categoryImporter;
-    }
-
     public static Looks getLooks() {
         return looks;
-    }
-
-    public static Language getLanguageManager() {
-        return language;
-    }
-
-    public static TagEditor getTagEditor() {
-        return tagEditor;
     }
 
     public static Plugin getInstance() {
         return instance;
     }
 
+    public static TagEditor getTagEditor() {
+        return tagEditor;
+    }
+
+    public static Language getLanguageManager() {
+        return language;
+    }
+
     public static Configs getCategoryLoaderConfig() {
         return categoryLoaderConfig;
+    }
+
+    public static CategoryImporter getCategoryImporter() {
+        return categoryImporter;
     }
 
     public void onEnable() {
@@ -121,13 +126,20 @@ public class CustomHeads extends JavaPlugin {
                 }
                 getServer().getConsoleSender().sendMessage(chWarning + "I wasn't able to find the Default Languge File on your Server...");
                 getServer().getConsoleSender().sendMessage(chPrefix + "§7Downloading necessary Files...");
-                getServer().getConsoleSender().sendMessage(chPrefix + "§7Please reload your Server when the download is done");
                 GitHubDownloader gitHubDownloader = new GitHubDownloader("MrSteinMC", "CustomHeads").enableAutoUnzipping();
-                gitHubDownloader.downloadLatest("language.zip", getDataFolder());
-                return;
+                gitHubDownloader.download(getDescription().getVersion(), "language.zip", getDataFolder(), (AfterTask) () -> {
+                    getServer().getConsoleSender().sendMessage(chPrefix + "§7Done downloading! Have fun with the Plugin =D");
+                    getServer().getConsoleSender().sendMessage(chPrefix + "§7---------------------------------------------");
+                    loadRest();
+                });
             }
+        } else {
+            loadRest();
         }
 
+    }
+
+    private void loadRest() {
         categoryLoaderConfig = new Configs(CustomHeads.getInstance(), "loadedCategories.yml", true);
 
         if (!reloadTranslations(heads.get().getString("langFile"))) {
@@ -151,21 +163,20 @@ public class CustomHeads extends JavaPlugin {
                 if (update.length == 5) {
                     CustomHeads.getInstance().getServer().getConsoleSender().sendMessage(chPrefix + "§bNew Update for CustomHeads found! v" + update[0] + " (Running on v" + getDescription().getVersion() + ") - You can Download it here https://www.spigotmc.org/resources/29057");
                 }
-                if (!versions.contains(version)) {
+                if (!usetextures) {
                     getServer().getConsoleSender().sendMessage(chWarning + "Uh oh. Seems like your Server Version " + bukkitVersion + " is not compatable with CustomHeads");
                     getServer().getConsoleSender().sendMessage(chWarning + "I'll disable Custom Textures from Skulls to prevent any Bugs but don't worry only Effects /heads add");
-                    usetextures = false;
                 }
             }
         }.runTaskAsynchronously(instance);
 
         new BukkitRunnable() {
             public void run() {
-                GameProfileBuilder.cache.clear();
                 uuidChache.clear();
-                ScrollableInventory.clearCache();
                 HeadFontType.clearCache();
                 GitHubDownloader.clearCache();
+                GameProfileBuilder.cache.clear();
+                ScrollableInventory.clearCache();
             }
         }.runTaskTimer(instance, 6000, 6000);
 
@@ -201,11 +212,6 @@ public class CustomHeads extends JavaPlugin {
 
     public void onDisable() {
         if (isInit) OtherListeners.saveLoc.values().forEach(loc -> loc.getBlock().setType(Material.AIR));
-    }
-
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        sender.sendMessage("Pssht. ᶦᵗˢ ᵃ ˢᵉᶜʳᵉᵗ");
-        return true;
     }
 
 }

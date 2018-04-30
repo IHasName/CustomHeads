@@ -18,10 +18,22 @@ public class Language {
 
     private String currentLanguage;
 
+    public String DEFINITION;
+
     // Other or multible use
     public String LOCKED;
     public String INVALID_INPUT;
     public String NO_PERMISSION;
+
+    public String LANGUAGE_CHANGE_CHANGING;
+    public String LANGUAGE_CHANGE_SUCCESSFUL;
+    public String LANGUAGE_CHANGE_ALREADY_USED;
+    public String LANGUAGE_CHANGE_FAILED;
+    public String LANGUAGE_REDOWNLOAD_BACKING_UP;
+    public String LANGUAGE_REDOWNLOAD_BACKUP_FAILED;
+    public String LANGUAGE_REDOWNLOAD_DOWNLOADING;
+    public String LANGUAGE_REDOWNLOAD_DONE;
+
     public String RELOAD_CONFIG;
     public String RELOAD_HISTORY;
     public String RELOAD_LANGUAGE;
@@ -174,13 +186,15 @@ public class Language {
 
     public Language(String language) {
         init = false;
-        lang = new Configs(CustomHeads.getInstance(), "language.yml", true, "language/" + language);
+        lang = new Configs(CustomHeads.getInstance(), "language.yml", false, "language/" + language);
         currentLanguage = language;
 
         lang.reload();
         CustomHeads.getInstance().getServer().getConsoleSender().sendMessage(CustomHeads.chPrefix + "Loading Language from language/" + language + "/language.yml...");
         long timestamp = System.currentTimeMillis();
         try {
+            DEFINITION = ChatColor.stripColor(format(lang.get().getString("DEFINITION")));
+
             NO_PERMISSION = format(lang.get().getString("NO_PERMISSION"));
 
             YES = ChatColor.stripColor(format(lang.get().getString("LANG_YES")));
@@ -189,6 +203,15 @@ public class Language {
             COMMAND_USAGE = format(lang.get().getString("COMMAND_USAGE"));
 
             LINK = format(lang.get().getString("LINK"));
+
+            LANGUAGE_CHANGE_CHANGING = format(lang.get().getString("LANGUAGE.CHANGE_CHANGING"));
+            LANGUAGE_CHANGE_SUCCESSFUL = format(lang.get().getString("LANGUAGE.CHANGE_SUCCESSFUL"));
+            LANGUAGE_CHANGE_ALREADY_USED = format(lang.get().getString("LANGUAGE.CHANGE_ALREADY_USED"));
+            LANGUAGE_CHANGE_FAILED = format(lang.get().getString("LANGUAGE.CHANGE_FAILED"));
+            LANGUAGE_REDOWNLOAD_BACKING_UP = format(lang.get().getString("LANGUAGE.REDOWNLOAD_BACKING_UP"));
+            LANGUAGE_REDOWNLOAD_BACKUP_FAILED = format(lang.get().getString("LANGUAGE.REDOWNLOAD_BACKUP_FAILED"));
+            LANGUAGE_REDOWNLOAD_DOWNLOADING = format(lang.get().getString("LANGUAGE.REDOWNLOAD_DOWNLOADING"));
+            LANGUAGE_REDOWNLOAD_DONE = format(lang.get().getString("LANGUAGE.REDOWNLOAD_DONE"));
 
             RELOAD_CONFIG = format(lang.get().getString("RELOAD.CONFIG"));
             RELOAD_HISTORY = format(lang.get().getString("RELOAD.HISTORY"));

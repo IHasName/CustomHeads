@@ -52,7 +52,13 @@ public class CHSearchQuery {
             new History(player).getSearchHistory().addEntry(search);
 
         String title = CustomHeads.getLanguageManager().SEARCH_TITLE.replace("{RESULTS}", "" + results.size());
-        title = badversions.contains(CustomHeads.version) ? title.contains("{short}") ? title.substring(0, title.lastIndexOf("{short}") >= 32 ? 32 : title.lastIndexOf("{short}")) : title.substring(0, 32) : title.replace("{short}", "");
+        title = badversions.contains(CustomHeads.version) ?
+                title.contains("{short}") ?
+                        title.substring(0, title.lastIndexOf("{short}") >= 32 ?
+                                32 :
+                                title.lastIndexOf("{short}")) :
+                        title.substring(0, title.length() >= 32 ? 32 : title.length()) :
+                title.replace("{short}", "");
         ScrollableInventory searchInventory = new ScrollableInventory(title, results).setContentsClonable(true);
         if (!backAction.equals("close"))
             searchInventory.setBarItem(1, Utils.getBackButton("invAction", backAction));
