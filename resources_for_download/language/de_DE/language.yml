@@ -1,6 +1,6 @@
 # - Language File : de_DE -
 DEFINITION: 'Deutsch'
-NO_PERMISSION: "&cDu hast nicht genug Rechte diesen Command zu verwenden!"
+NO_PERMISSION: "&cDu hast nicht genug Rechte, um diesen Befehl verwenden zu k{oe}nnen!"
 # Allgemeine Nachrichten
 LANG_YES: 'Ja'
 LANG_NO: 'Nein'
@@ -10,19 +10,19 @@ LINK: '&7Link'
 LANGUAGE:
   CHANGE_CHANGING: '&eSprache: &7Lade Sprache aus &a{LANGUAGE}.yml'
   CHANGE_SUCCESSFUL: '&eSprache: &7Sprache wurde auf &a{LANGUAGE} &7gesetzt'
-  CHANGE_ALREADY_USED: '&eSprache: &7Sprache wird bereits verwendet. Versuch es mit &c/heads reload &7um die Sprache neu zu laden'
+  CHANGE_ALREADY_USED: '&eSprache: &7Sprache wird bereits verwendet. Versuch es mit &c/heads reload&7, um die Sprache neu zu laden'
   CHANGE_FAILED: '&eSprache: &7Fehler beim setzten der Sprache. Stelle zuvor genutze Sprache wieder her'
-  REDOWNLOAD_BACKING_UP: '&eSprache: &7Sichere alte Sprachdatein...'
-  REDOWNLOAD_BACKUP_FAILED: '&eSprache: &7Fehler beim sichern'
+  REDOWNLOAD_BACKING_UP: '&eSprache: &7Sichere alte Sprachdateien...'
+  REDOWNLOAD_BACKUP_FAILED: '&eSprache: &7Fehler beim Sichern'
   REDOWNLOAD_DOWNLOADING: '&eSprache: &7Lade Sprachdatein herunter...'
   REDOWNLOAD_DONE: '&eSprache: &7Fertig'
 RELOAD:
   CONFIG: '&eReload: &7Lade Configs neu...'
   HISTORY: '&eReload: &7Lade Verlauf neu...'
   LANGUAGE: '&eReload: &7Lade Sprache neu...'
-  FAILED: '&eReload: &cEtwas its beim new laden schief gelaufen... Im Log sollten mehr Infos dazu stehen'
+  FAILED: '&eReload: &cEtwas ist beim Laden schief gelaufen... Im Log sollten mehr Infos dazu stehen'
   SUCCESSFUL: '&eReload: &aConfigs wurden neu geladen!'
-HELP_GET_COMMAND: '&7Klicken f{ue}r den Command'
+HELP_GET_COMMAND: '&7Klicken f{ue}r den Befehl'
 SAVED_HEADS_TITLE: "{PLAYER}'s gespeicherte K{oe}pfe"
 PUT_ON_HEAD: '&7Dein Kopf ist nun &r{NAME}'
 NO_PERMISSION_TO_VIEW:
@@ -96,14 +96,14 @@ CATEGORIES:
       LIST_FORMAT: ' &e{FILE}'
       CLICKTOIMPORT: '&7Hier klicken um diese Datei zu importieren'
     SUCCESSFUL: '&eImport: &b{FILE} &7wurde erfolgreich importiert'
-    DUBLICATE_CATEGORY: '&eImport: &7{ID} exestiert bereits'
-    DUBLICATE_SUBCATEGORY: '&eImport: &7In {FILE} ist eine doppelte Sub Kategorie'
+    DUBLICATE_CATEGORY: '&eImport: &7{ID} existiert bereits'
+    DUBLICATE_SUBCATEGORY: '&eImport: &7In {FILE} ist eine doppelte Sub-Kategorie'
     INVALID_FILE: '&eImport: &7Ung{ue}ltige Kategorien Datei'
     ERROR: '&eImport: &7Fehler beim Lsesen von {FILE} '
     FILENOTFOUND: '&eImport: &7{FILE} konnte nicht gefunden werden'
 FONTS:
   GENERAL_NOTFOUND: '&eFonts: &c{FONT} &7konnte nicht gefunden werden'
-  CREATE_ALREADYEXISTS: '&eFonts: &c{FONT} &7exestiert bereits'
+  CREATE_ALREADYEXISTS: '&eFonts: &c{FONT} &7existiert bereits'
   CREATE_SUCCESSFUL: '&eFonts: &a{FONT} &7wurde erfolgreich erstellt'
   REMOVE_SUCCESSFUL: '&eFonts: &b{FONT} &7wurde entfernt'
   REMOVE_FAILED: '&eFonts: &c{FONT} &7konnte nicht entfernt werden'
@@ -150,12 +150,12 @@ SAVE_OWN_FAILED: '&eSave: &7Konnte &c{HEAD} &7nicht speichern!'
 SAVE_UNAVIABLE: '&eSave: &7Du kannst momentan keine K{oe}ofe mit "Eigener Textur" hinzuf{ue}gen!'
 SAVE_NOT_CUSTOM_TEXTURE: '&eSave: &7Dieser Kopf hat keine Textur!'
 SAVE_SUCCESSFUL: '&eSave: &b{NAME} &7wurde hinzugef{ue}gt'
-SAVE_ALREADY_EXIST: '&c{NAME} exestiert bereits'
+SAVE_ALREADY_EXIST: '&c{NAME} existiert bereits'
 SAVE_NOT_SKULL: '&eSave: &7Das sieht aber nicht aus wie ein Kopf'
 REMOVE_SUCCESSFUL: '&eRemove: &b{NAME} &7wurde entfernt'
-REMOVE_FAILED: "&eRemove: &c{NAME} &7exestiert nicht"
+REMOVE_FAILED: "&eRemove: &c{NAME} &7existiert nicht"
 REMOVE_CONFIRMATION: '&e{HEAD} &cl{oe}schen?'
-WRITE_NOFONT: '&eWrite: &cDiese Schriftart exestiert nicht'
+WRITE_NOFONT: '&eWrite: &cDiese Schriftart existiert nicht'
 WRITE_TO_LONG: '&eWrite: &cDein Text sollte nicht l{ae}nger als 20 Zeichen sein'
 WRITE_WRITING: '&eWrite: &7Schreibe {TEXT}.'
 # Buttons
@@ -182,7 +182,7 @@ ITEM_NAMES:
   COLLECTION: '&aMeine Kollektion &7{SIZE}'
   HELP: '&aHilfe'
   HELP_LORE:
-  - '&7Zeigt dir alle Commands'
+  - '&7Zeigt dir alle Befehle'
   INFO: '&aInfo'
   INFO_LORE:
   - '&7Shift + Rechts Klick'
@@ -195,4 +195,4 @@ ITEM_NAMES:
   - '&7in der Datenbank'
   FIND_MORE: '&3Finde mehr'
   FIND_MORE_LORE:
-  - '&7Klicken um den Link zu bekommen'
+  - '&7Klicken, um den Link zu bekommen'
