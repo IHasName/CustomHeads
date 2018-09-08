@@ -1,0 +1,406 @@
+<<<<<<< HEAD
+# - Language File : de_DE -
+DEFINITION: 'Deutsch'
+NO_PERMISSION: "&cDu hast nicht genug Rechte, um diesen Befehl verwenden zu k{oe}nnen!"
+# Allgemeine Nachrichten
+LANG_YES: 'Ja'
+LANG_NO: 'Nein'
+CONFIRM_NOTHINGFOUND: '&eConfirm: &7Nichts gefunden zum best{ae}tigen'
+COMMAND_USAGE: '&cSyntax: &7{COMMAND}'
+LINK: '&7Link'
+LANGUAGE:
+  CHANGE_CHANGING: '&eSprache: &7Lade Sprache aus &a{LANGUAGE}.yml'
+  CHANGE_SUCCESSFUL: '&eSprache: &7Sprache wurde auf &a{LANGUAGE} &7gesetzt'
+  CHANGE_ALREADY_USED: '&eSprache: &7Sprache wird bereits verwendet. Versuch es mit &c/heads reload&7, um die Sprache neu zu laden'
+  CHANGE_FAILED: '&eSprache: &7Fehler beim setzten der Sprache. Stelle zuvor genutze Sprache wieder her'
+  REDOWNLOAD_FAILED_WAIT: '&eSprache: &7Bitte warte bevor du die Sprache erneut herunterlädst'
+  REDOWNLOAD_BACKING_UP: '&eSprache: &7Sichere alte Sprachdateien...'
+  REDOWNLOAD_BACKUP_FAILED: '&eSprache: &7Fehler beim Sichern'
+  REDOWNLOAD_DOWNLOADING: '&eSprache: &7Lade Sprachdatein herunter...'
+  REDOWNLOAD_DONE: '&eSprache: &7Fertig'
+RELOAD:
+  CONFIG: '&eReload: &7Lade Configs neu...'
+  HISTORY: '&eReload: &7Lade Verlauf neu...'
+  LANGUAGE: '&eReload: &7Lade Sprache neu...'
+  FAILED: '&eReload: &cEtwas ist beim Laden schief gelaufen... Im Log sollten mehr Infos dazu stehen'
+  SUCCESSFUL: '&eReload: &aConfigs wurden neu geladen!'
+HELP_GET_COMMAND: '&7Klicken f{ue}r den Befehl'
+SAVED_HEADS_TITLE: "{PLAYER}'s gespeicherte K{oe}pfe"
+PUT_ON_HEAD: '&7Dein Kopf ist nun &r{NAME}'
+NO_PERMISSION_TO_VIEW:
+- "&cDu hast nicht genug Rechte"
+- "&cum dies zu anzuschauen"
+ECONOMY:
+  PRICE: '&7Preis: &e{PRICE}'
+  PRICE_FORMAT: '{PRICE} {CURRENCY}'
+  FREE: Gratis
+  BOUGHT: '&7Freigeschaltet' # new
+  BUY_CATEGORY_PROMPT: '&eRechtsklick zum kaufen' # new
+  BUY_CATEGORY: '&9{CATEGORY} &7f{ue}r &9{PRICE} &7kaufen?' # new
+  BUY_SUCCESSFUL: '&eCategoryShop: &7{CATEGORY} erfolgreich gekauft' # new
+  BUY_FAILED: '&eCategoryShop: &7Konnte Kategorie nicht kaufen: {REASON}' # new
+# Verlauf
+HISTORY_DISABLED: '&cVerlauf wurde {ue}ber die Config deaktiviert'
+HISTORY_INVALID_PLAYER: "&cUng{ue}ltiger Spieler '{PLAYER}'"
+HISTORY_NO_VIEW_PERMISSION: '&cDu kannst dir den Verlauf von diesem Spieler nicht anschauen'
+# Feuerwerk
+CANNOT_PLACE_IN_BLOCK: '&cKann Feuerwerk nicht in einem Block setzen'
+CANNOT_PLACE_IN_AIR: '&cKann Feuerwerk nicht in der Luft Plazieren'
+ALREADY_IN_USE: '&cWarte kurz bevor du noch ein Feuerwerk startest'
+STARTING: '&aStarte Feuerwerk...'
+# Suche
+INVALID_INPUT: "&cUng{ue}lige Eingabe: '{INPUT}'"
+CHANGE_SEARCH_STRING: '{AE}ndern zum Suchen'
+SEARCH_LORE:
+- '&7{AE}ndere den Text zu dem was du suchen'
+- '&7m{oe}chtest und Klicke dann auf die'
+- '&7Ausgabe zum Suchen'
+TO_LONG_INPUT: '&cDeine Suche sollte nicht l{ae}nger als 16 Zeichen sein'
+SEARCHING: "&7Suche nach '&r{SEARCH}&7'"
+LOCKED: '(Gesperrt)'
+CYCLE_ARRANGEMENT:
+  PREFIX: '&7Anordnung: &e'
+  DEFAULT: 'Standard'
+  ALPHABETICAL: 'Alphabetisch'
+  COLOR: 'Farbe'
+# Titel wird in der 1.8 auf 32 Zeichen gekürtzt
+# kann aber mit {short} schon früher gekürzt werden
+SEARCH_TITLE: '&aSuche &8: &a{RESULTS} Ergebnis(se)'
+LOADING: Lade
+NO_RESULTS: '&cKeine Ergebnisse gefunden'
+NO_RESULTS_TRY_AGAIN: '&cNochmal versuchen'
+PAGE_GENERAL_PREFIX: '&cSeite'
+# Categories Befehl
+CATEGORIES:
+  BASE_COMMAND:
+    HEADER: '&eMomentan geladene Kategorien'
+    HOVERINFO_CATEGORY:
+    - '&7ID: &e{ID}'
+    - '&7Permission: &e{PERMISSION}'
+    - '&7Benutzt: &e{USED}'
+    HOVERINFO_SUBCATEGORY:
+    - '&7ID: &e{ID}'
+    - '&7Used: &e{USED}'
+  REMOVE:
+    NOTFOUND: '&eRemove: &7Konnte nichts unter der ID &c{ID} &7finden'
+    INUSE: '&eRemove: &7Kann Kategorie "&c{CATEGORY}" &7nicht entfernen da sie verwendet wird'
+    FAILED: '&eRemove: &cKonnte Kategorie nicht l{oe}schen'
+    SUCCESSFUL: '&eRemove: &a{CATEGORY} &7(&e{ID}&7) wurde entfernt!'
+  DELETE:
+    CATEGORY:
+      NOTFOUND: '&eDelete: &7Konnte nichts unter der ID &c{ID} &7finden'
+      INUSE: '&eRemove: &7Kann &c{CATEGORY} &7nicht l{oe}schen da sie verwendet wird'
+      CONFIRM: '&eDelete: &7Bitte gebe /heads confirm wenn du dir sicher bist das du &7{CATEGORY} &cl{oe}schen &7willst (Befehl ist f{ue}r 15 Sekunden verf{ue}gbar){nl}&cL{oe}schung kann nicht r{ue}ckg{ae}nig gemacht werden!'
+      FAILED: '&eDelete: &cKonnte Kategorie nicht l{oe}schen'
+      SUCCESSFUL: '&eDelete: &a{CATEGORY} &7(&e{ID}&7) wurde gel{oe}scht!'
+    SUBCATEGORY:
+      NOTFOUND: '&eDelete: &7Konnte nichts unter der ID &c{ID} &7finden'
+      INUSE: '&eRemove: &7Kann &c{CATEGORY} &7nicht l{oe}schen da sie verwendet wird'
+      CONFIRM: '&eDelete: &7Bitte gebe /heads confirm wenn du dir sicher bist das du &7{CATEGORY} &cl{oe}schen &7willst (Befehl ist f{ue}r 15 Sekunden verf{ue}gbar){nl}&cL{oe}schung kann nicht r{ue}ckg{ae}nig gemacht werden!'
+      FAILED: '&eDelete: &cKonnte Sub Kategorie nicht l{oe}schen'
+      SUCCESSFUL: '&eDelete: &a{CATEGORY} &7(&e{ID}&7) wurde gel{oe}scht!'
+  IMPORT:
+    NOCATEGORYFOLDER: '&eImport: &7Konnte Kategorie Verzeichnis nicht finden'
+    BASE_COMMAND:
+      NOFILES: '&eImport: &7Es wurden keine Dateien gefunden zum importieren'
+      LIST: '&bVerf{ue}gbare Dateien zum importieren - Klicken um sie zu importieren'
+      LIST_FORMAT: ' &e{FILE}'
+      CLICKTOIMPORT: '&7Hier klicken um diese Datei zu importieren'
+    SUCCESSFUL: '&eImport: &b{FILE} &7wurde erfolgreich importiert'
+    DUBLICATE_CATEGORY: '&eImport: &7{ID} existiert bereits'
+    DUBLICATE_SUBCATEGORY: '&eImport: &7In {FILE} ist eine doppelte Sub-Kategorie'
+    INVALID_FILE: '&eImport: &7Ung{ue}ltige Kategorien Datei'
+    ERROR: '&eImport: &7Fehler beim Lsesen von {FILE} '
+    FILENOTFOUND: '&eImport: &7{FILE} konnte nicht gefunden werden'
+FONTS:
+  GENERAL_NOTFOUND: '&eFonts: &c{FONT} &7konnte nicht gefunden werden'
+  CREATE_ALREADYEXISTS: '&eFonts: &c{FONT} &7existiert bereits'
+  CREATE_SUCCESSFUL: '&eFonts: &a{FONT} &7wurde erfolgreich erstellt'
+  REMOVE_SUCCESSFUL: '&eFonts: &b{FONT} &7wurde entfernt'
+  REMOVE_FAILED: '&eFonts: &c{FONT} &7konnte nicht entfernt werden'
+  NOFONTS: '&eFonts: &7Es wurden keine Schriftarten gefunden'
+  LIST_HEADER: '&eVerf{ue}gbare Schriften'
+  LIST: '&e{FILE} - Hat {CHARACTERS} Zeichen'
+  EDIT_TITLE: '&bEditor &7: &b{FONT}'
+  EDIT_ADDCHARACTER: '&aZeichen hinzuf{ue}gen'
+  EDIT_REMOVECHARACTER: '&cZeichen entfernen'
+  EDIT_REMOVECHARACTER_INFO:
+  - '&7Klicken zum aktivieren/deaktivieren'
+  - '&7Shift + Links wenn aktiv um'
+  - '&7Auswahl zu entfernen'
+  EDIT_ADDCHARACTER_SUCCESSFUL: "&eFonts: &b{CHARACTER} &7hinzugefügt"
+  EDIT_ADDCHARACTER_FAILED: "&eFonts: &7Kann &c{CHARACTER} &7nicht hinzufügen"
+  EDIT_SELECTED: "&bAusgew{ae}lt &7- &b{CHARACTER}"
+  EDIT_REMOVECHARCATER_CONFIRM: '&cDiese Zeichen l{oe}schen?'
+  EDIT_REMOVECHARCATER_FAILED: "&eFonts: &7Konnte &c'{CHARACTER}' &7nicht entfernen"
+  EDIT_REMOVECHARCATER_SUCCESSFUL: '&eFonts: &a{CHARACTERS} &7Zeichen wurden erfolgreich gel{oe}scht'
+  EDIT_REMOVECHARCATER_PREINFO: '&cFolgende Zeichen werden gel{oe}scht'
+  EDIT_ADDCHARACTER_TITLE: '&eZeichen hinzuf{ue}gen &7: &e{FONT}'
+  EDIT_ADD_DROPPER_TOGGLE: '&bHinzuf{ue}gen erzwingen: &b{MODE}'
+  EDIT_ADD_DROPPER_NAME: '&bHier Zeichen hinziehen'
+  EDIT_ADD_DROPPER_LORE:
+  - "F{ue}r's hinzuf{ue}gen einfach den"
+  - 'gew{ue}nschten Kopf benennen und'
+  - 'mit dem Trichter tauschen'
+  - '&eF{ue}r ein Leerzeichen wird BLANK'
+  - '&everwendet'
+  EDIT_SAVENEXIT: '&aSpeichern und Beenden'
+  EDIT_SAVE_SUCCESSFUL: '&eFonts: &a{FONT} &7wurde gespeichert und aktualisiert'
+# Mehr
+UNDO_INVALID_INPUT: "&eUndo: &7Ung{ue}lige Eingabe &c'{TIMES}'"
+UNDO_SUCCESSFUL: "&eUndo: &7R{ue}ckg{ae}ngig machen erfolgreich {TIMES}"
+UNDO_NOTHING_LEFT: '&eUndo: &cNichts da zum R{ue}ckg{ae}ngig machen'
+GET_HEAD_NAME: '&rKopf von {PLAYER}'
+GET_INVALID: "&eGet: &7Ung{ue}ltiger Spielername: &c'{PLAYER}'"
+SAVE_GET_TEXTURE: '&eSave: &7Lade Textur...'
+SAVE_OWN_SUCCESSFUL: '&eSave: Dein Kopf wurde unter &b{NAME} &7gespeichert'
+SAVE_OWN_FAILED: '&eSave: &7Konnte &c{HEAD} &7nicht speichern!'
+SAVE_UNAVIABLE: '&eSave: &7Du kannst momentan keine K{oe}ofe mit "Eigener Textur" hinzuf{ue}gen!'
+SAVE_NOT_CUSTOM_TEXTURE: '&eSave: &7Dieser Kopf hat keine Textur!'
+SAVE_SUCCESSFUL: '&eSave: &b{NAME} &7wurde hinzugef{ue}gt'
+SAVE_ALREADY_EXIST: '&c{NAME} existiert bereits'
+SAVE_NOT_SKULL: '&eSave: &7Das sieht aber nicht aus wie ein Kopf'
+REMOVE_SUCCESSFUL: '&eRemove: &b{NAME} &7wurde entfernt'
+REMOVE_FAILED: "&eRemove: &c{NAME} &7existiert nicht"
+REMOVE_CONFIRMATION: '&e{HEAD} &cl{oe}schen?'
+WRITE_NOFONT: '&eWrite: &cDiese Schriftart existiert nicht'
+WRITE_TO_LONG: '&eWrite: &cDein Text sollte nicht l{ae}nger als 20 Zeichen sein'
+WRITE_WRITING: '&eWrite: &7Schreibe {TEXT}.'
+# Buttons
+BACK_GENERAL: '&cZur{ue}ck'
+BACK_TO_PREVIOUS: '&7Zum vorherigen Men{ue}'
+NEXT_PAGE: '&cN{ae}chste Seite'
+PREVIOUS_PAGE: '&cVorherige Seite'
+# Verlauf
+HISTORY_INV_TITLE: '&aVerlauf von {PLAYER}'
+HISTORY_SEARCHHISTORY_ACTIVE: '&aSuchverlauf'
+HISTORY_SEARCHHISTORY: '&7Suchverlauf'
+HISTORY_GETHISTORY_ACTIVE: '&aGet Verlauf'
+HISTORY_GETHISTORY: '&7Get Verlauf'
+HISTORY_NO_HISTORY_LORE:
+- '&cDieser Spieler hat'
+- '&ckeinen  Verlauf'
+HISTORY_SEARCHHISTORY_LORE:
+- '&7Rechtsklick zum Suchen'
+HISTORY_GET_LORE:
+- '&7Rechtsklick zum Kopieren'
+# Extra
+ITEM_NAMES:
+  YOUR_HEAD: '&eDein Kopf'
+  COLLECTION: '&aMeine Kollektion &7{SIZE}'
+  HELP: '&aHilfe'
+  HELP_LORE:
+  - '&7Zeigt dir alle Befehle'
+  INFO: '&aInfo'
+  INFO_LORE:
+  - '&7Shift + Rechts Klick'
+  - '&7um den Kopf anzuziehen'
+  - '&cWarnung! Ersetzt deinen'
+  - '&cHelm Slot!'
+  SEARCH: Suche
+  SEARCH_LORE:
+  - '&7Suche nach einem Kopf'
+  - '&7in der Datenbank'
+  FIND_MORE: '&3Finde mehr'
+  FIND_MORE_LORE:
+  - '&7Klicken, um den Link zu bekommen'
+=======
+# - Language File : de_DE -
+DEFINITION: 'Deutsch'
+NO_PERMISSION: "&cDu hast nicht genug Rechte, um diesen Befehl verwenden zu k{oe}nnen!"
+# Allgemeine Nachrichten
+LANG_YES: 'Ja'
+LANG_NO: 'Nein'
+CONFIRM_NOTHINGFOUND: '&eConfirm: &7Nichts gefunden zum best{ae}tigen'
+COMMAND_USAGE: '&cSyntax: &7{COMMAND}'
+LINK: '&7Link'
+LANGUAGE:
+  CHANGE_CHANGING: '&eSprache: &7Lade Sprache aus &a{LANGUAGE}.yml'
+  CHANGE_SUCCESSFUL: '&eSprache: &7Sprache wurde auf &a{LANGUAGE} &7gesetzt'
+  CHANGE_ALREADY_USED: '&eSprache: &7Sprache wird bereits verwendet. Versuch es mit &c/heads reload&7, um die Sprache neu zu laden'
+  CHANGE_FAILED: '&eSprache: &7Fehler beim setzten der Sprache. Stelle zuvor genutze Sprache wieder her'
+  REDOWNLOAD_BACKING_UP: '&eSprache: &7Sichere alte Sprachdateien...'
+  REDOWNLOAD_BACKUP_FAILED: '&eSprache: &7Fehler beim Sichern'
+  REDOWNLOAD_DOWNLOADING: '&eSprache: &7Lade Sprachdatein herunter...'
+  REDOWNLOAD_DONE: '&eSprache: &7Fertig'
+RELOAD:
+  CONFIG: '&eReload: &7Lade Configs neu...'
+  HISTORY: '&eReload: &7Lade Verlauf neu...'
+  LANGUAGE: '&eReload: &7Lade Sprache neu...'
+  FAILED: '&eReload: &cEtwas ist beim Laden schief gelaufen... Im Log sollten mehr Infos dazu stehen'
+  SUCCESSFUL: '&eReload: &aConfigs wurden neu geladen!'
+HELP_GET_COMMAND: '&7Klicken f{ue}r den Befehl'
+SAVED_HEADS_TITLE: "{PLAYER}'s gespeicherte K{oe}pfe"
+PUT_ON_HEAD: '&7Dein Kopf ist nun &r{NAME}'
+NO_PERMISSION_TO_VIEW:
+- "&cDu hast nicht genug Rechte"
+- "&cum dies zu anzuschauen"
+# Verlauf
+HISTORY_DISABLED: '&cVerlauf wurde {ue}ber die Config deaktiviert'
+HISTORY_INVALID_PLAYER: "&cUng{ue}ltiger Spieler '{PLAYER}'"
+HISTORY_NO_VIEW_PERMISSION: '&cDu kannst dir den Verlauf von diesem Spieler nicht anschauen'
+# Feuerwerk
+CANNOT_PLACE_IN_BLOCK: '&cKann Feuerwerk nicht in einem Block setzen'
+CANNOT_PLACE_IN_AIR: '&cKann Feuerwerk nicht in der Luft Plazieren'
+ALREADY_IN_USE: '&cWarte kurz bevor du noch ein Feuerwerk startest'
+STARTING: '&aStarte Feuerwerk...'
+# Suche
+INVALID_INPUT: "&cUng{ue}lige Eingabe: '{INPUT}'"
+CHANGE_SEARCH_STRING: '{AE}ndern zum Suchen'
+SEARCH_LORE:
+- '&7{AE}ndere den Text zu dem was du suchen'
+- '&7m{oe}chtest und Klicke dann auf die'
+- '&7Ausgabe zum Suchen'
+TO_LONG_INPUT: '&cDeine Suche sollte nicht l{ae}nger als 16 Zeichen sein'
+SEARCHING: "&7Suche nach '&r{SEARCH}&7'"
+LOCKED: '(Gesperrt)'
+CYCLE_ARRANGEMENT:
+  PREFIX: '&7Anordnung: &e'
+  DEFAULT: 'Standard'
+  ALPHABETICAL: 'Alphabetisch'
+  COLOR: 'Farbe'
+# Titel wird in der 1.8 auf 32 Zeichen gekürtzt
+# kann aber mit {short} schon früher gekürzt werden
+SEARCH_TITLE: '&aSuche &8: &a{RESULTS} Ergebnis(se)'
+LOADING: Lade
+NO_RESULTS: '&cKeine Ergebnisse gefunden'
+NO_RESULTS_TRY_AGAIN: '&cNochmal versuchen'
+PAGE_GENERAL_PREFIX: '&cSeite'
+# Categories Befehl
+CATEGORIES:
+  BASE_COMMAND:
+    HEADER: '&eMomentan geladene Kategorien'
+    HOVERINFO_CATEGORY:
+    - '&7ID: &e{ID}'
+    - '&7Permission: &e{PERMISSION}'
+    - '&7Benutzt: &e{USED}'
+    HOVERINFO_SUBCATEGORY:
+    - '&7ID: &e{ID}'
+    - '&7Used: &e{USED}'
+  REMOVE:
+    NOTFOUND: '&eRemove: &7Konnte nichts unter der ID &c{ID} &7finden'
+    INUSE: '&eRemove: &7Kann Kategorie "&c{CATEGORY}" &7nicht entfernen da sie verwendet wird'
+    FAILED: '&eRemove: &cKonnte Kategorie nicht l{oe}schen'
+    SUCCESSFUL: '&eRemove: &a{CATEGORY} &7(&e{ID}&7) wurde entfernt!'
+  DELETE:
+    CATEGORY:
+      NOTFOUND: '&eDelete: &7Konnte nichts unter der ID &c{ID} &7finden'
+      INUSE: '&eRemove: &7Kann &c{CATEGORY} &7nicht l{oe}schen da sie verwendet wird'
+      CONFIRM: '&eDelete: &7Bitte gebe /heads confirm wenn du dir sicher bist das du &7{CATEGORY} &cl{oe}schen &7willst (Befehl ist f{ue}r 15 Sekunden verf{ue}gbar){nl}&cL{oe}schung kann nicht r{ue}ckg{ae}nig gemacht werden!'
+      FAILED: '&eDelete: &cKonnte Kategorie nicht l{oe}schen'
+      SUCCESSFUL: '&eDelete: &a{CATEGORY} &7(&e{ID}&7) wurde gel{oe}scht!'
+    SUBCATEGORY:
+      NOTFOUND: '&eDelete: &7Konnte nichts unter der ID &c{ID} &7finden'
+      INUSE: '&eRemove: &7Kann &c{CATEGORY} &7nicht l{oe}schen da sie verwendet wird'
+      CONFIRM: '&eDelete: &7Bitte gebe /heads confirm wenn du dir sicher bist das du &7{CATEGORY} &cl{oe}schen &7willst (Befehl ist f{ue}r 15 Sekunden verf{ue}gbar){nl}&cL{oe}schung kann nicht r{ue}ckg{ae}nig gemacht werden!'
+      FAILED: '&eDelete: &cKonnte Sub Kategorie nicht l{oe}schen'
+      SUCCESSFUL: '&eDelete: &a{CATEGORY} &7(&e{ID}&7) wurde gel{oe}scht!'
+  IMPORT:
+    NOCATEGORYFOLDER: '&eImport: &7Konnte Kategorie Verzeichnis nicht finden'
+    BASE_COMMAND:
+      NOFILES: '&eImport: &7Es wurden keine Dateien gefunden zum importieren'
+      LIST: '&bVerf{ue}gbare Dateien zum importieren - Klicken um sie zu importieren'
+      LIST_FORMAT: ' &e{FILE}'
+      CLICKTOIMPORT: '&7Hier klicken um diese Datei zu importieren'
+    SUCCESSFUL: '&eImport: &b{FILE} &7wurde erfolgreich importiert'
+    DUBLICATE_CATEGORY: '&eImport: &7{ID} existiert bereits'
+    DUBLICATE_SUBCATEGORY: '&eImport: &7In {FILE} ist eine doppelte Sub-Kategorie'
+    INVALID_FILE: '&eImport: &7Ung{ue}ltige Kategorien Datei'
+    ERROR: '&eImport: &7Fehler beim Lsesen von {FILE} '
+    FILENOTFOUND: '&eImport: &7{FILE} konnte nicht gefunden werden'
+FONTS:
+  GENERAL_NOTFOUND: '&eFonts: &c{FONT} &7konnte nicht gefunden werden'
+  CREATE_ALREADYEXISTS: '&eFonts: &c{FONT} &7existiert bereits'
+  CREATE_SUCCESSFUL: '&eFonts: &a{FONT} &7wurde erfolgreich erstellt'
+  REMOVE_SUCCESSFUL: '&eFonts: &b{FONT} &7wurde entfernt'
+  REMOVE_FAILED: '&eFonts: &c{FONT} &7konnte nicht entfernt werden'
+  NOFONTS: '&eFonts: &7Es wurden keine Schriftarten gefunden'
+  LIST_HEADER: '&eVerf{ue}gbare Schriften'
+  LIST: '&e{FILE} - Hat {CHARACTERS} Zeichen'
+  EDIT_TITLE: '&bEditor &7: &b{FONT}'
+  EDIT_ADDCHARACTER: '&aZeichen hinzuf{ue}gen'
+  EDIT_REMOVECHARACTER: '&cZeichen entfernen'
+  EDIT_REMOVECHARACTER_INFO:
+  - '&7Klicken zum aktivieren/deaktivieren'
+  - '&7Shift + Links wenn aktiv um'
+  - '&7Auswahl zu entfernen'
+  EDIT_ADDCHARACTER_SUCCESSFUL: "&eFonts: &b{CHARACTER} &7hinzugefügt"
+  EDIT_ADDCHARACTER_FAILED: "&eFonts: &7Kann &c{CHARACTER} &7nicht hinzufügen"
+  EDIT_SELECTED: "&bAusgew{ae}lt &7- &b{CHARACTER}"
+  EDIT_REMOVECHARCATER_CONFIRM: '&cDiese Zeichen l{oe}schen?'
+  EDIT_REMOVECHARCATER_FAILED: "&eFonts: &7Konnte &c'{CHARACTER}' &7nicht entfernen"
+  EDIT_REMOVECHARCATER_SUCCESSFUL: '&eFonts: &a{CHARACTERS} &7Zeichen wurden erfolgreich gel{oe}scht'
+  EDIT_REMOVECHARCATER_PREINFO: '&cFolgende Zeichen werden gel{oe}scht'
+  EDIT_ADDCHARACTER_TITLE: '&eZeichen hinzuf{ue}gen &7: &e{FONT}'
+  EDIT_ADD_DROPPER_TOGGLE: '&bHinzuf{ue}gen erzwingen: &b{MODE}'
+  EDIT_ADD_DROPPER_NAME: '&bHier Zeichen hinziehen'
+  EDIT_ADD_DROPPER_LORE:
+  - '&7Um Zeichen hinzuzuf{ue}gen'
+  - '&7nimmt man den Kopf mit der Textur'
+  - '&7und nennt ihn wie das Zeichen was'
+  - '&7hinzugef{ue}gt werden soll'
+  - '&7Dann tauscht man den Kopf mit'
+  - '&7dem Trichter'
+  - '&eF{ue}r ein Leerzeichen wird BLANK'
+  - '&everwendet'
+  EDIT_SAVENEXIT: '&aSpeichern und Beenden'
+  EDIT_SAVE_SUCCESSFUL: '&eFonts: &a{FONT} &7wurde gespeichert und aktualisiert'
+# Mehr
+UNDO_INVALID_INPUT: "&eUndo: &7Ung{ue}lige Eingabe &c'{TIMES}'"
+UNDO_SUCCESSFUL: "&eUndo: &aR{ue}ckg{ae}ngig machen erfolgreich {TIMES}"
+UNDO_NOTHING_LEFT: '&eUndo: &cNichts da zum R{ue}ckg{ae}ngig machen'
+GET_HEAD_NAME: '&rKopf von {PLAYER}'
+GET_INVALID: "&eGet: &7Ung{ue}ltiger Spielername: &c'{PLAYER}'"
+SAVE_GET_TEXTURE: '&eSave: &7Lade Textur...'
+SAVE_OWN_SUCCESSFUL: '&eSave: Dein Kopf wurde unter &b{NAME} &7gespeichert'
+SAVE_OWN_FAILED: '&eSave: &7Konnte &c{HEAD} &7nicht speichern!'
+SAVE_UNAVIABLE: '&eSave: &7Du kannst momentan keine K{oe}ofe mit "Eigener Textur" hinzuf{ue}gen!'
+SAVE_NOT_CUSTOM_TEXTURE: '&eSave: &7Dieser Kopf hat keine Textur!'
+SAVE_SUCCESSFUL: '&eSave: &b{NAME} &7wurde hinzugef{ue}gt'
+SAVE_ALREADY_EXIST: '&c{NAME} existiert bereits'
+SAVE_NOT_SKULL: '&eSave: &7Das sieht aber nicht aus wie ein Kopf'
+REMOVE_SUCCESSFUL: '&eRemove: &b{NAME} &7wurde entfernt'
+REMOVE_FAILED: "&eRemove: &c{NAME} &7existiert nicht"
+REMOVE_CONFIRMATION: '&e{HEAD} &cl{oe}schen?'
+WRITE_NOFONT: '&eWrite: &cDiese Schriftart existiert nicht'
+WRITE_TO_LONG: '&eWrite: &cDein Text sollte nicht l{ae}nger als 20 Zeichen sein'
+WRITE_WRITING: '&eWrite: &7Schreibe {TEXT}.'
+# Buttons
+BACK_GENERAL: '&cZur{ue}ck'
+BACK_TO_PREVIOUS: '&7Zum vorherigen Men{ue}'
+NEXT_PAGE: '&cN{ae}chste Seite'
+PREVIOUS_PAGE: '&cVorherige Seite'
+# Verlauf
+HISTORY_INV_TITLE: '&aVerlauf von {PLAYER}'
+HISTORY_SEARCHHISTORY_ACTIVE: '&aSuchverlauf'
+HISTORY_SEARCHHISTORY: '&7Suchverlauf'
+HISTORY_GETHISTORY_ACTIVE: '&aGet Verlauf'
+HISTORY_GETHISTORY: '&7Get Verlauf'
+HISTORY_NO_HISTORY_LORE:
+- '&cDieser Spieler hat'
+- '&ckeinen  Verlauf'
+HISTORY_SEARCHHISTORY_LORE:
+- '&7Rechtsklick zum Suchen'
+HISTORY_GET_LORE:
+- '&7Rechtsklick zum Kopieren'
+# Extra
+ITEM_NAMES:
+  YOUR_HEAD: '&eDein Kopf'
+  COLLECTION: '&aMeine Kollektion &7{SIZE}'
+  HELP: '&aHilfe'
+  HELP_LORE:
+  - '&7Zeigt dir alle Befehle'
+  INFO: '&aInfo'
+  INFO_LORE:
+  - '&7Shift + Rechts Klick'
+  - '&7um den Kopf anzuziehen'
+  - '&cWarnung! Ersetzt deinen'
+  - '&cHelm Slot!'
+  SEARCH: Suche
+  SEARCH_LORE:
+  - '&7Suche nach einem Kopf'
+  - '&7in der Datenbank'
+  FIND_MORE: '&3Finde mehr'
+  FIND_MORE_LORE:
+  - '&7Klicken, um den Link zu bekommen'
+>>>>>>> 4be2497e299f68373668fc82ae24dd766261dfae

@@ -1,0 +1,45 @@
+# --------------------------------------------------- #
+# CustomHeads - Headsconfig                           #
+# --------------------------------------------------- #
+# mainMenu: Sets the Main Menu when you type /heads   #
+# What do I put here? -> Use the ID of an Menu used   #
+# in the settings.json File under "menus"             #
+# --------------------------------------------------- #
+# maxUndoHistory: Limits how many times you           #
+# can Undo /heads write - default: 6                  #
+# --------------------------------------------------- #
+# updateNotify: Get Notified when the Plugin          #
+# has an Update ready - default: true                 #
+# --------------------------------------------------- #
+# history: Will act as an Search History and used     #
+# Heads from /heads get - default: true               #
+#                                                     #
+# seeown: Players can see their own History           #
+# default: false                                      #
+#                                                     #
+# historyMode can either be TEMP or FILE              #
+# Overflow: default: 18 max: 27                       #
+# --------------------------------------------------- #
+# keepCategoryPermissions: Used when Economy is       #
+# enabled. Categories will only be able the be        #
+# unlocked with Money (or for free when not defined)  #
+# --------------------------------------------------- #
+# langFile: Used to determine which Language is used. #
+# You can use the default Languages as template to    #
+# create your own Language Settings.                  #
+#                                                     #
+# Feel free to send me your Languages so others can   #
+# use it too! (You will also be credited in the       #
+# description =])                                     #
+# --------------------------------------------------- #
+
+mainMenu: "main-menu"
+maxUndoHistory: 6
+history:
+  seeown: false
+  enabled: true
+  overflow: 18
+keepCategoryPermissions: true
+useEconomy: false
+updateNotify: true
+langFile: none

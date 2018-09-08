@@ -1,0 +1,30 @@
+main: de.mrstein.customheads.CustomHeads
+name: CustomHeads
+version: 2.9.2
+author: MrStein
+softdepend: [Vault]
+
+commands: 
+  heads: 
+    description: Opens the Main Menu from CustomHeads
+    aliases: [cheads]
+permissions:
+  heads.*:
+    description: Gives all Permission for the Plugin
+    children:
+      heads.use.*: true
+      heads.view.*: true
+      heads.viewCategory.*: true
+      heads.view.history.*: true
+    default: op
+  heads.use:
+    default: op
+  heads.view.history:
+    default: op
+  heads.viewCategory:
+    default: op
+  heads.admin:
+    description: Gives all Permission for the Plugin
+    children:
+      heads.*: true
+    default: op
