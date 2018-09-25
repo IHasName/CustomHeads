@@ -11,7 +11,6 @@ import com.mojang.authlib.GameProfile;
 import de.mrstein.customheads.CustomHeads;
 import de.mrstein.customheads.api.CustomHeadsAPI;
 import de.mrstein.customheads.api.CustomHeadsPlayer;
-import de.mrstein.customheads.api.HeadUtil;
 import de.mrstein.customheads.headwriter.HeadFontType;
 import de.mrstein.customheads.headwriter.HeadWriter;
 import de.mrstein.customheads.reflection.TagEditor;
@@ -24,7 +23,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.logging.Level;
 
-public class APIHandler implements HeadUtil, CustomHeadsAPI {
+public class APIHandler implements CustomHeadsAPI {
 
     private static Class<?> tileEntityClass, blockPositionClass;
 

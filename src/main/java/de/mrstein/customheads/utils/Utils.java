@@ -1,6 +1,5 @@
 package de.mrstein.customheads.utils;
 
-import com.google.common.base.Charsets;
 import com.google.common.io.Files;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -8,13 +7,14 @@ import com.google.gson.JsonParser;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import de.mrstein.customheads.CustomHeads;
+import de.mrstein.customheads.api.CustomHeadsPlayer;
+import de.mrstein.customheads.category.BaseCategory;
 import de.mrstein.customheads.category.Category;
 import de.mrstein.customheads.reflection.AnvilGUI;
 import de.mrstein.customheads.reflection.TagEditor;
 import de.mrstein.customheads.stuff.CHSearchQuery;
-import de.mrstein.customheads.updaters.AfterTask;
+import de.mrstein.customheads.updaters.AsyncFileDownloader;
 import de.mrstein.customheads.updaters.GitHubDownloader;
-import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.bukkit.Bukkit;
@@ -25,8 +25,6 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.*;
@@ -44,6 +42,11 @@ import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+/*
+ *  Project: CustomHeads in Utils
+ *     by LikeWhat
+ */
+
 public class Utils {
 
     public static final Gson GSON = new GsonBuilder().disableHtmlEscaping().create();
@@ -55,131 +58,8 @@ public class Utils {
 
     private static long lastRedownload = 0;
 
-    public static ItemStack createHead(String displayName, String lore, String texture) {
-        ItemStack head = new ItemStack(Material.SKULL_ITEM, 1, (short) 3);
-        ItemMeta headMeta = head.getItemMeta();
-        Class<?> headMetaClass = headMeta.getClass();
-        inject(headMetaClass, headMeta, "profile", GameProfileBuilder.createProfileWithTexture(texture));
-        head.setItemMeta(headMeta);
-        SkullMeta skullMeta = (SkullMeta) head.getItemMeta();
-        skullMeta.setDisplayName(displayName);
-        skullMeta.setLore(Arrays.asList(lore.split("\n")));
-        head.setItemMeta(skullMeta);
-        return head;
-    }
-
-    public static ItemStack createHead(String displayName, String texture) {
-        ItemStack head = new ItemStack(Material.SKULL_ITEM, 1, (short) 3);
-        ItemMeta headMeta = head.getItemMeta();
-        Class<?> headMetaClass = headMeta.getClass();
-        inject(headMetaClass, headMeta, "profile", GameProfileBuilder.createProfileWithTexture(texture));
-        head.setItemMeta(headMeta);
-        SkullMeta skullMeta = (SkullMeta) head.getItemMeta();
-        skullMeta.setDisplayName(displayName);
-        head.setItemMeta(skullMeta);
-        return head;
-    }
-
-    public static ItemStack createHead(String displayName, GameProfile profile) {
-        ItemStack head = new ItemStack(Material.SKULL_ITEM, 1, (short) 3);
-        ItemMeta headMeta = head.getItemMeta();
-        Class<?> headMetaClass = headMeta.getClass();
-        inject(headMetaClass, headMeta, "profile", profile);
-        head.setItemMeta(headMeta);
-        SkullMeta skullMeta = (SkullMeta) head.getItemMeta();
-        skullMeta.setDisplayName(displayName);
-        head.setItemMeta(skullMeta);
-        return head;
-    }
-
-    public static ItemStack createPlayerHead(String displayname, String playername) {
-        ItemStack head = new ItemStack(Material.SKULL_ITEM, 1, (short) 3);
-        SkullMeta skullMeta = (SkullMeta) head.getItemMeta();
-        skullMeta.setDisplayName(displayname);
-        skullMeta.setOwner(playername);
-        head.setItemMeta(skullMeta);
-        return head;
-    }
-
-    public static ItemStack createPlayerHead(String displayname, String playername, String lore) {
-        ItemStack head = new ItemStack(Material.SKULL_ITEM, 1, (short) 3);
-        SkullMeta skullMeta = (SkullMeta) head.getItemMeta();
-        skullMeta.setDisplayName(displayname);
-        skullMeta.setOwner(playername);
-        if (lore.length() > 0) {
-            skullMeta.setLore(Arrays.asList(lore.split("\n")));
-        }
-        head.setItemMeta(skullMeta);
-        return head;
-    }
-
-    public static ItemStack createPlayerHead(String displayname, String playername, List<String> lore) {
-        ItemStack head = new ItemStack(Material.SKULL_ITEM, 1, (short) 3);
-        SkullMeta skullMeta = (SkullMeta) head.getItemMeta();
-        skullMeta.setDisplayName(displayname);
-        skullMeta.setOwner(playername);
-        if (lore != null && !lore.isEmpty()) {
-            List<String> temp = new ArrayList<>();
-            for (String s : lore) {
-                temp.add("§7" + s);
-            }
-            skullMeta.setLore(temp);
-        }
-        head.setItemMeta(skullMeta);
-        return head;
-    }
-
-    public static ItemStack createItem(Material material, int amount, String itemname, short... data) {
-        ItemStack item = data.length == 0 ? new ItemStack(material, amount) : new ItemStack(material, amount, data[0]);
-        ItemMeta meta = item.getItemMeta();
-        meta.setDisplayName(itemname);
-        item.setItemMeta(meta);
-        return item;
-    }
-
-    public static ItemStack createItem(Material material, int amount, String itemname, String lore, short... data) {
-        ItemStack item = data.length == 0 ? new ItemStack(material, amount) : new ItemStack(material, amount, data[0]);
-        ItemMeta meta = item.getItemMeta();
-        meta.setDisplayName(itemname);
-        if (!lore.isEmpty()) {
-            meta.setLore(Arrays.asList(lore.split("\n")));
-        }
-        item.setItemMeta(meta);
-        return item;
-    }
-
-    public static ItemStack createItem(Material material, int amount, String itemname, List<String> lore, short... data) {
-        ItemStack item = data.length == 0 ? new ItemStack(material, amount) : new ItemStack(material, amount, data[0]);
-        ItemMeta meta = item.getItemMeta();
-        meta.setDisplayName(itemname);
-        if (lore != null && !lore.isEmpty()) {
-            List<String> temp = new ArrayList<>();
-            for (String s : lore) {
-                temp.add("§7" + s);
-            }
-            meta.setLore(temp);
-        }
-        item.setItemMeta(meta);
-        return item;
-    }
-
-    public static ItemStack renameStack(ItemStack stack, int newamount, String newitename, boolean remlore) {
-        ItemStack item = stack.clone();
-        item.setAmount(newamount);
-        ItemMeta meta = item.getItemMeta();
-        meta.setDisplayName(newitename);
-        if (remlore && meta.hasLore()) {
-            meta.setLore(null);
-        }
-        item.setItemMeta(meta);
-        return item;
-    }
-
     public static String getTextureFromProfile(GameProfile profile) {
         String value = "";
-        if (profile == null) {
-            throw new NullPointerException("Profile is null");
-        }
         for (Property prop : profile.getProperties().get("textures")) {
             value = prop.getValue();
         }
@@ -187,7 +67,7 @@ public class Utils {
     }
 
     public static ItemStack getBackButton(String... action) {
-        return CustomHeads.getTagEditor().addTags(Utils.createHead(CustomHeads.getLanguageManager().BACK_GENERAL, CustomHeads.getLanguageManager().BACK_TO_PREVIOUS, "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzM3NjQ4YWU3YTU2NGE1Mjg3NzkyYjA1ZmFjNzljNmI2YmQ0N2Y2MTZhNTU5Y2U4YjU0M2U2OTQ3MjM1YmNlIn19fQ=="), action);
+        return CustomHeads.getTagEditor().addTags(new ItemEditor(Material.SKULL_ITEM, (short) 3).setDisplayName(CustomHeads.getLanguageManager().BACK_GENERAL).setLore(CustomHeads.getLanguageManager().BACK_TO_PREVIOUS).setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzM3NjQ4YWU3YTU2NGE1Mjg3NzkyYjA1ZmFjNzljNmI2YmQ0N2Y2MTZhNTU5Y2U4YjU0M2U2OTQ3MjM1YmNlIn19fQ==").getItem(), action);
     }
 
     public static HashMap<String, String[]> getPermissions() {
@@ -208,10 +88,6 @@ public class Utils {
         return getPermissions().keySet().stream().filter(permission -> hasPermission(player, permission) || permission.equals("")).collect(Collectors.toList());
     }
 
-//    public static List<Category> getAvailableCategories(Player player) {
-//        return CustomHeads.getCategoryLoader().getCategoryList().stream().filter(category -> hasPermission(player, category.getPermission())).collect(Collectors.toList());
-//    }
-
     public static void openSearchGUI(Player player, String itemname, String... action) {
         AnvilGUI gui = new AnvilGUI(player, event -> {
             event.setCancelled(true);
@@ -227,13 +103,13 @@ public class Utils {
                 CHSearchQuery query = new CHSearchQuery(event.getName());
                 if (query.getResults().isEmpty()) {
                     Inventory noRes = Bukkit.createInventory(event.getPlayer(), 9 * 3, CustomHeads.getLanguageManager().NO_RESULTS);
-                    noRes.setItem(13, CustomHeads.getTagEditor().setTags(Utils.createItem(Material.BARRIER, 1, CustomHeads.getLanguageManager().NO_RESULTS, "", (short) 0), "blockMoving"));
+                    noRes.setItem(13, CustomHeads.getTagEditor().setTags(new ItemEditor(Material.BARRIER).setDisplayName(CustomHeads.getLanguageManager().NO_RESULTS).getItem(), "blockMoving"));
                     if (action.length > 0) {
                         noRes.setItem(18, Utils.getBackButton(action));
                     } else {
                         noRes.setItem(18, Utils.getBackButton("invAction", "willClose#>"));
                     }
-                    noRes.setItem(26, CustomHeads.getTagEditor().setTags(Utils.createHead(CustomHeads.getLanguageManager().NO_RESULTS_TRY_AGAIN, "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMWI2ZjFhMjViNmJjMTk5OTQ2NDcyYWVkYjM3MDUyMjU4NGZmNmY0ZTgzMjIxZTU5NDZiZDJlNDFiNWNhMTNiIn19fQ=="), "invAction", "retrySearch#>" + event.getName()));
+                    noRes.setItem(26, CustomHeads.getTagEditor().setTags(new ItemEditor(Material.SKULL_ITEM, (short) 3).setDisplayName(CustomHeads.getLanguageManager().NO_RESULTS_TRY_AGAIN).setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMWI2ZjFhMjViNmJjMTk5OTQ2NDcyYWVkYjM3MDUyMjU4NGZmNmY0ZTgzMjIxZTU5NDZiZDJlNDFiNWNhMTNiIn19fQ==").getItem(), "invAction", "retrySearch#>" + event.getName()));
                     player.closeInventory();
                     new BukkitRunnable() {
                         public void run() {
@@ -245,8 +121,8 @@ public class Utils {
                 query.viewTo(event.getPlayer(), "willClose");
             }
         });
-        gui.setSlot(AnvilGUI.AnvilSlot.OUTPUT, Utils.createItem(Material.PAPER, 1, itemname, CustomHeads.getLanguageManager().SEARCH_LORE));
-        gui.setSlot(AnvilGUI.AnvilSlot.INPUT_LEFT, Utils.createItem(Material.PAPER, 1, itemname, CustomHeads.getLanguageManager().SEARCH_LORE));
+        gui.setSlot(AnvilGUI.AnvilSlot.OUTPUT, new ItemEditor(Material.PAPER).setDisplayName(itemname).setLore(CustomHeads.getLanguageManager().SEARCH_LORE).getItem());
+        gui.setSlot(AnvilGUI.AnvilSlot.INPUT_LEFT, new ItemEditor(Material.PAPER).setDisplayName(itemname).setLore(CustomHeads.getLanguageManager().SEARCH_LORE).getItem());
         gui.open();
         player.updateInventory();
     }
@@ -265,14 +141,13 @@ public class Utils {
                         return;
                     }
                     CustomHeads.getApi().wrapPlayer(player).getGetHistory().addEntry(event.getName());
-//                    new History(event.getPlayer()).getGetHistory().addEntry(event.getName());
-                    event.getPlayer().setItemOnCursor(Utils.createPlayerHead(CustomHeads.getLanguageManager().GET_HEAD_NAME.replace("{PLAYER}", event.getName()), event.getName(), ""));
+                    event.getPlayer().setItemOnCursor(new ItemEditor(Material.SKULL_ITEM, (short) 3).setDisplayName(CustomHeads.getLanguageManager().GET_HEAD_NAME.replace("{PLAYER}", event.getName())).setOwner(event.getName()).getItem());
                 }
             } else if (event.getSlot() == AnvilGUI.AnvilSlot.INPUT_LEFT || event.getSlot() == AnvilGUI.AnvilSlot.INPUT_RIGHT) {
                 event.setCancelled(true);
             }
         });
-        gui.setSlot(AnvilGUI.AnvilSlot.INPUT_LEFT, Utils.createItem(Material.PAPER, 1, CustomHeads.getLanguageManager().CHANGE_SEARCH_STRING, CustomHeads.getLanguageManager().SEARCH_LORE));
+        gui.setSlot(AnvilGUI.AnvilSlot.INPUT_LEFT, new ItemEditor(Material.PAPER).setDisplayName(CustomHeads.getLanguageManager().CHANGE_SEARCH_STRING).setLore(CustomHeads.getLanguageManager().SEARCH_LORE).getItem());
         gui.open();
     }
 
@@ -347,32 +222,32 @@ public class Utils {
     public static ItemStack getAlphabetCharacter(char character) {
         if (alphabet == null) {
             alphabet = new HashMap<>();
-            alphabet.put('a', createHead("a", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYTY3ZDgxM2FlN2ZmZTViZTk1MWE0ZjQxZjJhYTYxOWE1ZTM4OTRlODVlYTVkNDk4NmY4NDk0OWM2M2Q3NjcyZSJ9fX0="));
-            alphabet.put('b', createHead("b", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNTBjMWI1ODRmMTM5ODdiNDY2MTM5Mjg1YjJmM2YyOGRmNjc4NzEyM2QwYjMyMjgzZDg3OTRlMzM3NGUyMyJ9fX0="));
-            alphabet.put('c', createHead("c", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYWJlOTgzZWM0NzgwMjRlYzZmZDA0NmZjZGZhNDg0MjY3NjkzOTU1MWI0NzM1MDQ0N2M3N2MxM2FmMThlNmYifX19"));
-            alphabet.put('d', createHead("d", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzE5M2RjMGQ0YzVlODBmZjlhOGEwNWQyZmNmZTI2OTUzOWNiMzkyNzE5MGJhYzE5ZGEyZmNlNjFkNzEifX19"));
-            alphabet.put('e', createHead("e", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZGJiMjczN2VjYmY5MTBlZmUzYjI2N2RiN2Q0YjMyN2YzNjBhYmM3MzJjNzdiZDBlNGVmZjFkNTEwY2RlZiJ9fX0="));
-            alphabet.put('f', createHead("f", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYjE4M2JhYjUwYTMyMjQwMjQ4ODZmMjUyNTFkMjRiNmRiOTNkNzNjMjQzMjU1OWZmNDllNDU5YjRjZDZhIn19fQ=="));
-            alphabet.put('g', createHead("g", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMWNhM2YzMjRiZWVlZmI2YTBlMmM1YjNjNDZhYmM5MWNhOTFjMTRlYmE0MTlmYTQ3NjhhYzMwMjNkYmI0YjIifX19"));
-            alphabet.put('h', createHead("h", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzFmMzQ2MmE0NzM1NDlmMTQ2OWY4OTdmODRhOGQ0MTE5YmM3MWQ0YTVkODUyZTg1YzI2YjU4OGE1YzBjNzJmIn19fQ=="));
-            alphabet.put('i', createHead("i", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNDYxNzhhZDUxZmQ1MmIxOWQwYTM4ODg3MTBiZDkyMDY4ZTkzMzI1MmFhYzZiMTNjNzZlN2U2ZWE1ZDMyMjYifX19"));
-            alphabet.put('j', createHead("j", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvM2E3OWRiOTkyMzg2N2U2OWMxZGJmMTcxNTFlNmY0YWQ5MmNlNjgxYmNlZGQzOTc3ZWViYmM0NGMyMDZmNDkifX19"));
-            alphabet.put('k', createHead("k", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTQ2MWIzOGM4ZTQ1NzgyYWRhNTlkMTYxMzJhNDIyMmMxOTM3NzhlN2Q3MGM0NTQyYzk1MzYzNzZmMzdiZTQyIn19fQ=="));
-            alphabet.put('l', createHead("l", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzE5ZjUwYjQzMmQ4NjhhZTM1OGUxNmY2MmVjMjZmMzU0MzdhZWI5NDkyYmNlMTM1NmM5YWE2YmIxOWEzODYifX19"));
-            alphabet.put('m', createHead("m", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNDljNDVhMjRhYWFiZjQ5ZTIxN2MxNTQ4MzIwNDg0OGE3MzU4MmFiYTdmYWUxMGVlMmM1N2JkYjc2NDgyZiJ9fX0= "));
-            alphabet.put('n', createHead("n", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzViOGIzZDhjNzdkZmI4ZmJkMjQ5NWM4NDJlYWM5NGZmZmE2ZjU5M2JmMTVhMjU3NGQ4NTRkZmYzOTI4In19fQ=="));
-            alphabet.put('o', createHead("o", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDExZGUxY2FkYjJhZGU2MTE0OWU1ZGVkMWJkODg1ZWRmMGRmNjI1OTI1NWIzM2I1ODdhOTZmOTgzYjJhMSJ9fX0="));
-            alphabet.put('p', createHead("p", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYTBhNzk4OWI1ZDZlNjIxYTEyMWVlZGFlNmY0NzZkMzUxOTNjOTdjMWE3Y2I4ZWNkNDM2MjJhNDg1ZGMyZTkxMiJ9fX0="));
-            alphabet.put('q', createHead("q", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNDM2MDlmMWZhZjgxZWQ0OWM1ODk0YWMxNGM5NGJhNTI5ODlmZGE0ZTFkMmE1MmZkOTQ1YTU1ZWQ3MTllZDQifX19"));
-            alphabet.put('r', createHead("r", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYTVjZWQ5OTMxYWNlMjNhZmMzNTEzNzEzNzliZjA1YzYzNWFkMTg2OTQzYmMxMzY0NzRlNGU1MTU2YzRjMzcifX19"));
-            alphabet.put('s', createHead("s", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvM2U0MWM2MDU3MmM1MzNlOTNjYTQyMTIyODkyOWU1NGQ2Yzg1NjUyOTQ1OTI0OWMyNWMzMmJhMzNhMWIxNTE3In19fQ=="));
-            alphabet.put('t', createHead("t", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTU2MmU4YzFkNjZiMjFlNDU5YmU5YTI0ZTVjMDI3YTM0ZDI2OWJkY2U0ZmJlZTJmNzY3OGQyZDNlZTQ3MTgifX19"));
-            alphabet.put('u', createHead("u", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNjA3ZmJjMzM5ZmYyNDFhYzNkNjYxOWJjYjY4MjUzZGZjM2M5ODc4MmJhZjNmMWY0ZWZkYjk1NGY5YzI2In19fQ=="));
-            alphabet.put('v', createHead("v", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvY2M5YTEzODYzOGZlZGI1MzRkNzk5Mjg4NzZiYWJhMjYxYzdhNjRiYTc5YzQyNGRjYmFmY2M5YmFjNzAxMGI4In19fQ=="));
-            alphabet.put('w', createHead("w", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMjY5YWQxYTg4ZWQyYjA3NGUxMzAzYTEyOWY5NGU0YjcxMGNmM2U1YjRkOTk1MTYzNTY3ZjY4NzE5YzNkOTc5MiJ9fX0="));
-            alphabet.put('x', createHead("x", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNWE2Nzg3YmEzMjU2NGU3YzJmM2EwY2U2NDQ5OGVjYmIyM2I4OTg0NWU1YTY2YjVjZWM3NzM2ZjcyOWVkMzcifX19"));
-            alphabet.put('y', createHead("y", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzUyZmIzODhlMzMyMTJhMjQ3OGI1ZTE1YTk2ZjI3YWNhNmM2MmFjNzE5ZTFlNWY4N2ExY2YwZGU3YjE1ZTkxOCJ9fX0="));
-            alphabet.put('z', createHead("z", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTA1ODJiOWI1ZDk3OTc0YjExNDYxZDYzZWNlZDg1ZjQzOGEzZWVmNWRjMzI3OWY5YzQ3ZTFlMzhlYTU0YWU4ZCJ9fX0="));
+            alphabet.put('a', new ItemEditor(Material.SKULL_ITEM, (short) 3).setDisplayName("a").setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYTY3ZDgxM2FlN2ZmZTViZTk1MWE0ZjQxZjJhYTYxOWE1ZTM4OTRlODVlYTVkNDk4NmY4NDk0OWM2M2Q3NjcyZSJ9fX0=").getItem());
+            alphabet.put('b', new ItemEditor(Material.SKULL_ITEM, (short) 3).setDisplayName("b").setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNTBjMWI1ODRmMTM5ODdiNDY2MTM5Mjg1YjJmM2YyOGRmNjc4NzEyM2QwYjMyMjgzZDg3OTRlMzM3NGUyMyJ9fX0=").getItem());
+            alphabet.put('c', new ItemEditor(Material.SKULL_ITEM, (short) 3).setDisplayName("c").setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYWJlOTgzZWM0NzgwMjRlYzZmZDA0NmZjZGZhNDg0MjY3NjkzOTU1MWI0NzM1MDQ0N2M3N2MxM2FmMThlNmYifX19").getItem());
+            alphabet.put('d', new ItemEditor(Material.SKULL_ITEM, (short) 3).setDisplayName("d").setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzE5M2RjMGQ0YzVlODBmZjlhOGEwNWQyZmNmZTI2OTUzOWNiMzkyNzE5MGJhYzE5ZGEyZmNlNjFkNzEifX19").getItem());
+            alphabet.put('e', new ItemEditor(Material.SKULL_ITEM, (short) 3).setDisplayName("e").setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZGJiMjczN2VjYmY5MTBlZmUzYjI2N2RiN2Q0YjMyN2YzNjBhYmM3MzJjNzdiZDBlNGVmZjFkNTEwY2RlZiJ9fX0=").getItem());
+            alphabet.put('f', new ItemEditor(Material.SKULL_ITEM, (short) 3).setDisplayName("f").setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYjE4M2JhYjUwYTMyMjQwMjQ4ODZmMjUyNTFkMjRiNmRiOTNkNzNjMjQzMjU1OWZmNDllNDU5YjRjZDZhIn19fQ==").getItem());
+            alphabet.put('g', new ItemEditor(Material.SKULL_ITEM, (short) 3).setDisplayName("g").setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMWNhM2YzMjRiZWVlZmI2YTBlMmM1YjNjNDZhYmM5MWNhOTFjMTRlYmE0MTlmYTQ3NjhhYzMwMjNkYmI0YjIifX19").getItem());
+            alphabet.put('h', new ItemEditor(Material.SKULL_ITEM, (short) 3).setDisplayName("h").setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzFmMzQ2MmE0NzM1NDlmMTQ2OWY4OTdmODRhOGQ0MTE5YmM3MWQ0YTVkODUyZTg1YzI2YjU4OGE1YzBjNzJmIn19fQ==").getItem());
+            alphabet.put('i', new ItemEditor(Material.SKULL_ITEM, (short) 3).setDisplayName("i").setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNDYxNzhhZDUxZmQ1MmIxOWQwYTM4ODg3MTBiZDkyMDY4ZTkzMzI1MmFhYzZiMTNjNzZlN2U2ZWE1ZDMyMjYifX19").getItem());
+            alphabet.put('j', new ItemEditor(Material.SKULL_ITEM, (short) 3).setDisplayName("j").setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvM2E3OWRiOTkyMzg2N2U2OWMxZGJmMTcxNTFlNmY0YWQ5MmNlNjgxYmNlZGQzOTc3ZWViYmM0NGMyMDZmNDkifX19").getItem());
+            alphabet.put('k', new ItemEditor(Material.SKULL_ITEM, (short) 3).setDisplayName("k").setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTQ2MWIzOGM4ZTQ1NzgyYWRhNTlkMTYxMzJhNDIyMmMxOTM3NzhlN2Q3MGM0NTQyYzk1MzYzNzZmMzdiZTQyIn19fQ==").getItem());
+            alphabet.put('l', new ItemEditor(Material.SKULL_ITEM, (short) 3).setDisplayName("l").setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzE5ZjUwYjQzMmQ4NjhhZTM1OGUxNmY2MmVjMjZmMzU0MzdhZWI5NDkyYmNlMTM1NmM5YWE2YmIxOWEzODYifX19").getItem());
+            alphabet.put('m', new ItemEditor(Material.SKULL_ITEM, (short) 3).setDisplayName("m").setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNDljNDVhMjRhYWFiZjQ5ZTIxN2MxNTQ4MzIwNDg0OGE3MzU4MmFiYTdmYWUxMGVlMmM1N2JkYjc2NDgyZiJ9fX0= ").getItem());
+            alphabet.put('n', new ItemEditor(Material.SKULL_ITEM, (short) 3).setDisplayName("n").setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzViOGIzZDhjNzdkZmI4ZmJkMjQ5NWM4NDJlYWM5NGZmZmE2ZjU5M2JmMTVhMjU3NGQ4NTRkZmYzOTI4In19fQ==").getItem());
+            alphabet.put('o', new ItemEditor(Material.SKULL_ITEM, (short) 3).setDisplayName("o").setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDExZGUxY2FkYjJhZGU2MTE0OWU1ZGVkMWJkODg1ZWRmMGRmNjI1OTI1NWIzM2I1ODdhOTZmOTgzYjJhMSJ9fX0=").getItem());
+            alphabet.put('p', new ItemEditor(Material.SKULL_ITEM, (short) 3).setDisplayName("p").setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYTBhNzk4OWI1ZDZlNjIxYTEyMWVlZGFlNmY0NzZkMzUxOTNjOTdjMWE3Y2I4ZWNkNDM2MjJhNDg1ZGMyZTkxMiJ9fX0=").getItem());
+            alphabet.put('q', new ItemEditor(Material.SKULL_ITEM, (short) 3).setDisplayName("q").setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNDM2MDlmMWZhZjgxZWQ0OWM1ODk0YWMxNGM5NGJhNTI5ODlmZGE0ZTFkMmE1MmZkOTQ1YTU1ZWQ3MTllZDQifX19").getItem());
+            alphabet.put('r', new ItemEditor(Material.SKULL_ITEM, (short) 3).setDisplayName("r").setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYTVjZWQ5OTMxYWNlMjNhZmMzNTEzNzEzNzliZjA1YzYzNWFkMTg2OTQzYmMxMzY0NzRlNGU1MTU2YzRjMzcifX19").getItem());
+            alphabet.put('s', new ItemEditor(Material.SKULL_ITEM, (short) 3).setDisplayName("s").setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvM2U0MWM2MDU3MmM1MzNlOTNjYTQyMTIyODkyOWU1NGQ2Yzg1NjUyOTQ1OTI0OWMyNWMzMmJhMzNhMWIxNTE3In19fQ==").getItem());
+            alphabet.put('t', new ItemEditor(Material.SKULL_ITEM, (short) 3).setDisplayName("t").setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTU2MmU4YzFkNjZiMjFlNDU5YmU5YTI0ZTVjMDI3YTM0ZDI2OWJkY2U0ZmJlZTJmNzY3OGQyZDNlZTQ3MTgifX19").getItem());
+            alphabet.put('u', new ItemEditor(Material.SKULL_ITEM, (short) 3).setDisplayName("u").setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNjA3ZmJjMzM5ZmYyNDFhYzNkNjYxOWJjYjY4MjUzZGZjM2M5ODc4MmJhZjNmMWY0ZWZkYjk1NGY5YzI2In19fQ==").getItem());
+            alphabet.put('v', new ItemEditor(Material.SKULL_ITEM, (short) 3).setDisplayName("v").setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvY2M5YTEzODYzOGZlZGI1MzRkNzk5Mjg4NzZiYWJhMjYxYzdhNjRiYTc5YzQyNGRjYmFmY2M5YmFjNzAxMGI4In19fQ==").getItem());
+            alphabet.put('w', new ItemEditor(Material.SKULL_ITEM, (short) 3).setDisplayName("w").setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMjY5YWQxYTg4ZWQyYjA3NGUxMzAzYTEyOWY5NGU0YjcxMGNmM2U1YjRkOTk1MTYzNTY3ZjY4NzE5YzNkOTc5MiJ9fX0=").getItem());
+            alphabet.put('x', new ItemEditor(Material.SKULL_ITEM, (short) 3).setDisplayName("x").setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNWE2Nzg3YmEzMjU2NGU3YzJmM2EwY2U2NDQ5OGVjYmIyM2I4OTg0NWU1YTY2YjVjZWM3NzM2ZjcyOWVkMzcifX19").getItem());
+            alphabet.put('y', new ItemEditor(Material.SKULL_ITEM, (short) 3).setDisplayName("y").setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzUyZmIzODhlMzMyMTJhMjQ3OGI1ZTE1YTk2ZjI3YWNhNmM2MmFjNzE5ZTFlNWY4N2ExY2YwZGU3YjE1ZTkxOCJ9fX0=").getItem());
+            alphabet.put('z', new ItemEditor(Material.SKULL_ITEM, (short) 3).setDisplayName("z").setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTA1ODJiOWI1ZDk3OTc0YjExNDYxZDYzZWNlZDg1ZjQzOGEzZWVmNWRjMzI3OWY5YzQ3ZTFlMzhlYTU0YWU4ZCJ9fX0=").getItem());
         }
         return alphabet.get(character);
     }
@@ -393,20 +268,8 @@ public class Utils {
         return dialog;
     }
 
-    public static Inventory getDeleteDialog(String title, String[] yesAction, String[] noAction, ItemStack middleItem) {
-        Inventory dialog = Bukkit.createInventory(null, 9 * 3, title);
-        dialog.setItem(11, CustomHeads.getTagEditor().setTags(new ItemEditor(Material.SKULL_ITEM, (short) 3).setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzYxZTViMzMzYzJhMzg2OGJiNmE1OGI2Njc0YTI2MzkzMjM4MTU3MzhlNzdlMDUzOTc3NDE5YWYzZjc3In19fQ==").setDisplayName("§a" + CustomHeads.getLanguageManager().YES).setLore("§cThis cannot be undone!").getItem(), yesAction));
-        dialog.setItem(13, CustomHeads.getTagEditor().setTags(middleItem, "blockMoving"));
-        dialog.setItem(15, CustomHeads.getTagEditor().setTags(new ItemEditor(Material.SKULL_ITEM, (short) 3).setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNGJhYzc3NTIwYjllZWU2NTA2OGVmMWNkOGFiZWFkYjAxM2I0ZGUzOTUzZmQyOWFjNjhlOTBlNDg2NjIyNyJ9fX0=").setDisplayName("§c" + CustomHeads.getLanguageManager().NO).getItem(), noAction));
-        return dialog;
-    }
-
     public static boolean hasPermission(Player player, String permission) {
         return player.hasPermission(permission) || player.hasPermission("heads.admin") || player.hasPermission("heads.*") || player.isOp();
-    }
-
-    public static String getURLFrom(String base64) {
-        return new JsonParser().parse(new String(Base64.decodeBase64(base64), Charsets.UTF_8)).getAsJsonObject().get("textures").getAsJsonObject().get("SKIN").getAsJsonObject().get("url").getAsString();
     }
 
     public static UUID parseUUID(String uuidStr) {
@@ -461,6 +324,23 @@ public class Utils {
             }
         }
         return false;
+    }
+
+    public static void openCategory(Category category, Player player, String menuID) {
+        CustomHeadsPlayer customHeadsPlayer = CustomHeads.getApi().wrapPlayer(player);
+        if (customHeadsPlayer.getUnlockedCategories(false).stream().map(BaseCategory::getId).collect(Collectors.toList()).contains(category.getId())) {
+            if (category.hasSubCategories()) {
+                player.openInventory(CustomHeads.getLooks().subCategoryLooks.get(Integer.parseInt(category.getId())));
+            } else {
+                openPreloader(player);
+                List<ItemStack> heads = new ArrayList<>();
+                category.getHeads().forEach(wearable -> heads.add(CustomHeads.getTagEditor().setTags(wearable, "wearable")));
+                ScrollableInventory inventory = new ScrollableInventory(category.getName(), heads).setContentsClonable(true);
+                inventory.setBarItem(1, Utils.getBackButton("openMenu", menuID));
+                inventory.setBarItem(3, CustomHeads.getTagEditor().setTags(new ItemEditor(Material.PAPER).setDisplayName(CustomHeads.getLanguageManager().ITEMS_INFO).setLore(CustomHeads.getLanguageManager().ITEMS_INFO_LORE).getItem(), "dec", "info-item", "blockMoving"));
+                player.openInventory(inventory.getAsInventory());
+            }
+        }
     }
 
     public static boolean hasCustomTexture(ItemStack itemStack) {
@@ -541,34 +421,6 @@ public class Utils {
         }
     }
 
-    public static boolean reload(CommandSender sender) {
-        boolean console = sender instanceof ConsoleCommandSender;
-        sender.sendMessage((console ? CustomHeads.chPrefix : "") + CustomHeads.getLanguageManager().RELOAD_CONFIG);
-        CustomHeads.getHeadsConfig().reload();
-        CustomHeads.reloadEconomy();
-        sender.sendMessage((console ? CustomHeads.chPrefix : "") + CustomHeads.getLanguageManager().RELOAD_HISTORY);
-        CustomHeads.reloadHistoryData();
-        sender.sendMessage((console ? CustomHeads.chPrefix : "") + CustomHeads.getLanguageManager().RELOAD_LANGUAGE);
-        if (!CustomHeads.reloadTranslations(CustomHeads.getHeadsConfig().get().getString("langFile"))) {
-            sender.sendMessage((console ? CustomHeads.chPrefix : "") + CustomHeads.getLanguageManager().RELOAD_FAILED);
-            return false;
-        }
-        ScrollableInventory.sortName = new ArrayList<>(Arrays.asList("invalid", CustomHeads.getLanguageManager().CYCLE_ARRANGEMENT_DEFAULT, CustomHeads.getLanguageManager().CYCLE_ARRANGEMENT_ALPHABETICAL, CustomHeads.getLanguageManager().CYCLE_ARRANGEMENT_COLOR));
-        sender.sendMessage((console ? CustomHeads.chPrefix : "") + CustomHeads.getLanguageManager().RELOAD_SUCCESSFUL);
-        return true;
-    }
-
-    public static boolean reload() {
-        CustomHeads.getHeadsConfig().reload();
-        CustomHeads.reloadHistoryData();
-        CustomHeads.reloadEconomy();
-        if (!CustomHeads.reloadTranslations(CustomHeads.getHeadsConfig().get().getString("langFile"))) {
-            return false;
-        }
-        ScrollableInventory.sortName = new ArrayList<>(Arrays.asList("invalid", CustomHeads.getLanguageManager().CYCLE_ARRANGEMENT_DEFAULT, CustomHeads.getLanguageManager().CYCLE_ARRANGEMENT_ALPHABETICAL, CustomHeads.getLanguageManager().CYCLE_ARRANGEMENT_COLOR));
-        return true;
-    }
-
     public static boolean redownloadLanguageFiles(CommandSender sender) {
         boolean console = sender instanceof ConsoleCommandSender;
 
@@ -603,8 +455,8 @@ public class Utils {
 
         sender.sendMessage((console ? CustomHeads.chPrefix : "") + CustomHeads.getLanguageManager().LANGUAGE_REDOWNLOAD_DOWNLOADING);
         GitHubDownloader gitGetter = new GitHubDownloader("MrSteinMC", "CustomHeads").enableAutoUnzipping();
-        gitGetter.download(CustomHeads.getInstance().getDescription().getVersion(), "language.zip", new File("plugins/CustomHeads"), (AfterTask) () -> {
-            reload();
+        gitGetter.download(CustomHeads.getInstance().getDescription().getVersion(), "language.zip", new File("plugins/CustomHeads"), (AsyncFileDownloader.AfterTask) () -> {
+            CustomHeads.reload();
             sender.sendMessage((console ? CustomHeads.chPrefix : "") + CustomHeads.getLanguageManager().LANGUAGE_REDOWNLOAD_DONE);
         });
         return true;
@@ -636,7 +488,7 @@ public class Utils {
     }
 
     public static String toConfigString(String string) {
-        string = string.replace("§", "{ae}").replace("§", "{oe}").replace("§", "{ue}").replace("?", "[sz]");
+        string = string.replace("ä", "{ae}").replace("Ä", "{AE}").replace("ö", "{oe}").replace("Ö", "{OE}").replace("ü", "{ue}").replace("Ü", "{UE}").replace("ß", "[sz]");
         string = string.replace('§', '&');
         return string;
     }
@@ -669,13 +521,13 @@ public class Utils {
     }
 
     public static String format(String uwat) {
-        return ChatColor.translateAlternateColorCodes('&', uwat).replace("{ae}", "§").replace("{oe}", "§").replace("{ue}", "§").replace("{AE}", "§").replace("{OE}", "§").replace("{UE}", "§").replace("{nl}", "\n");
+        return ChatColor.translateAlternateColorCodes('&', uwat).replace("{ae}", "ä").replace("{oe}", "ö").replace("{ue}", "ü").replace("{AE}", "Ä").replace("{OE}", "Ö").replace("{UE}", "Ü").replace("{nl}", "\n");
     }
 
     public static List<String> format(List<String> ulist) {
         List<String> replist = new ArrayList<>();
         for (String st : ulist) {
-            replist.add(ChatColor.translateAlternateColorCodes('&', st).replace("{ae}", "§").replace("{oe}", "§").replace("{ue}", "§").replace("{AE}", "§").replace("{OE}", "§").replace("{UE}", "§"));
+            replist.add(ChatColor.translateAlternateColorCodes('&', st).replace("{ae}", "ä").replace("{oe}", "ö").replace("{ue}", "ü").replace("{AE}", "Ä").replace("{OE}", "Ö").replace("{UE}", "Ü"));
         }
         return replist;
     }

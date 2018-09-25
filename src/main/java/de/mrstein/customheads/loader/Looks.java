@@ -25,6 +25,11 @@ import java.util.logging.Level;
 import static de.mrstein.customheads.utils.Utils.format;
 import static de.mrstein.customheads.utils.Utils.getBackButton;
 
+/*
+ *  Project: CustomHeads in Looks
+ *     by LikeWhat
+ */
+
 @Getter
 public class Looks {
 
@@ -41,7 +46,8 @@ public class Looks {
     public Looks(String language) {
         loaded = false;
 
-        CustomHeads.getInstance().getServer().getConsoleSender().sendMessage(CustomHeads.chPrefix + "Loading Looks from language/" + language + "/settings.json");
+        if (!CustomHeads.hasReducedDebug())
+            CustomHeads.getInstance().getServer().getConsoleSender().sendMessage(CustomHeads.chPrefix + "Loading Looks from language/" + language + "/settings.json");
         long timestamp = System.currentTimeMillis();
 
         JsonFile jsf = new JsonFile(new File("plugins/CustomHeads/language/" + language + "/settings.json"));
@@ -172,7 +178,8 @@ public class Looks {
                 }
             }
 
-            CustomHeads.getInstance().getServer().getConsoleSender().sendMessage(CustomHeads.chPrefix + "Successfully loaded Looks from language/" + language + "/settings.json in " + (System.currentTimeMillis() - timestamp) + "ms");
+            if (!CustomHeads.hasReducedDebug())
+                CustomHeads.getInstance().getServer().getConsoleSender().sendMessage(CustomHeads.chPrefix + "Successfully loaded Looks from language/" + language + "/settings.json in " + (System.currentTimeMillis() - timestamp) + "ms");
             loaded = true;
         } catch (Exception e) {
             CustomHeads.getInstance().getLogger().log(Level.WARNING, "Something went wrong while loading Looks from Settings File " + language + "/settings.json", e);

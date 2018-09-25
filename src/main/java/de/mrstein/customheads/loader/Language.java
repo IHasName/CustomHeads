@@ -9,6 +9,11 @@ import java.util.List;
 
 import static de.mrstein.customheads.utils.Utils.format;
 
+/*
+ *  Project: CustomHeads in Language
+ *     by LikeWhat
+ */
+
 public class Language {
 
     @Getter
@@ -191,7 +196,8 @@ public class Language {
         currentLanguage = language;
 
         languageConfig.reload();
-        CustomHeads.getInstance().getServer().getConsoleSender().sendMessage(CustomHeads.chPrefix + "Loading Language from language/" + language + "/language.yml...");
+        if (!CustomHeads.hasReducedDebug())
+            CustomHeads.getInstance().getServer().getConsoleSender().sendMessage(CustomHeads.chPrefix + "Loading Language from language/" + language + "/language.yml...");
         long timestamp = System.currentTimeMillis();
         DEFINITION = ChatColor.stripColor(getFromConfig("DEFINITION"));
 
@@ -361,7 +367,8 @@ public class Language {
         ITEMS_INFO_LORE = getFromConfig("ITEM_NAMES.INFO_LORE");
         LOCKED = ChatColor.stripColor(getFromConfig("LOCKED"));
 
-        CustomHeads.getInstance().getServer().getConsoleSender().sendMessage(CustomHeads.chPrefix + "Successfully loaded Language from language/" + language + "/language.yml in " + (System.currentTimeMillis() - timestamp) + "ms");
+        if (!CustomHeads.hasReducedDebug())
+            CustomHeads.getInstance().getServer().getConsoleSender().sendMessage(CustomHeads.chPrefix + "Successfully loaded Language from language/" + language + "/language.yml in " + (System.currentTimeMillis() - timestamp) + "ms");
         loaded = true;
     }
 

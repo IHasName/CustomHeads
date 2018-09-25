@@ -11,6 +11,11 @@ import java.util.logging.Level;
 
 import static de.mrstein.customheads.utils.Utils.saveInternalFile;
 
+/*
+ *  Project: CustomHeads in Configs
+ *     by LikeWhat
+ */
+
 public class Configs {
 
     private FileConfiguration config = null;

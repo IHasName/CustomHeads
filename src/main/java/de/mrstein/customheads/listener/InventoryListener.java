@@ -31,6 +31,11 @@ import java.util.stream.Collectors;
 
 import static de.mrstein.customheads.utils.Utils.*;
 
+/*
+ *  Project: CustomHeads in InventoryListener
+ *     by LikeWhat
+ */
+
 public class InventoryListener implements Listener {
 
     private static HashMap<Player, String> lastMenu = new HashMap<>();
@@ -245,7 +250,7 @@ public class InventoryListener implements Listener {
                         String toAdd = event.getCursor().getItemMeta().getDisplayName();
                         if (Utils.hasCustomTexture(event.getCursor())) {
                             HeadFontType font = HeadFontType.getCachedFont(itemTags.get(itemTags.indexOf("fontCacheID") + 1));
-                            //  §\_(?)_/§
+                            //  ¯\_( ツ)_/¯
                             if (!font.exists()) {
                                 player.sendMessage("For whatever Reason this Font no longer exists");
                                 player.closeInventory();
@@ -253,7 +258,7 @@ public class InventoryListener implements Listener {
                             }
                             boolean forceReplace = CustomHeads.getTagEditor().getTags(event.getInventory().getItem(4)).contains("toggleActive");
                             if (toAdd.length() == 1 || toAdd.equalsIgnoreCase("BLANK")) {
-                                player.sendMessage(font.addCharacter((toAdd.equalsIgnoreCase("BLANK") ? ' ' : toAdd.toLowerCase().charAt(0)), CustomHeads.getHeadUtil().getSkullTexture(event.getCursor()), forceReplace) ? CustomHeads.getLanguageManager().FONTS_EDIT_ADDCHARACTER_SUCCESSFUL.replace("{CHARACTER}", toAdd.equalsIgnoreCase("blank") ? "BLANK" : toAdd.toLowerCase()) : CustomHeads.getLanguageManager().FONTS_EDIT_ADDCHARACTER_FAILED.replace("{CHARACTER}", toAdd.equalsIgnoreCase("blank") ? "BLANK" : toAdd.toLowerCase()));
+                                player.sendMessage(font.addCharacter((toAdd.equalsIgnoreCase("BLANK") ? ' ' : toAdd.toLowerCase().charAt(0)), CustomHeads.getApi().getSkullTexture(event.getCursor()), forceReplace) ? CustomHeads.getLanguageManager().FONTS_EDIT_ADDCHARACTER_SUCCESSFUL.replace("{CHARACTER}", toAdd.equalsIgnoreCase("blank") ? "BLANK" : toAdd.toLowerCase()) : CustomHeads.getLanguageManager().FONTS_EDIT_ADDCHARACTER_FAILED.replace("{CHARACTER}", toAdd.equalsIgnoreCase("blank") ? "BLANK" : toAdd.toLowerCase()));
                                 break;
                             }
                         }
@@ -303,19 +308,7 @@ public class InventoryListener implements Listener {
                     if (args[0].equalsIgnoreCase("category")) {
                         Category category = CustomHeads.getCategoryLoader().getCategory(args[1]);
                         if (category != null) {
-                            if (customHeadsPlayer.getUnlockedCategories(false).stream().map(BaseCategory::getId).collect(Collectors.toList()).contains(category.getId())) {
-                                if (category.hasSubCategories()) {
-                                    player.openInventory(CustomHeads.getLooks().subCategoryLooks.get(Integer.parseInt(category.getId())));
-                                } else {
-                                    openPreloader(player);
-                                    List<ItemStack> heads = new ArrayList<>();
-                                    category.getHeads().forEach(wearable -> heads.add(CustomHeads.getTagEditor().setTags(wearable, "wearable")));
-                                    ScrollableInventory inventory = new ScrollableInventory(category.getName(), heads).setContentsClonable(true);
-                                    inventory.setBarItem(1, Utils.getBackButton("openMenu", itemTags.get(itemTags.indexOf("menuID") + 1).toLowerCase()));
-                                    inventory.setBarItem(3, CustomHeads.getTagEditor().setTags(new ItemEditor(Material.PAPER).setDisplayName(CustomHeads.getLanguageManager().ITEMS_INFO).setLore(CustomHeads.getLanguageManager().ITEMS_INFO_LORE).getItem(), "dec", "info-item", "blockMoving"));
-                                    player.openInventory(inventory.getAsInventory());
-                                }
-                            }
+                            openCategory(category, player, itemTags.get(itemTags.indexOf("menuID") + 1).toLowerCase());
                         }
                     }
                 }
@@ -338,13 +331,7 @@ public class InventoryListener implements Listener {
                 if (buyCategory != null && menuID != null) {
                     if (buyCategory.isFree()) {
                         customHeadsPlayer.unlockCategory(buyCategory);
-                        openPreloader(player);
-                        List<ItemStack> heads = new ArrayList<>();
-                        buyCategory.getHeads().forEach(wearable -> heads.add(CustomHeads.getTagEditor().setTags(wearable, "wearable")));
-                        ScrollableInventory inventory = new ScrollableInventory(buyCategory.getName(), heads).setContentsClonable(true);
-                        inventory.setBarItem(1, Utils.getBackButton("openMenu", menuID));
-                        inventory.setBarItem(3, CustomHeads.getTagEditor().setTags(new ItemEditor(Material.PAPER).setDisplayName(CustomHeads.getLanguageManager().ITEMS_INFO).setLore(CustomHeads.getLanguageManager().ITEMS_INFO_LORE).getItem(), "dec", "info-item", "blockMoving"));
-                        player.openInventory(inventory.getAsInventory());
+                        openCategory(buyCategory, player, menuID);
                         player.sendMessage(CustomHeads.getLanguageManager().ECONOMY_BUY_SUCCESSFUL.replace("{CATEGORY}", buyCategory.getPlainName()));
                     } else {
                         player.openInventory(getDialog(CustomHeads.getLanguageManager().ECONOMY_BUY_CATEGORY.replace("{CATEGORY}", buyCategory.getPlainName()).replace("{PRICE}", getPriceFormatted(buyCategory, false)), new String[]{"confirmBuy", buyCategory.getId() + "#>" + menuID}, null, new String[]{"openMenu", menuID}, null, buyCategory.getCategoryIcon()));
@@ -474,8 +461,7 @@ public class InventoryListener implements Listener {
                         } else {
                             throw new UnsupportedOperationException("Arrangement " + args[1] + " not supported");
                         }
-                        String name = itemTags.get(itemTags.indexOf("originalName") + 1) + ScrollableInventory.sortName.get(nextArrangement);
-                        event.setCurrentItem(renameStack(event.getCurrentItem(), 1, name, false));
+                        event.setCurrentItem(new ItemEditor(event.getCurrentItem()).setDisplayName(itemTags.get(itemTags.indexOf("originalName") + 1) + ScrollableInventory.sortName.get(nextArrangement)).getItem());
                     }
                     break;
                 }

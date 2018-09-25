@@ -21,6 +21,9 @@ import java.util.function.Consumer;
 import java.util.logging.Level;
 
 /**
+ * Project: CustomHeads in SpigetFetcher
+ *   by LikeWhat
+ *
  * Fetches Updates for Spigot Updates Spigot Resources
  * <p>Uses Spiget Resource API by inventivetalent
  *

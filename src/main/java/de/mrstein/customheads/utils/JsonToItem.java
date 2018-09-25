@@ -5,7 +5,6 @@ import de.mrstein.customheads.CustomHeads;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.enchantments.EnchantmentWrapper;
-import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
@@ -17,7 +16,10 @@ import java.util.logging.Level;
 import static de.mrstein.customheads.utils.Utils.format;
 import static de.mrstein.customheads.utils.Utils.toConfigString;
 
-/**
+/*
+ *  Project: CustomHeads in JsonToItem
+ *     by LikeWhat
+ *
  * <p>Supported Meta:
  * <p>Count, Damage, Display Name, Enchantments, SkullOwner/Custom Texture
  */
@@ -25,37 +27,34 @@ public class JsonToItem {
 
     public static ItemStack convert(String json) {
         JsonParser parser = new JsonParser();
-        ItemStack r = null;
+        ItemEditor itemEditor = null;
         try {
             JsonObject itemObj = parser.parse(json).getAsJsonObject();
-            r = new ItemStack(Material.getMaterial(itemObj.get("item").getAsString()), itemObj.has("count") ? itemObj.get("count").getAsInt() : 1, itemObj.has("damage") ? itemObj.get("damage").getAsShort() : 0);
-            ItemMeta meta = r.getItemMeta();
+            itemEditor = new ItemEditor(Material.getMaterial(itemObj.get("item").getAsString()), itemObj.has("damage") ? itemObj.get("damage").getAsShort() : 0).setAmount(itemObj.has("count") ? itemObj.get("count").getAsInt() : 1);
             if (itemObj.has("display-name"))
-                meta.setDisplayName(format(itemObj.get("display-name").getAsString()));
+                itemEditor.setDisplayName(format(itemObj.get("display-name").getAsString()));
             if (itemObj.has("lore")) {
                 List<String> lore = new ArrayList<>();
                 for (JsonElement loreLine : itemObj.get("lore").getAsJsonArray())
                     lore.add(format(loreLine.getAsString()));
-                meta.setLore(lore);
+                itemEditor.setLore(lore);
             }
-            if (itemObj.has("ench"))
-                for (JsonElement enchObj : itemObj.get("ench").getAsJsonArray())
-                    meta.addEnchant(new EnchantmentWrapper(enchObj.getAsJsonObject().get("id").getAsInt()), enchObj.getAsJsonObject().get("lvl").getAsInt(), true);
-            meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_ENCHANTS);
-            r.setItemMeta(meta);
-            if (itemObj.get("item").getAsString().equals("skull_item")) {
-                SkullMeta sM = (SkullMeta) r.getItemMeta();
+            if (itemObj.has("ench")) {
+                for (JsonElement enchObj : itemObj.get("ench").getAsJsonArray()) {
+                    itemEditor.addEnchantment(new EnchantmentWrapper(enchObj.getAsJsonObject().get("id").getAsInt()), enchObj.getAsJsonObject().get("lvl").getAsInt());
+                }
+            }
+            itemEditor.hideAllFlags();
+            if (itemObj.get("item").getAsString().equalsIgnoreCase("skull_item")) {
                 if (itemObj.has("skullOwner"))
-                    sM.setOwner(itemObj.get("skullOwner").toString());
+                    itemEditor.setOwner(itemObj.get("skullOwner").getAsString());
                 if (itemObj.has("texture"))
-                    if (!Utils.inject(sM.getClass(), sM, "profile", GameProfileBuilder.createProfileWithTexture(itemObj.get("texture").toString())))
-                        return null;
-                r.setItemMeta(sM);
+                    itemEditor.setTexture(itemObj.get("texture").getAsString());
             }
         } catch (Exception e) {
             CustomHeads.getInstance().getLogger().log(Level.WARNING, "Failed to create Item", e);
         }
-        return r;
+        return itemEditor == null ? null : itemEditor.getItem();
     }
 
     public static String convertToJson(ItemStack itemStack) {
@@ -92,7 +91,7 @@ public class JsonToItem {
                 }
             }
             if (Utils.hasCustomTexture(itemStack)) {
-                itemObject.addProperty("texture", CustomHeads.getHeadUtil().getSkullTexture(itemStack));
+                itemObject.addProperty("texture", CustomHeads.getApi().getSkullTexture(itemStack));
             }
         }
         return Utils.GSON_PRETTY.toJson(itemObject);

@@ -16,6 +16,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/*
+ *  Project: CustomHeads in CHSearchQuery
+ *     by LikeWhat
+ */
 
 public class CHSearchQuery {
 
@@ -48,7 +52,6 @@ public class CHSearchQuery {
 
     public ScrollableInventory viewTo(Player player, String backAction) {
         if (recordHistory)
-//            new History(player).getSearchHistory().addEntry(search);
             CustomHeads.getApi().wrapPlayer(player).getSearchHistory().addEntry(search);
 
         String title = CustomHeads.getLanguageManager().SEARCH_TITLE.replace("{RESULTS}", "" + results.size());

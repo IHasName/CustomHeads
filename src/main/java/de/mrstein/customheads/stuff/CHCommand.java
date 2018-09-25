@@ -32,6 +32,11 @@ import java.util.stream.Collectors;
 import static de.mrstein.customheads.listener.OtherListeners.saveLoc;
 import static de.mrstein.customheads.utils.Utils.*;
 
+/*
+ *  Project: CustomHeads in CHCommand
+ *     by LikeWhat
+ */
+
 public class CHCommand implements CommandExecutor {
 
     public HashMap<Player, String[]> haltedCommands = new HashMap<>();
@@ -44,16 +49,10 @@ public class CHCommand implements CommandExecutor {
         if (sender instanceof ConsoleCommandSender) {
             if (args.length > 0) {
                 if (args[0].equalsIgnoreCase("rl") || args[0].equalsIgnoreCase("reload")) {
-                    reload(sender);
+                    CustomHeads.reload(sender);
                     return true;
                 }
                 if (args[0].equalsIgnoreCase("info")) {
-//                    new BukkitRunnable() {
-//                        public void run() {
-//                            Object[] up = Updater.getLastUpdate(true);
-//                            sender.sendMessage("§7Version: §e" + CustomHeads.getInstance().getDescription().getVersion() + " §7Update: §e" + (up.length == 5 ? up[4] : -1));
-//                        }
-//                    }.runTaskLaterAsynchronously(CustomHeads.getInstance(), 10);
                     CustomHeads.getSpigetFetcher().getLastUpdates(resourceUpdates -> {
                         sender.sendMessage("§7Version: §e" + CustomHeads.getInstance().getDescription().getVersion() + " §7Update: §e" + resourceUpdates.size());
                     });
@@ -404,7 +403,7 @@ public class CHCommand implements CommandExecutor {
                         return true;
                     }
                     player.sendMessage(CustomHeads.getLanguageManager().STARTING);
-                    CustomHeads.getHeadUtil().setSkull(player.getLocation().getBlock(), "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOGEzZDVkNWIyY2YzMzEyOTllNjNkNzYxOGExNDI2NmU4Y2NjNjE1OGU5ZTMxZmNiMGJkOTExZTEyZmY3NzM2In19fQ==", faces[ran.nextInt(faces.length)]);
+                    CustomHeads.getApi().setSkull(player.getLocation().getBlock(), "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOGEzZDVkNWIyY2YzMzEyOTllNjNkNzYxOGExNDI2NmU4Y2NjNjE1OGU5ZTMxZmNiMGJkOTExZTEyZmY3NzM2In19fQ==", faces[ran.nextInt(faces.length)]);
                     saveLoc.put(player, player.getLocation().getBlock().getLocation().add(.5, 0, .5));
                     new BukkitRunnable() {
                         Player cPlayer = player;
@@ -412,14 +411,14 @@ public class CHCommand implements CommandExecutor {
 
                         public void run() {
                             if (!saveLoc.containsKey(cPlayer)) {
-                                this.cancel();
+                                cancel();
                                 return;
                             }
                             if (counter <= 0) {
                                 saveLoc.get(cPlayer).getWorld().playEffect(saveLoc.get(cPlayer).getBlock().getLocation(), Effect.STEP_SOUND, 17);
                                 saveLoc.get(cPlayer).getBlock().setType(Material.AIR);
                                 saveLoc.remove(cPlayer);
-                                this.cancel();
+                                cancel();
                                 return;
                             }
                             Firework f = (Firework) saveLoc.get(cPlayer).getWorld().spawnEntity(saveLoc.get(cPlayer), EntityType.FIREWORK);
@@ -428,9 +427,9 @@ public class CHCommand implements CommandExecutor {
                             fx.flicker(ran.nextBoolean()).trail(ran.nextBoolean()).with(fxtypes[ran.nextInt(fxtypes.length)]);
                             int c = ran.nextInt(2) + 2;
                             for (int i = 0; i < c; i++) {
-                                fx.withColor(Color.fromRGB(ran.nextInt(256), ran.nextInt(256), ran.nextInt(256)));
+                                fx.withColor(Color.fromRGB(ran.nextInt(200) + 50, ran.nextInt(200) + 50, ran.nextInt(200) + 50));
                                 if (ran.nextBoolean()) {
-                                    fx.withFade(Color.fromRGB(ran.nextInt(256), ran.nextInt(256), ran.nextInt(256)));
+                                    fx.withFade(Color.fromRGB(ran.nextInt(200) + 50, ran.nextInt(200) + 50, ran.nextInt(200) + 50));
                                 }
                             }
                             fm.addEffect(fx.build());
@@ -461,8 +460,8 @@ public class CHCommand implements CommandExecutor {
                     query.excludeCategories(categories);
                     if (query.getResults().isEmpty()) {
                         Inventory noRes = Bukkit.createInventory(player, 9 * 3, CustomHeads.getLanguageManager().NO_RESULTS);
-                        noRes.setItem(13, CustomHeads.getTagEditor().setTags(Utils.createItem(Material.BARRIER, 1, CustomHeads.getLanguageManager().NO_RESULTS, "", (short) 0), "blockMoving"));
-                        noRes.setItem(26, CustomHeads.getTagEditor().setTags(Utils.createHead(CustomHeads.getLanguageManager().NO_RESULTS_TRY_AGAIN, "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMWI2ZjFhMjViNmJjMTk5OTQ2NDcyYWVkYjM3MDUyMjU4NGZmNmY0ZTgzMjIxZTU5NDZiZDJlNDFiNWNhMTNiIn19fQ=="), "invAction", "retrySearch#>" + args[1]));
+                        noRes.setItem(13, CustomHeads.getTagEditor().setTags(new ItemEditor(Material.BARRIER).setDisplayName(CustomHeads.getLanguageManager().NO_RESULTS).getItem(), "blockMoving"));
+                        noRes.setItem(26, CustomHeads.getTagEditor().setTags(new ItemEditor(Material.SKULL_ITEM, (short) 3).setDisplayName(CustomHeads.getLanguageManager().NO_RESULTS_TRY_AGAIN).setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMWI2ZjFhMjViNmJjMTk5OTQ2NDcyYWVkYjM3MDUyMjU4NGZmNmY0ZTgzMjIxZTU5NDZiZDJlNDFiNWNhMTNiIn19fQ==").getItem(), "invAction", "retrySearch#>" + args[1]));
                         player.openInventory(noRes);
                         return true;
                     }
@@ -475,7 +474,7 @@ public class CHCommand implements CommandExecutor {
             }
             if (args[0].equalsIgnoreCase("reload") || args[0].equalsIgnoreCase("rl")) {
                 if (hasPermission(player, "heads.admin")) {
-                    reload(sender);
+                    CustomHeads.reload(sender);
                     return true;
                 }
                 player.sendMessage(CustomHeads.getLanguageManager().NO_PERMISSION);
@@ -509,8 +508,7 @@ public class CHCommand implements CommandExecutor {
                         return true;
                     }
                     CustomHeads.getApi().wrapPlayer(player).getGetHistory().addEntry(args[1]);
-//                    new History(player).getGetHistory().addEntry(args[1]);
-                    player.getInventory().addItem(Utils.createPlayerHead(CustomHeads.getLanguageManager().GET_HEAD_NAME.replace("{PLAYER}", args[1]), args[1], ""));
+                    player.getInventory().addItem(new ItemEditor(Material.SKULL_ITEM, (short) 3).setDisplayName(CustomHeads.getLanguageManager().GET_HEAD_NAME.replace("{PLAYER}", args[1])).setOwner(args[1]).getItem());
                     return true;
                 }
                 player.sendMessage(CustomHeads.getLanguageManager().NO_PERMISSION);

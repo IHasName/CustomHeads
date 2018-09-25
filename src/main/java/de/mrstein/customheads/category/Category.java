@@ -19,6 +19,11 @@ import java.util.stream.Collectors;
 
 import static de.mrstein.customheads.utils.Utils.toConfigString;
 
+/*
+ *  Project: CustomHeads in Category
+ *     by LikeWhat
+ */
+
 @Getter
 public class Category extends BaseCategory {
 

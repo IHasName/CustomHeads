@@ -12,6 +12,11 @@ import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 
+/*
+ *  Project: CustomHeads in AsyncFileDownloader
+ *     by LikeWhat
+ */
+
 public class AsyncFileDownloader {
 
     private String url;
@@ -97,6 +102,10 @@ public class AsyncFileDownloader {
 
         void failed(AsyncFileDownloader.DownloaderStatus status);
 
+    }
+
+    public interface AfterTask {
+        void call();
     }
 
 }

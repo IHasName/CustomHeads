@@ -3,6 +3,11 @@ package de.mrstein.customheads.category;
 import lombok.Getter;
 import org.bukkit.ChatColor;
 
+/*
+ *  Project: CustomHeads in BaseCategory
+ *     by LikeWhat
+ */
+
 @Getter
 public class BaseCategory {
 

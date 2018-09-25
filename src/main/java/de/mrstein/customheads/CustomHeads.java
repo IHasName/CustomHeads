@@ -4,7 +4,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import de.mrstein.customheads.api.CustomHeadsAPI;
 import de.mrstein.customheads.api.CustomHeadsPlayer;
-import de.mrstein.customheads.api.HeadUtil;
 import de.mrstein.customheads.category.BaseCategory;
 import de.mrstein.customheads.category.Category;
 import de.mrstein.customheads.economy.EconomyManager;
@@ -17,7 +16,7 @@ import de.mrstein.customheads.loader.Looks;
 import de.mrstein.customheads.reflection.TagEditor;
 import de.mrstein.customheads.stuff.CHCommand;
 import de.mrstein.customheads.stuff.CHTabCompleter;
-import de.mrstein.customheads.updaters.AfterTask;
+import de.mrstein.customheads.updaters.AsyncFileDownloader;
 import de.mrstein.customheads.updaters.GitHubDownloader;
 import de.mrstein.customheads.updaters.SpigetFetcher;
 import de.mrstein.customheads.utils.*;
@@ -25,6 +24,8 @@ import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
@@ -32,19 +33,23 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
+
+import static de.mrstein.customheads.utils.Utils.hasPermission;
+
+/*
+ *  Project: CustomHeads in CustomHeads
+ *     by LikeWhat
+ */
 
 @Getter
 public class CustomHeads extends JavaPlugin {
 
     public static final String chPrefix = "§7[§eCustomHeads§7] ";
     public static final String chError = chPrefix + "§cError §7: §c";
-    public static final String chWarning = chPrefix + "§6Warning §7: §6";
+    public static final String chWarning = chPrefix + "§eWarning §7: §e";
     public static final HashMap<String, String> uuidCache = new HashMap<>();
     public static int hisOverflow = 18;
 
@@ -62,8 +67,6 @@ public class CustomHeads extends JavaPlugin {
     private static Looks looks;
     @Getter
     private static CustomHeads instance;
-    @Getter
-    private static HeadUtil headUtil;
     @Getter
     private static Language languageManager;
     @Getter
@@ -87,6 +90,7 @@ public class CustomHeads extends JavaPlugin {
     private static boolean keepCategoryPermissions = true;
     private String bukkitVersion = Bukkit.getVersion().substring(Bukkit.getVersion().lastIndexOf("("));
     private boolean isInit = false;
+    private static boolean reducedDebug = false;
 
     // Search/Get History Loader
     public static void reloadHistoryData() {
@@ -112,7 +116,7 @@ public class CustomHeads extends JavaPlugin {
                 if (economyManager.getEconomyPlugin() == null) {
                     Bukkit.getConsoleSender().sendMessage(chError + "Error hooking into Vault. Continuing without it...");
                 } else {
-                    Bukkit.getConsoleSender().sendMessage(chPrefix + "§7Successfully hooked into Vault");
+                    Bukkit.getConsoleSender().sendMessage(chPrefix + "§7Hooked info Vault");
                     hasEconomy = true;
                     return;
                 }
@@ -133,6 +137,71 @@ public class CustomHeads extends JavaPlugin {
 
     public static boolean hasEconomy() {
         return hasEconomy;
+    }
+
+    public static boolean hasReducedDebug() {
+        return reducedDebug;
+    }
+
+    public static boolean reload(CommandSender sender) {
+        boolean console = sender instanceof ConsoleCommandSender;
+        sender.sendMessage((console ? chPrefix : "") + languageManager.RELOAD_CONFIG);
+        headsConfig.reload();
+        reducedDebug = headsConfig.get().getBoolean("reducedDebug");
+        reloadEconomy();
+        sender.sendMessage((console ? chPrefix : "") + languageManager.RELOAD_HISTORY);
+        reloadHistoryData();
+        sender.sendMessage((console ? chPrefix : "") + languageManager.RELOAD_LANGUAGE);
+        if (!reloadTranslations(headsConfig.get().getString("langFile"))) {
+            sender.sendMessage((console ? chPrefix : "") + languageManager.RELOAD_FAILED);
+            return false;
+        }
+        ScrollableInventory.sortName = new ArrayList<>(Arrays.asList("invalid", languageManager.CYCLE_ARRANGEMENT_DEFAULT, languageManager.CYCLE_ARRANGEMENT_ALPHABETICAL, languageManager.CYCLE_ARRANGEMENT_COLOR));
+        sender.sendMessage((console ? chPrefix : "") + languageManager.RELOAD_SUCCESSFUL);
+        return true;
+    }
+
+    public static boolean reload() {
+        headsConfig.reload();
+        reducedDebug = headsConfig.get().getBoolean("reducedDebug");
+        reloadHistoryData();
+        reloadEconomy();
+        if (!reloadTranslations(headsConfig.get().getString("langFile"))) {
+            return false;
+        }
+        ScrollableInventory.sortName = new ArrayList<>(Arrays.asList("invalid", languageManager.CYCLE_ARRANGEMENT_DEFAULT, languageManager.CYCLE_ARRANGEMENT_ALPHABETICAL, languageManager.CYCLE_ARRANGEMENT_COLOR));
+        return true;
+    }
+
+    public void onDisable() {
+        if (isInit) {
+            OtherListeners.saveLoc.values().forEach(loc -> loc.getBlock().setType(Material.AIR));
+            PlayerWrapper.clearCache();
+        }
+    }
+
+    private void convertOldHeadData() {
+        JsonObject rootObject = playerDataFile.getJson().isJsonObject() ? playerDataFile.getJson().getAsJsonObject() : new JsonObject();
+        try {
+            for (String uuid : headsConfig.get().getConfigurationSection("heads").getKeys(false)) {
+                JsonObject uuidObject = rootObject.has(uuid) ? rootObject.getAsJsonObject(uuid) : new JsonObject();
+                JsonObject savedHeads = uuidObject.has("savedHeads") ? uuidObject.getAsJsonObject("savedHeads") : new JsonObject();
+                for (String key : headsConfig.get().getConfigurationSection("heads." + uuid).getKeys(false)) {
+                    savedHeads.addProperty(key, headsConfig.get().getString("heads." + uuid + "." + key + ".texture"));
+                }
+                uuidObject.add("unlockedCategories", new JsonArray());
+                uuidObject.add("savedHeads", savedHeads);
+                rootObject.add(uuid, uuidObject);
+            }
+
+            playerDataFile.setJson(rootObject);
+            playerDataFile.saveJson();
+            headsConfig.get().set("heads", null);
+            headsConfig.save();
+            getServer().getConsoleSender().sendMessage(chPrefix + "Successfully converted Head Data");
+        } catch (Exception e) {
+            getLogger().log(Level.WARNING, "Failed to convert Head Data...", e);
+        }
     }
 
     public void onEnable() {
@@ -167,7 +236,7 @@ public class CustomHeads extends JavaPlugin {
                 getServer().getConsoleSender().sendMessage(chWarning + "I wasn't able to find the Default Languge File on your Server...");
                 getServer().getConsoleSender().sendMessage(chPrefix + "§7Downloading necessary Files...");
                 GitHubDownloader gitHubDownloader = new GitHubDownloader("MrSteinMC", "CustomHeads").enableAutoUnzipping();
-                gitHubDownloader.download(getDescription().getVersion(), "language.zip", getDataFolder(), (AfterTask) () -> {
+                gitHubDownloader.download(getDescription().getVersion(), "language.zip", getDataFolder(), (AsyncFileDownloader.AfterTask) () -> {
                     getServer().getConsoleSender().sendMessage(chPrefix + "§7Done downloading! Have fun with the Plugin =D");
                     getServer().getConsoleSender().sendMessage(chPrefix + "§7---------------------------------------------");
                     loadRest();
@@ -181,6 +250,7 @@ public class CustomHeads extends JavaPlugin {
 
     // Load rest of the Plugin after Language Download
     private void loadRest() {
+        reducedDebug = headsConfig.get().getBoolean("reducedDebug");
         categoryLoaderConfig = new Configs(instance, "loadedCategories.yml", true);
 
         tagEditor = new TagEditor("chTags");
@@ -208,9 +278,7 @@ public class CustomHeads extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new OtherListeners(), this);
 
         // Setting up APIHandler
-        APIHandler apiHandler = new APIHandler();
-        headUtil = apiHandler;
-        api = apiHandler;
+        api = new APIHandler();
 
         // Reload Configs
         reloadHistoryData();
@@ -262,14 +330,22 @@ public class CustomHeads extends JavaPlugin {
                                 if (CustomHeads.getTagEditor().getTags(contentItem).contains("openCategory") && CustomHeads.getTagEditor().getTags(contentItem).contains("icon-loop")) {
                                     String[] categoryArgs = CustomHeads.getTagEditor().getTags(contentItem).get(CustomHeads.getTagEditor().indexOf(contentItem, "openCategory") + 1).split("#>");
                                     if (categoryArgs[0].equals("category")) {
+
                                         CustomHeadsPlayer customHeadsPlayer = api.wrapPlayer(player);
                                         Category category = CustomHeads.getCategoryLoader().getCategory(categoryArgs[1]);
                                         ItemStack nextIcon = category.nextIcon();
+                                        boolean unlocked = customHeadsPlayer.getUnlockedCategories(false).stream().map(BaseCategory::getId).collect(Collectors.toList()).contains(category.getId());
+                                        boolean bought = customHeadsPlayer.getUnlockedCategories(true).stream().map(BaseCategory::getId).collect(Collectors.toList()).contains(category.getId());
                                         nextIcon = new ItemEditor(nextIcon)
-                                                .setDisplayName(Utils.hasPermission(player, category.getPermission()) ? "§a" + nextIcon.getItemMeta().getDisplayName() : "§7" + ChatColor.stripColor(nextIcon.getItemMeta().getDisplayName()) + " " + CustomHeads.getLanguageManager().LOCKED)
-                                                .addLoreLine(customHeadsPlayer.getUnlockedCategories(false).stream().map(BaseCategory::getId).collect(Collectors.toList()).contains(category.getId()) ? languageManager.ECONOMY_BOUGHT : Utils.getPriceFormatted(category, true))
-                                                .addLoreLines(Utils.hasPermission(player, "heads.view.permissions") ? Arrays.asList("§8>===-------", "§7§oPermission: " + category.getPermission()) : null)
+                                                .setDisplayName(hasPermission(player, category.getPermission()) || unlocked ? "§a" + nextIcon.getItemMeta().getDisplayName() : "§7" + ChatColor.stripColor(nextIcon.getItemMeta().getDisplayName()) + " " + CustomHeads.getLanguageManager().LOCKED)
+                                                .addLoreLine(CustomHeads.hasEconomy() ? bought ? CustomHeads.getLanguageManager().ECONOMY_BOUGHT : Utils.getPriceFormatted(category, true) + "\n" + CustomHeads.getLanguageManager().ECONOMY_BUY_CATEGORY_PROMPT : null)
+                                                .addLoreLines(hasPermission(player, "heads.view.permissions") ? Arrays.asList("§8>===-------", "§7§oPermission: " + category.getPermission()) : null)
                                                 .getItem();
+                                        if (CustomHeads.hasEconomy()) {
+                                            if (!bought) {
+                                                nextIcon = CustomHeads.getTagEditor().addTags(nextIcon, "buyCategory", category.getId());
+                                            }
+                                        }
                                         contentItem = nextIcon;
                                     }
                                 }
@@ -283,37 +359,6 @@ public class CustomHeads extends JavaPlugin {
         }.runTaskTimer(instance, 0, 20);
 
         isInit = true;
-    }
-
-    public void onDisable() {
-        if (isInit) {
-            OtherListeners.saveLoc.values().forEach(loc -> loc.getBlock().setType(Material.AIR));
-            PlayerWrapper.clearCache();
-        }
-    }
-
-    private void convertOldHeadData() {
-        JsonObject rootObject = playerDataFile.getJson().isJsonObject() ? playerDataFile.getJson().getAsJsonObject() : new JsonObject();
-        try {
-            for (String uuid : headsConfig.get().getConfigurationSection("heads").getKeys(false)) {
-                JsonObject uuidObject = rootObject.has(uuid) ? rootObject.getAsJsonObject(uuid) : new JsonObject();
-                JsonObject savedHeads = uuidObject.has("savedHeads") ? uuidObject.getAsJsonObject("savedHeads") : new JsonObject();
-                for (String key : headsConfig.get().getConfigurationSection("heads." + uuid).getKeys(false)) {
-                    savedHeads.addProperty(key, headsConfig.get().getString("heads." + uuid + "." + key + ".texture"));
-                }
-                uuidObject.add("unlockedCategories", new JsonArray());
-                uuidObject.add("savedHeads", savedHeads);
-                rootObject.add(uuid, uuidObject);
-            }
-
-            playerDataFile.setJson(rootObject);
-            playerDataFile.saveJson();
-            headsConfig.get().set("heads", null);
-            headsConfig.save();
-            getServer().getConsoleSender().sendMessage(chPrefix + "Successfully converted Head Data");
-        } catch (Exception e) {
-            getLogger().log(Level.WARNING, "Failed to convert Head Data...", e);
-        }
     }
 
 }

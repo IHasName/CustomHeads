@@ -10,6 +10,10 @@ import org.bukkit.entity.Player;
 import java.util.HashMap;
 import java.util.logging.Level;
 
+/*
+ *  Project: CustomHeads in HeadWriter
+ *     by LikeWhat
+ */
 
 public class HeadWriter {
 
@@ -85,7 +89,7 @@ public class HeadWriter {
                 }
             }
             try {
-                CustomHeads.getHeadUtil().setSkull(loc.getBlock(), new ItemEditor(fontType.getCharacter(text.charAt(i))).getTexture(), axis[Math.round((location.getYaw() * (-1)) / 90f) & 0x3]);
+                CustomHeads.getApi().setSkull(loc.getBlock(), new ItemEditor(fontType.getCharacter(text.charAt(i))).getTexture(), axis[Math.round((location.getYaw() * (-1)) / 90f) & 0x3]);
             } catch (Exception e) {
                 if (recHis) {
                     player.sendMessage("§cUnsupported Character at collum " + (i + 1) + ": " + text.charAt(i));

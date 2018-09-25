@@ -48,7 +48,7 @@ public class GameProfileBuilder {
                         connection.setReadTimeout(5000);
 
                         if (connection.getResponseCode() == HttpURLConnection.HTTP_UNAVAILABLE) {
-                            Bukkit.getLogger().warning("Service is unaviable a this moment");
+                            Bukkit.getLogger().warning("Service is unavailable at this moment");
                             consumer.accept(null);
                             return;
                         }

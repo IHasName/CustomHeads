@@ -16,6 +16,11 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.logging.Level;
 
+/*
+ *  Project: CustomHeads in GitHubDownloader
+ *     by LikeWhat
+ */
+
 public class GitHubDownloader {
 
     private static final String GITHUB_REPO_URL = "https://api.github.com/repos/{author}/{projectName}";
@@ -37,7 +42,7 @@ public class GitHubDownloader {
         return this;
     }
 
-    public void download(String tagName, String assetName, File downloadTo, AfterTask... afterTask) {
+    public void download(String tagName, String assetName, File downloadTo, AsyncFileDownloader.AfterTask... afterTask) {
         JsonArray releaseList = getResponseAsJson("/releases").getAsJsonArray();
 
         JsonObject release = null;
@@ -87,7 +92,7 @@ public class GitHubDownloader {
         }
     }
 
-    public void downloadLatest(String assetName, File downloadTo, AfterTask... afterTask) {
+    public void downloadLatest(String assetName, File downloadTo, AsyncFileDownloader.AfterTask... afterTask) {
         download(getResponseAsJson("/releases/latest").getAsJsonObject().get("tag_name").getAsString(), assetName, downloadTo, afterTask);
     }
 

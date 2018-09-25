@@ -13,6 +13,13 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+/*
+ *  Project: CustomHeads in ItemEditor
+ *     by LikeWhat
+ *
+ *  Just like every ItemBuilder out there
+ */
+
 public class ItemEditor {
 
     private ItemStack itemStack;
@@ -130,7 +137,7 @@ public class ItemEditor {
     }
 
     public String getTexture() {
-        return CustomHeads.getHeadUtil().getSkullTexture(itemStack);
+        return CustomHeads.getApi().getSkullTexture(itemStack);
     }
 
     public ItemEditor setTexture(String texture) {

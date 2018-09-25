@@ -64,7 +64,7 @@ public class PlayerWrapper implements CustomHeadsPlayer {
         wrappedPlayersCache.put(player.getUniqueId(), this);
     }
 
-    public static CustomHeadsPlayer wrapPlayer(OfflinePlayer player) {
+    static CustomHeadsPlayer wrapPlayer(OfflinePlayer player) {
         return wrappedPlayersCache.containsKey(player.getUniqueId()) ? wrappedPlayersCache.get(player.getUniqueId()) : new PlayerWrapper(player);
     }
 

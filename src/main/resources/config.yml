@@ -43,3 +43,4 @@ keepCategoryPermissions: true
 useEconomy: false
 updateNotify: true
 langFile: none
+reducedDebug: false

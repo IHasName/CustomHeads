@@ -10,7 +10,7 @@ package de.mrstein.customheads.stuff;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import de.mrstein.customheads.CustomHeads;
-import de.mrstein.customheads.utils.Utils;
+import de.mrstein.customheads.utils.ItemEditor;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -46,18 +46,19 @@ public class SearchHistory {
 
     public Inventory getInventory() {
         Inventory hisInv = Bukkit.createInventory(null, 9 * 5, CustomHeads.getLanguageManager().HISTORY_INV_TITLE.replace("{PLAYER}", offlinePlayer.getName()));
-        hisInv.setItem(0, Utils.createItem(Material.STAINED_GLASS_PANE, 1, CustomHeads.getLanguageManager().HISTORY_SEARCHHISTORY_ACTIVE, (short) 5));
-        hisInv.setItem(1, CustomHeads.getTagEditor().setTags(Utils.createItem(Material.STAINED_GLASS_PANE, 1, CustomHeads.getLanguageManager().HISTORY_GETHISTORY, (short) 15), "history", "open#>get"));
-        hisInv.setItem(8, Utils.createPlayerHead("§b" + offlinePlayer.getName(), offlinePlayer.getName()));
+        hisInv.setItem(0, new ItemEditor(Material.STAINED_GLASS_PANE, (short) 5).setDisplayName(CustomHeads.getLanguageManager().HISTORY_SEARCHHISTORY_ACTIVE).getItem());
+        hisInv.setItem(1, CustomHeads.getTagEditor().setTags(new ItemEditor(Material.STAINED_GLASS_PANE, (short) 15).setDisplayName(CustomHeads.getLanguageManager().HISTORY_GETHISTORY).getItem(), "history", "open#>get"));
+        hisInv.setItem(8, new ItemEditor(Material.SKULL_ITEM, (short) 3).setDisplayName("§b" + offlinePlayer.getName()).setOwner(offlinePlayer.getName()).getItem());
         for (int i = 9; i < 18; i++) {
-            hisInv.setItem(i, Utils.createItem(Material.STAINED_GLASS_PANE, 1, "§0", (short) 1));
+            hisInv.setItem(i, new ItemEditor(Material.STAINED_GLASS_PANE, (short) 1).setDisplayName("§0").getItem());
         }
         if (hasHistory()) {
             for (int i = 0; i < entries.size(); i++) {
-                hisInv.setItem(i + 18, CustomHeads.getTagEditor().setTags(Utils.createItem(Material.PAPER, 1, "§a" + entries.get(i), CustomHeads.getLanguageManager().HISTORY_SEARCHHISTORY_LORE), "history", "search#>" + entries.get(i), "tempTags"));
+                hisInv.setItem(i + 18, CustomHeads.getTagEditor().setTags(new ItemEditor(Material.PAPER).setDisplayName("§a" + entries.get(i)).setLore(CustomHeads.getLanguageManager().HISTORY_SEARCHHISTORY_LORE).getItem(), "history", "search#>" + entries.get(i), "tempTags"));
             }
         } else {
-            hisInv.setItem(31, Utils.createItem(Material.BARRIER, 1, "§0", CustomHeads.getLanguageManager().HISTORY_NO_HISTORY_LORE));
+            hisInv.setItem(31, new ItemEditor(Material.BARRIER).setDisplayName("§0").setLore(CustomHeads.getLanguageManager().HISTORY_NO_HISTORY_LORE).getItem());
+
         }
         return hisInv;
     }

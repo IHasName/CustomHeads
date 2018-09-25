@@ -9,6 +9,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 
+/*
+ *  Project: CustomHeads in TagEditor
+ *     by LikeWhat
+ */
+
 // It all started as an simple idea >_>
 public class TagEditor {
 

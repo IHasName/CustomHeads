@@ -19,6 +19,11 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
+/*
+ *  Project: CustomHeads in CategoryLoader
+ *     by LikeWhat
+ */
+
 @Getter
 public class CategoryLoader {
 
@@ -42,7 +47,8 @@ public class CategoryLoader {
         int loaded = 0;
         int ignored = 0;
         int invalid = 0;
-        CustomHeads.getInstance().getServer().getConsoleSender().sendMessage(CustomHeads.chPrefix + "Loading " + CustomHeads.getCategoryLoaderConfig().get().getList("categories").size() + " Categories from " + language + "/categories");
+        if (!CustomHeads.hasReducedDebug())
+            CustomHeads.getInstance().getServer().getConsoleSender().sendMessage(CustomHeads.chPrefix + "Loading " + CustomHeads.getCategoryLoaderConfig().get().getList("categories").size() + " Categories from " + language + "/categories");
         long timestamp = System.currentTimeMillis();
         CustomHeads.getCategoryLoaderConfig().reload();
         boolean ignoreInvalid = CustomHeads.getCategoryLoaderConfig().get().getBoolean("ignoreInvalid");
@@ -60,8 +66,6 @@ public class CategoryLoader {
             JsonFile jsf = new JsonFile(file);
             ignored = CustomHeads.getCategoryLoaderConfig().get().getList("categories").size() - fileList.size();
             try {
-//                JsonObject jsonCategory = jsf.getJson().getAsJsonObject().get("category-settings").getAsJsonObject();
-//                Category category = Category.fromJson(jsf.getJson().toString());
                 Category category = Category.getConverter().fromJson(jsf.getJson(), Category.class);
                 if (category == null) {
                     if (ignoreInvalid) {
@@ -99,7 +103,8 @@ public class CategoryLoader {
             }
         }
 
-        CustomHeads.getInstance().getServer().getConsoleSender().sendMessage(CustomHeads.chPrefix + "Successfully loaded " + loaded + " Categories from " + language + "/categories in " + (System.currentTimeMillis() - timestamp) + "ms " + (ignoreInvalid ? "(" + (ignored + invalid) + " " + ((ignored + invalid) == 1 ? "Category was" : "Categories were") + " ignored - " + ignored + " not loaded or not found, " + (invalid > 0 ? "§c" : "") + invalid + " Invalid§7)" : ""));
+        if (!CustomHeads.hasReducedDebug())
+            CustomHeads.getInstance().getServer().getConsoleSender().sendMessage(CustomHeads.chPrefix + "Successfully loaded " + loaded + " Categories from " + language + "/categories in " + (System.currentTimeMillis() - timestamp) + "ms " + (ignoreInvalid ? "(" + (ignored + invalid) + " " + ((ignored + invalid) == 1 ? "Category was" : "Categories were") + " ignored - " + ignored + " not loaded or not found, " + (invalid > 0 ? "§c" : "") + invalid + " Invalid§7)" : ""));
         CategoryLoader.loaded = true;
     }
 

@@ -6,11 +6,16 @@ import de.mrstein.customheads.reflection.TagEditor;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
 
+/*
+ *  Project: CustomHeads in ScrollableInventory
+ *     by LikeWhat
+ */
 
 public class ScrollableInventory {
 
@@ -113,9 +118,9 @@ public class ScrollableInventory {
             inventory.setItem(index + 47, CustomHeads.getTagEditor().addTags(buttons.get(index), "scInvID", uid));
 
         if (page < pages)
-            inventory.setItem(53, CustomHeads.getTagEditor().setTags(Utils.createHead(language.NEXT_PAGE, language.PAGE_GENERAL_PREFIX + " " + (page + 1), "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMWI2ZjFhMjViNmJjMTk5OTQ2NDcyYWVkYjM3MDUyMjU4NGZmNmY0ZTgzMjIxZTU5NDZiZDJlNDFiNWNhMTNiIn19fQ=="), "scInvID", uid, "scrollInv", "slidePage#>next"));
+            inventory.setItem(53, CustomHeads.getTagEditor().setTags(new ItemEditor(Material.SKULL_ITEM, (short) 3).setDisplayName(language.NEXT_PAGE).setLore(language.PAGE_GENERAL_PREFIX + " " + (page + 1)).setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMWI2ZjFhMjViNmJjMTk5OTQ2NDcyYWVkYjM3MDUyMjU4NGZmNmY0ZTgzMjIxZTU5NDZiZDJlNDFiNWNhMTNiIn19fQ==").getItem(), "scInvID", uid, "scrollInv", "slidePage#>next"));
         if (page > 1)
-            inventory.setItem(45, CustomHeads.getTagEditor().setTags(Utils.createHead(language.PREVIOUS_PAGE, language.PAGE_GENERAL_PREFIX + " " + (page - 1), "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzM3NjQ4YWU3YTU2NGE1Mjg3NzkyYjA1ZmFjNzljNmI2YmQ0N2Y2MTZhNTU5Y2U4YjU0M2U2OTQ3MjM1YmNlIn19fQ=="), "scInvID", uid, "scrollInv", "slidePage#>previous"));
+            inventory.setItem(45, CustomHeads.getTagEditor().setTags(new ItemEditor(Material.SKULL_ITEM, (short) 3).setDisplayName(language.PREVIOUS_PAGE).setLore(language.PAGE_GENERAL_PREFIX + " " + (page - 1)).setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzM3NjQ4YWU3YTU2NGE1Mjg3NzkyYjA1ZmFjNzljNmI2YmQ0N2Y2MTZhNTU5Y2U4YjU0M2U2OTQ3MjM1YmNlIn19fQ==").getItem(), "scInvID", uid, "scrollInv", "slidePage#>previous"));
     }
 
     public int reArrangeContents(int method) {

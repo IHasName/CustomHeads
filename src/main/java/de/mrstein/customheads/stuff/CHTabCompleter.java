@@ -17,6 +17,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/*
+ *  Project: CustomHeads in CHTabCompleter
+ *     by LikeWhat
+ */
 
 public class CHTabCompleter implements TabCompleter {
 

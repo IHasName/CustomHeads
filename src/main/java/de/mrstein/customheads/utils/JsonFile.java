@@ -16,6 +16,11 @@ import java.util.logging.Level;
 
 import static de.mrstein.customheads.utils.Utils.saveInternalFile;
 
+/*
+ *  Project: CustomHeads in JsonFile
+ *     by LikeWhat
+ */
+
 @Getter
 public class JsonFile {
 
