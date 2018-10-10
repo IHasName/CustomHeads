@@ -79,7 +79,7 @@ CATEGORIES:
     - '&7Benutzt: &e{USED}'
     HOVERINFO_SUBCATEGORY:
     - '&7ID: &e{ID}'
-    - '&7Used: &e{USED}'
+    - '&7Benutzt: &e{USED}'
   REMOVE:
     NOTFOUND: '&eRemove: &7Konnte nichts unter der ID &c{ID} &7finden'
     INUSE: '&eRemove: &7Kann Kategorie "&c{CATEGORY}" &7nicht entfernen da sie verwendet wird'

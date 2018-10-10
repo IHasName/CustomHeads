@@ -91,15 +91,19 @@ public class PlayerWrapper implements CustomHeadsPlayer {
             uuidObject.add("unlockedCategories", unlockedCategories);
             JsonObject historyObject = new JsonObject();
             JsonArray searchHistory = new JsonArray();
-            for (String entry : customHeadsPlayer.getSearchHistory().getEntries()) {
-                searchHistory.add(new JsonPrimitive(entry));
+            if (customHeadsPlayer.getSearchHistory().hasHistory()) {
+                for (String entry : customHeadsPlayer.getSearchHistory().getEntries()) {
+                    searchHistory.add(new JsonPrimitive(entry));
+                }
+                historyObject.add("searchHistory", searchHistory);
             }
-            historyObject.add("searchHistory", searchHistory);
-            JsonArray getHistory = new JsonArray();
-            for (String entry : customHeadsPlayer.getGetHistory().getEntries()) {
-                getHistory.add(new JsonPrimitive(entry));
+            if (customHeadsPlayer.getGetHistory().hasHistory()) {
+                JsonArray getHistory = new JsonArray();
+                for (String entry : customHeadsPlayer.getGetHistory().getEntries()) {
+                    getHistory.add(new JsonPrimitive(entry));
+                }
+                historyObject.add("getHistory", getHistory);
             }
-            historyObject.add("getHistory", getHistory);
             uuidObject.add("history", historyObject);
 
             rootObjects.add(uuids.toString(), uuidObject);

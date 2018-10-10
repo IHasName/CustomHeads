@@ -15,7 +15,7 @@
   "sub_categories": [
     {
       "id": 0,
-      "name": "Holz",
+      "name": "&6Holz",
       "icon": {
         "item": "SKULL_ITEM",
         "damage": 3,
@@ -134,7 +134,7 @@
     },
     {
       "id": 1,
-      "name": "Stein",
+      "name": "&7Stein",
       "icon": {
         "item": "SKULL_ITEM",
         "damage": 3,
@@ -253,7 +253,7 @@
     },
     {
       "id": 2,
-      "name": "Nummern",
+      "name": "&aNummern",
       "icon": {
         "item": "SKULL_ITEM",
         "damage": 3,

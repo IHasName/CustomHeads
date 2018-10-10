@@ -87,7 +87,7 @@ public class CustomHeads extends JavaPlugin {
     private static boolean historyEnabled = false;
     private static boolean canSeeOwnHistory = false;
     private static boolean hasEconomy = false;
-    private static boolean keepCategoryPermissions = true;
+    private static boolean keepCategoryPermissions = false;
     private String bukkitVersion = Bukkit.getVersion().substring(Bukkit.getVersion().lastIndexOf("("));
     private boolean isInit = false;
     private static boolean reducedDebug = false;
@@ -139,6 +139,10 @@ public class CustomHeads extends JavaPlugin {
         return hasEconomy;
     }
 
+    public static boolean keepCategoryPermissions() {
+        return keepCategoryPermissions;
+    }
+
     public static boolean hasReducedDebug() {
         return reducedDebug;
     }
@@ -148,10 +152,12 @@ public class CustomHeads extends JavaPlugin {
         sender.sendMessage((console ? chPrefix : "") + languageManager.RELOAD_CONFIG);
         headsConfig.reload();
         reducedDebug = headsConfig.get().getBoolean("reducedDebug");
+        keepCategoryPermissions = headsConfig.get().getBoolean("keepCategoryPermissions");
         reloadEconomy();
         sender.sendMessage((console ? chPrefix : "") + languageManager.RELOAD_HISTORY);
         reloadHistoryData();
         sender.sendMessage((console ? chPrefix : "") + languageManager.RELOAD_LANGUAGE);
+        PlayerWrapper.clearCache();
         if (!reloadTranslations(headsConfig.get().getString("langFile"))) {
             sender.sendMessage((console ? chPrefix : "") + languageManager.RELOAD_FAILED);
             return false;
@@ -164,8 +170,10 @@ public class CustomHeads extends JavaPlugin {
     public static boolean reload() {
         headsConfig.reload();
         reducedDebug = headsConfig.get().getBoolean("reducedDebug");
+        keepCategoryPermissions = headsConfig.get().getBoolean("keepCategoryPermissions");
         reloadHistoryData();
         reloadEconomy();
+        PlayerWrapper.clearCache();
         if (!reloadTranslations(headsConfig.get().getString("langFile"))) {
             return false;
         }
@@ -251,9 +259,11 @@ public class CustomHeads extends JavaPlugin {
     // Load rest of the Plugin after Language Download
     private void loadRest() {
         reducedDebug = headsConfig.get().getBoolean("reducedDebug");
+        keepCategoryPermissions = headsConfig.get().getBoolean("keepCategoryPermissions");
         categoryLoaderConfig = new Configs(instance, "loadedCategories.yml", true);
 
         tagEditor = new TagEditor("chTags");
+
 
         JsonFile.setDefaultSubfolder("plugins/CustomHeads");
 
@@ -290,6 +300,7 @@ public class CustomHeads extends JavaPlugin {
 
         // Check for updates
         spigetFetcher = new SpigetFetcher(29057);
+        SpigetFetcher.setUserAgent("UC-CustomHeads");
 
         spigetFetcher.fetchUpdates(new SpigetFetcher.FetchResult() {
             public void updateAvailable(SpigetFetcher.ResourceRelease release, SpigetFetcher.ResourceUpdate update) {
@@ -339,7 +350,7 @@ public class CustomHeads extends JavaPlugin {
                                         nextIcon = new ItemEditor(nextIcon)
                                                 .setDisplayName(hasPermission(player, category.getPermission()) || unlocked ? "§a" + nextIcon.getItemMeta().getDisplayName() : "§7" + ChatColor.stripColor(nextIcon.getItemMeta().getDisplayName()) + " " + CustomHeads.getLanguageManager().LOCKED)
                                                 .addLoreLine(CustomHeads.hasEconomy() ? bought ? CustomHeads.getLanguageManager().ECONOMY_BOUGHT : Utils.getPriceFormatted(category, true) + "\n" + CustomHeads.getLanguageManager().ECONOMY_BUY_CATEGORY_PROMPT : null)
-                                                .addLoreLines(hasPermission(player, "heads.view.permissions") ? Arrays.asList("§8>===-------", "§7§oPermission: " + category.getPermission()) : null)
+                                                .addLoreLines(hasPermission(player, "heads.view.permissions") ? Arrays.asList(" ", "§7§oPermission: " + category.getPermission()) : null)
                                                 .getItem();
                                         if (CustomHeads.hasEconomy()) {
                                             if (!bought) {

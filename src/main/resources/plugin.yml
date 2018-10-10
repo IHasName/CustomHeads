@@ -23,6 +23,24 @@ permissions:
     default: op
   heads.viewCategory:
     default: op
+  heads.use.more:
+    default: op
+  heads.use.more.firework:
+    children:
+      heads.use.more: true
+    default: op
+  heads.use.more.search:
+    children:
+      heads.use.more: true
+    default: op
+  heads.use.more.write:
+    children:
+      heads.use.more: true
+    default: op
+  heads.use.more.get:
+    children:
+      heads.use.more: true
+    default: op
   heads.admin:
     description: Gives all Permission for the Plugin
     children:

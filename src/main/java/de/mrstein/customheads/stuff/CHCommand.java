@@ -148,7 +148,10 @@ public class CHCommand implements CommandExecutor {
             /* Test Command plez Ignore
             if (args[0].equalsIgnoreCase("test")) {
                 Configs tempcon = new Configs(CustomHeads.getInstance(), "test.yml", false, "testing");
-                return false;
+                if(args[1].equalsIgnoreCase("gettags")) {
+                    player.sendMessage("[Tags] " + CustomHeads.getTagEditor().getTags(player.getItemInHand()));
+                }
+                return true;
             }
             */
 
@@ -184,7 +187,7 @@ public class CHCommand implements CommandExecutor {
                             hoverInfoCategoryBuilder = hoverInfoCategoryBuilder.substring(0, hoverInfoCategoryBuilder.length() - 1);
                             hoverInfoCategoryBuilder += "\"}";
 
-                            Utils.sendJSONMessage("[\"\",{\"text\":\" §e" + (i == (categories.size() - 1) ? "??" : "??") + " \"},{\"text\":\"" + (cCategory.isUsed() ? "§a" : "§7") + ChatColor.stripColor(cCategory.getName()) + "\"" +/*(CustomHeads.hasCategoryEditor() ? ",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/cedit " + cCategory.getId() + "\"}" : "") +*/",\"hoverEvent\":{\"action\":\"show_text\",\"value\":{\"text\":\"\",\"extra\":[" + hoverInfoCategoryBuilder +/*",{\"text\":\"\n" + (CustomHeads.hasCategoryEditor() ? "§eClick to open in Editor" : "§eGet CategoryCreator to\n§eopen an Editor") + "\"}" +*/"]}}}]", player);
+                            Utils.sendJSONMessage("[\"\",{\"text\":\" §e" + (i == (categories.size() - 1) ? "┗╸" : "┣╸") + " \"},{\"text\":\"" + (cCategory.isUsed() ? "§a" : "§7") + ChatColor.stripColor(cCategory.getName()) + "\"" +/*(CustomHeads.hasCategoryEditor() ? ",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/cedit " + cCategory.getId() + "\"}" : "") +*/",\"hoverEvent\":{\"action\":\"show_text\",\"value\":{\"text\":\"\",\"extra\":[" + hoverInfoCategoryBuilder +/*",{\"text\":\"\n" + (CustomHeads.hasCategoryEditor() ? "§eClick to open in Editor" : "§eGet CategoryCreator to\n§eopen an Editor") + "\"}" +*/"]}}}]", player);
                             if (cCategory.hasSubCategories()) {
                                 for (int j = 0; j < cCategory.getSubCategories().size(); j++) {
                                     SubCategory cSubCategory = cCategory.getSubCategories().get(j);
@@ -193,11 +196,11 @@ public class CHCommand implements CommandExecutor {
                                     for (String hoverInfoSubCategory : CustomHeads.getLanguageManager().CATEGORIES_BASECOMMAND_HOVERINFO_SUBCATEGORY) {
                                         hoverInfoSubCategoryBuilder += hoverInfoSubCategory + "\n";
                                     }
-                                    hoverInfoSubCategoryBuilder = hoverInfoSubCategoryBuilder.replace("{ID}", "" + cSubCategory.getId()).replace("{CATEGORY}", cSubCategory.getName()).replace("{USED}", cSubCategory.isUsed() ? CustomHeads.getLanguageManager().YES : CustomHeads.getLanguageManager().NO);
+                                    hoverInfoSubCategoryBuilder = hoverInfoSubCategoryBuilder.replace("{ID}", "" + cCategory.getId()).replace("{CATEGORY}", cCategory.getName()).replace("{USED}", cSubCategory.isUsed() ? CustomHeads.getLanguageManager().YES : CustomHeads.getLanguageManager().NO);
                                     hoverInfoSubCategoryBuilder = hoverInfoSubCategoryBuilder.substring(0, hoverInfoSubCategoryBuilder.length() - 1);
                                     hoverInfoSubCategoryBuilder += "\"}";
 
-                                    Utils.sendJSONMessage("[\"\",{\"text\":\" §e" + (i == (categories.size() - 1) ? " " : "? ") + "  " + (j == (cCategory.getSubCategories().size() - 1) ? "??" : "??") + " \"},{\"text\":\"" + (cCategory.isUsed() ? "§a" : "§7") + ChatColor.stripColor(cSubCategory.getName()) + "\"" +/*(CustomHeads.hasCategoryEditor() ? ",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/cedit " + cSubCategory.getId() + "\"}" : "") +*/",\"hoverEvent\":{\"action\":\"show_text\",\"value\":{\"text\":\"\",\"extra\":[" + hoverInfoSubCategoryBuilder +/*",{\"text\":\"\n" + (CustomHeads.hasCategoryEditor() ? "§eClick to open in Editor" : "§eGet CategoryCreator to\n§eopen an Editor") + "\"}" +*/"]}}}]", player);
+                                    Utils.sendJSONMessage("[\"\",{\"text\":\" §e" + (i == (categories.size() - 1) ? " " : "┃ ") + "  " + (j == (cCategory.getSubCategories().size() - 1) ? "┗╸" : "┣╸") + " \"},{\"text\":\"" + (cCategory.isUsed() ? "§a" : "§7") + ChatColor.stripColor(cSubCategory.getName()) + "\"" +/*(CustomHeads.hasCategoryEditor() ? ",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/cedit " + cSubCategory.getId() + "\"}" : "") +*/",\"hoverEvent\":{\"action\":\"show_text\",\"value\":{\"text\":\"\",\"extra\":[" + hoverInfoSubCategoryBuilder +/*",{\"text\":\"\n" + (CustomHeads.hasCategoryEditor() ? "§eClick to open in Editor" : "§eGet CategoryCreator to\n§eopen an Editor") + "\"}" +*/"]}}}]", player);
                                 }
                             }
                         }
@@ -582,11 +585,10 @@ public class CHCommand implements CommandExecutor {
                 player.sendMessage(CustomHeads.getLanguageManager().NO_PERMISSION);
                 return true;
             }
-            // TODO Change to new Method
             if (args.length > 1) {
-                if (hasPermission(player, "heads.use.more")) {
-                    CustomHeadsPlayer customHeadsPlayer = CustomHeads.getApi().wrapPlayer(player);
-                    if (args[0].equalsIgnoreCase("add") || args[0].equalsIgnoreCase("save")) {
+                CustomHeadsPlayer customHeadsPlayer = CustomHeads.getApi().wrapPlayer(player);
+                if (args[0].equalsIgnoreCase("add") || args[0].equalsIgnoreCase("save")) {
+                    if (hasPermission(player, "heads.use.more")) {
                         if (args.length > 2) {
                             if (args[2].equalsIgnoreCase("-t")) {
                                 if (hasPermission(player, "heads.use.saveastexture")) {
@@ -638,7 +640,11 @@ public class CHCommand implements CommandExecutor {
                         player.sendMessage(CustomHeads.getLanguageManager().SAVE_NOT_SKULL);
                         return true;
                     }
-                    if (args[0].equalsIgnoreCase("remove")) {
+                    player.sendMessage(CustomHeads.getLanguageManager().NO_PERMISSION);
+                    return true;
+                }
+                if (args[0].equalsIgnoreCase("remove")) {
+                    if (hasPermission(player, "heads.use.more")) {
                         if (customHeadsPlayer.deleteHead(args[1])) {
                             player.sendMessage(CustomHeads.getLanguageManager().REMOVE_SUCCESSFUL.replace("{NAME}", format(args[1])));
                             return true;
@@ -646,42 +652,42 @@ public class CHCommand implements CommandExecutor {
                         player.sendMessage(CustomHeads.getLanguageManager().REMOVE_FAILED.replace("{NAME}", format(args[1])));
                         return true;
                     }
-                    if (args[0].equalsIgnoreCase("write")) {
-                        if (hasPermission(player, "heads.use.more.write")) {
-                            if (args.length < 3) {
-                                player.sendMessage("§cPlease Note that this Comamnd is still an Beta-Command and may cause Issues!");
-                                player.sendMessage(CustomHeads.getLanguageManager().COMMAND_USAGE.replace("{COMMAND}", "§c/heads write <fontName> <text>"));
-                                return true;
-                            }
-                            HeadFontType fontType = new HeadFontType(args[1]);
-                            if (!fontType.exists()) {
-                                player.sendMessage(CustomHeads.getLanguageManager().WRITE_NOFONT);
-                                return true;
-                            }
-                            StringBuilder text = new StringBuilder();
-                            for (int i = 2; i < args.length; i++) {
-                                text.append(args[i]).append(" ");
-                            }
-                            text = new StringBuilder(text.substring(0, text.length() - 1));
-                            HeadWriter writer = new HeadWriter(fontType, text.toString().toLowerCase(), player);
-                            writer.writeAt(player.getLocation());
-                            return true;
-                        }
-                        player.sendMessage(CustomHeads.getLanguageManager().NO_PERMISSION);
-                        return true;
-                    }
-                    StringBuilder builder = new StringBuilder();
-                    for (String permission : Utils.getPermissions(player)) {
-                        for (String subCommand : Utils.getPermissions().get(permission)) {
-                            builder.append(subCommand).append(", ");
-                        }
-                    }
-                    if (builder.length() != 0)
-                        builder.setLength(builder.length() - 2);
-                    player.sendMessage(CustomHeads.getLanguageManager().COMMAND_USAGE.replace("{COMMAND}", "/heads " + (builder.length() == 0 ? "" : "<" + builder.toString() + ">")));
+                    player.sendMessage(CustomHeads.getLanguageManager().NO_PERMISSION);
                     return true;
                 }
-                player.sendMessage(CustomHeads.getLanguageManager().NO_PERMISSION);
+                if (args[0].equalsIgnoreCase("write")) {
+                    if (hasPermission(player, "heads.use.more.write")) {
+                        if (args.length < 3) {
+                            player.sendMessage("§cPlease Note that this Comamnd is still an Beta-Command and may cause Issues!");
+                            player.sendMessage(CustomHeads.getLanguageManager().COMMAND_USAGE.replace("{COMMAND}", "§c/heads write <fontName> <text>"));
+                            return true;
+                        }
+                        HeadFontType fontType = new HeadFontType(args[1]);
+                        if (!fontType.exists()) {
+                            player.sendMessage(CustomHeads.getLanguageManager().WRITE_NOFONT);
+                            return true;
+                        }
+                        StringBuilder text = new StringBuilder();
+                        for (int i = 2; i < args.length; i++) {
+                            text.append(args[i]).append(" ");
+                        }
+                        text = new StringBuilder(text.substring(0, text.length() - 1));
+                        HeadWriter writer = new HeadWriter(fontType, text.toString().toLowerCase(), player);
+                        writer.writeAt(player.getLocation());
+                        return true;
+                    }
+                    player.sendMessage(CustomHeads.getLanguageManager().NO_PERMISSION);
+                    return true;
+                }
+                StringBuilder builder = new StringBuilder();
+                for (String permission : Utils.getPermissions(player)) {
+                    for (String subCommand : Utils.getPermissions().get(permission)) {
+                        builder.append(subCommand).append(", ");
+                    }
+                }
+                if (builder.length() != 0)
+                    builder.setLength(builder.length() - 2);
+                player.sendMessage(CustomHeads.getLanguageManager().COMMAND_USAGE.replace("{COMMAND}", "/heads " + (builder.length() == 0 ? "" : "<" + builder.toString() + ">")));
                 return true;
             }
             StringBuilder builder = new StringBuilder();

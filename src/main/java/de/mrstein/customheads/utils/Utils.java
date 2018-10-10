@@ -8,7 +8,6 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import de.mrstein.customheads.CustomHeads;
 import de.mrstein.customheads.api.CustomHeadsPlayer;
-import de.mrstein.customheads.category.BaseCategory;
 import de.mrstein.customheads.category.Category;
 import de.mrstein.customheads.reflection.AnvilGUI;
 import de.mrstein.customheads.reflection.TagEditor;
@@ -74,7 +73,8 @@ public class Utils {
         if (perms == null) {
             perms = new HashMap<>();
             perms.put("heads.view.help", new String[]{"help"});
-            perms.put("heads.use.more", new String[]{"remove", "add", "firework"});
+            perms.put("heads.use.more", new String[]{"remove", "add"});
+            perms.put("heads.use.more.firework", new String[]{"firework"});
             perms.put("heads.use.more.get", new String[]{"get"});
             perms.put("heads.admin", new String[]{"reload", "categories", "language"});
             perms.put("heads.view.history", new String[]{"history"});
@@ -101,6 +101,9 @@ public class Utils {
                 }
                 event.getPlayer().sendMessage(CustomHeads.getLanguageManager().SEARCHING.replace("{SEARCH}", event.getName()));
                 CHSearchQuery query = new CHSearchQuery(event.getName());
+                List<Category> categories = CustomHeads.getCategoryLoader().getCategoryList();
+                categories.removeAll(CustomHeads.getApi().wrapPlayer(player).getUnlockedCategories(false));
+                query.excludeCategories(categories);
                 if (query.getResults().isEmpty()) {
                     Inventory noRes = Bukkit.createInventory(event.getPlayer(), 9 * 3, CustomHeads.getLanguageManager().NO_RESULTS);
                     noRes.setItem(13, CustomHeads.getTagEditor().setTags(new ItemEditor(Material.BARRIER).setDisplayName(CustomHeads.getLanguageManager().NO_RESULTS).getItem(), "blockMoving"));
@@ -205,7 +208,7 @@ public class Utils {
             subCommands.put("help", new String[]{"heads.view.help", "§eOpens this Menu\n{PERMISSION}", "/heads help", "§7Permission: §eheads.view.help\n"});
             subCommands.put("remove", new String[]{"heads.use.more", "§eRemove an Head from your Collection\n{PERMISSION}§eTip: §7You can Tab to \n§7AutoComplete your Heads", "/heads remove <headname>", "§7Permission: §eheads.use.more\n"});
             subCommands.put("add", new String[]{"heads.use.more", "§eAdd an Head to your Collection\n{PERMISSION}", "/heads add <headname> [-t]", "§7Permission: §eheads.use.more\n§7heads.use.saveastexture for -t\n"});
-            subCommands.put("firework", new String[]{"heads.use.more", "§eStart some Fireworks\n{PERMISSION}", "/heads firework", "§7Permission: §eheads.use.more\n"});
+            subCommands.put("firework", new String[]{"heads.use.more.firework", "§eStart some Fireworks\n{PERMISSION}", "/heads firework", "§7Permission: §eheads.use.more.firework\n"});
             subCommands.put("get", new String[]{"heads.use.more.get", "§eGives you an Head from an Player\n{PERMISSION}", "/heads get <playername>", "§7Permission: §eheads.use.more.get\n"});
             subCommands.put("reload", new String[]{"heads.admin", "§eReloads the Plugin\n{PERMISSION}§eGood to know: §7heads.admin acts like heads.*", "/heads reload", "§7Permission: §eheads.admin\n"});
             subCommands.put("categories", new String[]{"heads.admin", "§eShows you a List of all Categories\n{PERMISSION}§eGood to know: §7heads.admin acts like heads.*", "/heads categories [remove, delete, import]", "§7Permission: §eheads.admin\n"});
@@ -328,7 +331,7 @@ public class Utils {
 
     public static void openCategory(Category category, Player player, String menuID) {
         CustomHeadsPlayer customHeadsPlayer = CustomHeads.getApi().wrapPlayer(player);
-        if (customHeadsPlayer.getUnlockedCategories(false).stream().map(BaseCategory::getId).collect(Collectors.toList()).contains(category.getId())) {
+        if (customHeadsPlayer.getUnlockedCategories(CustomHeads.hasEconomy() && !CustomHeads.keepCategoryPermissions()).contains(category)) {
             if (category.hasSubCategories()) {
                 player.openInventory(CustomHeads.getLooks().subCategoryLooks.get(Integer.parseInt(category.getId())));
             } else {

@@ -36,15 +36,6 @@
         </resources>
 
         <plugins>
-            <!--<plugin>-->
-            <!--<version>3.6.1</version>-->
-            <!--<groupId>org.apache.maven.plugins</groupId>-->
-            <!--<artifactId>maven-compiler-plugin</artifactId>-->
-            <!--<configuration>-->
-            <!--<source>1.8</source>-->
-            <!--<target>1.8</target>-->
-            <!--</configuration>-->
-            <!--</plugin>-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
@@ -78,8 +69,8 @@
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>2.4</version>
                 <configuration>
-                    <!--<outputDirectory>N:\@OtherStuff\Netzwerk\hello_pom_readers _=D\plugins</outputDirectory>-->
-                    <outputDirectory>N:\@OtherStuff\Netzwerk\1.12\plugins</outputDirectory>
+                    <!--<outputDirectory>N:\@OtherStuff\Servers\hello_pom_readers _=D\plugins</outputDirectory>-->
+                    <outputDirectory>N:\@OtherStuff\Servers\1.12\plugins</outputDirectory>
                 </configuration>
             </plugin>
         </plugins>

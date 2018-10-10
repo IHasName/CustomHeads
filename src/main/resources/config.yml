@@ -22,7 +22,8 @@
 # --------------------------------------------------- #
 # keepCategoryPermissions: Used when Economy is       #
 # enabled. Categories will only be able the be        #
-# unlocked with Money (or for free when not defined)  #
+# unlocked with Money when false                      #
+# (or for free when not defined)                      #
 # --------------------------------------------------- #
 # langFile: Used to determine which Language is used. #
 # You can use the default Languages as template to    #
@@ -43,4 +44,4 @@ keepCategoryPermissions: true
 useEconomy: false
 updateNotify: true
 langFile: none
-reducedDebug: false
+reducedDebug: true

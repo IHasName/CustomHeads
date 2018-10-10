@@ -5,6 +5,7 @@ import de.mrstein.customheads.CustomHeads;
 import de.mrstein.customheads.utils.Configs;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.codec.binary.Base64;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -14,16 +15,17 @@ import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 
-/**
+/*
  * Project: CustomHeads in SpigetFetcher
  *   by LikeWhat
- *
+ */
+
+/**
  * Fetches Updates for Spigot Updates Spigot Resources
  * <p>Uses Spiget Resource API by inventivetalent
  *
@@ -32,9 +34,10 @@ import java.util.logging.Level;
  */
 public class SpigetFetcher {
 
-    private static final String USER_AGENT = "UC-CustomHeads";
-    private static final String DESCRIPTION_URL = "https://api.spiget.org/v2/resources/%s/updates?size=2147483647&spiget__ua=SpigetDocs";
-    private static final String VERSION_URL = "https://api.spiget.org/v2/resources/%s/versions?size=2147483647&spiget__ua=SpigetDocs";
+    private static final String DESCRIPTION_URL = "https://api.spiget.org/v2/resources/%s/updates?size=2147483647&sort=-date";
+    private static final String VERSION_URL = "https://api.spiget.org/v2/resources/%s/versions?size=2147483647&sort=-releaseDate";
+    @Setter
+    private static String userAgent = "UpdateChecker-1.1";
     private static final Gson GSON = new GsonBuilder().disableHtmlEscaping()
             .registerTypeAdapter(ResourceRelease.class, new ResourceRelease.Serializer())
             .registerTypeAdapter(ResourceUpdate.class, new ResourceUpdate.Serializer())
@@ -65,7 +68,7 @@ public class SpigetFetcher {
                         fromCache = true;
                     } else {
                         HttpURLConnection connection = (HttpURLConnection) new URL(versionUrlFormatted).openConnection();
-                        connection.addRequestProperty("User-Agent", USER_AGENT);
+                        connection.addRequestProperty("User-Agent", userAgent);
                         connection.setReadTimeout(5000);
                         versionArray = jsonParser.parse(new InputStreamReader(connection.getInputStream())).getAsJsonArray();
                     }
@@ -79,7 +82,6 @@ public class SpigetFetcher {
                         updateFile.get().set("lastVersionFetch", new String(Base64.encodeBase64(GSON.toJson(releaseList).getBytes())));
                         updateFile.save();
                     }
-                    Collections.reverse(releaseList);
                     ResourceRelease latestRelease = releaseList.get(0);
                     int latestVersion = Integer.parseInt(latestRelease.getReleaseName().replace(".", ""));
                     int currentVersion = Integer.parseInt(CustomHeads.getInstance().getDescription().getVersion().replace(".", ""));
@@ -113,7 +115,7 @@ public class SpigetFetcher {
                         fromCache = true;
                     } else {
                         HttpURLConnection descriptionConnection = (HttpURLConnection) new URL(decriptionUrlFormatted).openConnection();
-                        descriptionConnection.addRequestProperty("User-Agent", USER_AGENT);
+                        descriptionConnection.addRequestProperty("User-Agent", userAgent);
                         descriptionConnection.setReadTimeout(5000);
                         descriptionArray = jsonParser.parse(new InputStreamReader(descriptionConnection.getInputStream())).getAsJsonArray();
                     }
@@ -126,7 +128,6 @@ public class SpigetFetcher {
                         updateFile.get().set("lastDescriptionFetch", new String(Base64.encodeBase64(GSON.toJson(updateList).getBytes())));
                         updateFile.save();
                     }
-                    Collections.reverse(updateList);
                     consumer.accept(updateList);
                     return;
                 } catch (Exception e) {

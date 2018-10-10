@@ -2,7 +2,6 @@ package de.mrstein.customheads.listener;
 
 import de.mrstein.customheads.CustomHeads;
 import de.mrstein.customheads.api.CustomHeadsPlayer;
-import de.mrstein.customheads.category.BaseCategory;
 import de.mrstein.customheads.category.Category;
 import de.mrstein.customheads.category.SubCategory;
 import de.mrstein.customheads.headwriter.HeadFontType;
@@ -27,7 +26,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static de.mrstein.customheads.utils.Utils.*;
 
@@ -66,14 +64,13 @@ public class InventoryListener implements Listener {
                     if (categoryArgs[0].equals("category")) {
                         Category category = CustomHeads.getCategoryLoader().getCategory(categoryArgs[1]);
                         ItemStack nextIcon = category.nextIcon();
-                        boolean unlocked = customHeadsPlayer.getUnlockedCategories(false).stream().map(BaseCategory::getId).collect(Collectors.toList()).contains(category.getId());
-                        boolean bought = customHeadsPlayer.getUnlockedCategories(true).stream().map(BaseCategory::getId).collect(Collectors.toList()).contains(category.getId());
+                        boolean bought = customHeadsPlayer.getUnlockedCategories(true).contains(category);
                         nextIcon = new ItemEditor(nextIcon)
-                                .setDisplayName(hasPermission(player, category.getPermission()) || unlocked ? "§a" + nextIcon.getItemMeta().getDisplayName() : "§7" + ChatColor.stripColor(nextIcon.getItemMeta().getDisplayName()) + " " + CustomHeads.getLanguageManager().LOCKED)
+                                .setDisplayName(customHeadsPlayer.getUnlockedCategories(CustomHeads.hasEconomy() && !CustomHeads.keepCategoryPermissions()).contains(category) ? "§a" + nextIcon.getItemMeta().getDisplayName() : "§7" + ChatColor.stripColor(nextIcon.getItemMeta().getDisplayName()) + " " + CustomHeads.getLanguageManager().LOCKED)
                                 .addLoreLine(CustomHeads.hasEconomy() ? bought ? CustomHeads.getLanguageManager().ECONOMY_BOUGHT : Utils.getPriceFormatted(category, true) + "\n" + CustomHeads.getLanguageManager().ECONOMY_BUY_CATEGORY_PROMPT : null)
-                                .addLoreLines(hasPermission(player, "heads.view.permissions") ? Arrays.asList("§8>===-------", "§7§oPermission: " + category.getPermission()) : null)
+                                .addLoreLines(hasPermission(player, "heads.view.permissions") ? Arrays.asList(" ", "§7§oPermission: " + category.getPermission()) : null)
                                 .getItem();
-                        if (CustomHeads.hasEconomy()) {
+                        if (CustomHeads.hasEconomy() && !CustomHeads.keepCategoryPermissions()) {
                             if (!bought) {
                                 nextIcon = CustomHeads.getTagEditor().addTags(nextIcon, "buyCategory", category.getId());
                             }
@@ -89,7 +86,7 @@ public class InventoryListener implements Listener {
                         meta.setOwner(player.getName());
                         contentItem.setItemMeta(meta);
                     } else if (CustomHeads.getTagEditor().getTags(contentItem).contains("saved_heads")) {
-                        contentItem = new ItemEditor(contentItem).setDisplayName(hasPermission(player, "heads.use.more") ? contentItem.getItemMeta().getDisplayName().replace("{SIZE}", "(" + customHeadsPlayer.getSavedHeads().size() + ")") : "§7" + ChatColor.stripColor(contentItem.getItemMeta().getDisplayName().replace("{SIZE}", "") + " " + CustomHeads.getLanguageManager().LOCKED)).addLoreLines(hasPermission(player, "heads.view.permissions") ? Arrays.asList("§8>===-------", "§7§oPermission: heads.use.more") : null).getItem();
+                        contentItem = new ItemEditor(contentItem).setDisplayName(hasPermission(player, "heads.use.more") ? contentItem.getItemMeta().getDisplayName().replace("{SIZE}", "(" + customHeadsPlayer.getSavedHeads().size() + ")") : "§7" + ChatColor.stripColor(contentItem.getItemMeta().getDisplayName().replace("{SIZE}", "") + " " + CustomHeads.getLanguageManager().LOCKED)).addLoreLines(hasPermission(player, "heads.view.permissions") ? Arrays.asList(" ", "§7§oPermission: heads.use.more") : null).getItem();
                     }
                     if (CustomHeads.getTagEditor().getTags(contentItem).contains("openMenu")) {
                         contentItem = CustomHeads.getTagEditor().addTags(contentItem, "needsPermission", CustomHeads.getLooks().getMenuInfo(CustomHeads.getTagEditor().getTags(contentItem).get(CustomHeads.getTagEditor().indexOf(contentItem, "openMenu") + 1).toLowerCase())[1]);
@@ -97,7 +94,7 @@ public class InventoryListener implements Listener {
                     if (CustomHeads.getTagEditor().getTags(contentItem).contains("needsPermission")) {
                         contentItem = new ItemEditor(contentItem)
                                 .setDisplayName(hasPermission(player, CustomHeads.getTagEditor().getTags(contentItem).get(CustomHeads.getTagEditor().indexOf(contentItem, "needsPermission") + 1)) ? "§a" + contentItem.getItemMeta().getDisplayName() : "§7" + ChatColor.stripColor(contentItem.getItemMeta().getDisplayName()) + " " + CustomHeads.getLanguageManager().LOCKED)
-                                .addLoreLines(hasPermission(player, "heads.view.permissions") ? Arrays.asList("§8>===-------", "§7Permission: " + CustomHeads.getTagEditor().getTags(contentItem).get(CustomHeads.getTagEditor().indexOf(contentItem, "needsPermission") + 1)) : null)
+                                .addLoreLines(hasPermission(player, "heads.view.permissions") ? Arrays.asList(" ", "§7Permission: " + CustomHeads.getTagEditor().getTags(contentItem).get(CustomHeads.getTagEditor().indexOf(contentItem, "needsPermission") + 1)) : null)
                                 .getItem();
                     }
                 }
@@ -114,7 +111,7 @@ public class InventoryListener implements Listener {
         if (event.getInventory() == null || event.getRawSlot() > event.getInventory().getSize() || event.getInventory().getType() != InventoryType.CHEST || event.getCurrentItem() == null || !hasPermission(player, "heads.use"))
             return;
 
-        player.sendMessage("§7[CHTags Tags] §r" + CustomHeads.getTagEditor().getTags(event.getCurrentItem()));
+//        player.sendMessage("§7[CHTags Tags] §r" + CustomHeads.getTagEditor().getTags(event.getCurrentItem())); // Yeah debug at its finest
 
         if (event.getInventory().getTitle().equals(CustomHeads.getLanguageManager().LOADING)) {
             event.setCancelled(true);
@@ -316,7 +313,7 @@ public class InventoryListener implements Listener {
 
             if (args[0].equalsIgnoreCase("subCategory")) {
                 SubCategory subCategory = CustomHeads.getCategoryLoader().getSubCategory(args[1]);
-                if (subCategory != null && hasPermission(player, subCategory.getOriginCategory().getPermission())) {
+                if (subCategory != null && customHeadsPlayer.getUnlockedCategories(CustomHeads.hasEconomy() && !CustomHeads.keepCategoryPermissions()).contains(subCategory.getOriginCategory())) {
                     openPreloader(player);
                     List<ItemStack> heads = new ArrayList<>(subCategory.getHeads());
                     player.openInventory(new ScrollableInventory(subCategory.getName(), heads).setBarItem(1, Utils.getBackButton("invAction", "goBack#>category#>" + subCategory.getOriginCategory().getId())).setContentsClonable(true).getAsInventory());
@@ -394,7 +391,7 @@ public class InventoryListener implements Listener {
                         player.openInventory(cloneInventory(menu, player));
                 } else if (args[1].equalsIgnoreCase("category")) {
                     Category originCategory = CustomHeads.getCategoryLoader().getCategory(args[2]);
-                    if (originCategory != null && hasPermission(player, originCategory.getPermission()))
+                    if (originCategory != null && customHeadsPlayer.getUnlockedCategories(CustomHeads.hasEconomy() && !CustomHeads.keepCategoryPermissions()).contains(originCategory))
                         player.openInventory(CustomHeads.getLooks().subCategoryLooks.get(Integer.parseInt(originCategory.getId())));
                 }
             } else if (args[0].equalsIgnoreCase("retrySearch")) {
@@ -496,8 +493,8 @@ public class InventoryListener implements Listener {
         }
 
         // No lookin at my Tags
-        if (itemTags.contains("tempTags")) {
-            event.setCurrentItem(TagEditor.clearTags(event.getCurrentItem()));
+        if (itemTags.contains("tempTags") && player.getItemOnCursor() != null) {
+            player.setItemOnCursor(TagEditor.clearTags(event.getCurrentItem()));
         }
     }
 
