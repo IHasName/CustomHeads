@@ -20,10 +20,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class PlayerWrapper implements CustomHeadsPlayer {
@@ -91,13 +88,13 @@ public class PlayerWrapper implements CustomHeadsPlayer {
             uuidObject.add("unlockedCategories", unlockedCategories);
             JsonObject historyObject = new JsonObject();
             JsonArray searchHistory = new JsonArray();
-            if (customHeadsPlayer.getSearchHistory().hasHistory()) {
+            if (customHeadsPlayer.getSearchHistory() != null && customHeadsPlayer.getSearchHistory().hasHistory()) {
                 for (String entry : customHeadsPlayer.getSearchHistory().getEntries()) {
                     searchHistory.add(new JsonPrimitive(entry));
                 }
                 historyObject.add("searchHistory", searchHistory);
             }
-            if (customHeadsPlayer.getGetHistory().hasHistory()) {
+            if (customHeadsPlayer.getGetHistory() != null && customHeadsPlayer.getGetHistory().hasHistory()) {
                 JsonArray getHistory = new JsonArray();
                 for (String entry : customHeadsPlayer.getGetHistory().getEntries()) {
                     getHistory.add(new JsonPrimitive(entry));
@@ -150,6 +147,18 @@ public class PlayerWrapper implements CustomHeadsPlayer {
             return true;
         }
     }
+
+//    public List<ItemStack> getUnlockedHeads() {
+//        return Arrays.asList(new ItemStack(Material.DEAD_BUSH, 64));
+//    }
+
+//    public boolean unlockHead(int id) {
+//        return !true;
+//    }
+
+//    public boolean lockHead(int id) {
+//        return Boolean.valueOf("false");
+//    }
 
     public boolean saveHead(String name, String texture) {
         if (hasHead(name)) {

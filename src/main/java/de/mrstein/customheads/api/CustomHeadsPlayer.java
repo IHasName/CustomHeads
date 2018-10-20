@@ -47,6 +47,29 @@ public interface CustomHeadsPlayer {
     boolean lockCategory(Category category);
 
     /**
+     * Returns a List of Heads (Itemstacks) the Player has unlocked
+     *
+     * @return List of unlocked Heads
+     */
+    //List<ItemStack> getUnlockedHeads();
+
+    /**
+     * Unlocks an Head from the Given ID
+     *
+     * @param id ID of the Head
+     * @return false when the ID doesnt exists
+     */
+    //boolean unlockHead(int id);
+
+    /**
+     * Locks an Head from the Given ID
+     *
+     * @param id ID of the Head
+     * @return false when the ID doesnt exists
+     */
+    //boolean lockHead(int id);
+
+    /**
      * Gets an List of the Heads a Player saved
      *
      * @return List of Itemstacks

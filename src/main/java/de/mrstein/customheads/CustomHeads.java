@@ -109,7 +109,7 @@ public class CustomHeads extends JavaPlugin {
 
     // Vault Support (added in v2.9.2)
     public static void reloadEconomy() {
-        if (headsConfig.get().getBoolean("useEconomy")) {
+        if (headsConfig.get().getBoolean("economy.enable")) {
             if (Bukkit.getPluginManager().isPluginEnabled("Vault")) {
                 Bukkit.getConsoleSender().sendMessage(chPrefix + "Trying to hook into Vault...");
                 economyManager = new EconomyManager();
@@ -152,7 +152,7 @@ public class CustomHeads extends JavaPlugin {
         sender.sendMessage((console ? chPrefix : "") + languageManager.RELOAD_CONFIG);
         headsConfig.reload();
         reducedDebug = headsConfig.get().getBoolean("reducedDebug");
-        keepCategoryPermissions = headsConfig.get().getBoolean("keepCategoryPermissions");
+        keepCategoryPermissions = headsConfig.get().getBoolean("economy.category.keepPermissions");
         reloadEconomy();
         sender.sendMessage((console ? chPrefix : "") + languageManager.RELOAD_HISTORY);
         reloadHistoryData();
@@ -170,7 +170,7 @@ public class CustomHeads extends JavaPlugin {
     public static boolean reload() {
         headsConfig.reload();
         reducedDebug = headsConfig.get().getBoolean("reducedDebug");
-        keepCategoryPermissions = headsConfig.get().getBoolean("keepCategoryPermissions");
+        keepCategoryPermissions = headsConfig.get().getBoolean("economy.category.keepPermissions");
         reloadHistoryData();
         reloadEconomy();
         PlayerWrapper.clearCache();
@@ -259,7 +259,7 @@ public class CustomHeads extends JavaPlugin {
     // Load rest of the Plugin after Language Download
     private void loadRest() {
         reducedDebug = headsConfig.get().getBoolean("reducedDebug");
-        keepCategoryPermissions = headsConfig.get().getBoolean("keepCategoryPermissions");
+        keepCategoryPermissions = headsConfig.get().getBoolean("economy.category.keepPermissions");
         categoryLoaderConfig = new Configs(instance, "loadedCategories.yml", true);
 
         tagEditor = new TagEditor("chTags");

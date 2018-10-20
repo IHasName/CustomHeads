@@ -467,8 +467,7 @@ public class Utils {
 
     public static File saveInternalFile(String filename, String... sub) {
         try {
-            String currentDir = System.getProperty("user.dir");
-            String subfolder = sub.length > 0 ? currentDir + "/" + sub[0] : currentDir;
+            String subfolder = sub.length > 0 ? sub[0] : "";
             File outFile = new File(subfolder, filename);
             Files.createParentDirs(outFile);
             if (!outFile.exists()) {

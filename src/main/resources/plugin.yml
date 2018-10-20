@@ -1,6 +1,6 @@
 main: de.mrstein.customheads.CustomHeads
 name: CustomHeads
-version: 2.9.2
+version: 2.9.3
 author: MrStein
 softdepend: [Vault]
 

@@ -36,11 +36,12 @@ public class JsonFile {
     }
 
     public JsonFile(File file) {
-        this(file.getName(), file.getPath().substring(0, file.getPath().lastIndexOf("\\")));
+        this.file = file;
+        reload();
     }
 
     public JsonFile(String filename, String subFolder) {
-        this.file = saveInternalFile(filename, subFolder);
+        file = saveInternalFile(filename, subFolder);
         reload();
     }
 

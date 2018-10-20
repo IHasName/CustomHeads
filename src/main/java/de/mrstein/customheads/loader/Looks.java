@@ -15,7 +15,6 @@ import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -50,7 +49,7 @@ public class Looks {
             CustomHeads.getInstance().getServer().getConsoleSender().sendMessage(CustomHeads.chPrefix + "Loading Looks from language/" + language + "/settings.json");
         long timestamp = System.currentTimeMillis();
 
-        JsonFile jsf = new JsonFile(new File("plugins/CustomHeads/language/" + language + "/settings.json"));
+        JsonFile jsf = new JsonFile("language/" + language + "/settings.json");
 
         try {
             // Base

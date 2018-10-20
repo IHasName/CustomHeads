@@ -6,7 +6,7 @@
 
     <groupId>de.mrstein.customheads</groupId>
     <artifactId>CustomHeads</artifactId>
-    <version>2.9.2</version>
+    <version>2.9.3</version>
     <packaging>jar</packaging>
 
     <properties>
@@ -69,7 +69,7 @@
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>2.4</version>
                 <configuration>
-                    <!--<outputDirectory>N:\@OtherStuff\Servers\hello_pom_readers _=D\plugins</outputDirectory>-->
+                    <!--<outputDirectory>N:\@OtherStuff\Servers\1.88\plugins</outputDirectory>-->
                     <outputDirectory>N:\@OtherStuff\Servers\1.12\plugins</outputDirectory>
                 </configuration>
             </plugin>
