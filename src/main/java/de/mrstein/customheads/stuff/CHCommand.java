@@ -46,7 +46,7 @@ public class CHCommand implements CommandExecutor {
     private String[] rdmans = {"CustomHeads says: Hmm", "CustomHeads says: Does the Console have an Inventory?", "CustomHeads says: That tickels!", "CustomHeads says: No", "CustomHeads says: Im lost", "CustomHeads says: I don't think this is what you are searching for", "CustomHeads says: Hold on... Nevermind", "CustomHeads says: Sorry", "CustomHeads says: Spoilers... There will be a new Command soon =]"};
 
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-        if (sender instanceof ConsoleCommandSender) {
+        if (!(sender instanceof Player)) {
             if (args.length > 0) {
                 if (args[0].equalsIgnoreCase("rl") || args[0].equalsIgnoreCase("reload")) {
                     CustomHeads.reload(sender);
