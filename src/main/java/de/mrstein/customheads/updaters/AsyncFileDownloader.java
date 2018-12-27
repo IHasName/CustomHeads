@@ -19,10 +19,10 @@ import java.nio.channels.ReadableByteChannel;
 
 public class AsyncFileDownloader {
 
-    private String url;
-    private String path;
-    private String fileName;
     private String userAgent = "Mozilla/5.0 (Windows NT 6.3; Trident/7.0; rv:11.0) like Gecko";
+    private String fileName;
+    private String path;
+    private String url;
 
     public AsyncFileDownloader(String url, String fileName, String toPath) {
         this.url = url;

@@ -34,23 +34,18 @@ import java.util.logging.Level;
  */
 public class SpigetFetcher {
 
-    private static final String DESCRIPTION_URL = "https://api.spiget.org/v2/resources/%s/updates?size=2147483647&sort=-date";
+    private static final Gson GSON = new GsonBuilder().disableHtmlEscaping().registerTypeAdapter(ResourceRelease.class, new ResourceRelease.Serializer()).registerTypeAdapter(ResourceUpdate.class, new ResourceUpdate.Serializer()).create();
+
     private static final String VERSION_URL = "https://api.spiget.org/v2/resources/%s/versions?size=2147483647&sort=-releaseDate";
+    private static final String DESCRIPTION_URL = "https://api.spiget.org/v2/resources/%s/updates?size=2147483647&sort=-date";
     @Setter
     private static String userAgent = "UpdateChecker-1.1";
-    private static final Gson GSON = new GsonBuilder().disableHtmlEscaping()
-            .registerTypeAdapter(ResourceRelease.class, new ResourceRelease.Serializer())
-            .registerTypeAdapter(ResourceUpdate.class, new ResourceUpdate.Serializer())
-            .create();
-
-    private static JsonParser jsonParser = new JsonParser();
-
-    private int resourceId;
     private String decriptionUrlFormatted;
     private String versionUrlFormatted;
 
+    private static JsonParser jsonParser = new JsonParser();
+
     public SpigetFetcher(int resourceId) {
-        this.resourceId = resourceId;
         decriptionUrlFormatted = String.format(DESCRIPTION_URL, resourceId);
         versionUrlFormatted = String.format(VERSION_URL, resourceId);
     }

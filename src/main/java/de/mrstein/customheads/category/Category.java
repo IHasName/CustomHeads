@@ -6,6 +6,7 @@ import de.mrstein.customheads.utils.ItemEditor;
 import de.mrstein.customheads.utils.JsonToItem;
 import de.mrstein.customheads.utils.Utils;
 import lombok.Getter;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -17,8 +18,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static de.mrstein.customheads.utils.Utils.toConfigString;
-
 /*
  *  Project: CustomHeads in Category
  *     by LikeWhat
@@ -27,20 +26,22 @@ import static de.mrstein.customheads.utils.Utils.toConfigString;
 @Getter
 public class Category extends BaseCategory {
 
-    private static final Gson CATEGORY_TO_JSON = new GsonBuilder()
-            .disableHtmlEscaping()
-            .setPrettyPrinting()
-            .registerTypeAdapter(Category.class, new Serializer())
-            .registerTypeAdapter(SubCategory.class, new SubCategory.Serializer())
-            .create();
-    private List<SubCategory> subCategories;
-    private List<ItemStack> heads;
-    private List<ItemStack> icons;
-    private int price;
-    private Iterator<ItemStack> iterator;
-    private ItemStack categoryIcon;
+    private static final Gson CATEGORY_TO_JSON = new GsonBuilder().disableHtmlEscaping().setPrettyPrinting().registerTypeAdapter(Category.class, new Serializer()).registerTypeAdapter(SubCategory.class, new SubCategory.Serializer()).create();
+    public static int counter = 0;
+    private int lastID = 1;
 
-    public Category(int id, String name, String permission, int price, ItemStack icon) {
+    private List<SubCategory> subCategories;
+    private Integer[] ids = new Integer[0];
+    private List<ItemStack> icons;
+
+    private Iterator<ItemStack> iterator;
+
+    private ItemStack categoryIcon;
+    private List<CustomHead> heads = new ArrayList<>();
+    private boolean fixedIcon;
+    private int price;
+
+    private Category(int id, String name, String permission, int price, ItemStack icon) {
         super(String.valueOf(id), name, permission);
         this.price = price;
         categoryIcon = icon;
@@ -62,8 +63,8 @@ public class Category extends BaseCategory {
         return this;
     }
 
-    public List<ItemStack> getHeads() {
-        List<ItemStack> heads = new ArrayList<>();
+    public List<CustomHead> getHeads() {
+        List<CustomHead> heads = new ArrayList<>();
         if (hasHeads()) {
             heads.addAll(this.heads);
         } else if (hasSubCategories()) {
@@ -72,7 +73,7 @@ public class Category extends BaseCategory {
         return heads;
     }
 
-    public Category setHeads(List<ItemStack> heads) {
+    public Category setHeads(List<CustomHead> heads) {
         this.heads = heads;
         return this;
     }
@@ -114,6 +115,31 @@ public class Category extends BaseCategory {
         return price == 0;
     }
 
+    private boolean setFixedIcon(boolean fixedIcon) {
+        return this.fixedIcon = fixedIcon;
+    }
+
+    private void addID(int id) {
+        ids = Utils.appendArray(ids, id);
+    }
+
+    private int checkID(int id) {
+        if (heads.stream().map(CustomHead::getId).collect(Collectors.toList()).contains(id)) {
+            int newID = nextID();
+            Bukkit.getLogger().warning("Duplicate ID " + id + "... Replacing with " + newID);
+            return newID;
+        }
+        return id;
+    }
+
+    private int nextID() {
+        List<Integer> idsAsList = Arrays.asList(ids);
+        while (idsAsList.contains(lastID)) {
+            lastID++;
+        }
+        return lastID;
+    }
+
     public static class Serializer implements JsonSerializer<Category>, JsonDeserializer<Category> {
 
         public Category deserialize(JsonElement jsonRoot, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
@@ -125,24 +151,32 @@ public class Category extends BaseCategory {
                     "heads.viewCategory." + categoryJson.get("permission").getAsString(),
                     CustomHeads.hasEconomy() && categoryJson.has("price") ? categoryJson.get("price").getAsInt() : 0,
                     categoryJson.has("sub_categories") ? null :
-                            CustomHeads.getTagEditor().setTags(JsonToItem.convert(categoryJson.get("icon").toString()), "openCategory", "category#>" + categoryJson.get("id").getAsString(), "icon"));
-            List<ItemStack> heads = new ArrayList<>();
+                            CustomHeads.getTagEditor().setTags(JsonToItem.convertFromJson(categoryJson.get("icon").toString()), "openCategory", "category#>" + categoryJson.get("id").getAsString(), "icon"));
+            List<CustomHead> heads = new ArrayList<>();
             List<SubCategory> subCategories = new ArrayList<>();
 
             if (categoryJson.has("sub_categories")) {
                 List<ItemStack> subCategoryIcons = new ArrayList<>();
                 for (JsonElement jsonElement : categoryJson.get("sub_categories").getAsJsonArray()) {
                     JsonObject jsonObject = jsonElement.getAsJsonObject();
-                    List<ItemStack> subHeads = new ArrayList<>();
-                    ItemStack icon = JsonToItem.convert(jsonObject.get("icon").toString());
+                    List<CustomHead> subHeads = new ArrayList<>();
+                    ItemStack icon = JsonToItem.convertFromJson(jsonObject.get("icon").toString());
 
-                    for (JsonElement headObject : jsonObject.get("heads").getAsJsonArray()) {
-                        ItemEditor head = new ItemEditor(Material.SKULL_ITEM, (short) 3).setTexture(headObject.getAsJsonObject().get("texture").getAsString()).setDisplayName(headObject.getAsJsonObject().get("name").getAsString());
-                        if (headObject.getAsJsonObject().has("description"))
-                            head.setLore(headObject.getAsJsonObject().get("description").getAsString());
-                        subHeads.add(head.getItem());
+                    String subCategoryID = categoryJson.get("id").getAsInt() + ":" + jsonObject.get("id").getAsInt();
+                    for (JsonElement rawHeadObject : jsonObject.get("heads").getAsJsonArray()) {
+                        JsonObject headObject = rawHeadObject.getAsJsonObject();
+                        ItemEditor head = new ItemEditor(Material.SKULL_ITEM, (short) 3).setTexture(headObject.get("texture").getAsString()).setDisplayName(headObject.get("name").getAsString());
+                        if (headObject.has("description"))
+                            head.setLore(headObject.get("description").getAsString());
+                        int price = headObject.has("price") ? headObject.get("price").getAsInt() : 0;
+                        int id = headObject.has("id") ? category.checkID(headObject.get("id").getAsInt()) : category.nextID();
+//                        CategoryID categoryID = new CategoryID(category, id);
+                        CustomHead customHead = new CustomHead(head.getItem(), category, id, price);
+                        category.addID(id);
+//                        registeredHeads.put(categoryID, customHead);
+                        subHeads.add(customHead);
                     }
-                    subCategories.add(new SubCategory(categoryJson.get("id").getAsInt() + ":" + jsonObject.get("id").getAsInt(), Utils.format(jsonObject.get("name").getAsString()), CustomHeads.getTagEditor().setTags(icon, "openCategory", "subCategory#>" + categoryJson.get("id") + ":" + jsonObject.get("id"), "icon-fixed"), category, subHeads));
+                    subCategories.add(new SubCategory(subCategoryID, Utils.format(jsonObject.get("name").getAsString()), CustomHeads.getTagEditor().setTags(icon, "openCategory", "subCategory#>" + categoryJson.get("id") + ":" + jsonObject.get("id"), "icon-fixed"), category, subHeads));
                     subCategoryIcons.add(CustomHeads.getTagEditor().setTags(icon, "openCategory", "category#>" + categoryJson.get("id").getAsString(), "icon-loop"));
                 }
                 if (!subCategories.isEmpty()) {
@@ -156,17 +190,23 @@ public class Category extends BaseCategory {
                     }
                     subCategoryIcons = editedSubCategoryIcons;
                 }
-                category.setCategoryIcon(subCategoryIcons.isEmpty() || (categoryJson.has("fixed-icon") && categoryJson.get("fixed-icon").getAsBoolean()) ? CustomHeads.getTagEditor().setTags(JsonToItem.convert(categoryJson.get("icon").toString()), "openCategory", "category#>" + categoryJson.get("id").getAsString(), "icon-fixed") : subCategoryIcons.get(0));
-                category.setIcons(subCategoryIcons.isEmpty() || (categoryJson.has("fixed-icon") && categoryJson.get("fixed-icon").getAsBoolean()) ? Arrays.asList(CustomHeads.getTagEditor().setTags(JsonToItem.convert(categoryJson.get("icon").toString()), "openCategory", "category#>" + categoryJson.get("id").getAsString(), "icon-fixed")) : subCategoryIcons);
+                category.setCategoryIcon(subCategoryIcons.isEmpty() || (categoryJson.has("fixed-icon") && categoryJson.get("fixed-icon").getAsBoolean()) ? CustomHeads.getTagEditor().setTags(JsonToItem.convertFromJson(categoryJson.get("icon").toString()), "openCategory", "category#>" + categoryJson.get("id").getAsString(), "icon-fixed") : subCategoryIcons.get(0));
+                category.setIcons(subCategoryIcons.isEmpty() || (categoryJson.has("fixed-icon") && category.setFixedIcon(categoryJson.get("fixed-icon").getAsBoolean())) ? Arrays.asList(CustomHeads.getTagEditor().setTags(JsonToItem.convertFromJson(categoryJson.get("icon").toString()), "openCategory", "category#>" + categoryJson.get("id").getAsString(), "icon-fixed")) : subCategoryIcons);
             } else {
-                for (JsonElement headObject : categoryJson.get("heads").getAsJsonArray()) {
-                    ItemEditor head = new ItemEditor(Material.SKULL_ITEM, (short) 3).setTexture(headObject.getAsJsonObject().get("texture").getAsString()).setDisplayName(headObject.getAsJsonObject().get("name").getAsString());
-                    if (headObject.getAsJsonObject().has("description"))
-                        head.setLore(headObject.getAsJsonObject().get("description").getAsString());
-                    heads.add(head.getItem());
+                for (JsonElement rawHeadObject : categoryJson.get("heads").getAsJsonArray()) {
+                    JsonObject headObject = rawHeadObject.getAsJsonObject();
+                    ItemEditor head = new ItemEditor(Material.SKULL_ITEM, (short) 3).setTexture(headObject.get("texture").getAsString()).setDisplayName(headObject.get("name").getAsString());
+                    if (headObject.has("description"))
+                        head.setLore(headObject.get("description").getAsString());
+                    int price = headObject.has("price") ? headObject.get("price").getAsInt() : 0;
+                    int id = headObject.has("id") ? category.checkID(headObject.get("id").getAsInt()) : category.nextID();
+//                    CategoryID categoryID = new CategoryID(category, id);
+                    CustomHead customHead = new CustomHead(head.getItem(), category, id, price);
+                    category.addID(id);
+//                    registeredHeads.put(categoryID, customHead);
+                    heads.add(customHead);
                 }
             }
-
             category.setHeads(heads);
             category.setSubCategories(subCategories);
             return category;
@@ -179,18 +219,22 @@ public class Category extends BaseCategory {
             categoryObject.addProperty("id", Integer.parseInt(category.getId().contains(":") ? category.getId().split(":")[0] : category.getId()));
             categoryObject.addProperty("name", category.getName());
             categoryObject.addProperty("permission", category.getPermission().replace("heads.viewCategory.", ""));
+            categoryObject.addProperty("fixed-icon", category.isFixedIcon());
             if (category.hasCategoryIcon())
-                categoryObject.add("icon", new JsonParser().parse(toConfigString(JsonToItem.convertToJson(category.getCategoryIcon()))));
+                categoryObject.add("icon", new JsonParser().parse(JsonToItem.convertToJson(category.getCategoryIcon())));
 
             // Gets Heads and puts them into an JsonArray
             if (category.hasHeads()) {
                 JsonArray heads = new JsonArray();
-                for (ItemEditor head : category.getHeads().stream().map(ItemEditor::new).collect(Collectors.toList())) {
+                for (CustomHead head : category.getHeads()) {
+                    ItemEditor itemEditor = new ItemEditor(head);
                     JsonObject headObject = new JsonObject();
-                    headObject.addProperty("texture", head.getTexture());
-                    headObject.addProperty("name", toConfigString(head.getDisplayName()));
-                    if (head.hasLore()) {
-                        headObject.addProperty("description", toConfigString(head.getLoreAsString()));
+                    headObject.addProperty("texture", itemEditor.getTexture());
+                    headObject.addProperty("name", itemEditor.getDisplayName());
+                    headObject.addProperty("price", head.getPrice());
+                    headObject.addProperty("id", head.getId());
+                    if (itemEditor.hasLore()) {
+                        headObject.addProperty("description", itemEditor.getLoreAsString());
                     }
                     heads.add(headObject);
                 }

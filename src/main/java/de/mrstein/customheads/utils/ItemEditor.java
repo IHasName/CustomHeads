@@ -23,6 +23,7 @@ import java.util.Map;
 public class ItemEditor {
 
     private ItemStack itemStack;
+
     private ItemMeta meta;
 
     public ItemEditor(ItemStack itemStack) {

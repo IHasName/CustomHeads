@@ -3,12 +3,11 @@ package de.mrstein.customheads.loader;
 import de.mrstein.customheads.CustomHeads;
 import de.mrstein.customheads.category.BaseCategory;
 import de.mrstein.customheads.category.Category;
+import de.mrstein.customheads.category.CustomHead;
 import de.mrstein.customheads.category.SubCategory;
-import de.mrstein.customheads.utils.ItemEditor;
 import de.mrstein.customheads.utils.JsonFile;
 import lombok.Getter;
 import org.bukkit.Bukkit;
-import org.bukkit.inventory.ItemStack;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -29,14 +28,12 @@ public class CategoryLoader {
 
     @Getter
     private static boolean loaded;
-
-    private HashMap<String, Category> categories = new HashMap<>();
     private HashMap<String, SubCategory> subCategories = new HashMap<>();
+    private HashMap<String, Category> categories = new HashMap<>();
     private HashMap<Category, File> sourceFiles = new HashMap<>();
+    private File langRootDir;
 
     private String language;
-
-    private File langRootDir;
 
     public CategoryLoader(String language) {
         loaded = false;
@@ -104,7 +101,7 @@ public class CategoryLoader {
         }
 
         if (!CustomHeads.hasReducedDebug())
-            CustomHeads.getInstance().getServer().getConsoleSender().sendMessage(CustomHeads.chPrefix + "Successfully loaded " + loaded + " Categories from " + language + "/categories in " + (System.currentTimeMillis() - timestamp) + "ms " + (ignoreInvalid ? "(" + (ignored + invalid) + " " + ((ignored + invalid) == 1 ? "Category was" : "Categories were") + " ignored - " + ignored + " not loaded or not found, " + (invalid > 0 ? "§c" : "") + invalid + " Invalid§7)" : ""));
+            CustomHeads.getInstance().getServer().getConsoleSender().sendMessage(CustomHeads.chPrefix + "Successfully loaded " + loaded + " Categories and " + getAllHeads().size() + " Heads from " + language + "/categories in " + (System.currentTimeMillis() - timestamp) + "ms " + (ignoreInvalid ? "(" + (ignored + invalid) + " " + ((ignored + invalid) == 1 ? "Category was" : "Categories were") + " ignored - " + ignored + " not loaded or not found, " + (invalid > 0 ? "§c" : "") + invalid + " Invalid§7)" : ""));
         CategoryLoader.loaded = true;
     }
 
@@ -223,23 +220,34 @@ public class CategoryLoader {
         return categories;
     }
 
-    public List<ItemStack> getAllHeads() {
-        List<ItemStack> heads = new ArrayList<>();
-        int index = 0;
+    public List<CustomHead> getAllHeads() {
+        List<CustomHead> customHeads = new ArrayList<>();
         for (Category category : categories.values()) {
             if (category.hasSubCategories()) {
                 for (SubCategory subCategory : category.getSubCategories()) {
-                    for (ItemStack itemStack : subCategory.getHeads()) {
-                        heads.add(CustomHeads.getTagEditor().addTags(new ItemEditor(itemStack).setLore(Arrays.asList("§7§o" + category.getId() + "-" + category.getName())).getItem(), "category", subCategory.getOriginCategory().getId(), "index", "" + (++index), "wearable"));
-                    }
+                    customHeads.addAll(subCategory.getHeads());
                 }
             } else {
-                for (ItemStack itemStack : category.getHeads()) {
-                    heads.add(CustomHeads.getTagEditor().addTags(new ItemEditor(itemStack).setLore(Arrays.asList("§7§o" + category.getId() + "-" + category.getName())).getItem(), "category", category.getId(), "index", "" + (++index), "wearable"));
-                }
+                customHeads.addAll(category.getHeads());
             }
         }
-        return heads;
+        return customHeads;
+
+//        List<ItemStack> heads = new ArrayList<>();
+//        for (Category category : categories.values()) {
+//            if (category.hasSubCategories()) {
+//                for (SubCategory subCategory : category.getSubCategories()) {
+//                    for (ItemStack itemStack : subCategory.getHeads()) {
+//                        heads.add(CustomHeads.getTagEditor().addTags(itemStack, "category", subCategory.getOriginCategory().getId(), "wearable"));
+//                    }
+//                }
+//            } else {
+//                for (ItemStack itemStack : category.getHeads()) {
+//                    heads.add(CustomHeads.getTagEditor().addTags(itemStack, "category", category.getId(), "wearable"));
+//                }
+//            }
+//        }
+//        return heads;
     }
 
 }

@@ -7,6 +7,8 @@ package de.mrstein.customheads.api;
  *  created on 20.08.2018 at 22:48
  */
 
+import de.mrstein.customheads.category.Category;
+import de.mrstein.customheads.category.CustomHead;
 import de.mrstein.customheads.headwriter.HeadFontType;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
@@ -18,6 +20,7 @@ import org.bukkit.inventory.ItemStack;
  * API Interface for CustomHeads
  *
  * @since 2.9.2
+ * @version 1.1
  */
 public interface CustomHeadsAPI {
 
@@ -57,7 +60,7 @@ public interface CustomHeadsAPI {
      * @param character Character
      * @param font      What Font to get from
      * @return <b>CustomHead</b> with given Character Texture
-     * @throws UnsupportedOperationException when Character doesn't exist
+     * @throws UnsupportedOperationException when given Character doesn't exist
      */
     ItemStack getAlphabetHead(String character, HeadFontType font);
 
@@ -67,7 +70,7 @@ public interface CustomHeadsAPI {
      * @param text     Text that will appear on the Skulls
      * @param location Starting Location
      * @param fontType Font Type
-     * @throws UnsupportedOperationException when fontType is missing an Character
+     * @throws UnsupportedOperationException when the Font is mising an Character from the text
      */
     void writeText(String text, Location location, HeadFontType fontType);
 
@@ -79,5 +82,24 @@ public interface CustomHeadsAPI {
      * @param blockFace Skull Rotation
      */
     void setSkull(Block block, String texture, BlockFace blockFace);
+
+    /**
+     * Will return an Head from the given ID.
+     * Might be null if the Head doesnt exists
+     *
+     * @param category from Which Category to pull from
+     * @param id       Head ID
+     * @return Head from Database
+     */
+    CustomHead getHead(Category category, int id);
+
+    /**
+     * Will return an Head from the given ID.
+     * Might be null if the Head doesnt exists
+     *
+     * @param categoryID Category Head ID
+     * @return Head from Database
+     */
+//    CustomHead getHead(CategoryID categoryID);
 
 }

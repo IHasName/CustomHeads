@@ -23,10 +23,13 @@ import java.util.logging.Level;
 
 public class GitHubDownloader {
 
-    private static final String GITHUB_REPO_URL = "https://api.github.com/repos/{author}/{projectName}";
     private static final File downloadDir = new File(CustomHeads.getInstance().getDataFolder() + "/downloads");
-    private static HashMap<String, Object[]> responseCache = new HashMap<>();
+
+    private static final String GITHUB_REPO_URL = "https://api.github.com/repos/{author}/{projectName}";
     private String apiURLFormatted;
+
+    private static HashMap<String, Object[]> responseCache = new HashMap<>();
+
     private boolean unzip = false;
 
     public GitHubDownloader(String author, String projectName) {

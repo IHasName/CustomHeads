@@ -21,11 +21,12 @@ import java.util.logging.Level;
 
 public class GameProfileBuilder {
 
-    public static final HashMap<UUID, CachedProfile> cache = new HashMap<>();
-    private static final String SERVICE_URL = "https://sessionserver.mojang.com/session/minecraft/profile/%s";
-    private static final String JSON_SKIN = "{\"timestamp\":%d,\"profileId\":\"%s\",\"profileName\":\"%s\",\"isPublic\":true,\"textures\":{\"SKIN\":{\"url\":\"%s\"}}}";
     private static final String JSON_CAPE = "{\"timestamp\":%d,\"profileId\":\"%s\",\"profileName\":\"%s\",\"isPublic\":true,\"textures\":{\"SKIN\":{\"url\":\"%s\"},\"CAPE\":{\"url\":\"%s\"}}}";
+    private static final String JSON_SKIN = "{\"timestamp\":%d,\"profileId\":\"%s\",\"profileName\":\"%s\",\"isPublic\":true,\"textures\":{\"SKIN\":{\"url\":\"%s\"}}}";
+    private static final String SERVICE_URL = "https://sessionserver.mojang.com/session/minecraft/profile/%s";
     private static Gson gson = new GsonBuilder().disableHtmlEscaping().registerTypeAdapter(UUID.class, new UUIDTypeAdapter()).registerTypeAdapter(GameProfile.class, new GameProfileSerializer()).registerTypeAdapter(PropertyMap.class, new PropertyMap.Serializer()).create();
+
+    public static final HashMap<UUID, CachedProfile> cache = new HashMap<>();
     private static long cacheTime = 6000;
 
     public static String gameProfileToString(GameProfile profile) {

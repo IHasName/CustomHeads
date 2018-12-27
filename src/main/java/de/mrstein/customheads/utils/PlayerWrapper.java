@@ -13,24 +13,38 @@ import com.google.gson.JsonPrimitive;
 import de.mrstein.customheads.CustomHeads;
 import de.mrstein.customheads.api.CustomHeadsPlayer;
 import de.mrstein.customheads.category.Category;
+import de.mrstein.customheads.category.CustomHead;
 import de.mrstein.customheads.stuff.GetHistory;
 import de.mrstein.customheads.stuff.SearchHistory;
+import lombok.Getter;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class PlayerWrapper implements CustomHeadsPlayer {
 
     private static HashMap<UUID, CustomHeadsPlayer> wrappedPlayersCache = new HashMap<>();
-    private OfflinePlayer player;
+
+    @Getter
+    private List<CustomHead> unlockedHeads = new ArrayList<>();
     private List<Category> unlockedCategories = new ArrayList<>();
+    @Getter
     private List<ItemStack> savedHeads = new ArrayList<>();
+
+    @Getter
     private SearchHistory searchHistory;
+
+    @Getter
     private GetHistory getHistory;
+
+    private OfflinePlayer player;
 
     private PlayerWrapper(OfflinePlayer player) {
         this.player = player;
@@ -51,9 +65,21 @@ public class PlayerWrapper implements CustomHeadsPlayer {
 
                 searchHistory = new SearchHistory(player);
                 getHistory = new GetHistory(player);
-                List<Category> categories = new ArrayList<>();
-                uuidObject.getAsJsonArray("unlockedCategories").forEach(categoryId -> categories.add(CustomHeads.getCategoryLoader().getCategory(categoryId.getAsString())));
-                unlockedCategories = categories;
+
+                if (uuidObject.has("unlockedCategories")) {
+                    List<Category> categories = new ArrayList<>();
+                    uuidObject.getAsJsonArray("unlockedCategories").forEach(categoryId -> categories.add(CustomHeads.getCategoryLoader().getCategory(categoryId.getAsString())));
+                    unlockedCategories = categories;
+                }
+
+                if (uuidObject.has("unlockedHeads")) {
+                    List<CustomHead> heads = new ArrayList<>();
+                    uuidObject.getAsJsonArray("unlockedHeads").forEach(headId -> {
+                        String[] idParts = headId.getAsString().split(":");
+                        heads.add(CustomHeads.getApi().getHead(CustomHeads.getCategoryLoader().getCategory(idParts[0]), Integer.parseInt(idParts[1])));
+                    });
+                    unlockedHeads = heads;
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -81,11 +107,19 @@ public class PlayerWrapper implements CustomHeadsPlayer {
                 savedHeads.addProperty(Utils.toConfigString(customHead.getDisplayName()), customHead.getOwner() == null ? customHead.getTexture() : customHead.getOwner());
             }
             uuidObject.add("savedHeads", savedHeads);
+
             JsonArray unlockedCategories = new JsonArray();
             for (Category category : customHeadsPlayer.getUnlockedCategories(true)) {
                 unlockedCategories.add(new JsonPrimitive(category.getId()));
             }
             uuidObject.add("unlockedCategories", unlockedCategories);
+
+            JsonArray unlockedHeads = new JsonArray();
+            for (CustomHead customHead : customHeadsPlayer.getUnlockedHeads()) {
+                unlockedHeads.add(new JsonPrimitive(customHead.getOriginCategory().getId() + ":" + customHead.getId()));
+            }
+            uuidObject.add("unlockedHeads", unlockedHeads);
+
             JsonObject historyObject = new JsonObject();
             JsonArray searchHistory = new JsonArray();
             if (customHeadsPlayer.getSearchHistory() != null && customHeadsPlayer.getSearchHistory().hasHistory()) {
@@ -114,20 +148,8 @@ public class PlayerWrapper implements CustomHeadsPlayer {
         return CustomHeads.getCategoryLoader().getCategoryList().stream().filter(category -> (!ignorePermission && Utils.hasPermission(player.getPlayer(), category.getPermission())) || unlockedCategories.contains(category)).collect(Collectors.toList());
     }
 
-    public List<ItemStack> getSavedHeads() {
-        return savedHeads;
-    }
-
     public Player unwrap() {
         return player.getPlayer();
-    }
-
-    public SearchHistory getSearchHistory() {
-        return searchHistory;
-    }
-
-    public GetHistory getGetHistory() {
-        return getHistory;
     }
 
     public boolean unlockCategory(Category category) {
@@ -140,24 +162,48 @@ public class PlayerWrapper implements CustomHeadsPlayer {
     }
 
     public boolean lockCategory(Category category) {
-        if (!unlockedCategories.contains(category)) {
+        if (unlockedCategories.contains(category)) {
+            unlockedCategories.remove(category);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean unlockHead(Category category, int id) {
+        if (unlockedHeads.contains(CustomHeads.getApi().getHead(category, id))) {
             return false;
         } else {
-            unlockedCategories.remove(category);
+            unlockedHeads.add(CustomHeads.getApi().getHead(category, id));
             return true;
         }
     }
 
-//    public List<ItemStack> getUnlockedHeads() {
-//        return Arrays.asList(new ItemStack(Material.DEAD_BUSH, 64));
+//    public boolean unlockHead(CategoryID categoryID) {
+//        if(unlockedHeads.contains(CustomHeads.getApi().getHead(categoryID))) {
+//            return false;
+//        } else {
+//            unlockedHeads.add(CustomHeads.getApi().getHead(categoryID));
+//            return true;
+//        }
 //    }
 
-//    public boolean unlockHead(int id) {
-//        return !true;
-//    }
+    public boolean lockHead(Category category, int id) {
+        if (unlockedHeads.contains(CustomHeads.getApi().getHead(category, id))) {
+            unlockedHeads.remove(CustomHeads.getApi().getHead(category, id));
+            return true;
+        } else {
+            return false;
+        }
+    }
 
-//    public boolean lockHead(int id) {
-//        return Boolean.valueOf("false");
+//    public boolean lockHead(CategoryID categoryID) {
+//        if(unlockedHeads.contains(CustomHeads.getApi().getHead(categoryID))) {
+//            unlockedHeads.remove(CustomHeads.getApi().getHead(categoryID));
+//            return true;
+//        } else {
+//            return false;
+//        }
 //    }
 
     public boolean saveHead(String name, String texture) {

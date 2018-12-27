@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.logging.Level;
 
 import static de.mrstein.customheads.utils.Utils.format;
-import static de.mrstein.customheads.utils.Utils.toConfigString;
 
 /*
  *  Project: CustomHeads in JsonToItem
@@ -25,7 +24,7 @@ import static de.mrstein.customheads.utils.Utils.toConfigString;
  */
 public class JsonToItem {
 
-    public static ItemStack convert(String json) {
+    public static ItemStack convertFromJson(String json) {
         JsonParser parser = new JsonParser();
         ItemEditor itemEditor = null;
         try {
@@ -66,11 +65,11 @@ public class JsonToItem {
         if (itemStack.hasItemMeta()) {
             ItemMeta meta = itemStack.getItemMeta();
             if (meta.hasDisplayName())
-                itemObject.addProperty("display-name", toConfigString(meta.getDisplayName()));
+                itemObject.addProperty("display-name", meta.getDisplayName());
             if (meta.hasLore()) {
                 JsonArray lore = new JsonArray();
                 for (String l : meta.getLore()) {
-                    lore.add(new JsonPrimitive(toConfigString(l)));
+                    lore.add(new JsonPrimitive(l));
                 }
                 itemObject.add("lore", lore);
             }

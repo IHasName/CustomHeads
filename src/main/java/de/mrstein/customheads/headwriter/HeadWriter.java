@@ -17,12 +17,16 @@ import java.util.logging.Level;
 
 public class HeadWriter {
 
-    private static BlockFace[] axis = {BlockFace.NORTH, BlockFace.WEST, BlockFace.SOUTH, BlockFace.EAST};
     private static BlockFace[] axisshifted = {BlockFace.EAST, BlockFace.NORTH, BlockFace.WEST, BlockFace.SOUTH};
+    private static BlockFace[] axis = {BlockFace.NORTH, BlockFace.WEST, BlockFace.SOUTH, BlockFace.EAST};
+
     private static HashMap<Player, String> undoList = new HashMap<>();
-    private Player player;
-    private String text;
+
     private HeadFontType fontType;
+
+    private Player player;
+
+    private String text;
 
     public HeadWriter(HeadFontType fontType, String text) {
         this.fontType = fontType;

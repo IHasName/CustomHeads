@@ -34,13 +34,14 @@ public class Looks {
 
     @Getter
     private static boolean loaded = false;
+
     public HashMap<Integer, Inventory> subCategoryLooks = new HashMap<>();
     private HashMap<String, Inventory> createdMenus = new HashMap<>();
     private HashMap<String, String[]> menuInfo = new HashMap<>();
     private HashMap<String, ItemStack> items = new HashMap<>();
 
-    private List<Category> usedCategories = new ArrayList<>();
     private List<SubCategory> usedSubCategories = new ArrayList<>();
+    private List<Category> usedCategories = new ArrayList<>();
 
     public Looks(String language) {
         loaded = false;
@@ -84,7 +85,7 @@ public class Looks {
                         itemStack = getBackButton();
 
                     } else {
-                        itemStack = JsonToItem.convert(idEntry.getValue().toString());
+                        itemStack = JsonToItem.convertFromJson(idEntry.getValue().toString());
                         if (idEntry.getValue().getAsJsonObject().has("clickAction")) {
                             JsonObject clickAction = idEntry.getValue().getAsJsonObject().getAsJsonObject("clickAction");
                             switch (clickAction.get("action").getAsString()) {

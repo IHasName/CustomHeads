@@ -11,6 +11,8 @@ import com.mojang.authlib.GameProfile;
 import de.mrstein.customheads.CustomHeads;
 import de.mrstein.customheads.api.CustomHeadsAPI;
 import de.mrstein.customheads.api.CustomHeadsPlayer;
+import de.mrstein.customheads.category.Category;
+import de.mrstein.customheads.category.CustomHead;
 import de.mrstein.customheads.headwriter.HeadFontType;
 import de.mrstein.customheads.headwriter.HeadWriter;
 import de.mrstein.customheads.reflection.TagEditor;
@@ -21,6 +23,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.block.Skull;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.Iterator;
 import java.util.logging.Level;
 
 public class APIHandler implements CustomHeadsAPI {
@@ -92,6 +95,11 @@ public class APIHandler implements CustomHeadsAPI {
         } catch (Exception e) {
             CustomHeads.getInstance().getLogger().log(Level.WARNING, "Error placing Skull", e);
         }
+    }
+
+    public CustomHead getHead(Category category, int id) {
+        Iterator<CustomHead> headIterator = category.getHeads().stream().filter(customHead -> customHead.getId() == id).iterator();
+        return headIterator.hasNext() ? headIterator.next() : null;
     }
 
     // API Impl

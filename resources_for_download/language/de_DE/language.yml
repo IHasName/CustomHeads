@@ -34,10 +34,11 @@ ECONOMY:
   PRICE_FORMAT: '{PRICE} {CURRENCY}'
   FREE: Gratis
   BOUGHT: '&7Freigeschaltet' # new
-  BUY_CATEGORY_PROMPT: '&eRechtsklick zum kaufen' # new
-  BUY_CATEGORY: '&9{CATEGORY} &7f{ue}r &9{PRICE} &7kaufen?' # new
-  BUY_SUCCESSFUL: '&eCategoryShop: &7{CATEGORY} erfolgreich gekauft' # new
-  BUY_FAILED: '&eCategoryShop: &7Konnte Kategorie nicht kaufen: {REASON}' # new
+  BUY_PROMPT: '&eRechtsklick zum kaufen' # new
+  BUY_CONFIRM: '&9{ITEM} &7f{ue}r &9{PRICE} &7kaufen?' # new
+  BUY_SUCCESSFUL: '&eHeadShop: &7{ITEM} erfolgreich gekauft' # new
+  BUY_FAILED: '&eHeadShop: &7Konnte Gegenstand nicht kaufen: {REASON}' # new
+
 # Verlauf
 HISTORY_DISABLED: '&cVerlauf wurde {ue}ber die Config deaktiviert'
 HISTORY_INVALID_PLAYER: "&cUng{ue}ltiger Spieler '{PLAYER}'"

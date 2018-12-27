@@ -19,30 +19,33 @@ import java.util.*;
 
 public class ScrollableInventory {
 
-    public static List<String> sortName = new ArrayList<>(Arrays.asList("invalid", CustomHeads.getLanguageManager().CYCLE_ARRANGEMENT_DEFAULT, CustomHeads.getLanguageManager().CYCLE_ARRANGEMENT_ALPHABETICAL, CustomHeads.getLanguageManager().CYCLE_ARRANGEMENT_COLOR));
-    private static HashMap<String, ScrollableInventory> cachedInventories = new HashMap<>();
     private static List<Comparator<ItemStack>> sorting = new ArrayList<>(Arrays.asList((o1, o2) -> 0, Comparator.comparing(item -> ChatColor.stripColor(Utils.format(item.getItemMeta().getDisplayName()))), Comparator.comparing(item -> item.getItemMeta().getDisplayName().substring(1, 2))));
+    public static List<String> sortName = new ArrayList<>(Arrays.asList("invalid", CustomHeads.getLanguageManager().CYCLE_ARRANGEMENT_DEFAULT, CustomHeads.getLanguageManager().CYCLE_ARRANGEMENT_ALPHABETICAL, CustomHeads.getLanguageManager().CYCLE_ARRANGEMENT_COLOR));
     private final long cacheTime;
+
+    private static HashMap<String, ScrollableInventory> cachedInventories = new HashMap<>();
     private HashMap<Integer, ItemStack> buttons = new HashMap<>();
-    private String title;
-    private String uid;
-    private String[] extraTags;
+
+    private Language language = CustomHeads.getLanguageManager();
     private List<ItemStack> content;
     private LinkedList<ItemStack> defContent;
-    private Language language = CustomHeads.getLanguageManager();
-    private int currentPage;
-    private int currentArrangement;
     private boolean clonable = false;
     private boolean contentMovable = true;
+    private int currentArrangement;
+    private int currentPage = 1;
+
     private Inventory inventory;
+    private String[] extraTags;
+    private String uid;
+
+    public ScrollableInventory(String title) {
+        this(title, new ArrayList<>());
+    }
 
     public ScrollableInventory(String title, List<ItemStack> content) {
-        this.title = title;
         inventory = Bukkit.createInventory(null, 54, title);
         uid = RandomStringUtils.randomAlphabetic(6);
-        this.content = content;
-        this.defContent = new LinkedList<>(content);
-        reArrangeContents(1);
+        setContent(content);
         cachedInventories.put(uid, this);
         cacheTime = System.currentTimeMillis();
     }
@@ -97,11 +100,6 @@ public class ScrollableInventory {
 
     public void setPage(int page) {
         currentPage = page;
-        if (page <= 1)
-            page = 1;
-        int pages = (int) Math.ceil(content.size() / 45.0);
-        int start = (page - 1) * 45;
-        int end = page * 45;
 
         for (int i = 0; i <= 45; i++)
             inventory.setItem(i, null);
@@ -109,7 +107,7 @@ public class ScrollableInventory {
 
         refreshContent();
 
-        List<ItemStack> sublist = content.subList(start, content.size() > end ? end : content.size());
+        List<ItemStack> sublist = getContentFromPage(currentPage, true);
         for (int i = 0; i < sublist.size(); i++) {
             inventory.setItem(i, sublist.get(i));
         }
@@ -117,30 +115,27 @@ public class ScrollableInventory {
         for (int index : buttons.keySet())
             inventory.setItem(index + 47, CustomHeads.getTagEditor().addTags(buttons.get(index), "scInvID", uid));
 
-        if (page < pages)
+        if (page < getPages())
             inventory.setItem(53, CustomHeads.getTagEditor().setTags(new ItemEditor(Material.SKULL_ITEM, (short) 3).setDisplayName(language.NEXT_PAGE).setLore(language.PAGE_GENERAL_PREFIX + " " + (page + 1)).setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMWI2ZjFhMjViNmJjMTk5OTQ2NDcyYWVkYjM3MDUyMjU4NGZmNmY0ZTgzMjIxZTU5NDZiZDJlNDFiNWNhMTNiIn19fQ==").getItem(), "scInvID", uid, "scrollInv", "slidePage#>next"));
         if (page > 1)
             inventory.setItem(45, CustomHeads.getTagEditor().setTags(new ItemEditor(Material.SKULL_ITEM, (short) 3).setDisplayName(language.PREVIOUS_PAGE).setLore(language.PAGE_GENERAL_PREFIX + " " + (page - 1)).setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzM3NjQ4YWU3YTU2NGE1Mjg3NzkyYjA1ZmFjNzljNmI2YmQ0N2Y2MTZhNTU5Y2U4YjU0M2U2OTQ3MjM1YmNlIn19fQ==").getItem(), "scInvID", uid, "scrollInv", "slidePage#>previous"));
     }
 
     public int reArrangeContents(int method) {
-        currentArrangement = method < 1 ? 1 : method > (sorting.size() + 1) ? (sorting.size() + 1) : method;
-        switch (currentArrangement) {
-            case 1:
-                content = new ArrayList<>(defContent);
-                break;
-            case 2:
-            case 3:
-                content.sort(sorting.get(currentArrangement - 1));
-                break;
+        if ((currentArrangement = method < 1 ? 1 : method > (sorting.size() + 1) ? (sorting.size() + 1) : method) == 1) {
+            content = new ArrayList<>(defContent);
+        } else {
+            content.sort(sorting.get(currentArrangement - 1));
         }
         setPage(currentPage);
         return currentArrangement;
     }
 
     public void setContent(List<ItemStack> content) {
+        this.content = content;
         defContent = new LinkedList<>(content);
-        reArrangeContents(1);
+        if (!content.isEmpty())
+            reArrangeContents(1);
     }
 
     public int nextArrangement() {
@@ -177,12 +172,37 @@ public class ScrollableInventory {
         return contentCopy;
     }
 
-    public String getTitle() {
-        return title;
+    public int getPages() {
+        int p;
+        return (p = (int) Math.ceil(content.size() / 45.0)) < 1 ? 1 : p;
+    }
+
+    public List<ItemStack> getContentFromPage(int page, boolean tags) {
+        List<ItemStack> contentCopy = getContent(tags);
+        int pages = getPages();
+        if (page < 1 || page > pages)
+            throw new IllegalArgumentException("Unknown Page " + page);
+        int start = (page - 1) * 45;
+        int end = page * 45;
+        return contentCopy.subList(start, content.size() > end ? end : content.size());
+    }
+
+    public void setItemOnCurrentPage(int index, ItemStack to) {
+        setItem(currentPage, index, to);
+    }
+
+    public void setItem(int page, int index, ItemStack to) {
+        List<ItemStack> contentCopy = getContent(true);
+        contentCopy.set(index + 45 * (page - 1), to);
+        setContent(contentCopy);
+        refreshContent();
     }
 
     public String getUid() {
         return uid;
     }
 
+    public int getCurrentPage() {
+        return currentPage;
+    }
 }

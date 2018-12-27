@@ -8,7 +8,10 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import de.mrstein.customheads.CustomHeads;
 import de.mrstein.customheads.api.CustomHeadsPlayer;
+import de.mrstein.customheads.category.BaseCategory;
 import de.mrstein.customheads.category.Category;
+import de.mrstein.customheads.category.CustomHead;
+import de.mrstein.customheads.category.SubCategory;
 import de.mrstein.customheads.reflection.AnvilGUI;
 import de.mrstein.customheads.reflection.TagEditor;
 import de.mrstein.customheads.stuff.CHSearchQuery;
@@ -48,11 +51,11 @@ import java.util.zip.ZipInputStream;
 
 public class Utils {
 
-    public static final Gson GSON = new GsonBuilder().disableHtmlEscaping().create();
     public static final Gson GSON_PRETTY = new GsonBuilder().disableHtmlEscaping().setPrettyPrinting().create();
+    public static final Gson GSON = new GsonBuilder().disableHtmlEscaping().create();
 
-    private static HashMap<String, String[]> subCommands;
     private static HashMap<Character, ItemStack> alphabet;
+    private static HashMap<String, String[]> subCommands;
     private static HashMap<String, String[]> perms;
 
     private static long lastRedownload = 0;
@@ -104,7 +107,7 @@ public class Utils {
                 List<Category> categories = CustomHeads.getCategoryLoader().getCategoryList();
                 categories.removeAll(CustomHeads.getApi().wrapPlayer(player).getUnlockedCategories(false));
                 query.excludeCategories(categories);
-                if (query.getResults().isEmpty()) {
+                if (query.resultsReturned() == 0) {
                     Inventory noRes = Bukkit.createInventory(event.getPlayer(), 9 * 3, CustomHeads.getLanguageManager().NO_RESULTS);
                     noRes.setItem(13, CustomHeads.getTagEditor().setTags(new ItemEditor(Material.BARRIER).setDisplayName(CustomHeads.getLanguageManager().NO_RESULTS).getItem(), "blockMoving"));
                     if (action.length > 0) {
@@ -329,21 +332,38 @@ public class Utils {
         return false;
     }
 
-    public static void openCategory(Category category, Player player, String menuID) {
+    public static void openCategory(BaseCategory baseCategory, Player player, String[] backAction) {
         CustomHeadsPlayer customHeadsPlayer = CustomHeads.getApi().wrapPlayer(player);
-        if (customHeadsPlayer.getUnlockedCategories(CustomHeads.hasEconomy() && !CustomHeads.keepCategoryPermissions()).contains(category)) {
+        List<CustomHead> categoryHeads;
+        if (baseCategory.isSubCategory()) {
+            SubCategory subCategory = baseCategory.getAsSubCategory();
+            if (!customHeadsPlayer.getUnlockedCategories(CustomHeads.hasEconomy() && !CustomHeads.keepCategoryPermissions()).contains(subCategory.getOriginCategory())) {
+                return;
+            }
+            categoryHeads = subCategory.getHeads();
+        } else {
+            Category category = baseCategory.getAsCategory();
+            if (!customHeadsPlayer.getUnlockedCategories(CustomHeads.hasEconomy() && !CustomHeads.keepCategoryPermissions()).contains(category)) {
+                return;
+            }
             if (category.hasSubCategories()) {
                 player.openInventory(CustomHeads.getLooks().subCategoryLooks.get(Integer.parseInt(category.getId())));
+                return;
             } else {
                 openPreloader(player);
-                List<ItemStack> heads = new ArrayList<>();
-                category.getHeads().forEach(wearable -> heads.add(CustomHeads.getTagEditor().setTags(wearable, "wearable")));
-                ScrollableInventory inventory = new ScrollableInventory(category.getName(), heads).setContentsClonable(true);
-                inventory.setBarItem(1, Utils.getBackButton("openMenu", menuID));
-                inventory.setBarItem(3, CustomHeads.getTagEditor().setTags(new ItemEditor(Material.PAPER).setDisplayName(CustomHeads.getLanguageManager().ITEMS_INFO).setLore(CustomHeads.getLanguageManager().ITEMS_INFO_LORE).getItem(), "dec", "info-item", "blockMoving"));
-                player.openInventory(inventory.getAsInventory());
+                categoryHeads = category.getHeads();
             }
         }
+        openPreloader(player);
+        ScrollableInventory inventory = new ScrollableInventory(baseCategory.getName());
+        inventory.setContent(categoryHeads.stream().map(customHead -> {
+            boolean bought = customHeadsPlayer.getUnlockedHeads().contains(customHead);
+            ItemEditor itemEditor = new ItemEditor(customHead);
+            return CustomHeads.hasEconomy() && CustomHeads.headsBuyable() ? bought ? CustomHeads.getTagEditor().addTags(itemEditor.addLoreLine(CustomHeads.getLanguageManager().ECONOMY_BOUGHT).getItem(), "wearable", "clonable") : CustomHeads.getTagEditor().addTags(itemEditor.addLoreLine(formatPrice(customHead.getPrice(), true)).getItem(), "buyHead", "buyHead#>" + customHead.getOriginCategory().getId() + ":" + customHead.getId()) : CustomHeads.getTagEditor().addTags(itemEditor.getItem(), "wearable", "clonable");
+        }).collect(Collectors.toList()));
+        inventory.setBarItem(1, Utils.getBackButton(backAction));
+        inventory.setBarItem(3, CustomHeads.getTagEditor().setTags(new ItemEditor(Material.PAPER).setDisplayName(CustomHeads.getLanguageManager().ITEMS_INFO).setLore(CustomHeads.getLanguageManager().ITEMS_INFO_LORE).getItem(), "dec", "info-item", "blockMoving"));
+        player.openInventory(inventory.getAsInventory());
     }
 
     public static boolean hasCustomTexture(ItemStack itemStack) {
@@ -395,13 +415,12 @@ public class Utils {
     }
 
     public static void unzipFile(File zipFile, File outputDir) {
-        try {
+        try (ZipInputStream inputStream = new ZipInputStream(new FileInputStream(zipFile))) {
             if (!outputDir.exists())
                 Files.createParentDirs(outputDir);
             byte[] buffer = new byte[0x1000];
-            ZipInputStream inputStream = new ZipInputStream(new FileInputStream(zipFile));
             ZipEntry zipEntry;
-            System.out.println("Unzipping " + zipFile.getName());
+            System.out.println("[FileZipper] Unzipping " + zipFile.getName());
             while ((zipEntry = inputStream.getNextEntry()) != null) {
                 File zipEntryFile = new File(outputDir, zipEntry.getName());
                 if (FilenameUtils.getExtension(zipEntry.getName()).length() > 0) {
@@ -412,15 +431,14 @@ public class Utils {
                     while ((len = inputStream.read(buffer)) > 0) {
                         streamOut.write(buffer, 0, len);
                     }
-                    streamOut.flush();
                     streamOut.close();
                 }
             }
             inputStream.closeEntry();
             inputStream.close();
-            System.out.println("Unzip finished");
+            System.out.println("[FileZipper] Unzip finished");
         } catch (Exception exception) {
-            CustomHeads.getInstance().getLogger().log(Level.WARNING, "Failed to unzip " + zipFile.getName(), exception);
+            Bukkit.getLogger().log(Level.WARNING, "[FileZipper] Failed to unzip " + zipFile.getName(), exception);
         }
     }
 
@@ -471,11 +489,11 @@ public class Utils {
             File outFile = new File(subfolder, filename);
             Files.createParentDirs(outFile);
             if (!outFile.exists()) {
-                InputStream fileInputStream = CustomHeads.getInstance().getResource(filename);
-                FileOutputStream fileOutputStream = new FileOutputStream(outFile);
-                fileOutputStream.getChannel().transferFrom(Channels.newChannel(fileInputStream), 0, Integer.MAX_VALUE);
-                fileOutputStream.close();
-                fileInputStream.close();
+                try (InputStream fileInputStream = CustomHeads.getInstance().getResource(filename); FileOutputStream fileOutputStream = new FileOutputStream(outFile)) {
+                    fileOutputStream.getChannel().transferFrom(Channels.newChannel(fileInputStream), 0, Integer.MAX_VALUE);
+                } catch (FileNotFoundException e) {
+                    Bukkit.getLogger().log(Level.WARNING, "Failed to create File " + filename, e);
+                }
             }
             return outFile;
         } catch (IOException e) {
@@ -484,9 +502,31 @@ public class Utils {
         return null;
     }
 
-    public static String getPriceFormatted(Category forCategory, boolean prefix) {
-        String pref = prefix ? CustomHeads.getLanguageManager().ECONOMY_PRICE : "{PRICE}";
-        return pref.replace("{PRICE}", forCategory.isFree() ? CustomHeads.getLanguageManager().ECONOMY_FREE : CustomHeads.getLanguageManager().ECONOMY_PRICE_FORMAT.replace("{PRICE}", String.valueOf(forCategory.getPrice())).replace("{CURRENCY}", CustomHeads.hasEconomy() ? forCategory.getPrice() == 1 ? CustomHeads.getEconomyManager().getEconomyPlugin().currencyNameSingular() : CustomHeads.getEconomyManager().getEconomyPlugin().currencyNamePlural() : ""));
+    public static String getCategoryPriceFormatted(Category forCategory, boolean prefix) {
+        return formatPrice(forCategory.getPrice(), prefix);
+    }
+
+    public static String getHeadPriceFormatted(ItemStack forItem, boolean prefix) {
+        return formatPrice(getHeadPriceRaw(forItem), prefix);
+    }
+
+    public static String formatPrice(int price, boolean prefix) {
+        return (prefix ? CustomHeads.getLanguageManager().ECONOMY_PRICE : "{PRICE}").replace("{PRICE}", price == 0 ? CustomHeads.getLanguageManager().ECONOMY_FREE : CustomHeads.getLanguageManager().ECONOMY_PRICE_FORMAT.replace("{PRICE}", String.valueOf(price)).replace("{CURRENCY}", CustomHeads.hasEconomy() ? price == 1 ? CustomHeads.getEconomyManager().getEconomyPlugin().currencyNameSingular() : CustomHeads.getEconomyManager().getEconomyPlugin().currencyNamePlural() : ""));
+    }
+
+    public static int getHeadPriceRaw(ItemStack itemStack) {
+        List<String> tags = CustomHeads.getTagEditor().getTags(itemStack);
+        if (!tags.contains("price"))
+            return -1;
+        return Integer.parseInt(tags.get(tags.indexOf("price") + 1));
+    }
+
+    public static CustomHead getHeadFromItem(ItemStack itemStack) {
+        List<String> tags = CustomHeads.getTagEditor().getTags(itemStack);
+        if (!tags.contains("headID"))
+            return null;
+        String[] id = tags.get(tags.indexOf("headID") + 1).split(":");
+        return CustomHeads.getApi().getHead(CustomHeads.getCategoryLoader().getCategory(id[0]), Integer.parseInt(id[1]));
     }
 
     public static String toConfigString(String string) {
@@ -532,6 +572,18 @@ public class Utils {
             replist.add(ChatColor.translateAlternateColorCodes('&', st).replace("{ae}", "ä").replace("{oe}", "ö").replace("{ue}", "ü").replace("{AE}", "Ä").replace("{OE}", "Ö").replace("{UE}", "Ü"));
         }
         return replist;
+    }
+
+    public static int[] appendArray(int[] array, int with) {
+        int[] newArray = Arrays.copyOf(array, array.length + 1);
+        newArray[array.length] = with;
+        return newArray;
+    }
+
+    public static <T> T[] appendArray(T[] array, T with) {
+        T[] newArray = Arrays.copyOf(array, array.length + 1);
+        newArray[array.length] = with;
+        return newArray;
     }
 
 }

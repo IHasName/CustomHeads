@@ -11,9 +11,9 @@ import org.bukkit.ChatColor;
 @Getter
 public class BaseCategory {
 
-    private String id;
-    private String name;
     private String permission;
+    private String name;
+    private String id;
 
     BaseCategory(String id, String name, String permission) {
         this.id = id;

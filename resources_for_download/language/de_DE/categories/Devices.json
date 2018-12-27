@@ -1,184 +1,269 @@
 {
   "id": 1,
-  "name": "Ger{ae}te",
+  "name": "Geräte",
   "permission": "devices",
+  "fixed-icon": false,
   "icon": {
     "item": "SKULL_ITEM",
     "damage": 3,
-    "display-name": "Ger{ae}te",
-    "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTVjMjkyYTI0ZjU0YTdhNDM3ODUyNjY1NTJkYmE3YTE4NGY5YzUwZTBkOTRiMzM3ZDhkM2U3NmU5ZTljY2U3In19fQ==",
+    "display-name": "Geräte",
     "lore": [
-      "&7Computer und so..."
-    ]
+      "§7Computer und so..."
+    ],
+    "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTVjMjkyYTI0ZjU0YTdhNDM3ODUyNjY1NTJkYmE3YTE4NGY5YzUwZTBkOTRiMzM3ZDhkM2U3NmU5ZTljY2U3In19fQ=="
   },
   "heads": [
     {
       "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMmRlNGUyNzgzZjg1YTM5MTIyMWRkOTE2NTZiYTY4OGU3ZTQyZDE2ZjZhYmJmYmNmYWQ5Y2E1MzYxN2ZjYTYifX19",
-      "name": "&3Uhr"
+      "name": "§3Uhr",
+      "price": 0,
+      "id": 1
     },
     {
       "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNmZlOGNmZjc1ZjdkNDMzMjYwYWYxZWNiMmY3NzNiNGJjMzgxZDk1MWRlNGUyZWI2NjE0MjM3NzlhNTkwZTcyYiJ9fX0=",
-      "name": "&6Goldene Uhr"
+      "name": "§6Goldene Uhr",
+      "price": 0,
+      "id": 2
     },
     {
       "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzg0NzJhMmRjYzIzOWI0YTQ4M2FjNDRjMWRiZjhmZGJhMGZjYTFkMjUzZWI2NDNmYTBiZDkzYWY4M2EzNzMifX19",
-      "name": "&8Antike Uhr"
+      "name": "§8Antike Uhr",
+      "price": 0,
+      "id": 3
     },
     {
       "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYmZlNGVkODM3ODQ5ZGVhODQwY2Q0Zjk5MjlmZGQxNTE5ZDE0YjVkZGUzODAzNTU5ZTdmNjNkMjdmMWU2ZjI5In19fQ==",
-      "name": "&7Uhr"
+      "name": "§7Uhr",
+      "price": 0,
+      "id": 4
     },
     {
       "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYmExMGRhNTI2ZTUxMTFjZmI2ZTNlYmQ0NzY5M2UxNjJkZDUyZDQxYTIxODIwMjhkYWE3YzJiMTlhYTMxNDMifX19",
-      "name": "&8Schwarze Uhr"
+      "name": "§8Schwarze Uhr",
+      "price": 0,
+      "id": 5
     },
     {
       "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvY2MxZTJiODJkYjEwYWQyNWNhNDEzNDVlOTI0NWY1ODQ3ZTc2NzYwY2QyNDVjNDhlNWFmMWZkODk4NWVmOTE1In19fQ==",
-      "name": "&5Gamecube"
+      "name": "§5Gamecube",
+      "price": 0,
+      "id": 6
     },
     {
       "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZTA2M2EwZWJiMmQ4MDEwMjczYjZjNDViNjRlODRkODNiMWU0M2UyY2E1ZGZiMmE2ZmQ4MzhjM2Y4ODgyN2QifX19",
-      "name": "&dGamecube"
+      "name": "§dGamecube",
+      "price": 0,
+      "id": 7
     },
     {
       "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTI1NmY3ZmY1MmU3YmZkODE4N2I4M2RkMzRkZjM0NTAyOTUyYjhkYjlmYWZiNzI4OGViZWJiNmU3OGVmMTVmIn19fQ==",
-      "name": "&dGamecube"
+      "name": "§dGamecube",
+      "price": 0,
+      "id": 8
     },
     {
       "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZWE3ZDJhN2ZiYjRkMzdiNGQ1M2ZlODc3NTcxMjhlNWVmNjZlYzIzZDdmZjRmZTk5NDQ1NDZkYmM4Y2U3NzcifX19",
-      "name": "&8Kamera"
+      "name": "§8Kamera",
+      "price": 0,
+      "id": 9
     },
     {
       "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMjA3YmQzOGYxNmIzODBjODgyZjhjMjgzMTVlYmVkMjU2MWFkYWIyZmRiOTk2YjJjYzBkNzQ3ZjY0YmM0ZWI4In19fQ==",
-      "name": "&7Kamera"
+      "name": "§7Kamera",
+      "price": 0,
+      "id": 10
     },
     {
       "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMmYxNTlhMWNiZTE3M2Q5MjczOTJmYTY1ZmNmZTc4NTUzZDgxYWE1ZGMyOTQ5NWI5ZmJiYWRlMzYyZjhiZjkifX19",
-      "name": "&cSicherheitrskamera"
+      "name": "§cSicherheitrskamera",
+      "price": 0,
+      "id": 11
     },
     {
       "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDNhMGZlYjYyNmU1NjdlNDc5NTc2ZjRmZjU0M2UxNmU5YjM2YTczMDQ4OTFiMmYzMjkzZWFhOGI2ODczNWE0In19fQ==",
-      "name": "&6Alte Kamera"
+      "name": "§6Alte Kamera",
+      "price": 0,
+      "id": 12
     },
     {
       "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvN2NjMjE3YTliOWUzY2UzY2QwNDg0YzdlOGNlNDlkMWNmNzQxMjgxYmRkYTVhNGQ2Y2I4MjFmMzc4NzUyNzE4In19fQ==",
-      "name": "&eLaterne (An)"
+      "name": "§eLaterne (An)",
+      "price": 0,
+      "id": 13
     },
     {
       "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDJjODFiNDM1ZGMyMmQyOWQ0Nzc4ZmZkMjJmZWI4NDZhNjhiNjQ4ZGQxYWY1ZGU4MThiNTE3ZjA1NzRkIn19fQ==",
-      "name": "&8Laterne (Aus)"
+      "name": "§8Laterne (Aus)",
+      "price": 0,
+      "id": 14
     },
     {
       "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYTZiMjIxYmU4OTY3OGQ1ODU2ZWFhNjg2NjdmOTg2ODMxNzViY2NlNjc0MWY4MmM2MmU3M2YwNDQxNjYzNjcifX19",
-      "name": "&cPolizei Sirene (Rot)"
+      "name": "§cPolizei Sirene (Rot)",
+      "price": 0,
+      "id": 15
     },
     {
       "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDRiZjY0M2NmYjQxZWU1ZjllNjE4ZGU5Nzg5Y2M2ZDg1YzJlOTUzZjQ0NTY3ZTRlMmQzYjE5YTc5ZTg0MyJ9fX0=",
-      "name": "&9Polizei Sirene (Blau)"
+      "name": "§9Polizei Sirene (Blau)",
+      "price": 0,
+      "id": 16
     },
     {
       "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvY2EzNWFmYTU4NjMxNjA5NzkxZmZlMjVmM2E4NzlkZmJmZmVhMTE1MWY4N2JmZjYyYzU0MjNlZDYxMzZlZTAifX19",
-      "name": "&7Polizei Sirene (Rot und Blau)"
+      "name": "§7Polizei Sirene (Rot und Blau)",
+      "price": 0,
+      "id": 17
     },
     {
       "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOGFlNTJhZThjOThhYzE5ZmQwNzYzN2E0NjlmZmEyNTZhYjBiM2IxMGVjZTYyNDMxODYxODhiYTM4ZGYxNTQifX19",
-      "name": "&aComputer"
+      "name": "§aComputer",
+      "price": 0,
+      "id": 18
     },
     {
       "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOWM5YTkxYTc0ZDNhMWJiMWQ3ODVmNWJkYzhkODI2ZGUzYjJmZGRjNmExZmFkMTI5MjNmZDA2ZWM4NGY0OTllIn19fQ==",
-      "name": "&7Computer"
+      "name": "§7Computer",
+      "price": 0,
+      "id": 19
     },
     {
       "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTg2ZjcyYzE2YjFlOWZlNmUwOTllNzZiNWY3YTg4NGZiNzgyY2ZjYzU4OGM5NWM0ZTM4M2RjNTI3ZDFiODQifX19",
-      "name": "&bComputer (mit Hintergrund)"
+      "name": "§bComputer (mit Hintergrund)",
+      "price": 0,
+      "id": 20
     },
     {
       "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOGQxOWM2ODQ2MTY2NmFhY2Q3NjI4ZTM0YTFlMmFkMzlmZTRmMmJkZTMyZTIzMTk2M2VmM2IzNTUzMyJ9fX0=",
-      "name": "&8Computer (Großes Interface)"
+      "name": "§8Computer (Großes Interface)",
+      "price": 0,
+      "id": 21
     },
     {
       "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOWNjZWZkNWYyYTk0ZjI0MjgxOTg1OGE5NjU1NWExM2JhZWJhOWRhZThkNDY3ZjQwNjE5NzRlZTk5OWI2OTU5YiJ9fX0=",
-      "name": "&7Computer"
+      "name": "§7Computer",
+      "price": 0,
+      "id": 22
     },
     {
       "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZmVkNGFlNzU3ZjIzNDQ1YjVjOTMzNWNjNWE4ZjdmN2M2ZjlhNWFlZTg1YmI2OWZlOTdmNTgxZGFmYjE4ZDMwIn19fQ==",
-      "name": "&aComputer"
+      "name": "§aComputer",
+      "price": 0,
+      "id": 23
     },
     {
       "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNTNkYTM5ZTU1NmM5Mjc5OTAzODRmYWExZmViM2I4MjUyNTJkYWM3OGNkMjg4Nzc5Y2RlMTExN2MzN2E4In19fQ==",
-      "name": "&2Computer mit Gesicht"
+      "name": "§2Computer mit Gesicht",
+      "price": 0,
+      "id": 24
     },
     {
       "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZWQxZTk5NzkyODlmMDMwOTlhN2M1ODdkNTJkNDg4ZTI2ZTdiYjE3YWI1OTRiNjlmOTI0MzhkNzdlYWJjIn19fQ==",
-      "name": "&8Monitor (Sieht aus wie ein Fernseher)"
+      "name": "§8Monitor (Sieht aus wie ein Fernseher)",
+      "price": 0,
+      "id": 25
     },
     {
       "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTVjMjkyYTI0ZjU0YTdhNDM3ODUyNjY1NTJkYmE3YTE4NGY5YzUwZTBkOTRiMzM3ZDhkM2U3NmU5ZTljY2U3In19fQ==",
-      "name": "&7Klassischer Monitor"
+      "name": "§7Klassischer Monitor",
+      "price": 0,
+      "id": 26
     },
     {
       "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNmQ2YzY1YjQ0YzM0YjFhY2MyY2NiMzQ2NzUyMzk3MTI1ZjBkOWZmYTBhYjNjNTBhOTlkMWRiM2I3NGM2MyJ9fX0=",
-      "name": "&3Monitor (Sieht witzig aus...)"
+      "name": "§3Monitor (Sieht witzig aus...)",
+      "price": 0,
+      "id": 27
     },
     {
       "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzc0MTcwYzY2YmYzMTQwZjIzNGIzMjJhZGQ3MjRjNWRmNjk0OWE5MjA5ZjgwN2ViZjg2ZDRmOWM4YzFlMTc4In19fQ==",
-      "name": "&dMonitor"
+      "name": "§dMonitor",
+      "price": 0,
+      "id": 28
     },
     {
       "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYTc2ZmE2MzZjNTRlMzYwODVmZTJmYTQ2ZGM5NjYyMTVjMTU3MjJiYjc2NGEyZWVlODRjZmU4NDc2Y2FmNzEifX19",
-      "name": "&fMicrowelle"
+      "name": "§fMicrowelle",
+      "price": 0,
+      "id": 29
     },
     {
       "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYTI0N2M4NzY0ODgxNjdjNzRjYjk0OGFiMTE4MWU2YmVmOWU0YzhkNzU3M2MxOTFhYWFiNGU1Y2M3NWIwOWQifX19",
-      "name": "&8Fernseher"
+      "name": "§8Fernseher",
+      "price": 0,
+      "id": 30
     },
     {
       "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvN2Y0YjhjOWYzMzc4NjkxNTllZDMxYTcxYmQ1MDNiNzI1YjJlZTI2NGE2ZWIxMWU1OGU2NTdlMWE4YTk5YyJ9fX0=",
-      "name": "&7Fernseher"
+      "name": "§7Fernseher",
+      "price": 0,
+      "id": 31
     },
     {
       "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMjAxN2JjNDhmZTNjZGM5MDg1YTBlMTEwZmUxZjYyODQyNmEwOTc3NTc0NzM5OGRlNTcyNGU3MzU4NmJkIn19fQ==",
-      "name": "&7Klassischer Fernseher"
+      "name": "§7Klassischer Fernseher",
+      "price": 0,
+      "id": 32
     },
     {
       "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvY2M5OWQ4ZmJhZDExZjliNzMzNDBiY2MxYWRmNmRkMjhmNjdmNzU0YjUyY2U0ZTUwMmI0ZmUwMmIxNmIxODM0In19fQ==",
-      "name": "&7Holz Fernseher"
+      "name": "§7Holz Fernseher",
+      "price": 0,
+      "id": 33
     },
     {
       "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNDVlOWJkNDI1ZmJkMzlhOTRjMzBiZjVhZWIzMDFkYjE4NjcxMzMyMjc2MWZjODJhNzZmYjYxNjg3OTM0OTAifX19",
-      "name": "&8Fernseher"
+      "name": "§8Fernseher",
+      "price": 0,
+      "id": 34
     },
     {
       "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYmUzZGIyN2NiZDE3ODkzMTA0MDkwODFhZDhjNDJkNjkwYjA4OTYxYjU1Y2FkZDQ1YjQyZDQ2YmNhMjhiOCJ9fX0=",
-      "name": "&6Orangener Fernseher"
+      "name": "§6Orangener Fernseher",
+      "price": 0,
+      "id": 35
     },
     {
       "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvN2Y0YjhjOWYzMzc4NjkxNTllZDMxYTcxYmQ1MDNiNzI1YjJlZTI2NGE2ZWIxMWU1OGU2NTdlMWE4YTk5YyJ9fX0=",
-      "name": "&3Fernseher"
+      "name": "§3Fernseher",
+      "price": 0,
+      "id": 36
     },
     {
       "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZGE2YWU1YjM0YzRmNzlhNWY5ZWQ2Y2NjMzNiYzk4MWZjNDBhY2YyYmZjZDk1MjI2NjRmZTFjNTI0ZDJlYjAifX19",
-      "name": "&eUhr"
+      "name": "§eUhr",
+      "price": 0,
+      "id": 37
     },
     {
       "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYjAxYTU2OGViYTdlNDUzYjU1ZjE1NTQ1ZjVlMzVmZmFiODc5MWFhY2Y5MDM0YWZiYmJlNGJkZGIyMWZhNTAifX19",
-      "name": "&7Tastenfeld"
+      "name": "§7Tastenfeld",
+      "price": 0,
+      "id": 38
     },
     {
       "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMmU5OWY2Njk3MjVkMjM1ODYzNmFlMmY1YmMzNDM5ZDY2Nzg0OWRhYTg0NjJhZjkzYTQyZTIxMmFmMTJiMmEifX19",
-      "name": "&6Orangener Lautsprecher"
+      "name": "§6Orangener Lautsprecher",
+      "price": 0,
+      "id": 39
     },
     {
       "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZmY3YmVjZjE3MThlOWE2MDk2ZWU1ZjljYjdhYmViNmNmZDk0ODhjNDRhMzExNjQwN2M5MmVjMzNhZDdkODUyMSJ9fX0=",
-      "name": "&8Schwarzer Lautsprecher"
+      "name": "§8Schwarzer Lautsprecher",
+      "price": 0,
+      "id": 40
     },
     {
       "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODI0NDJiYmY3MTcxYjVjYWZjYTIxN2M5YmE0NGNlMjc2NDcyMjVkZjc2Y2RhOTY4OWQ2MWE5ZjFjMGE1ZjE3NiJ9fX0=",
-      "name": "&8Telefon"
+      "name": "§8Telefon",
+      "price": 0,
+      "id": 41
     },
     {
       "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOGRhMzMyYWJkZTMzM2ExNWE2YzZmY2ZlY2E4M2YwMTU5ZWE5NGI2OGU4ZjI3NGJhZmMwNDg5MmI2ZGJmYyJ9fX0=",
-      "name": "&cC4"
+      "name": "§cC4",
+      "price": 0,
+      "id": 42
     }
   ]
 }

@@ -24,15 +24,18 @@ import java.util.List;
 @Getter
 public class HeadFontType {
 
-    private static HashMap<String, HeadFontType> cache = new HashMap<>();
-    @Getter(AccessLevel.NONE)
-    private Configs fontFile;
-    private String fontName;
-    private String cacheID;
     private char[] availibleCharacters = "abcdefghijklmnopqrstuvwxyz0123456789!?#$%&@_'\"()[]{}<>+-/=:,;\\ ".toCharArray();
+
+    private static HashMap<String, HeadFontType> cache = new HashMap<>();
     private HashMap<Character, ItemStack> characters = new HashMap<>();
 
+    @Getter(AccessLevel.NONE)
+    private Configs fontFile;
+
     private boolean cached = false;
+
+    private String fontName;
+    private String cacheID;
 
     private long cacheTime;
 

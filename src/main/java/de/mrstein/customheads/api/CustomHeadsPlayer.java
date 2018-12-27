@@ -8,6 +8,7 @@ package de.mrstein.customheads.api;
  */
 
 import de.mrstein.customheads.category.Category;
+import de.mrstein.customheads.category.CustomHead;
 import de.mrstein.customheads.stuff.GetHistory;
 import de.mrstein.customheads.stuff.SearchHistory;
 import org.bukkit.entity.Player;
@@ -51,23 +52,41 @@ public interface CustomHeadsPlayer {
      *
      * @return List of unlocked Heads
      */
-    //List<ItemStack> getUnlockedHeads();
+    List<CustomHead> getUnlockedHeads();
 
     /**
      * Unlocks an Head from the Given ID
      *
+     * @param category Which Category to pull from
      * @param id ID of the Head
      * @return false when the ID doesnt exists
      */
-    //boolean unlockHead(int id);
+    boolean unlockHead(Category category, int id);
+
+    /**
+     * Unlocks an Head from the Given ID
+     *
+     * @param categoryID Category HeadID
+     * @return false when the ID doesnt exists
+     */
+//    boolean unlockHead(CategoryID categoryID);
 
     /**
      * Locks an Head from the Given ID
      *
+     * @param category Which Category to pull from
      * @param id ID of the Head
      * @return false when the ID doesnt exists
      */
-    //boolean lockHead(int id);
+    boolean lockHead(Category category, int id);
+
+    /**
+     * Locks an Head from the Given ID
+     *
+     * @param categoryID Category Head ID
+     * @return false when the ID doesnt exists
+     */
+//    boolean lockHead(CategoryID categoryID);
 
     /**
      * Gets an List of the Heads a Player saved
@@ -120,5 +139,5 @@ public interface CustomHeadsPlayer {
 
     GetHistory getGetHistory();
 
-    // Im no professional Description Writer but shhhhhhhhhhhhh...
+    // Im no professional Description Writer so shhhhhhhhhhhhh...
 }

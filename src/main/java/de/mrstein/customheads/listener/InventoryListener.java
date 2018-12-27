@@ -3,6 +3,7 @@ package de.mrstein.customheads.listener;
 import de.mrstein.customheads.CustomHeads;
 import de.mrstein.customheads.api.CustomHeadsPlayer;
 import de.mrstein.customheads.category.Category;
+import de.mrstein.customheads.category.CustomHead;
 import de.mrstein.customheads.category.SubCategory;
 import de.mrstein.customheads.headwriter.HeadFontType;
 import de.mrstein.customheads.reflection.TagEditor;
@@ -67,7 +68,7 @@ public class InventoryListener implements Listener {
                         boolean bought = customHeadsPlayer.getUnlockedCategories(true).contains(category);
                         nextIcon = new ItemEditor(nextIcon)
                                 .setDisplayName(customHeadsPlayer.getUnlockedCategories(CustomHeads.hasEconomy() && !CustomHeads.keepCategoryPermissions()).contains(category) ? "§a" + nextIcon.getItemMeta().getDisplayName() : "§7" + ChatColor.stripColor(nextIcon.getItemMeta().getDisplayName()) + " " + CustomHeads.getLanguageManager().LOCKED)
-                                .addLoreLine(CustomHeads.hasEconomy() ? bought ? CustomHeads.getLanguageManager().ECONOMY_BOUGHT : Utils.getPriceFormatted(category, true) + "\n" + CustomHeads.getLanguageManager().ECONOMY_BUY_CATEGORY_PROMPT : null)
+                                .addLoreLine(CustomHeads.hasEconomy() && CustomHeads.categoriesBuyable() ? bought ? CustomHeads.getLanguageManager().ECONOMY_BOUGHT : Utils.getCategoryPriceFormatted(category, true) + "\n" + CustomHeads.getLanguageManager().ECONOMY_BUY_PROMPT : null)
                                 .addLoreLines(hasPermission(player, "heads.view.permissions") ? Arrays.asList(" ", "§7§oPermission: " + category.getPermission()) : null)
                                 .getItem();
                         if (CustomHeads.hasEconomy() && !CustomHeads.keepCategoryPermissions()) {
@@ -301,11 +302,16 @@ public class InventoryListener implements Listener {
             event.setCancelled(true);
             String[] args = itemTags.get(itemTags.indexOf("openCategory") + 1).split("#>");
             if (!event.getClick().isRightClick()) {
-                if (menuID != null) {
-                    if (args[0].equalsIgnoreCase("category")) {
-                        Category category = CustomHeads.getCategoryLoader().getCategory(args[1]);
-                        if (category != null) {
-                            openCategory(category, player, itemTags.get(itemTags.indexOf("menuID") + 1).toLowerCase());
+                if (args[0].equalsIgnoreCase("category")) {
+                    Category category = CustomHeads.getCategoryLoader().getCategory(args[1]);
+                    if (category != null) {
+                        if (menuID != null) {
+                            openCategory(category, player, new String[]{"openMenu", itemTags.get(itemTags.indexOf("menuID") + 1).toLowerCase()});
+                        } else {
+                            if (category.hasSubCategories()) {
+                                // Last null because it'll only open the SubCategory Menu
+                                openCategory(category, player, null);
+                            }
                         }
                     }
                 }
@@ -313,10 +319,8 @@ public class InventoryListener implements Listener {
 
             if (args[0].equalsIgnoreCase("subCategory")) {
                 SubCategory subCategory = CustomHeads.getCategoryLoader().getSubCategory(args[1]);
-                if (subCategory != null && customHeadsPlayer.getUnlockedCategories(CustomHeads.hasEconomy() && !CustomHeads.keepCategoryPermissions()).contains(subCategory.getOriginCategory())) {
-                    openPreloader(player);
-                    List<ItemStack> heads = new ArrayList<>(subCategory.getHeads());
-                    player.openInventory(new ScrollableInventory(subCategory.getName(), heads).setBarItem(1, Utils.getBackButton("invAction", "goBack#>category#>" + subCategory.getOriginCategory().getId())).setContentsClonable(true).getAsInventory());
+                if (subCategory != null) {
+                    openCategory(subCategory, player, new String[]{"openCategory", "category#>" + subCategory.getOriginCategory().getId()});
                 }
             }
         }
@@ -324,14 +328,37 @@ public class InventoryListener implements Listener {
         if (itemTags.contains("buyCategory")) {
             event.setCancelled(true);
             if (event.getClick().isRightClick()) {
-                Category buyCategory = CustomHeads.getCategoryLoader().getCategory(itemTags.get(itemTags.indexOf("buyCategory") + 1));
+                Category buyCategory = CustomHeads.getCategoryLoader().getCategory(itemTags.get(itemTags.indexOf("buyCategory") + 1).split("#>")[1]);
                 if (buyCategory != null && menuID != null) {
                     if (buyCategory.isFree()) {
                         customHeadsPlayer.unlockCategory(buyCategory);
-                        openCategory(buyCategory, player, menuID);
-                        player.sendMessage(CustomHeads.getLanguageManager().ECONOMY_BUY_SUCCESSFUL.replace("{CATEGORY}", buyCategory.getPlainName()));
+                        openCategory(buyCategory, player, new String[]{"openMenu", menuID});
+                        player.sendMessage(CustomHeads.getLanguageManager().ECONOMY_BUY_SUCCESSFUL.replace("{ITEM}", buyCategory.getPlainName()));
                     } else {
-                        player.openInventory(getDialog(CustomHeads.getLanguageManager().ECONOMY_BUY_CATEGORY.replace("{CATEGORY}", buyCategory.getPlainName()).replace("{PRICE}", getPriceFormatted(buyCategory, false)), new String[]{"confirmBuy", buyCategory.getId() + "#>" + menuID}, null, new String[]{"openMenu", menuID}, null, buyCategory.getCategoryIcon()));
+                        player.openInventory(getDialog(CustomHeads.getLanguageManager().ECONOMY_BUY_CONFIRM.replace("{ITEM}", buyCategory.getPlainName()).replace("{PRICE}", getCategoryPriceFormatted(buyCategory, false)), new String[]{"confirmBuy", "category#>" + buyCategory.getId() + "#>" + menuID}, null, new String[]{"openMenu", menuID}, null, buyCategory.getCategoryIcon()));
+                    }
+                }
+            }
+        }
+
+        if (itemTags.contains("buyHead")) {
+            event.setCancelled(true);
+            if (event.getClick().isRightClick()) {
+                String[] idParts = itemTags.get(itemTags.indexOf("buyHead") + 1).split("#>")[1].split(":");
+                CustomHead buyHead = CustomHeads.getApi().getHead(CustomHeads.getCategoryLoader().getCategory(idParts[0]), Integer.parseInt(idParts[1]));
+                if (buyHead != null) {
+                    if (buyHead.isFree()) {
+                        if (CustomHeads.headsPermanentBuy()) {
+                            buyHead.unlockFor(customHeadsPlayer);
+                            currentScrollInventory.setItemOnCurrentPage(event.getSlot(), CustomHeads.getTagEditor().addTags(new ItemEditor(buyHead).addLoreLine(CustomHeads.getLanguageManager().ECONOMY_BOUGHT).getItem(), "wearable", "clonable"));
+                        } else {
+                            player.setItemOnCursor(buyHead.getPlainItem());
+                        }
+                        player.sendMessage(CustomHeads.getLanguageManager().ECONOMY_BUY_SUCCESSFUL.replace("{ITEM}", ChatColor.stripColor(buyHead.getItemMeta().getDisplayName())));
+                        currentScrollInventory.refreshCurrentPage();
+                    } else {
+                        Category category = buyHead.getOriginCategory();
+                        player.openInventory(getDialog(CustomHeads.getLanguageManager().ECONOMY_BUY_CONFIRM.replace("{ITEM}", ChatColor.stripColor(buyHead.getItemMeta().getDisplayName())).replace("{PRICE}", getHeadPriceFormatted(buyHead, false)), new String[]{"confirmBuy", "head#>" + idParts[0] + ":" + idParts[1] + "#>" + category.getId()}, null, new String[]{"openCategory", "category#>" + category.getId()}, null, buyHead.getPlainItem()));
                     }
                 }
             }
@@ -341,7 +368,12 @@ public class InventoryListener implements Listener {
             event.setCancelled(true);
             if (CustomHeads.hasEconomy()) {
                 String[] args = itemTags.get(itemTags.indexOf("confirmBuy") + 1).split("#>");
-                CustomHeads.getEconomyManager().buyCategory(customHeadsPlayer, CustomHeads.getCategoryLoader().getCategory(args[0]), args[1]);
+                if (args[0].equals("category")) {
+                    CustomHeads.getEconomyManager().buyCategory(customHeadsPlayer, CustomHeads.getCategoryLoader().getCategory(args[1]), args[2]);
+                } else if (args[0].equals("head")) {
+                    String[] idParts = args[1].split(":");
+                    CustomHeads.getEconomyManager().buyHead(customHeadsPlayer, CustomHeads.getCategoryLoader().getCategory(idParts[0]), Integer.parseInt(idParts[1]), args[2], CustomHeads.headsPermanentBuy());
+                }
             }
         }
 
@@ -485,10 +517,13 @@ public class InventoryListener implements Listener {
 
         if (itemTags.contains("clonable")) {
             event.setCancelled(true);
-            if (event.getClick() == ClickType.SHIFT_LEFT) {
-                player.getInventory().addItem(CustomHeads.getTagEditor().setTags(event.getCurrentItem(), ""));
-            } else {
-                player.setItemOnCursor(CustomHeads.getTagEditor().setTags(event.getCurrentItem(), ""));
+            if (getHeadFromItem(event.getCurrentItem()) == null || customHeadsPlayer.getUnlockedHeads().contains(getHeadFromItem(event.getCurrentItem())) || getHeadFromItem(event.getCurrentItem()).isFree()) {
+                ItemEditor itemEditor = new ItemEditor(event.getCurrentItem());
+                if (event.getClick() == ClickType.SHIFT_LEFT) {
+                    player.getInventory().addItem(TagEditor.clearTags(itemEditor.removeLoreLine(itemEditor.hasLore() ? itemEditor.getLore().size() - 1 : 0).getItem()));
+                } else {
+                    player.setItemOnCursor(TagEditor.clearTags(itemEditor.removeLoreLine(itemEditor.hasLore() ? itemEditor.getLore().size() - 1 : 0).getItem()));
+                }
             }
         }
 

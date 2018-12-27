@@ -19,12 +19,13 @@ import static de.mrstein.customheads.utils.Utils.saveInternalFile;
 public class Configs {
 
     private FileConfiguration config = null;
+
     private File file = null;
 
-    private String filename;
-    private String subfolder;
-
     private boolean inPlugin;
+
+    private String subfolder;
+    private String filename;
 
     private Plugin plugin;
 

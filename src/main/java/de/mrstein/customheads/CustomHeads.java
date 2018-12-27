@@ -4,7 +4,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import de.mrstein.customheads.api.CustomHeadsAPI;
 import de.mrstein.customheads.api.CustomHeadsPlayer;
-import de.mrstein.customheads.category.BaseCategory;
 import de.mrstein.customheads.category.Category;
 import de.mrstein.customheads.economy.EconomyManager;
 import de.mrstein.customheads.headwriter.HeadFontType;
@@ -35,7 +34,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.io.File;
 import java.util.*;
 import java.util.logging.Level;
-import java.util.stream.Collectors;
 
 import static de.mrstein.customheads.utils.Utils.hasPermission;
 
@@ -47,22 +45,19 @@ import static de.mrstein.customheads.utils.Utils.hasPermission;
 @Getter
 public class CustomHeads extends JavaPlugin {
 
+    public static final HashMap<String, String> uuidCache = new HashMap<>();
     public static final String chPrefix = "§7[§eCustomHeads§7] ";
     public static final String chError = chPrefix + "§cError §7: §c";
     public static final String chWarning = chPrefix + "§eWarning §7: §e";
-    public static final HashMap<String, String> uuidCache = new HashMap<>();
     public static int hisOverflow = 18;
-
-    @Getter
-    private static Configs headsConfig;
     @Getter
     private static Configs updateFile;
     @Getter
+    private static Configs headsConfig;
+    @Getter
     private static Configs categoryLoaderConfig;
-
     @Getter
     private static JsonFile playerDataFile;
-
     @Getter
     private static Looks looks;
     @Getter
@@ -79,18 +74,21 @@ public class CustomHeads extends JavaPlugin {
     private static EconomyManager economyManager;
     @Getter
     private static CategoryLoader categoryLoader;
-
+    private static List<String> versions = Arrays.asList("v1_8_R1", "v1_8_R2", "v1_8_R3", "v1_9_R1", "v1_9_R2", "v1_10_R1", "v1_11_R1", "v1_12_R1");
     private static String packet = Bukkit.getServer().getClass().getPackage().getName();
     public static String version = packet.substring(packet.lastIndexOf('.') + 1);
-    private static List<String> versions = Arrays.asList("v1_8_R1", "v1_8_R2", "v1_8_R3", "v1_9_R1", "v1_9_R2", "v1_10_R1", "v1_11_R1", "v1_12_R1");
+
     public static final boolean USETEXTURES = versions.contains(version);
-    private static boolean historyEnabled = false;
-    private static boolean canSeeOwnHistory = false;
-    private static boolean hasEconomy = false;
     private static boolean keepCategoryPermissions = false;
-    private String bukkitVersion = Bukkit.getVersion().substring(Bukkit.getVersion().lastIndexOf("("));
-    private boolean isInit = false;
+    private static boolean categoriesBuyable = false;
+    private static boolean headsPermanentBuy = false;
+    private static boolean canSeeOwnHistory = false;
+    private static boolean historyEnabled = false;
     private static boolean reducedDebug = false;
+    private static boolean headsBuyable = false;
+    private static boolean hasEconomy = false;
+    private boolean isInit = false;
+    private String bukkitVersion = Bukkit.getVersion().substring(Bukkit.getVersion().lastIndexOf("("));
 
     // Search/Get History Loader
     public static void reloadHistoryData() {
@@ -116,7 +114,7 @@ public class CustomHeads extends JavaPlugin {
                 if (economyManager.getEconomyPlugin() == null) {
                     Bukkit.getConsoleSender().sendMessage(chError + "Error hooking into Vault. Continuing without it...");
                 } else {
-                    Bukkit.getConsoleSender().sendMessage(chPrefix + "§7Hooked info Vault");
+                    Bukkit.getConsoleSender().sendMessage(chPrefix + "§7Successfully  hooked into Vault");
                     hasEconomy = true;
                     return;
                 }
@@ -139,8 +137,20 @@ public class CustomHeads extends JavaPlugin {
         return hasEconomy;
     }
 
+    public static boolean categoriesBuyable() {
+        return categoriesBuyable;
+    }
+
     public static boolean keepCategoryPermissions() {
         return keepCategoryPermissions;
+    }
+
+    public static boolean headsBuyable() {
+        return headsBuyable;
+    }
+
+    public static boolean headsPermanentBuy() {
+        return headsPermanentBuy;
     }
 
     public static boolean hasReducedDebug() {
@@ -152,6 +162,9 @@ public class CustomHeads extends JavaPlugin {
         sender.sendMessage((console ? chPrefix : "") + languageManager.RELOAD_CONFIG);
         headsConfig.reload();
         reducedDebug = headsConfig.get().getBoolean("reducedDebug");
+        categoriesBuyable = headsConfig.get().getBoolean("economy.category.buyable");
+        headsBuyable = headsConfig.get().getBoolean("economy.heads.buyable");
+        headsPermanentBuy = headsConfig.get().getBoolean("economy.heads.permanentBuy");
         keepCategoryPermissions = headsConfig.get().getBoolean("economy.category.keepPermissions");
         reloadEconomy();
         sender.sendMessage((console ? chPrefix : "") + languageManager.RELOAD_HISTORY);
@@ -170,6 +183,9 @@ public class CustomHeads extends JavaPlugin {
     public static boolean reload() {
         headsConfig.reload();
         reducedDebug = headsConfig.get().getBoolean("reducedDebug");
+        categoriesBuyable = headsConfig.get().getBoolean("economy.category.buyable");
+        headsBuyable = headsConfig.get().getBoolean("economy.heads.buyable");
+        headsPermanentBuy = headsConfig.get().getBoolean("economy.heads.permanentBuy");
         keepCategoryPermissions = headsConfig.get().getBoolean("economy.category.keepPermissions");
         reloadHistoryData();
         reloadEconomy();
@@ -208,7 +224,7 @@ public class CustomHeads extends JavaPlugin {
             headsConfig.save();
             getServer().getConsoleSender().sendMessage(chPrefix + "Successfully converted Head Data");
         } catch (Exception e) {
-            getLogger().log(Level.WARNING, "Failed to convert Head Data...", e);
+            getLogger().log(Level.WARNING, "Failed to convertFromJson Head Data...", e);
         }
     }
 
@@ -260,17 +276,19 @@ public class CustomHeads extends JavaPlugin {
     private void loadRest() {
         reducedDebug = headsConfig.get().getBoolean("reducedDebug");
         keepCategoryPermissions = headsConfig.get().getBoolean("economy.category.keepPermissions");
+        categoriesBuyable = headsConfig.get().getBoolean("economy.category.buyable");
+        headsBuyable = headsConfig.get().getBoolean("economy.heads.buyable");
+        headsPermanentBuy = headsConfig.get().getBoolean("economy.heads.permanentBuy");
         categoryLoaderConfig = new Configs(instance, "loadedCategories.yml", true);
 
         tagEditor = new TagEditor("chTags");
-
 
         JsonFile.setDefaultSubfolder("plugins/CustomHeads");
 
         // Convert old Head-Data if present
         playerDataFile = new JsonFile("playerData.json");
         if (headsConfig.get().contains("heads")) {
-            Bukkit.getConsoleSender().sendMessage(chPrefix + "Found old Head Data! Trying to convert...");
+            Bukkit.getConsoleSender().sendMessage(chPrefix + "Found old Head Data! Trying to convertFromJson...");
             convertOldHeadData();
         }
 
@@ -341,18 +359,16 @@ public class CustomHeads extends JavaPlugin {
                                 if (CustomHeads.getTagEditor().getTags(contentItem).contains("openCategory") && CustomHeads.getTagEditor().getTags(contentItem).contains("icon-loop")) {
                                     String[] categoryArgs = CustomHeads.getTagEditor().getTags(contentItem).get(CustomHeads.getTagEditor().indexOf(contentItem, "openCategory") + 1).split("#>");
                                     if (categoryArgs[0].equals("category")) {
-
                                         CustomHeadsPlayer customHeadsPlayer = api.wrapPlayer(player);
                                         Category category = CustomHeads.getCategoryLoader().getCategory(categoryArgs[1]);
                                         ItemStack nextIcon = category.nextIcon();
-                                        boolean unlocked = customHeadsPlayer.getUnlockedCategories(false).stream().map(BaseCategory::getId).collect(Collectors.toList()).contains(category.getId());
-                                        boolean bought = customHeadsPlayer.getUnlockedCategories(true).stream().map(BaseCategory::getId).collect(Collectors.toList()).contains(category.getId());
+                                        boolean bought = customHeadsPlayer.getUnlockedCategories(true).contains(category);
                                         nextIcon = new ItemEditor(nextIcon)
-                                                .setDisplayName(hasPermission(player, category.getPermission()) || unlocked ? "§a" + nextIcon.getItemMeta().getDisplayName() : "§7" + ChatColor.stripColor(nextIcon.getItemMeta().getDisplayName()) + " " + CustomHeads.getLanguageManager().LOCKED)
-                                                .addLoreLine(CustomHeads.hasEconomy() ? bought ? CustomHeads.getLanguageManager().ECONOMY_BOUGHT : Utils.getPriceFormatted(category, true) + "\n" + CustomHeads.getLanguageManager().ECONOMY_BUY_CATEGORY_PROMPT : null)
+                                                .setDisplayName(customHeadsPlayer.getUnlockedCategories(CustomHeads.hasEconomy() && !CustomHeads.keepCategoryPermissions()).contains(category) ? "§a" + nextIcon.getItemMeta().getDisplayName() : "§7" + ChatColor.stripColor(nextIcon.getItemMeta().getDisplayName()) + " " + CustomHeads.getLanguageManager().LOCKED)
+                                                .addLoreLine(CustomHeads.hasEconomy() && CustomHeads.categoriesBuyable() ? bought ? CustomHeads.getLanguageManager().ECONOMY_BOUGHT : Utils.getCategoryPriceFormatted(category, true) + "\n" + CustomHeads.getLanguageManager().ECONOMY_BUY_PROMPT : null)
                                                 .addLoreLines(hasPermission(player, "heads.view.permissions") ? Arrays.asList(" ", "§7§oPermission: " + category.getPermission()) : null)
                                                 .getItem();
-                                        if (CustomHeads.hasEconomy()) {
+                                        if (CustomHeads.hasEconomy() && !CustomHeads.keepCategoryPermissions()) {
                                             if (!bought) {
                                                 nextIcon = CustomHeads.getTagEditor().addTags(nextIcon, "buyCategory", category.getId());
                                             }

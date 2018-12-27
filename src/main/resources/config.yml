@@ -43,10 +43,11 @@ history:
 economy:
   enable: false
   category:
+    buyable: false
     keepPermissions: true
-#  heads:
-#    buyable: false
-#    permanentBuy: true
+  heads:
+    buyable: false
+    permanentBuy: true
 updateNotify: true
 langFile: none
 reducedDebug: true

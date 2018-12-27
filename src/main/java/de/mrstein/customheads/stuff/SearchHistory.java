@@ -54,11 +54,10 @@ public class SearchHistory {
         }
         if (hasHistory()) {
             for (int i = 0; i < entries.size(); i++) {
-                hisInv.setItem(i + 18, CustomHeads.getTagEditor().setTags(new ItemEditor(Material.PAPER).setDisplayName("§a" + entries.get(i)).setLore(CustomHeads.getLanguageManager().HISTORY_SEARCHHISTORY_LORE).getItem(), "history", "search#>" + entries.get(i), "tempTags"));
+                hisInv.setItem(i + 18, CustomHeads.getTagEditor().setTags(new ItemEditor(Material.PAPER).setDisplayName("§a" + entries.get(i)).setLore(CustomHeads.getLanguageManager().HISTORY_SEARCHHISTORY_LORE).getItem(), "history", "search#>" + entries.get(i), "tempTags", "blockMoving"));
             }
         } else {
             hisInv.setItem(31, new ItemEditor(Material.BARRIER).setDisplayName("§0").setLore(CustomHeads.getLanguageManager().HISTORY_NO_HISTORY_LORE).getItem());
-
         }
         return hisInv;
     }

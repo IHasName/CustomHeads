@@ -34,10 +34,10 @@ ECONOMY:
   PRICE_FORMAT: '{PRICE}{CURRENCY}'
   FREE: Free
   BOUGHT: '&7Unlocked' # new
-  BUY_CATEGORY_PROMPT: '&eRight Click to Buy' # new
-  BUY_CATEGORY: '&7Buy &9{CATEGORY} &7for &9{PRICE}?' # new
-  BUY_SUCCESSFUL: '&eCategoryShop: &7Successfully bought {CATEGORY}' # new
-  BUY_FAILED: '&eCategoryShop: &7Failed to buy Category: {REASON}' # new
+  BUY_PROMPT: '&eRight Click to Buy' # new
+  BUY_CONFIRM: '&7Buy &9{ITEM} &7for &9{PRICE}?' # new
+  BUY_SUCCESSFUL: '&eHeadShop: &7Successfully bought {ITEM}' # new
+  BUY_FAILED: '&eHeadShop: &7Transaction failed: {REASON}' # new
 # History Messages
 HISTORY_DISABLED: '&eHistory: &cHistory is disabled by the Config'
 HISTORY_INVALID_PLAYER: "&eHistory: &cInvalid Player '{PLAYER}'"

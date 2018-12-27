@@ -49,8 +49,8 @@ public class Language {
     public final String ECONOMY_PRICE_FORMAT;
     public final String ECONOMY_FREE;
     public final String ECONOMY_BOUGHT;
-    public final String ECONOMY_BUY_CATEGORY_PROMPT;
-    public final String ECONOMY_BUY_CATEGORY;
+    public final String ECONOMY_BUY_PROMPT;
+    public final String ECONOMY_BUY_CONFIRM;
     public final String ECONOMY_BUY_SUCCESSFUL;
     public final String ECONOMY_BUY_FAILED;
     public final String PAGE_GENERAL_PREFIX;
@@ -235,8 +235,8 @@ public class Language {
         ECONOMY_PRICE_FORMAT = getFromConfig("ECONOMY.PRICE_FORMAT");
         ECONOMY_FREE = getFromConfig("ECONOMY.FREE");
         ECONOMY_BOUGHT = getFromConfig("ECONOMY.BOUGHT");
-        ECONOMY_BUY_CATEGORY_PROMPT = getFromConfig("ECONOMY.BUY_CATEGORY_PROMPT");
-        ECONOMY_BUY_CATEGORY = getFromConfig("ECONOMY.BUY_CATEGORY");
+        ECONOMY_BUY_PROMPT = getFromConfig("ECONOMY.BUY_PROMPT");
+        ECONOMY_BUY_CONFIRM = getFromConfig("ECONOMY.BUY_CONFIRM");
         ECONOMY_BUY_SUCCESSFUL = getFromConfig("ECONOMY.BUY_SUCCESSFUL");
         ECONOMY_BUY_FAILED = getFromConfig("ECONOMY.BUY_FAILED");
 

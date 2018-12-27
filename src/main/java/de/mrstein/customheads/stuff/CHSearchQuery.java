@@ -1,7 +1,9 @@
 package de.mrstein.customheads.stuff;
 
 import de.mrstein.customheads.CustomHeads;
+import de.mrstein.customheads.api.CustomHeadsPlayer;
 import de.mrstein.customheads.category.Category;
+import de.mrstein.customheads.category.CustomHead;
 import de.mrstein.customheads.utils.ItemEditor;
 import de.mrstein.customheads.utils.ScrollableInventory;
 import de.mrstein.customheads.utils.Utils;
@@ -23,12 +25,12 @@ import java.util.stream.Collectors;
 
 public class CHSearchQuery {
 
-    private String search;
+    private List<String> badversions = Arrays.asList("v1_8_R1", "v1_8_R2", "v1_8_R3");
+    private List<CustomHead> results;
 
     private boolean recordHistory = true;
 
-    private List<ItemStack> results;
-    private List<String> badversions = Arrays.asList("v1_8_R1", "v1_8_R2", "v1_8_R3");
+    private String search;
 
     public CHSearchQuery(String search) {
         this.search = search;
@@ -51,8 +53,9 @@ public class CHSearchQuery {
     }
 
     public ScrollableInventory viewTo(Player player, String backAction) {
+        CustomHeadsPlayer customHeadsPlayer = CustomHeads.getApi().wrapPlayer(player);
         if (recordHistory)
-            CustomHeads.getApi().wrapPlayer(player).getSearchHistory().addEntry(search);
+            customHeadsPlayer.getSearchHistory().addEntry(search);
 
         String title = CustomHeads.getLanguageManager().SEARCH_TITLE.replace("{RESULTS}", "" + results.size());
         title = badversions.contains(CustomHeads.version) ?
@@ -62,7 +65,13 @@ public class CHSearchQuery {
                                 title.lastIndexOf("{short}")) :
                         title.substring(0, title.length() >= 32 ? 32 : title.length()) :
                 title.replace("{short}", "");
-        ScrollableInventory searchInventory = new ScrollableInventory(title, results).setContentsClonable(true);
+        List<ItemStack> heads = new ArrayList<>();
+        results.forEach(customHead -> {
+            boolean bought = customHeadsPlayer.getUnlockedHeads().contains(customHead);
+            ItemEditor itemEditor = new ItemEditor(customHead);
+            heads.add(bought ? CustomHeads.getTagEditor().addTags(itemEditor.addLoreLine(CustomHeads.getLanguageManager().ECONOMY_BOUGHT).getItem(), "wearable", "clonable") : CustomHeads.getTagEditor().addTags(itemEditor.addLoreLine(Utils.formatPrice(customHead.getPrice(), true)).getItem(), "buyHead", "buyHead#>" + customHead.getOriginCategory().getId() + ":" + customHead.getId()));
+        });
+        ScrollableInventory searchInventory = new ScrollableInventory(title, heads);
         if (!backAction.equals("willClose"))
             searchInventory.setBarItem(1, Utils.getBackButton("invAction", backAction));
         searchInventory.setBarItem(2, CustomHeads.getTagEditor().setTags(new ItemEditor(Material.PAPER).setDisplayName(CustomHeads.getLanguageManager().ITEMS_INFO).setLore(CustomHeads.getLanguageManager().ITEMS_INFO_LORE).getItem(), "dec", "info-item", "blockMoving"));
@@ -71,8 +80,8 @@ public class CHSearchQuery {
         return searchInventory;
     }
 
-    public List<ItemStack> getResults() {
-        return results;
+    public int resultsReturned() {
+        return results.size();
     }
 
     public CHSearchQuery setRecordHistory(boolean recordHistory) {

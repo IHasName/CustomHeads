@@ -29,12 +29,15 @@ public class AnvilGUI {
 
     private HashMap<AnvilSlot, ItemStack> items = new HashMap<>();
 
-    private Inventory inventory;
-    private Player player;
+    private AnvilClickEventHandler handler;
+
     private ItemStack currentitem = null;
 
-    private AnvilClickEventHandler handler;
+    private Inventory inventory;
+
     private Listener listener;
+
+    private Player player;
 
     public AnvilGUI(final Player player, final AnvilClickEventHandler anvilhandler) {
         this.player = player;

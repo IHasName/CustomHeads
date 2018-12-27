@@ -7,10 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Bukkit;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.InputStream;
-import java.net.URL;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.logging.Level;
 
@@ -26,9 +23,12 @@ public class JsonFile {
 
     @Getter(AccessLevel.NONE)
     private static final JsonParser PARSER = new JsonParser();
+
     @Setter
     private static String defaultSubfolder = "";
+
     private JsonElement json;
+
     private File file;
 
     public JsonFile(String filename) {
@@ -46,31 +46,21 @@ public class JsonFile {
     }
 
     public void saveJson() {
-        try {
-            FileWriter writer = new FileWriter(file);
+        try (OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8)) {
             String[] jsonSplitted = Utils.GSON_PRETTY.toJson(json).split("\n");
             for (String line : jsonSplitted) {
                 writer.write(line + "\n");
             }
-            writer.flush();
-            writer.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     public void reload() {
-        try {
-            InputStream in = new URL("file:///" + file.getAbsolutePath()).openConnection().getInputStream();
-            byte[] buffer = new byte[1];
-            StringBuilder str = new StringBuilder();
-            while (in.read(buffer) > 0) {
-                str.append(new String(buffer, StandardCharsets.UTF_8));
-            }
-            json = PARSER.parse(str.toString());
-            in.close();
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8))) {
+            json = PARSER.parse(reader);
         } catch (Exception e) {
-            Bukkit.getLogger().log(Level.WARNING, "Failed to get Json from " + file.getName(), e);
+            Bukkit.getLogger().log(Level.WARNING, "Failed to read Json from " + file.getName(), e);
         }
     }
 

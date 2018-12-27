@@ -6,15 +6,12 @@ import de.mrstein.customheads.category.Category;
 import de.mrstein.customheads.category.SubCategory;
 import de.mrstein.customheads.headwriter.HeadFontType;
 import de.mrstein.customheads.headwriter.HeadWriter;
-import de.mrstein.customheads.updaters.GitHubDownloader;
 import de.mrstein.customheads.utils.*;
-import org.apache.commons.lang3.StringUtils;
 import org.bukkit.*;
 import org.bukkit.block.BlockFace;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
@@ -39,14 +36,17 @@ import static de.mrstein.customheads.utils.Utils.*;
 
 public class CHCommand implements CommandExecutor {
 
-    public HashMap<Player, String[]> haltedCommands = new HashMap<>();
-    private Random ran = new Random();
-    private BlockFace[] faces = {BlockFace.NORTH, BlockFace.NORTH_EAST, BlockFace.NORTH_NORTH_EAST};
-    private FireworkEffect.Type[] fxtypes = {FireworkEffect.Type.BALL, FireworkEffect.Type.BALL_LARGE, FireworkEffect.Type.BURST, FireworkEffect.Type.STAR};
+    private static final Comparator<Category> categoryComparator = Comparator.comparing(category -> Integer.parseInt(category.getId()));
     private String[] rdmans = {"CustomHeads says: Hmm", "CustomHeads says: Does the Console have an Inventory?", "CustomHeads says: That tickels!", "CustomHeads says: No", "CustomHeads says: Im lost", "CustomHeads says: I don't think this is what you are searching for", "CustomHeads says: Hold on... Nevermind", "CustomHeads says: Sorry", "CustomHeads says: Spoilers... There will be a new Command soon =]"};
+    private FireworkEffect.Type[] fxtypes = {FireworkEffect.Type.BALL, FireworkEffect.Type.BALL_LARGE, FireworkEffect.Type.BURST, FireworkEffect.Type.STAR};
+    private BlockFace[] faces = {BlockFace.NORTH, BlockFace.NORTH_EAST, BlockFace.NORTH_NORTH_EAST};
+
+    public HashMap<Player, String[]> haltedCommands = new HashMap<>();
+
+    private Random ran = new Random();
 
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-        if (sender instanceof ConsoleCommandSender) {
+        if (!(sender instanceof Player)) {
             if (args.length > 0) {
                 if (args[0].equalsIgnoreCase("rl") || args[0].equalsIgnoreCase("reload")) {
                     CustomHeads.reload(sender);
@@ -62,12 +62,14 @@ public class CHCommand implements CommandExecutor {
                     redownloadLanguageFiles(sender);
                     return true;
                 }
-                if (args[0].equalsIgnoreCase("clear")) {
-                    HeadFontType.clearCache();
-                    GitHubDownloader.clearCache();
-                    GameProfileBuilder.cache.clear();
-                    ScrollableInventory.clearCache();
-                }
+                // Cache Cleaner
+//                if (args[0].equalsIgnoreCase("clear")) {
+//                    HeadFontType.clearCache();
+//                    GitHubDownloader.clearCache();
+//                    GameProfileBuilder.cache.clear();
+//                    ScrollableInventory.clearCache();
+//                    return true;
+//                }
             }
             Random rdm = new Random();
             sender.sendMessage(rdmans[rdm.nextInt(rdmans.length)]);
@@ -145,47 +147,60 @@ public class CHCommand implements CommandExecutor {
                 return true;
             }
 
-            /* Test Command plez Ignore
+//            /* Test Command plez Ignore
             if (args[0].equalsIgnoreCase("test")) {
-                Configs tempcon = new Configs(CustomHeads.getInstance(), "test.yml", false, "testing");
-                if(args[1].equalsIgnoreCase("gettags")) {
-                    player.sendMessage("[Tags] " + CustomHeads.getTagEditor().getTags(player.getItemInHand()));
-                }
-                return true;
+//                try {
+//                    Configs tempcon = new Configs(CustomHeads.getInstance(), "test.yml", false, "testing");
+//                    if (args[1].equalsIgnoreCase("gettags")) {
+//                        player.sendMessage("[Tags] " + CustomHeads.getTagEditor().getTags(player.getItemInHand()));
+//                    }
+//                    if (args[1].equalsIgnoreCase("count")) {
+//                        player.sendMessage("Counting Categories...");
+//                        for (Category category : CustomHeads.getCategoryLoader().getCategoryList()) {
+//                            File outFile = new File("plugins/CustomHeads/parsedCategories", CustomHeads.getCategoryLoader().getSourceFile(category).getName());
+//                            Files.createParentDirs(outFile);
+//                            OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(outFile), StandardCharsets.UTF_8);
+////                            FileWriter writer = new FileWriter(outFile);
+//                            writer.write(category.toString());
+//                            writer.flush();
+//                            writer.close();
+//                            player.sendMessage("Counting  " + category.getPlainName() + "...");
+//                        }
+//                        player.sendMessage("Done counting... but forgot how many it were");
+//                    }
+//                    if(args[1].equalsIgnoreCase("getid")) {
+//                        CustomHead customHead = CustomHeads.getApi().getHead(CustomHeads.getCategoryLoader().getCategory(args[2]), Integer.parseInt(args[3]));
+//                        player.sendMessage("[" + customHead
+//                                .getId() + "] Name: " + customHead
+//                                .getItemMeta()
+//                                .getDisplayName() + "§f Category: " + customHead
+//                                .getOriginCategory()
+//                                .getPlainName());
+//                    }
+//                } catch(Throwable into_the_trash) {
+//                    into_the_trash.printStackTrace();
+//                }
+//                return true;
             }
-            */
+//            */
 
             if (args[0].equalsIgnoreCase("categories")) {
                 if (hasPermission(player, "heads.admin")) {
                     if (args.length < 2) {
                         player.sendMessage(CustomHeads.getLanguageManager().CATEGORIES_BASECOMMAND_HEADER);
 
-                        List<Category> sortedCategories = new ArrayList<>();
-                        HashMap<Integer, Category> tempMap = new HashMap<>();
-
                         List<Category> categories = CustomHeads.getCategoryLoader().getCategoryList();
-                        for (Category category : categories) {
-                            if (StringUtils.isNumeric(category.getId())) {
-                                tempMap.put(Integer.parseInt(category.getId()), category);
-                            }
-                        }
-                        categories.removeAll(tempMap.values());
+                        categories.sort(categoryComparator);
 
-                        List<Integer> sorty = new ArrayList<>(tempMap.keySet());
-                        Collections.sort(sorty);
-                        sorty.forEach(s -> sortedCategories.add(tempMap.get(s)));
-
-                        categories.addAll(0, sortedCategories);
-
-                        for (int i = 0; i < sortedCategories.size(); i++) {
+                        for (int i = 0; i < categories.size(); i++) {
                             Category cCategory = categories.get(i);
-                            String hoverInfoCategoryBuilder = "{\"text\":\"";
+                            StringBuilder hoverInfoCategoryBuilder = new StringBuilder("{\"text\":\"");
                             for (String hoverInfoCategory : CustomHeads.getLanguageManager().CATEGORIES_BASECOMMAND_HOVERINFO_CATEGORY) {
-                                hoverInfoCategoryBuilder += hoverInfoCategory + "\n";
+                                hoverInfoCategoryBuilder.append(hoverInfoCategory).append("\n");
                             }
-                            hoverInfoCategoryBuilder = hoverInfoCategoryBuilder.replace("{ID}", "" + cCategory.getId()).replace("{CATEGORY}", cCategory.getName()).replace("{PERMISSION}", cCategory.getPermission()).replace("{USED}", cCategory.isUsed() ? CustomHeads.getLanguageManager().YES : CustomHeads.getLanguageManager().NO);
-                            hoverInfoCategoryBuilder = hoverInfoCategoryBuilder.substring(0, hoverInfoCategoryBuilder.length() - 1);
-                            hoverInfoCategoryBuilder += "\"}";
+                            hoverInfoCategoryBuilder = new StringBuilder(hoverInfoCategoryBuilder.toString().replace("{ID}", "" + cCategory.getId()).replace("{CATEGORY}", cCategory.getName()).replace("{PERMISSION}", cCategory.getPermission()).replace("{USED}", cCategory.isUsed() ? CustomHeads.getLanguageManager().YES : CustomHeads.getLanguageManager().NO));
+                            hoverInfoCategoryBuilder = new StringBuilder(hoverInfoCategoryBuilder.substring(0, hoverInfoCategoryBuilder.length() - 1));
+                            hoverInfoCategoryBuilder.append("\"}");
 
                             Utils.sendJSONMessage("[\"\",{\"text\":\" §e" + (i == (categories.size() - 1) ? "┗╸" : "┣╸") + " \"},{\"text\":\"" + (cCategory.isUsed() ? "§a" : "§7") + ChatColor.stripColor(cCategory.getName()) + "\"" +/*(CustomHeads.hasCategoryEditor() ? ",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/cedit " + cCategory.getId() + "\"}" : "") +*/",\"hoverEvent\":{\"action\":\"show_text\",\"value\":{\"text\":\"\",\"extra\":[" + hoverInfoCategoryBuilder +/*",{\"text\":\"\n" + (CustomHeads.hasCategoryEditor() ? "§eClick to open in Editor" : "§eGet CategoryCreator to\n§eopen an Editor") + "\"}" +*/"]}}}]", player);
                             if (cCategory.hasSubCategories()) {
@@ -461,7 +476,7 @@ public class CHCommand implements CommandExecutor {
                     List<Category> categories = CustomHeads.getCategoryLoader().getCategoryList();
                     categories.removeAll(CustomHeads.getApi().wrapPlayer(player).getUnlockedCategories(false));
                     query.excludeCategories(categories);
-                    if (query.getResults().isEmpty()) {
+                    if (query.resultsReturned() == 0) {
                         Inventory noRes = Bukkit.createInventory(player, 9 * 3, CustomHeads.getLanguageManager().NO_RESULTS);
                         noRes.setItem(13, CustomHeads.getTagEditor().setTags(new ItemEditor(Material.BARRIER).setDisplayName(CustomHeads.getLanguageManager().NO_RESULTS).getItem(), "blockMoving"));
                         noRes.setItem(26, CustomHeads.getTagEditor().setTags(new ItemEditor(Material.SKULL_ITEM, (short) 3).setDisplayName(CustomHeads.getLanguageManager().NO_RESULTS_TRY_AGAIN).setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMWI2ZjFhMjViNmJjMTk5OTQ2NDcyYWVkYjM3MDUyMjU4NGZmNmY0ZTgzMjIxZTU5NDZiZDJlNDFiNWNhMTNiIn19fQ==").getItem(), "invAction", "retrySearch#>" + args[1]));
@@ -540,11 +555,11 @@ public class CHCommand implements CommandExecutor {
                     HeadFontType font = new HeadFontType(args[2]);
                     if (args[1].equalsIgnoreCase("create")) {
                         if (font.exists()) {
-                            player.sendMessage(CustomHeads.getLanguageManager().FONTS_CREATE_ALREADYEXISTS);
+                            player.sendMessage(CustomHeads.getLanguageManager().FONTS_CREATE_ALREADYEXISTS.replace("{FONT}", args[2]));
                             return true;
                         }
                         font.save();
-                        player.sendMessage(CustomHeads.getLanguageManager().FONTS_CREATE_SUCCESSFUL);
+                        player.sendMessage(CustomHeads.getLanguageManager().FONTS_CREATE_SUCCESSFUL.replace("{FONT}", args[2]));
                         return true;
                     }
                     if (args[1].equalsIgnoreCase("remove")) {
@@ -693,7 +708,7 @@ public class CHCommand implements CommandExecutor {
             StringBuilder builder = new StringBuilder();
             for (String permission : Utils.getPermissions(player)) {
                 for (String subCommand : Utils.getPermissions().get(permission)) {
-                    builder.append(subCommand + ", ");
+                    builder.append(subCommand).append(", ");
                 }
             }
             if (builder.length() != 0)
