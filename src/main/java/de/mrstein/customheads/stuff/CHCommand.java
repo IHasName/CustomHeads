@@ -147,42 +147,42 @@ public class CHCommand implements CommandExecutor {
                 return true;
             }
 
-//            /* Test Command plez Ignore
+            /* Test Command plez Ignore
             if (args[0].equalsIgnoreCase("test")) {
-//                try {
-//                    Configs tempcon = new Configs(CustomHeads.getInstance(), "test.yml", false, "testing");
-//                    if (args[1].equalsIgnoreCase("gettags")) {
-//                        player.sendMessage("[Tags] " + CustomHeads.getTagEditor().getTags(player.getItemInHand()));
-//                    }
-//                    if (args[1].equalsIgnoreCase("count")) {
-//                        player.sendMessage("Counting Categories...");
-//                        for (Category category : CustomHeads.getCategoryLoader().getCategoryList()) {
-//                            File outFile = new File("plugins/CustomHeads/parsedCategories", CustomHeads.getCategoryLoader().getSourceFile(category).getName());
-//                            Files.createParentDirs(outFile);
-//                            OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(outFile), StandardCharsets.UTF_8);
-////                            FileWriter writer = new FileWriter(outFile);
-//                            writer.write(category.toString());
-//                            writer.flush();
-//                            writer.close();
-//                            player.sendMessage("Counting  " + category.getPlainName() + "...");
-//                        }
-//                        player.sendMessage("Done counting... but forgot how many it were");
-//                    }
-//                    if(args[1].equalsIgnoreCase("getid")) {
-//                        CustomHead customHead = CustomHeads.getApi().getHead(CustomHeads.getCategoryLoader().getCategory(args[2]), Integer.parseInt(args[3]));
-//                        player.sendMessage("[" + customHead
-//                                .getId() + "] Name: " + customHead
-//                                .getItemMeta()
-//                                .getDisplayName() + "§f Category: " + customHead
-//                                .getOriginCategory()
-//                                .getPlainName());
-//                    }
-//                } catch(Throwable into_the_trash) {
-//                    into_the_trash.printStackTrace();
-//                }
-//                return true;
+                try {
+                    Configs tempcon = new Configs(CustomHeads.getInstance(), "test.yml", false, "testing");
+                    if (args[1].equalsIgnoreCase("gettags")) {
+                        player.sendMessage("[Tags] " + CustomHeads.getTagEditor().getTags(player.getItemInHand()));
+                    }
+                    if (args[1].equalsIgnoreCase("count")) {
+                        player.sendMessage("Counting Categories...");
+                        for (Category category : CustomHeads.getCategoryLoader().getCategoryList()) {
+                            File outFile = new File("plugins/CustomHeads/parsedCategories", CustomHeads.getCategoryLoader().getSourceFile(category).getName());
+                            Files.createParentDirs(outFile);
+                            OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(outFile), StandardCharsets.UTF_8);
+//                            FileWriter writer = new FileWriter(outFile);
+                            writer.write(category.toString());
+                            writer.flush();
+                            writer.close();
+                            player.sendMessage("Counting  " + category.getPlainName() + "...");
+                        }
+                        player.sendMessage("Done counting... but forgot how many it were");
+                    }
+                    if(args[1].equalsIgnoreCase("getid")) {
+                        CustomHead customHead = CustomHeads.getApi().getHead(CustomHeads.getCategoryLoader().getCategory(args[2]), Integer.parseInt(args[3]));
+                        player.sendMessage("[" + customHead
+                                .getId() + "] Name: " + customHead
+                                .getItemMeta()
+                                .getDisplayName() + "§f Category: " + customHead
+                                .getOriginCategory()
+                                .getPlainName());
+                    }
+                } catch(Throwable into_the_trash) {
+                    into_the_trash.printStackTrace();
+                }
+                return true;
             }
-//            */
+            */
 
             if (args[0].equalsIgnoreCase("categories")) {
                 if (hasPermission(player, "heads.admin")) {
