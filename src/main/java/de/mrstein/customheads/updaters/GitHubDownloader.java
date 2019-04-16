@@ -51,6 +51,7 @@ public class GitHubDownloader {
     private static void getResponseAsJson(String url, FetchResult<JsonElement> fetchResult) {
         if (responseCache.containsKey(url)) {
             fetchResult.success(responseCache.get(url).getData());
+            return;
         }
 
         try {
@@ -137,27 +138,6 @@ public class GitHubDownloader {
                 exception.printStackTrace();
             }
         });
-//        getResponseAsJson(apiURLFormatted + "/releases", new FetchResult<JsonElement>() {
-//            public void success(JsonElement js) {
-//                JsonArray releaseList = js.getAsJsonArray();
-//                JsonObject release = null;
-//                for (JsonElement jsonElement : releaseList) {
-//                    if (jsonElement.getAsJsonObject().get("tag_name").getAsString().equals(tagName)) {
-//                        release = jsonElement.getAsJsonObject();
-//                        break;
-//                    }
-//                }
-//
-//                if (release == null)
-//                    throw new NullPointerException("Cannot find release with Tag: " + tagName);
-//
-//
-//            }
-//
-//            public void error(Exception exception) {
-//                Bukkit.getLogger().log(Level.WARNING, "Failed to fetch latest Data", exception);
-//            }
-//        });
     }
 
     public void downloadLatest(String assetName, File downloadTo, AsyncFileDownloader.AfterTask... afterTask) {
