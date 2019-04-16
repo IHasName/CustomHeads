@@ -1,11 +1,13 @@
 package de.mrstein.customheads.stuff;
 
+import com.google.gson.JsonObject;
 import de.mrstein.customheads.CustomHeads;
 import de.mrstein.customheads.api.CustomHeadsPlayer;
 import de.mrstein.customheads.category.Category;
 import de.mrstein.customheads.category.SubCategory;
 import de.mrstein.customheads.headwriter.HeadFontType;
 import de.mrstein.customheads.headwriter.HeadWriter;
+import de.mrstein.customheads.updaters.FetchResult;
 import de.mrstein.customheads.utils.*;
 import org.bukkit.*;
 import org.bukkit.block.BlockFace;
@@ -19,9 +21,11 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
@@ -37,12 +41,10 @@ import static de.mrstein.customheads.utils.Utils.*;
 public class CHCommand implements CommandExecutor {
 
     private static final Comparator<Category> categoryComparator = Comparator.comparing(category -> Integer.parseInt(category.getId()));
+    public HashMap<Player, String[]> haltedCommands = new HashMap<>();
     private String[] rdmans = {"CustomHeads says: Hmm", "CustomHeads says: Does the Console have an Inventory?", "CustomHeads says: That tickels!", "CustomHeads says: No", "CustomHeads says: Im lost", "CustomHeads says: I don't think this is what you are searching for", "CustomHeads says: Hold on... Nevermind", "CustomHeads says: Sorry", "CustomHeads says: Spoilers... There will be a new Command soon =]"};
     private FireworkEffect.Type[] fxtypes = {FireworkEffect.Type.BALL, FireworkEffect.Type.BALL_LARGE, FireworkEffect.Type.BURST, FireworkEffect.Type.STAR};
     private BlockFace[] faces = {BlockFace.NORTH, BlockFace.NORTH_EAST, BlockFace.NORTH_NORTH_EAST};
-
-    public HashMap<Player, String[]> haltedCommands = new HashMap<>();
-
     private Random ran = new Random();
 
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
@@ -60,6 +62,23 @@ public class CHCommand implements CommandExecutor {
                 }
                 if (args[0].equalsIgnoreCase("redownload")) {
                     redownloadLanguageFiles(sender);
+                    return true;
+                }
+                if (args[0].equalsIgnoreCase("gittest")) {
+                    Utils.getBranchPath(new FetchResult<JsonObject>() {
+                        public void success(JsonObject jsonObject) {
+                            try (FileWriter writer = new FileWriter(new File(CustomHeads.getInstance().getDataFolder(), "testfetch.json"))) {
+                                writer.write(GSON_PRETTY.toJson(jsonObject));
+                                writer.flush();
+                            } catch (Exception e) {
+                                Bukkit.getLogger().log(Level.WARNING, "Failed to fetch Data", e);
+                            }
+                        }
+
+                        public void error(Exception exception) {
+                            Bukkit.getLogger().log(Level.WARNING, "Failed to fetch Data", exception);
+                        }
+                    }, "MrSteinMC", "CustomHeads", "master", "resources_for_download/zipped/language");
                     return true;
                 }
                 // Cache Cleaner
@@ -140,7 +159,36 @@ public class CHCommand implements CommandExecutor {
                         redownloadLanguageFiles(sender);
                         return true;
                     }
-                    player.sendMessage(CustomHeads.getLanguageManager().COMMAND_USAGE.replace("{COMMAND}", "/heads language <change, redownload>"));
+                    if (args[1].equalsIgnoreCase("download")) {
+                        Inventory inventory = Bukkit.createInventory(null, 9 * 4, CustomHeads.getLanguageManager().LANGUAGE_DOWNLOAD_TITLE);
+                        inventory.setItem(13, new ItemEditor(Material.SKULL_ITEM, (byte) 3).setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzMxNmMxNmIxYWM0NzBkMmMxMTQ0MzRmZjg3MzBmMTgxNTcwOTM4M2RiNmYzY2Y3MjBjMzliNmRjZTIxMTYifX19").setDisplayName(CustomHeads.getLanguageManager().LANGUAGE_DOWNLOAD_FETCHING).getItem());
+                        player.openInventory(inventory);
+                        BukkitTask animationTask = new BukkitRunnable() {
+                            boolean orange = true;
+
+                            public void run() {
+                                // Fancy Animations =P
+                                inventory.setItem(13, new ItemEditor(Material.SKULL_ITEM, (byte) 3).setTexture((orange = !orange) ? "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMmQ5MzBlZTIxYWQzYmMzOWRkZmRkZmI0YWE2MjA5MDU2ZTJkOWMxMTVmMTM3ZDc2YWQzYmY2MTI3YzNkMiJ9fX0=" : "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzMxNmMxNmIxYWM0NzBkMmMxMTQ0MzRmZjg3MzBmMTgxNTcwOTM4M2RiNmYzY2Y3MjBjMzliNmRjZTIxMTYifX19").setDisplayName(CustomHeads.getLanguageManager().LANGUAGE_DOWNLOAD_FETCHING).getItem());
+                            }
+                        }.runTaskTimer(CustomHeads.getInstance(), 20, 20);
+
+                        Utils.getAvailableLanguages(new FetchResult<List<String>>() {
+                            public void success(List<String> languages) {
+                                animationTask.cancel();
+                                inventory.setItem(13, null);
+                                for (String language : languages) {
+                                    inventory.addItem(CustomHeads.getTagEditor().addTags(new ItemEditor(Material.PAPER).setDisplayName(language).getItem(), "blockMoving", "invAction", "downloadLanguage", language));
+                                }
+                            }
+
+                            public void error(Exception exception) {
+                                animationTask.cancel();
+                                inventory.setItem(13, new ItemEditor(Material.SKULL_ITEM, (byte) 3).setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOWU0MmY2ODJlNDMwYjU1YjYxMjA0YTZmOGI3NmQ1MjI3ZDI3OGVkOWVjNGQ5OGJkYTRhN2E0ODMwYTRiNiJ9fX0=").setDisplayName(CustomHeads.getLanguageManager().LANGUAGE_DOWNLOAD_FETCHFAILED).setLore(Utils.splitEvery(exception.getMessage(), " ", 4)).getItem());
+                            }
+                        });
+                        return true;
+                    }
+                    player.sendMessage(CustomHeads.getLanguageManager().COMMAND_USAGE.replace("{COMMAND}", "/heads language <change, redownload, download>"));
                     return true;
                 }
                 player.sendMessage(CustomHeads.getLanguageManager().NO_PERMISSION);
@@ -156,8 +204,8 @@ public class CHCommand implements CommandExecutor {
                     }
                     if (args[1].equalsIgnoreCase("count")) {
                         player.sendMessage("Counting Categories...");
-                        for (Category category : CustomHeads.getCategoryLoader().getCategoryList()) {
-                            File outFile = new File("plugins/CustomHeads/parsedCategories", CustomHeads.getCategoryLoader().getSourceFile(category).getName());
+                        for (Category category : CustomHeads.getCategoryManager().getCategoryList()) {
+                            File outFile = new File("plugins/CustomHeads/parsedCategories", CustomHeads.getCategoryManager().getSourceFile(category).getName());
                             Files.createParentDirs(outFile);
                             OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(outFile), StandardCharsets.UTF_8);
 //                            FileWriter writer = new FileWriter(outFile);
@@ -169,7 +217,7 @@ public class CHCommand implements CommandExecutor {
                         player.sendMessage("Done counting... but forgot how many it were");
                     }
                     if(args[1].equalsIgnoreCase("getid")) {
-                        CustomHead customHead = CustomHeads.getApi().getHead(CustomHeads.getCategoryLoader().getCategory(args[2]), Integer.parseInt(args[3]));
+                        CustomHead customHead = CustomHeads.getApi().getHead(CustomHeads.getCategoryManager().getCategory(args[2]), Integer.parseInt(args[3]));
                         player.sendMessage("[" + customHead
                                 .getId() + "] Name: " + customHead
                                 .getItemMeta()
@@ -189,7 +237,7 @@ public class CHCommand implements CommandExecutor {
                     if (args.length < 2) {
                         player.sendMessage(CustomHeads.getLanguageManager().CATEGORIES_BASECOMMAND_HEADER);
 
-                        List<Category> categories = CustomHeads.getCategoryLoader().getCategoryList();
+                        List<Category> categories = CustomHeads.getCategoryManager().getCategoryList();
                         categories.sort(categoryComparator);
 
                         for (int i = 0; i < categories.size(); i++) {
@@ -226,7 +274,7 @@ public class CHCommand implements CommandExecutor {
                             player.sendMessage(CustomHeads.getLanguageManager().COMMAND_USAGE.replace("{COMMAND}", "/heads categories remove <id>"));
                             return true;
                         }
-                        Category category = CustomHeads.getCategoryLoader().getCategory(args[2]);
+                        Category category = CustomHeads.getCategoryManager().getCategory(args[2]);
                         if (category == null) {
                             player.sendMessage(CustomHeads.getLanguageManager().CATEGORIES_REMOVE_NOTFOUND.replace("{ID}", args[2]));
                             return false;
@@ -235,7 +283,7 @@ public class CHCommand implements CommandExecutor {
                             player.sendMessage(replace(CustomHeads.getLanguageManager().CATEGORIES_REMOVE_INUSE, category));
                             return true;
                         }
-                        if (CustomHeads.getCategoryLoader().removeCategory(category)) {
+                        if (CustomHeads.getCategoryManager().removeCategory(category)) {
                             player.sendMessage(replace(CustomHeads.getLanguageManager().CATEGORIES_REMOVE_SUCCESSFUL, category));
                             return true;
                         }
@@ -248,7 +296,7 @@ public class CHCommand implements CommandExecutor {
                             return true;
                         }
                         if (args[2].equalsIgnoreCase("category")) {
-                            Category category = CustomHeads.getCategoryLoader().getCategory(args[3]);
+                            Category category = CustomHeads.getCategoryManager().getCategory(args[3]);
                             if (category == null) {
                                 player.sendMessage(CustomHeads.getLanguageManager().CATEGORIES_DELETE_CATEGORY_NOTFOUND.replace("{ID}", args[3]));
                                 return false;
@@ -269,7 +317,7 @@ public class CHCommand implements CommandExecutor {
                             return true;
                         }
                         if (args[2].equalsIgnoreCase("subcategory")) {
-                            SubCategory subCategory = CustomHeads.getCategoryLoader().getSubCategory(args[3]);
+                            SubCategory subCategory = CustomHeads.getCategoryManager().getSubCategory(args[3]);
                             if (subCategory == null) {
                                 player.sendMessage(CustomHeads.getLanguageManager().CATEGORIES_DELETE_SUBCATEGORY_NOTFOUND.replace("{ID}", args[3]));
                                 return false;
@@ -294,10 +342,10 @@ public class CHCommand implements CommandExecutor {
                     }
                     if (args[1].equalsIgnoreCase("import")) {
 
-                        if (CustomHeads.getCategoryLoader().getLangRootDir().listFiles() == null) {
+                        if (CustomHeads.getCategoryManager().getLangRootDir().listFiles() == null) {
                             player.sendMessage(CustomHeads.getLanguageManager().CATEGORIES_IMPORT_NOCATEGORYFOLDER);
                         }
-                        List<File> fileList = Arrays.stream(CustomHeads.getCategoryLoader().getLangRootDir().listFiles()).filter(file -> file.getName().endsWith(".json") && !CustomHeads.getCategoryLoaderConfig().get().getList("categories").contains(file.getName().substring(0, file.getName().lastIndexOf(".")))).collect(Collectors.toList());
+                        List<File> fileList = Arrays.stream(CustomHeads.getCategoryManager().getLangRootDir().listFiles()).filter(file -> file.getName().endsWith(".json") && !CustomHeads.getCategoryLoaderConfig().get().getList("categories").contains(file.getName().substring(0, file.getName().lastIndexOf(".")))).collect(Collectors.toList());
 
                         List<File> files = new ArrayList<>();
                         for (File file : fileList) {
@@ -325,9 +373,9 @@ public class CHCommand implements CommandExecutor {
                         }
                         fileName = new StringBuilder(fileName.substring(0, fileName.length() - 1));
 
-                        File categoryFile = new File(CustomHeads.getCategoryLoader().getLangRootDir(), fileName.toString());
+                        File categoryFile = new File(CustomHeads.getCategoryManager().getLangRootDir(), fileName.toString());
                         if (fileList.contains(categoryFile)) {
-                            int result = CustomHeads.getCategoryLoader().importSingle(categoryFile);
+                            int result = CustomHeads.getCategoryManager().importSingle(categoryFile);
                             Category category = null;
                             if (result < 3) {
                                 category = Category.getConverter().fromJson(new JsonFile(categoryFile).getJsonAsString(), Category.class);
@@ -354,8 +402,8 @@ public class CHCommand implements CommandExecutor {
                     String[] haltedArgs = haltedCommands.get(player);
                     if (haltedArgs[1].equalsIgnoreCase("delete")) {
                         if (haltedArgs[2].equalsIgnoreCase("category")) {
-                            Category deleteCategory = CustomHeads.getCategoryLoader().getCategory(haltedArgs[3]);
-                            if (CustomHeads.getCategoryLoader().deleteCategory(deleteCategory)) {
+                            Category deleteCategory = CustomHeads.getCategoryManager().getCategory(haltedArgs[3]);
+                            if (CustomHeads.getCategoryManager().deleteCategory(deleteCategory)) {
                                 player.sendMessage(replace(CustomHeads.getLanguageManager().CATEGORIES_DELETE_CATEGORY_SUCCESSFUL, deleteCategory));
                                 return true;
                             }
@@ -363,8 +411,8 @@ public class CHCommand implements CommandExecutor {
                             return false;
                         }
                         if (haltedArgs[2].equalsIgnoreCase("subcategory")) {
-                            SubCategory deleteSubCategory = CustomHeads.getCategoryLoader().getSubCategory(haltedArgs[3]);
-                            if (CustomHeads.getCategoryLoader().deleteSubCategory(deleteSubCategory)) {
+                            SubCategory deleteSubCategory = CustomHeads.getCategoryManager().getSubCategory(haltedArgs[3]);
+                            if (CustomHeads.getCategoryManager().deleteSubCategory(deleteSubCategory)) {
                                 player.sendMessage(replace(CustomHeads.getLanguageManager().CATEGORIES_DELETE_SUBCATEGORY_SUCCESSFUL, deleteSubCategory));
                                 return true;
                             }
@@ -473,7 +521,7 @@ public class CHCommand implements CommandExecutor {
                         return true;
                     }
                     CHSearchQuery query = new CHSearchQuery(args[1]);
-                    List<Category> categories = CustomHeads.getCategoryLoader().getCategoryList();
+                    List<Category> categories = CustomHeads.getCategoryManager().getCategoryList();
                     categories.removeAll(CustomHeads.getApi().wrapPlayer(player).getUnlockedCategories(false));
                     query.excludeCategories(categories);
                     if (query.resultsReturned() == 0) {

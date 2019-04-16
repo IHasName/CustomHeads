@@ -1,0 +1,947 @@
+{
+  "id": 6,
+  "name": "Блоки",
+  "permission": "blocks",
+  "fixed-icon": false,
+  "icon": {
+    "item": "SKULL_ITEM",
+    "damage": 3,
+    "display-name": "Блоки",
+    "lore": [
+      "§7Любимые блоки из Майнкрафта"
+    ],
+    "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzQ5YzYzYmM1MDg3MjMzMjhhMTllNTk3ZjQwODYyZDI3YWQ1YzFkNTQ1NjYzYWMyNDQ2NjU4MmY1NjhkOSJ9fX0="
+  },
+  "heads": [
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZGU5YjhhYWU3ZjljYzc2ZDYyNWNjYjhhYmM2ODZmMzBkMzhmOWU2YzQyNTMzMDk4YjlhZDU3N2Y5MWMzMzNjIn19fQ==",
+      "name": "§7Камень",
+      "price": 0,
+      "id": 1
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYTAyODViZWEzYzhhMDJkYjEzOWZhOGVjNWNjNTg4NjE1YTk4NTUwNzI1ZjhlNjc2YzkzZmRiYzMzYjZiIn19fQ==",
+      "name": "§6Гранит",
+      "price": 0,
+      "id": 2
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOWFlNGNmMjJmNDViYjc3YWVmYTVhZmExZjg2NGRkM2M1ZjlkM2U5MmY0M2IzNTg4ZmQxNjJiMmFhOGMifX19",
+      "name": "§6Полированный гранит",
+      "price": 0,
+      "id": 3
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTNmYTUyNjVhMzM2YWJkZTMwMWE5ZDU5YWY0NzgzZTgyYTEwZGFkMDgxNzcxNmVhZDI5NjJhYjdjNmQzZGZmIn19fQ==",
+      "name": "§fДиорит",
+      "price": 0,
+      "id": 4
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzFhMjgxZjQ5NDUyODZjMzFmYTA3NzEyMWY5YjMyYzU4OGZiOTQwNjRkZTdmOTA4Y2YwZTk2NzdjZGRhOGIxIn19fQ==",
+      "name": "§fПолированный диорит",
+      "price": 0,
+      "id": 5
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYjUxMzU0M2E3NzExOGY4MjAxZjQ5YjdjOGI2MzJkY2ZkMzgwMzdlYmZjNjAxYTFiYzkxYWVkYzRjYWJhIn19fQ==",
+      "name": "§7Андезит",
+      "price": 0,
+      "id": 6
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvY2E5NzlmNzY2MzNmNWRkYTg5NDk2NTExNzE2OTQ4ZTlkN2I4NTkyZjZlMWU0ODBjNWRlMWM4MzIzOGQzZTMyIn19fQ==",
+      "name": "§7Полированный андезит",
+      "price": 0,
+      "id": 7
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzk1ZDM3OTkzZTU5NDA4MjY3ODQ3MmJmOWQ4NjgyMzQxM2MyNTBkNDMzMmEyYzdkOGM1MmRlNDk3NmIzNjIifX19",
+      "name": "§aТрава",
+      "price": 0,
+      "id": 8
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNDNjNTJlYWU3NDdjYWQ1YjRmZDE5YjFhMjNiMzlhMzM2YjYyZWQ0MjI3OTdhNjIyZDA0NWY0M2U1ZDM4In19fQ==",
+      "name": "§fЗаснеженная трава",
+      "price": 0,
+      "id": 9
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMWFiNDNiOGMzZDM0ZjEyNWU1YTNmOGI5MmNkNDNkZmQxNGM2MjQwMmMzMzI5ODQ2MWQ0ZDRkN2NlMmQzYWVhIn19fQ==",
+      "name": "§6Грязь",
+      "price": 0,
+      "id": 10
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMmZhNzY0YjNjMWQ0NjJmODEyNDQ3OGZmNTQzYzc2MzNmYTE5YmFmOTkxM2VlMjI4NTEzZTgxYTM2MzNkIn19fQ==",
+      "name": "§6Грубая земля",
+      "price": 0,
+      "id": 11
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYTQxOTVmOWE0MzljNmQwZmZkMTk2MTY1N2Y2ZjBhYThlM2EyZjhhMjQ5M2FmYTY2MmFiNWU0MTkzZTAifX19",
+      "name": "§6Подзол",
+      "price": 0,
+      "id": 12
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTk1NTM0ZTAyYzU5YjMzZWNlNTYxOTI4MDMzMTk3OTc3N2UwMjVmYTVmYTgxYWU3NWU5OWZkOGVmZGViYjgifX19",
+      "name": "§7Булыжник",
+      "price": 0,
+      "id": 13
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYTBlOWQyYmViODRiMzJlM2YxNWUzODBjYzJjNTUxMDY0MjkxMWE1MTIxMDVmYTJlYzY3OWJjNTQwZmQ4MTg0In19fQ==",
+      "name": "§6Дубовые доски",
+      "price": 0,
+      "id": 14
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTBlYjE5NjhmZjJkYTZiY2E2OGY1OWI2MTExNzEzZTA4ZDIyNDk5MjI5ZTEwODY0NDljYmE1MGY3ZGU2NGFlIn19fQ==",
+      "name": "§6Еловые доски",
+      "price": 0,
+      "id": 15
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMjQyNzRhY2Y5NDYzNWE4NzNkZjA5Njg4MmEyNjYxZGNkNDQzMjgyZGIwODg4MGM3NjU1OTQ3YzRjYzY1ZCJ9fX0=",
+      "name": "§6Берёзовые доски",
+      "price": 0,
+      "id": 16
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZmQ5ZGQ3ZTU1ZWNiMDI1ZjdmNmNhYTc5OWU0YjBhMGM1NDg2MDk3YTU3N2Q2M2ZmMjIyYmYzMzhmNWViMCJ9fX0=",
+      "name": "§6Доски из тропического дерева",
+      "price": 0,
+      "id": 17
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNjI5OTY0ZGU4OGJjYWIzZjFiNzYzNTUyYjc5OTExZWYyNGU3NWIzMzUyZjY1ZGJkYThmNThmNjFkMWVhN2YifX19",
+      "name": "§6Доски из акации",
+      "price": 0,
+      "id": 18
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNGZkOTE3ZmQ1OTNhN2FjNWJkZmUxZmM2NWQzMjBkZjQ2MTFkYTQzMWYzZWE0ZjM0YzdhMTkwMjBmNTEyIn19fQ==",
+      "name": "§6Доски из тёмного дуба",
+      "price": 0,
+      "id": 19
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzZkMWZhYmRmM2UzNDI2NzFiZDlmOTVmNjg3ZmUyNjNmNDM5ZGRjMmYxYzllYThmZjE1YjEzZjFlN2U0OGI5In19fQ==",
+      "name": "§8Бэдрок",
+      "price": 0,
+      "id": 20
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNWM3ZWNiZmQ2ZDMzZTg3M2ExY2Y5YTkyZjU3ZjE0NjE1MmI1MmQ5ZDczMTE2OTQ2MDI2NzExMTFhMzAyZiJ9fX0=",
+      "name": "§9Вода",
+      "price": 0,
+      "id": 21
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYjY5NjVlNmE1ODY4NGMyNzdkMTg3MTdjZWM5NTlmMjgzM2E3MmRmYTk1NjYxMDE5ZGJjZGYzZGJmNjZiMDQ4In19fQ==",
+      "name": "§cЛава",
+      "price": 0,
+      "id": 22
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDdkN2Q3MmU3OGYzNWRlY2QyYjA4ZWE5Yjc0NzkwZTVjZDdlMjY0ODRjZjI0NDliZGVjYTRmNzhiYTMifX19",
+      "name": "§eПесок",
+      "price": 0,
+      "id": 23
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNGNlNDFlNjg3OWRmZjA3ODVkMTRjYjc2OTRlYTZiMGRmMTkyYjk2Yjg4MTYwMTNlYjQ1NWU3MTU1MmZjZTZhIn19fQ==",
+      "name": "§cКрасный песок",
+      "price": 0,
+      "id": 24
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjMyYTFhNTBiYmU0MzFkYzJmZjcxZThiMjZiYjZkZWExNTVmNzJlMmY0NjlkZGExNGYxMDhjNjA4M2E3ZWNkYSJ9fX0=",
+      "name": "§7Гравий",
+      "price": 0,
+      "id": 25
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZTRkZjg5MjI5M2E5MjM2ZjczZjQ4ZjllZmU5NzlmZTA3ZGJkOTFmN2I1ZDIzOWU0YWNmZDM5NGY2ZWNhIn19fQ==",
+      "name": "§7Золотая руда",
+      "price": 0,
+      "id": 26
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZGI5N2JkZjkyYjYxOTI2ZTM5ZjVjZGRmMTJmOGY3MTMyOTI5ZGVlNTQxNzcxZTBiNTkyYzhiODJjOWFkNTJkIn19fQ==",
+      "name": "§7Железная руда",
+      "price": 0,
+      "id": 27
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzc4OGY1ZGRhZjUyYzU4NDIyODdiOTQyN2E3NGRhYzhmMDkxOWViMmZkYjFiNTEzNjVhYjI1ZWIzOTJjNDcifX19",
+      "name": "§7Уголь",
+      "price": 0,
+      "id": 28
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNmQyZTMxMDg3OWE2NDUwYWY1NjI1YmNkNDUwOTNkZDdlNWQ4ZjgyN2NjYmZlYWM2OWM4MTUzNzc2ODQwNmIifX19",
+      "name": "§6Дуб",
+      "price": 0,
+      "id": 29
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDI2ZWVmZDg3MjYzY2M0ODVjMTdjYjVmODE4ZWUzYmFkOTNjYTc2OTEzODVjYjVlNWQ2OThhZmY3MzNhMyJ9fX0=",
+      "name": "§6Ель",
+      "price": 0,
+      "id": 30
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYTk5MWYzYjczZWJiOWRlYzkxZWRkYzgzNjFjYTJmZWNmNTI4MGQyYzczM2VkYTllY2I2OTVmODNkMTU4MCJ9fX0=",
+      "name": "§6Берёза",
+      "price": 0,
+      "id": 31
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzljYTM1NDA2MjFjMWM3OWMzMmJmNDI0Mzg3MDhmZjFmNWY3ZDBhZjliMTRhMDc0NzMxMTA3ZWRmZWI2OTFjIn19fQ==",
+      "name": "§6Тропическое дерево",
+      "price": 0,
+      "id": 32
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODM3NjVlOGNlMTFhZTZmMTMxYzcyNWMwN2Y1OGYyZDQxMzJkOTg0YWQ2NjM2MDM5YTdhMzZhM2M1MTI3MjEifX19",
+      "name": "§aЛистья",
+      "price": 0,
+      "id": 33
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTYxM2ZkYWI0M2Q3NjgzOGI3YjhjMTkyNDQxNjNmMTc2NWRiODc0YmRmMTUxNjk2YmRjYjY1NGViMmU1MiJ9fX0=",
+      "name": "§eГубка",
+      "price": 0,
+      "id": 34
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzI4YmRkMzQ4MTBmODY2NTI3ZGFhZjI4M2RhNzE4MjZhODM3ODI4NmIyYTQzYTYyNjYxNWZhMWIzNjM5ZSJ9fX0=",
+      "name": "§eМокрая губка",
+      "price": 0,
+      "id": 35
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMmFhMGQwZmVhMWFmYWVlMzM0Y2FiNGQyOWQ4Njk2NTJmNTU2M2M2MzUyNTNjMGNiZWQ3OTdlZDNjZjU3ZGUwIn19fQ==",
+      "name": "§7Лазуритовая руда",
+      "price": 0,
+      "id": 36
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMmQ4NDhkYzZmNjk0Y2JmMzU0NDE3MjJiMWEyN2ExOTVkYTU2ZTQ5NjAyMzE4MjRmZDdlYzViMTMxNWNjMmEifX19",
+      "name": "§9Блок лазурита",
+      "price": 0,
+      "id": 37
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNjMyNmYwZTczOTM1M2QyZDdjOGU5YWI0ZTkxZTFmYmVjNjA3Y2FkMGZlMTAyOTZhZmQyMWQ2MzNiOWVjZWUifX19",
+      "name": "§8Раздатчик",
+      "price": 0,
+      "id": 38
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvY2YzODExN2MxNTdmMmNjZTI3ZjU2NmZiNjI0MmRkY2MzNGRhYmMzOWNkZDFkNTRlNjYxMjhhNGVjOGEzY2E0YyJ9fX0=",
+      "name": "§eПесчаник",
+      "price": 0,
+      "id": 39
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNDkxZTdmOTAzMzc2NWNlYzk2OGYyNzJmYzU4YjczNDRjNDM0YTE3MjFmOTUzN2IyNWE2YWZmNGMyNDU3NmM1In19fQ==",
+      "name": "§eРезной песчаник",
+      "price": 0,
+      "id": 40
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDM2ZTk4NjI4MzJhNmZjYzQ4NTVmYTc5YzFhYWU1ZTczYjkxOTdlYzZiYmQzOGY2MzEyZWZhYzY4MGM2MzI4NSJ9fX0=",
+      "name": "§eГладкий песчаник",
+      "price": 0,
+      "id": 41
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNGNlZWI3N2Q0ZDI1NzI0YTljYWYyYzdjZGYyZDg4Mzk5YjE0MTdjNmI5ZmY1MjEzNjU5YjY1M2JlNDM3NmUzIn19fQ==",
+      "name": "§6Нотный блок",
+      "price": 0,
+      "id": 42
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvN2NhNGQyMThkZjlkMzJjZDQ3ZDljMWQyOTQ4NzcxMjJiZTU5MTliNDE4YTZjYzNkMDg5MTYyYjEzM2YyZGIifX19",
+      "name": "§aЛипкий поршень",
+      "price": 0,
+      "id": 43
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTI3NDNhOGJlYTc1MmQ2ZGFmNjcyZGVhMzY3ZTFhNWQzOThhZWNiZTBjM2M4NDgzYTkwZWM5YWM0NDEyYTQxIn19fQ==",
+      "name": "§6Поршень",
+      "price": 0,
+      "id": 44
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvM2ZhZjRjMjlmMWU3NDA1ZjQ2ODBjNWMyYjAzZWY5Mzg0ZjFhZWNmZTI5ODZhZDUwMTM4YzYwNWZlZmZmMmYxNSJ9fX0=",
+      "name": "§fБелая шерсть",
+      "price": 0,
+      "id": 45
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvY2JmNzc5N2EyNGE2YWY4NzVmNWM4MjcxYzViOGM0MjVlMTlmMzcyYTQxNWUwNTUyZmMyNDc3NjNmMjg1OWQxIn19fQ==",
+      "name": "§6Оранжевая шерсть",
+      "price": 0,
+      "id": 46
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYWJiNDM4NmJjZGE4NGUzNTNjMzFkNzc4ZDNiMTFiY2QyNmZlYTQ5NGRkNjM0OTZiOGE4MmM3Yzc4YTRhZCJ9fX0=",
+      "name": "§dПурпурная шерсть",
+      "price": 0,
+      "id": 47
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjFhZjQ2ZmViZDQ1YzBmNGQ4MWU4ZmExYjY2YjI3NWQ4OWUyNzJiMmFkNTVjOTc4NTUzYTk5YzczM2UxZmYifX19",
+      "name": "§bСветло-голубая шерсть",
+      "price": 0,
+      "id": 48
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMjdiYmQwYjI5MTFjOTZiNWQ4N2IyZGY3NjY5MWE1MWI4YjEyYzZmZWZkNTIzMTQ2ZDhhYzVlZjFiOGVlIn19fQ==",
+      "name": "§eЖёлтая шерсть",
+      "price": 0,
+      "id": 49
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDY3NDcwYTBjMThmNjg1MWU5MTQzNTM3MTllNzk1ODc3ZDI5YjMyNTJmN2U2YmQ0YTFiODY1NzY1YmQ3NGZlYiJ9fX0=",
+      "name": "§aЛаймовая шерсть",
+      "price": 0,
+      "id": 50
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNmJlY2ZiMzg3OTkzNmI4OTllNDIwYmZjZDNhNzRmOGExYmY5ZGQ1NGM1OGVjN2ZiOWY4MWQ5YTVkOTg4ZSJ9fX0=",
+      "name": "§dРозовая шерсть",
+      "price": 0,
+      "id": 51
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZTllNjkxN2YyZmI0ZWEwOGU3MTMyZGYzMDk2MWQyYjVjNTIzYWJiYTE5Y2U0M2Y4MzVmYzE0YzU2OGY0In19fQ==",
+      "name": "§8Серая шерсть",
+      "price": 0,
+      "id": 52
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTk4YmEyYjM3NGNmYzg5NDU0YzFiOGMzMmRiNDU4YTI3MDY3NTQzOWE0OTU0OTZjOTY3NzFjOTg5MTE2MTYyIn19fQ==",
+      "name": "§7Светло-серая шерсть",
+      "price": 0,
+      "id": 53
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODhlZmFkNzRiMjU0ZTU3Yzc5OTc2M2RjZWVlNDUxMWZhMmY4NWFlOWZhNTU2ZWFhOTdkNDViZjY3ZTBiNmIzIn19fQ==",
+      "name": "§3Голубая шерсть",
+      "price": 0,
+      "id": 54
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYmE5NGNiMjVkZTYyOGNhMzU5YjJmNmVhNWE4ODY4Y2JlMjY1OTVlZWRiMmJmZmI3NTA5NjdhZDFlZTE4NTAifX19",
+      "name": "§5Фиолетовая шерсть",
+      "price": 0,
+      "id": 55
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvM2YzZTQwNjI5MTE3NGQyNGNkZjBmOTUzZjhhMTc0YTgyYmIzNDg5ZGNlOGY2NzlhNDQzZWYxYWFlMDE2OTA2MSJ9fX0=",
+      "name": "§1Синяя шерсть",
+      "price": 0,
+      "id": 56
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzJlMzZmNmE2NTRkZTc0NTgzZDgwMzAxNzdhZDZlM2FjNjc1NWQ3NDM1ZDkxMjNlOGViZGZmNzRiMmQ5MGNiIn19fQ==",
+      "name": "§6Коричневая шерсть",
+      "price": 0,
+      "id": 57
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNDg0Njg0MzQ0YWUwOTg1MjlmYzk0MWFhODRlMTk1YmRjYTM3NDhkNjlhY2ZlZTJiYWMxMzMyMTM1ZWRkOThjIn19fQ==",
+      "name": "§2Зелёная шерсть",
+      "price": 0,
+      "id": 58
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODZkMzVhOTYzZDU5ODc4OTRiNmJjMjE0ZTMyOGIzOWNkMjM4MjQyNmZmOWM4ZTA4MmIwYjZhNmUwNDRkM2EzIn19fQ==",
+      "name": "§4Красная шерсть",
+      "price": 0,
+      "id": 59
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvM2FiMDI2M2JkZDc2ZjNlNDE4ZGJhNWJmNDgxYjkyMWNlZDM5N2Q4YjhhMzRhNTU2MWZiN2JlYWE0NmVjZTEifX19",
+      "name": "§8Чёрная шерсть",
+      "price": 0,
+      "id": 60
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYjZkMWNlNjk3ZTlkYmFhNGNjZjY0MjUxNmFhYTU5ODEzMzJkYWMxZDMzMWFmZWUyZWUzZGNjODllZmRlZGIifX19",
+      "name": "§6Золотой блок",
+      "price": 0,
+      "id": 61
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYmJhODQ1OTE0NWQ4M2ZmYzQ0YWQ1OGMzMjYwZTc0Y2E1YTBmNjM0YzdlZWI1OWExYWQzMjM0ODQ5YzkzM2MifX19",
+      "name": "§7Железный блок",
+      "price": 0,
+      "id": 62
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOGRkMGNkMTU4YzJiYjY2MTg2NTBlMzk1NGIyZDI5MjM3ZjViNGMwZGRjN2QyNThlMTczODBhYjY5NzlmMDcxIn19fQ==",
+      "name": "§7Каменная плита",
+      "price": 0,
+      "id": 63
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNWVjMGViZWExODIxYzI5MmZkZmY0NWQzNTliM2E5ZTIxMjI3MTdlODNkNTVkYzA3ZmMzYmIxY2UzMjkzNWUifX19",
+      "name": "§6Лестница",
+      "price": 0,
+      "id": 64
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZWI5OTRiNDFmMDdmODdiMzI4MTg2YWNmY2JkYWJjNjk5ZDViMTg0N2ZhYmIyZTQ5ZDVhYmMyNzg2NTE0M2E0ZSJ9fX0=",
+      "name": "§cTNT",
+      "price": 0,
+      "id": 65
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzJhMThkMzZjNzQ2ZTQ4NDM4NTBhM2I2NWM1MTE1MGFiM2Y3NWQxM2I3ZjhjYzU1Yzc2ODZmZWJkMTdiNmEifX19",
+      "name": "§6Книжная полка",
+      "price": 0,
+      "id": 66
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzJhMThkMzZjNzQ2ZTQ4NDM4NTBhM2I2NWM1MTE1MGFiM2Y3NWQxM2I3ZjhjYzU1Yzc2ODZmZWJkMTdiNmEifX19",
+      "name": "§6Книжная полка",
+      "price": 0,
+      "id": 67
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNGQ5MjM4ZWZjOTM0OTNiMTRhNTgyNjM5ZWIwYWE4ODM0ZWFhNDhlMTBiZDRjMjM0ZWIxYTRjMzYzYjQzZDViIn19fQ==",
+      "name": "§8Замшелый булыжник",
+      "price": 0,
+      "id": 68
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzg0MGI4N2Q1MjI3MWQyYTc1NWRlZGM4Mjg3N2UwZWQzZGY2N2RjYzQyZWE0NzllYzE0NjE3NmIwMjc3OWE1In19fQ==",
+      "name": "§8Обсидиан",
+      "price": 0,
+      "id": 69
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNjQ3ZTJlNWQ1NWI2ZDA0OTQzNTE5YmVkMjU1N2M2MzI5ZTMzYjYwYjkwOWRlZTg5MjNjZDg4YjExNTIxMCJ9fX0=",
+      "name": "§7Спавнер мобов",
+      "price": 0,
+      "id": 70
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNmY2OGQ1MDliNWQxNjY5Yjk3MWRkMWQ0ZGYyZTQ3ZTE5YmNiMWIzM2JmMWE3ZmYxZGRhMjliZmM2ZjllYmYifX19",
+      "name": "§6Сундук",
+      "price": 0,
+      "id": 71
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjg4Y2Q2ZGQ1MDM1OWM3ZDU4OThjN2M3ZTNlMjYwYmZjZDNkY2IxNDkzYTg5YjllODhlOWNiZWNiZmU0NTk0OSJ9fX0=",
+      "name": "§bАлмазная руда",
+      "price": 0,
+      "id": 72
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzAxNDYxOTczNjM0NTI1MTk2ZWNjNzU3NjkzYjE3MWFkYTRlZjI0YWE5MjgzNmY0MmVhMTFiZDc5YzNhNTAyZCJ9fX0=",
+      "name": "§bАлмазный блок",
+      "price": 0,
+      "id": 73
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvY2U3ZDhjMjQyZDJlNGY4MDI4ZjkzMGJlNzZmMzUwMTRiMjFiNTI1NTIwOGIxYzA0MTgxYjI1NzQxMzFiNzVhIn19fQ==",
+      "name": "§6Верстак",
+      "price": 0,
+      "id": 74
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTE1MzBmNzkwZTk3MmUwYmNjNjNhNTRkYzU1NTMyOTAyNTY4ZGVmOGRlZGYyZTIyZTc1OWJiY2JjNTVjMCJ9fX0=",
+      "name": "§6Вспаханная земля",
+      "price": 0,
+      "id": 75
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNmJhY2VlNGJhYjkwMjE4MDRlOTlkZmU0MTFlMTdlMTVjZmU3ZTA1MjI5M2EzNDk3NTc0ZGZkYjYyNjA1M2Y3In19fQ==",
+      "name": "§7Печь",
+      "price": 0,
+      "id": 76
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZGZkOWIyZjQyZDVmMWMyYTc3YjUxMWZlNDFhNGM2YjVjMTkyZmIxMGIyY2VhZGRlMDViZDFhZjUyYTE1MSJ9fX0=",
+      "name": "§7Горящая печь",
+      "price": 0,
+      "id": 77
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZThkZWVlNTg2NmFiMTk5ZWRhMWJkZDc3MDdiZGI5ZWRkNjkzNDQ0ZjFlM2JkMzM2YmQyYzc2NzE1MWNmMiJ9fX0=",
+      "name": "§cРедстоуновая руда",
+      "price": 0,
+      "id": 78
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNWRkNmZlMjY3YTQxOGRjYzdmMzdhOGY3Njg1NWI1MzI4YjEzMDM4OTdiMzQyYTEwN2NmMTYyZjE0ZmUzZCJ9fX0=",
+      "name": "§fБлок снега",
+      "price": 0,
+      "id": 79
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODcyZDliOThhNmIzNGEyNzYyYWFjMWFmOTE1ODczYzA2NmM0M2MyYjJiOGQ2ODlkMjc2MjZjYzVhZmNiMTEifX19",
+      "name": "§bЛёд",
+      "price": 0,
+      "id": 80
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMmY1ODViNDFjYTVhMWI0YWMyNmY1NTY3NjBlZDExMzA3Yzk0ZjhmOGExYWRlNjE1YmQxMmNlMDc0ZjQ3OTMifX19",
+      "name": "§2Кактус",
+      "price": 0,
+      "id": 81
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTA0ZjFhNTU5NDNjNTk0ZTcxMTllODg0YzVkYTJhMmJjYThlN2U2NTE2YTA2NDlhYTdlNTU2NThlMGU5In19fQ==",
+      "name": "§2Цветок кактуса",
+      "price": 0,
+      "id": 82
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNjc4MjY4MjllYWI1YWQ2MmYwYzExZDlmYWFmZGM5OTU0MzY0ODcxMTYwZGQ4MzllMWFiNWEzYjIxM2EzMyJ9fX0=",
+      "name": "§7Глина",
+      "price": 0,
+      "id": 83
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYTYyMGI4MmNmMTFlM2MxMzcxY2M1MWViOWUzMTJkZTcyYTZhNjI2NjQ0OTRlZDJjYjcxODFiMWJkZmJjOTI3OCJ9fX0=",
+      "name": "§6Музыкальный блок",
+      "price": 0,
+      "id": 84
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZWUyOGEwM2VkMmViOTBlYWZmMWExMTlhNWI1NTQ0NTI3MDFiOTdhZjQ3YmZmNzNjZTcxMDg0OWM2YjAifX19",
+      "name": "§6Тыква",
+      "price": 0,
+      "id": 85
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNWVjZThlODM4MzU2M2JjZWY1ZDVhZTBiMWJmZmVkMWQ2MTU4YjlhYjdjMWFjODM0NGMxOGFjNDhmNmI2YTIifX19",
+      "name": "§cАдский камень",
+      "price": 0,
+      "id": 86
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMWVhNmY5MzJiNDVmZGYzYjY5M2Q5ZTQ0YmQwNWJjYTM2NGViNWI5YWZmNDk3MjI2ZmRiNTJhYmIyNDM2NDIyIn19fQ==",
+      "name": "§6Песок душ",
+      "price": 0,
+      "id": 87
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNjVkN2JlZDhkZjcxNGNlYTA2M2U0NTdiYTVlODc5MzExNDFkZTI5M2RkMWQ5YjkxNDZiMGY1YWIzODM4NjYifX19",
+      "name": "§eСветокамень",
+      "price": 0,
+      "id": 88
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYjBiZmMyNTc3ZjZlMjZjNmM2ZjczNjVjMmM0MDc2YmNjZWU2NTMxMjQ5ODkzODJjZTkzYmNhNGZjOWUzOWIifX19",
+      "name": "§5Портал Незера",
+      "price": 0,
+      "id": 89
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOGRiNzExZmY1MmVlZGRhNTljNDM0YmIwMzE2OTc2M2Q3YzQwYjViODkxMjc3NzhmZWFjZDYzYWE5NGRmYyJ9fX0=",
+      "name": "§6Тыквенный фонарь",
+      "price": 0,
+      "id": 90
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODhiNzY3YzhhMWVhOGU0MDRiM2NjYTg1MzQ5ZjY1M2I1N2IwYzNmNDY0MjdmYmVjZWFjY2YzNjAyYmMyOWUifX19",
+      "name": "§7Каменные кирпичи",
+      "price": 0,
+      "id": 91
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNjc0OGVhNzA4MGFmY2RmMDdiMTUxMGZkY2U3Nzc2NjVhNzZhNmM2ZTJjMTY2ZDM5ZTFjMzQ1YTZiYjljNWYxZSJ9fX0=",
+      "name": "§7Замшелые каменные кирпичи",
+      "price": 0,
+      "id": 92
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZmE0OWVjYTAzNjlkMWUxNThlNTM5ZDc4MTQ5YWNiMTU3Mjk0OWI4OGJhOTIxZDllZTY5NGZlYTRjNzI2YjMifX19",
+      "name": "§6Гриб (блок)",
+      "price": 0,
+      "id": 93
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzMyZGJkNjYxMmU5ZDNmNDI5NDdiNWNhODc4NWJmYjMzNDI1OGYzY2ViODNhZDY5YTVjZGVlYmVhNGNkNjUifX19",
+      "name": "§cМухомор (блок)",
+      "price": 0,
+      "id": 94
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzk1YTg3ZGYxMDQ4OTM3NWVhYzYzZjZjYmUyNDIyZWQ2Zjc0N2ViODgxYzk0YmJjZGZjN2NmYTdiNmFkNSJ9fX0=",
+      "name": "§cМухомор",
+      "price": 0,
+      "id": 95
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjU1ZmE2NDJkNWViY2JhMmM1MjQ2ZmU2NDk5YjFjNGY2ODAzYzEwZjE0ZjUyOTljOGU1OTgxOWQ1ZGMifX19",
+      "name": "§fГрибной стебель",
+      "price": 0,
+      "id": 96
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzNmZWQ1MTRjM2UyMzhjYTdhYzFjOTRiODk3ZmY2NzExYjFkYmU1MDE3NGFmYzIzNWM4ZjgwZDAyOSJ9fX0=",
+      "name": "§aАрбуз",
+      "price": 0,
+      "id": 97
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTYzNmRlZTgwNmJhNDdhMmM0MGU5NWI1N2ExMmYzN2RlNmMyZTY3N2YyMTYwMTMyYTA3ZTI0ZWVmZmE2In19fQ==",
+      "name": "§aАрбуз (Круглый)",
+      "price": 0,
+      "id": 98
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvN2ViNGM0MWY0ODFlODE2Y2Y0YjUwN2IwYTE3NTk1ZjJiYTFmMjQ2NjRkYzQzMmJlMzQ3ZDRlN2E0ZWIzIn19fQ==",
+      "name": "§7Подзол",
+      "price": 0,
+      "id": 99
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzYwYjJmOTE0NTIxNWEzYTUwNjVkY2EyZDg5YmI4YjRjYTQ0YjkyMjJkZDIyMDYwYjUxYzM4ZDliZjU4NyJ9fX0=",
+      "name": "§6Адские ступеньки",
+      "price": 0,
+      "id": 100
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYjJmNzkwMTZjYWQ4NGQxYWUyMTYwOWM0ODEzNzgyNTk4ZTM4Nzk2MWJlMTNjMTU2ODI3NTJmMTI2ZGNlN2EifX19",
+      "name": "§bСтол зачарований",
+      "price": 0,
+      "id": 101
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNDIyNzY4ZGI2NTczNjUxNjI2NTUyYmIyNjQ0MjYwOWE3Mjc5Yzc4NDNjYjY5YjhlNjAzZDJjMWRiNjQ1ZDAifX19",
+      "name": "§8Котёл",
+      "price": 0,
+      "id": 102
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODQ4YTE5Y2RmNDJkNzQ4YjQxYjcyZmI0Mzc2YWUzZjYzYzExNjVkMmRjZTA2NTE3MzNkZjI2MzQ0NmM3N2JhNiJ9fX0=",
+      "name": "§8Котёл с водой",
+      "price": 0,
+      "id": 103
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvM2ZlMDM3M2ZlZTU5YWQxMmQ1ZjVkZTFkODIzMGI5YmIxODVlNjViZTU3MjZmZGZkOTczZjU1ZDU5NzA4ZCJ9fX0=",
+      "name": "§eЧасть портала Эндера",
+      "price": 0,
+      "id": 104
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTlmMjFmNWQ4ODMzMTZmZDY1YTkzNjZmMzJhMzMwMTMxODJlMzM4MWRlYzIxYzE3Yzc4MzU1ZDliZjRmMCJ9fX0=",
+      "name": "§eЭндерняк",
+      "price": 0,
+      "id": 105
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYmQ1OGQ0NTkxNjVkNTk3ODc1M2VhYjVmNDRiZDYwOWYzZGI4NGVlM2JiMDE2OTMyMDUyMzg5ZDM4Yjg5NSJ9fX0=",
+      "name": "§6Лампа (Выкл)",
+      "price": 0,
+      "id": 106
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMWFmZjkzZWJlY2MxZjhmYmQxM2JhNzgzOWVjN2JkY2RlY2FiN2MwN2ZkOGJhNzhlZTc4YWQwYmQzYWNjYmUifX19",
+      "name": "§6Лампа (Вкл)",
+      "price": 0,
+      "id": 107
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNGZjNDk1ZDFlNmViNTRhMzg2MDY4YzZjYjEyMWM1ODc1ZTAzMWI3ZjYxZDcyMzZkNWYyNGI3N2RiN2RhN2YifX19",
+      "name": "§aИзумрудная руда",
+      "price": 0,
+      "id": 108
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYWYxMjFmN2MxYWIxNTY3ZmYyMTk4M2ZmN2E5ZTU1YzQwYzBiODY1ZjA1MGQzN2U1ZDM1ZGVmYmFhIn19fQ==",
+      "name": "§aИзумрудный блок",
+      "price": 0,
+      "id": 109
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODUxNGQyMjViMjYyZDg0N2M3ZTU1N2I0NzQzMjdkY2VmNzU4YzJjNTg4MmU0MWVlNmQ4YzVlOWNkM2JjOTE0In19fQ==",
+      "name": "§6Командный блок",
+      "price": 0,
+      "id": 110
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMWMzYjUwODZlMDIxMmUyYjJlOGFiYzA3ZmQwNTFiMjM5YTYyMDJiODIzNWQ2NTRkODgyNzI0ZWNmYmZhZCJ9fX0=",
+      "name": "§6Командный блок (Стрелки)",
+      "price": 0,
+      "id": 111
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNjk4MWJkNTllYWQ4ZjE4NTU3YzZiMmY0ZjlkNzMzNDU5YjY3MjE2NGI4ZjIyYzI4YTUzZDBlYmY1YzFjNiJ9fX0=",
+      "name": "§bЦепной командный блок",
+      "price": 0,
+      "id": 112
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzQ3N2Y3NjViODZmYjcyNWNjOGFkYzZkYmNmMmUyNDM2NzdkNGIyODdlNjMzOGNmYmQ5ZDI5NzNkY2RjZTczYSJ9fX0=",
+      "name": "§dПовторяющийся командный блок",
+      "price": 0,
+      "id": 113
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOWRiZGFhNzU1MDk5ZWRkN2VmYTFmMTI4ODJjN2E1MWI1ODE1ZGI1MmUwYjE2NGFlZjZkZjlhMWY1M2VjYTIzIn19fQ==",
+      "name": "§bМаяк",
+      "price": 0,
+      "id": 114
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDA4ZWU2ZWRmYTk4ZGI1ZWFlOWI5Yzk5MzZlOTQ0ODliMmQ0YmJiZDNkMmI0YjZiNDg4NWEzMjI0MDYxM2MifX19",
+      "name": "§cБлок редстоуна",
+      "price": 0,
+      "id": 115
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMWFhZTFjN2Y4NjE0MzVkNzkxNDFmZjcyODZlOWQ3NDVkY2Q3OTkxNTcwZTYxNDZhMTg5MTRlYzg1YjY1MjkifX19",
+      "name": "§cКварцевая руда",
+      "price": 0,
+      "id": 116
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZTVlMmIyZWQyOThiNTNjYzg0NzgzY2Q3ODVlYzU3ZGE0OWNlYWFiZGNmZjMxYjI1ZmU1MjU2YjM0MjliNDEyIn19fQ==",
+      "name": "§fКварцевый блок",
+      "price": 0,
+      "id": 117
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNmYwY2YxM2NiYjM2OGFmOWNlZTEyMzI5NzlhMTRiODRlNmViZjIyYzEzYjE0MjdmOTMxNmQ5NzRiY2UifX19",
+      "name": "§fРезной кварцевый блок",
+      "price": 0,
+      "id": 118
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzI5ODQwNzg5OTY4MjU1N2E0NzVlNTBmZDEyN2E3YjFjMjgzYzExOTMzZmU2NzdiNzgzNzIyMzNkZDg4NGRlIn19fQ==",
+      "name": "§fКварцевая колонна",
+      "price": 0,
+      "id": 119
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMjVlOTE1MmVmZDg5MmY2MGQ3ZTBkN2U1MzM2OWUwNDc3OWVkMzExMWUyZmIyNzUyYjZmNGMyNmRmNTQwYWVkYyJ9fX0=",
+      "name": "§7Выбрасыватель",
+      "price": 0,
+      "id": 120
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzE1OTU5NDM4OGJmMDEzYTRlM2U2ODY5ZmFhYmNiOTVkMzFkZDNmNGEyNThhNTM1ZTdjYmQ5MmM5OTg2YjcifX19",
+      "name": "§fБелая обожжённая глина",
+      "price": 0,
+      "id": 121
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzMxNmMxNmIxYWM0NzBkMmMxMTQ0MzRmZjg3MzBmMTgxNTcwOTM4M2RiNmYzY2Y3MjBjMzliNmRjZTIxMTYifX19",
+      "name": "§6Оранжевая обожжённая глина",
+      "price": 0,
+      "id": 122
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzQ0MTUyOGQyODhiMmI3OTczNmNiMjI0ODg3OGZiOTFlZmI0NDYyZDQzYmViZDcxMWY3MzI2YWZiYmY4NSJ9fX0=",
+      "name": "§dПурпурная обожжённая глина",
+      "price": 0,
+      "id": 123
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODdiYzhmNWFjMmJmMzM2OTc0MWE5NjJkZTJhZGRiYWExN2QxNWNjNGRhZGIxOWFlZjZlOTQ0ODE3ZTZjMjQifX19",
+      "name": "§bГолубая обожжённая глина",
+      "price": 0,
+      "id": 124
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMmQ5MzBlZTIxYWQzYmMzOWRkZmRkZmI0YWE2MjA5MDU2ZTJkOWMxMTVmMTM3ZDc2YWQzYmY2MTI3YzNkMiJ9fX0=",
+      "name": "§eЖёлтая обожжённая глина",
+      "price": 0,
+      "id": 125
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNTVhMTE3ZTE2MWY3YTI5MWQwYTNhMTY4ZTc3YTIxYjA5ZDM5ZmZkZjU3NzNkMjJhYzAyZjVmYTY2MTFkYjY3In19fQ==",
+      "name": "§aЛаймовая обожжённая глина",
+      "price": 0,
+      "id": 126
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjc1ZGI4MWUxNTkyZjMyZDc3MWRkNWRiYzZjM2E1MWU3YTBkNjZiMjJkZmUyOTZiOTY4Njg1MDVjZWVjIn19fQ==",
+      "name": "§dРозовая обожжённая глина",
+      "price": 0,
+      "id": 127
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZTkyYzEyZGFlN2UyZGEzOTYwNTVhN2U2YTljYzc4Yjg5ZGJjNzVmOGMzYmRlYjM4YzgyMmRhODM3YTM1NyJ9fX0=",
+      "name": "§8Серая обожжённая глина",
+      "price": 0,
+      "id": 128
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNWNkZTk5YjcyNzI4ZWY4ODE2NDBmYTUwNjhkMTIyZTYxZGQ5Y2Y3MThkYmIzNzA5ZmM1YjMyNmYxYWY1ZCJ9fX0=",
+      "name": "§7Светло-серая обожжённая глина",
+      "price": 0,
+      "id": 129
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNDQ2MzgxMWZkMGM0OGZjZDczYWJjYjdiYmU1YWE1ZWM2YmMyODA5ZmZjNTU3N2QzZjQ1NTlkZjMwNzY1ZiJ9fX0=",
+      "name": "§3Бирюзовая обожжённая глина",
+      "price": 0,
+      "id": 130
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZTZmNTRmODI4MzZhNTU5MjRlZTg1ZGVjNTZiYmJkOGNhMTQ2MzNkYWE5YmZlMzU2NTU5MmVkZjM5YTZkZSJ9fX0=",
+      "name": "§5Фиолетовая обожжённая глина",
+      "price": 0,
+      "id": 131
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvN2MxMTY2OTQ3MzFmYmQyNzJjMWZmYTQzNTJhNTM1OWI2YzNhNGNiNTg2NGE3NGE1ZGJlMGY2NjVmODM4NWMifX19",
+      "name": "§1Синяя обожжённая глина",
+      "price": 0,
+      "id": 132
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNTRiOTMyZjExN2M4N2UxMTE4OWYxYzRjNDBjZmQ5MmJlOTExOWIxMTM3Y2Q2MTBjNjhlZGQ0MWFjNThmMTQifX19",
+      "name": "§6Коричневая обожжённая глина",
+      "price": 0,
+      "id": 133
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYjU1ZDUwMTljOGQ1NWJjYjlkYzM0OTRjY2MzNDE5NzU3Zjg5YzMzODRjZjNjOWFiZWMzZjE4ODMxZjM1YjAifX19",
+      "name": "§2Зелёная обожжённая глина",
+      "price": 0,
+      "id": 134
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOWU0MmY2ODJlNDMwYjU1YjYxMjA0YTZmOGI3NmQ1MjI3ZDI3OGVkOWVjNGQ5OGJkYTRhN2E0ODMwYTRiNiJ9fX0=",
+      "name": "§4Красная обожжённая глина",
+      "price": 0,
+      "id": 135
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZTE3ZmY4YmFiYjkxYjRkYmFkNzUyNGU1OGVlZDRiMmY3MTU2NTc0NTk4OWFmOWEyY2NmY2YzMzI4ZjYxYmQyIn19fQ==",
+      "name": "§0Чёрная обожжённая глина",
+      "price": 0,
+      "id": 136
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNWJmNmViMWQxYWEyYTFiNGRlMTNmYWRmNTM4ZDJkMzUxNjk1YWU1NmI4ODJiNTNhYmYzZTU4YTEyN2RhNWViIn19fQ==",
+      "name": "§6Древесина акации",
+      "price": 0,
+      "id": 137
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNmI3M2QyOGU3M2EwZjFjOWRkOThjM2ZkMzVhYWRhYWNmOTgyOGVkNTk0OGJiMGJjZGY1ZDZmMWJkMGRjZDYzYSJ9fX0=",
+      "name": "§6Древесина тёмного дуба",
+      "price": 0,
+      "id": 138
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTBlNjVlNmU1MTEzYTUxODdkYWQ0NmRmYWQzZDNiZjg1ZThlZjgwN2Y4MmFhYzIyOGE1OWM0YTk1ZDZmNmEifX19",
+      "name": "§aБлок слизи",
+      "price": 0,
+      "id": 139
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTdlNTYxNDA2ODZlNDc2YWVmNTUyMGFjYmFiYzIzOTUzNWZmOTdlMjRiMTRkODdmNDk4MmYxMzY3NWMifX19",
+      "name": "§bПризмарин",
+      "price": 0,
+      "id": 140
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzdjYmEyMzNmZmM0NTdiMzMwNTIyOGIyNWYzNWMwMjMzNTYxMWM5ZWZiNzY2OThiNWU5NGMwZDU0MWI1ZjQifX19",
+      "name": "§bПризмариновый кирпич",
+      "price": 0,
+      "id": 141
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZmQ5MTg1OTg5ODk1NDk1OTQ0NDZlODNmMzM4NzM4OTExNzhkYTlkYjQyZjkxMmU1MjcyZTFmYjI0MDMxMmEifX19",
+      "name": "§3Тёмный призмарин",
+      "price": 0,
+      "id": 142
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODI0YzZmZjE3MTRlYjJjM2I4NDRkNDZkMmU1ZWEyZjI2ZDI3M2EzM2VhYWE3NDRhYmY2NDViMDYwYjQ3ZDcifX19",
+      "name": "§bМорской фонарь",
+      "price": 0,
+      "id": 143
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNGUzY2E1YjM5MGQxZTVmMjk3MjgzMjU3Y2U5MGFjNmY4NzgzZDc4NmVjYWVlMDk1YjQ5Y2M2Yjk0NGQ3MmQifX19",
+      "name": "§6Сноп сена",
+      "price": 0,
+      "id": 144
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODJkNWZlZmUyMGRhZjMxYzIzOGVlMjI3ZGQxNDE4MjdhZGE1ZWY4NDgyZDhkMzU3YmJlNWE3Y2Y0MGFmODUifX19",
+      "name": "§6Обожжённая глина",
+      "price": 0,
+      "id": 145
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjZjNWVjYWM5NDJjNzdiOTVhYjQ2MjBkZjViODVlMzgwNjRjOTc0ZjljNWM1NzZiODQzNjIyODA2YTQ1NTcifX19",
+      "name": "§8Угольный блок",
+      "price": 0,
+      "id": 146
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNTZhYWI1OGZhMDFmY2U5YWY0NjllZDc0N2FlZDgxMWQ3YmExOGM0NzZmNWE3ZjkwODhlMTI5YzMxYjQ1ZjMifX19",
+      "name": "§bПлотный лёд",
+      "price": 0,
+      "id": 147
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZGIzMWJlMTk3YWM3ZDc4YjMwYzM0ZGFjMjY2NWRiZjFhNzRmOTZhNzllNTJjYjhlZDUwODhhZDcwZWU5MzQ4In19fQ==",
+      "name": "§6Красный песчаник",
+      "price": 0,
+      "id": 148
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjNmY2JmZjYyOGNlZDM3Yjk5Mjc0YmMyYjRlMmFjNjljNTVkMzM4ODg1MTYyODVhZjg2OWE4ZGI0YTZiMzgyIn19fQ==",
+      "name": "§6Резной красный песчаник",
+      "price": 0,
+      "id": 149
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYTJkYTdhYTFhZTZjYzlkNmMzNmMxOGE0NjBkMjM5ODE2MmVkYzIyMDdmZGZjOWUyOGE3YmY4NGQ3NDQxYjhhMiJ9fX0=",
+      "name": "§6Гладкий красный песчаник",
+      "price": 0,
+      "id": 150
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYmJjNThkMjg5M2MyNWFjMTNjZjliZTg3NjZkNzM5OGQ0MzQ1YWM4MGMyZTYyNWJhMTFiZGNlYjI0YzVmZDcifX19",
+      "name": "§5Корус",
+      "price": 0,
+      "id": 151
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTJlYjMwYTBiZTNkN2M3ZTE2MmM3NmU3MmEzYzRjYzQ0MjIzNTY3MTYyYTk0MTc1MjU3MmFlNmNjZWI5NmM4NiJ9fX0=",
+      "name": "§5Плод коруса",
+      "price": 0,
+      "id": 152
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzA4ZjM4MzJiYzE1ZmFjNDE1MjJjZTZlZDFkODhmOTU0M2RkNTcxZjkzNDA3Mzg3NGVmMGNiOWJmY2NlYSJ9fX0=",
+      "name": "§dПурпурный блок",
+      "price": 0,
+      "id": 153
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYTQ1MjQ5OGJkOWJhNTFhMTQyNGQ5NmJmOTZiZTBjYjEwM2M5MzM4ZGVmZGYxNzJjYTEzZjVlMjRmNWY5ZDhmIn19fQ==",
+      "name": "§dПурпурная колонна",
+      "price": 0,
+      "id": 154
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNjZkZTY1ZDE4OTY4MTI2ODExMDViYjNjMDE3ZmIzYWNkM2Y0ZGQ2M2IxM2IxOGRhMTRkNTliZTk4NGE2M2Q3In19fQ==",
+      "name": "§eЭндерняк",
+      "price": 0,
+      "id": 155
+    }
+  ]
+}

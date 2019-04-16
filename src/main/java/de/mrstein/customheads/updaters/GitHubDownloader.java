@@ -23,21 +23,24 @@ import java.util.logging.Level;
 
 public class GitHubDownloader {
 
-    private static final File downloadDir = new File(CustomHeads.getInstance().getDataFolder() + "/downloads");
+    private static final File downloadDir = new File(CustomHeads.getInstance().getDataFolder(), "downloads");
 
-    private static final String GITHUB_REPO_URL = "https://api.github.com/repos/{author}/{projectName}";
+    private static final String GITHUB_REPO_URL = "https://api.github.com/repos/%s/%s";
+    private static HashMap<String, CachedResponse<JsonElement>> responseCache = new HashMap<>();
     private String apiURLFormatted;
-
-    private static HashMap<String, Object[]> responseCache = new HashMap<>();
-
     private boolean unzip = false;
 
+    private String author;
+    private String projectName;
+
     public GitHubDownloader(String author, String projectName) {
-        apiURLFormatted = GITHUB_REPO_URL.replace("{author}", author).replace("{projectName}", projectName);
+        this.author = author;
+        this.projectName = projectName;
+        apiURLFormatted = String.format(GITHUB_REPO_URL, author, projectName);
     }
 
     public static void clearCache() {
-        responseCache.values().removeIf(times -> (long) times[0] - System.currentTimeMillis() > 600000);
+        responseCache.values().removeIf(cachedResponse -> cachedResponse.getTime() - System.currentTimeMillis() > 600000);
     }
 
     public GitHubDownloader enableAutoUnzipping() {
@@ -45,77 +48,128 @@ public class GitHubDownloader {
         return this;
     }
 
+    private static void getResponseAsJson(String url, FetchResult<JsonElement> fetchResult) {
+        if (responseCache.containsKey(url)) {
+            fetchResult.success(responseCache.get(url).getData());
+        }
+
+        try {
+            JsonElement response;
+            HttpURLConnection apiConnection = (HttpURLConnection) new URL(url).openConnection();
+            apiConnection.setReadTimeout(10000);
+            if (apiConnection.getResponseCode() != HttpURLConnection.HTTP_OK)
+                fetchResult.error(new Exception("Server responded with " + apiConnection.getResponseCode()));
+            response = new JsonParser().parse(new InputStreamReader(apiConnection.getInputStream()));
+            if (response.isJsonObject() && response.getAsJsonObject().has("message"))
+                fetchResult.error(new NullPointerException("Release API resopnded with: " + response.getAsJsonObject().get("message").getAsString()));
+            responseCache.put(url, new CachedResponse<>(System.currentTimeMillis(), response));
+            fetchResult.success(response);
+        } catch (Exception e) {
+            fetchResult.error(e);
+        }
+    }
+
+    public static void getRelease(String tag, String author, String project, FetchResult<JsonObject> fetchResult) {
+        getResponseAsJson(String.format(GITHUB_REPO_URL, author, project) + "/releases", new FetchResult<JsonElement>() {
+            public void success(JsonElement js) {
+                JsonArray releaseList = js.getAsJsonArray();
+                JsonObject release = null;
+                for (JsonElement jsonElement : releaseList) {
+                    if (jsonElement.getAsJsonObject().get("tag_name").getAsString().equals(tag)) {
+                        release = jsonElement.getAsJsonObject();
+                        break;
+                    }
+                }
+
+                if (release == null) {
+                    fetchResult.error(new NullPointerException("Unkown Tag"));
+                    return;
+                }
+                fetchResult.success(release);
+            }
+
+            public void error(Exception exception) {
+                Bukkit.getLogger().log(Level.WARNING, "Failed to get Release", exception);
+            }
+        });
+    }
+
     public void download(String tagName, String assetName, File downloadTo, AsyncFileDownloader.AfterTask... afterTask) {
-        JsonArray releaseList = getResponseAsJson("/releases").getAsJsonArray();
+        getRelease(tagName, author, projectName, new FetchResult<JsonObject>() {
+            public void success(JsonObject release) {
+                JsonArray assets = release.getAsJsonArray("assets");
+                for (JsonElement jsonElement : assets) {
+                    JsonObject jsonObject = jsonElement.getAsJsonObject();
+                    if (jsonObject.get("name").getAsString().equals(assetName)) {
+                        AsyncFileDownloader downloader = new AsyncFileDownloader(jsonObject.get("browser_download_url").getAsString(), assetName, downloadDir.getPath());
+                        downloader.startDownload(new AsyncFileDownloader.FileDownloaderCallback() {
+                            public void complete() {
+                                Bukkit.getServer().getConsoleSender().sendMessage(CustomHeads.chPrefix + "Download of " + assetName + " complete.");
+                                if (unzip && assetName.endsWith(".zip")) {
+                                    Utils.unzipFile(new File(downloadDir, assetName), downloadTo);
+                                    if (afterTask.length > 0)
+                                        afterTask[0].call();
+                                    return;
+                                }
+                                try {
+                                    FileUtils.copyFile(new File(downloadDir, assetName), downloadTo);
+                                    if (afterTask.length > 0)
+                                        afterTask[0].call();
+                                } catch (Exception e) {
+                                    CustomHeads.getInstance().getLogger().log(Level.WARNING, "Failed to copy downloaded File", e);
+                                }
+                            }
 
-        JsonObject release = null;
-        for (JsonElement jsonElement : releaseList) {
-            if (jsonElement.getAsJsonObject().get("tag_name").getAsString().equals(tagName)) {
-                release = jsonElement.getAsJsonObject();
-                break;
-            }
-        }
-
-        if (release == null)
-            throw new NullPointerException("Cannot find release with Tag: " + tagName);
-
-        JsonArray assets = release.getAsJsonArray("assets");
-        for (JsonElement jsonElement : assets) {
-            JsonObject jsonObject = jsonElement.getAsJsonObject();
-            if (jsonObject.get("name").getAsString().equals(assetName)) {
-                AsyncFileDownloader downloader = new AsyncFileDownloader(jsonObject.get("browser_download_url").getAsString(), assetName, downloadDir.getPath());
-                downloader.startDownload(new AsyncFileDownloader.FileDownloaderCallback() {
-                    public void complete() {
-                        Bukkit.getServer().getConsoleSender().sendMessage(CustomHeads.chPrefix + "Download of " + assetName + " complete.");
-                        if (unzip && assetName.endsWith(".zip")) {
-                            Utils.unzipFile(new File(downloadDir, assetName), downloadTo);
-                            if (afterTask.length > 0)
-                                afterTask[0].call();
-                            return;
-                        }
-                        try {
-                            FileUtils.copyFile(new File(downloadDir, assetName), downloadTo);
-                            if (afterTask.length > 0)
-                                afterTask[0].call();
-                        } catch (Exception e) {
-                            CustomHeads.getInstance().getLogger().log(Level.WARNING, "Failed to copy downloaded File", e);
-                        }
+                            public void failed(AsyncFileDownloader.DownloaderStatus status) {
+                                if (status == AsyncFileDownloader.DownloaderStatus.ERROR) {
+                                    Bukkit.getLogger().log(Level.WARNING, "Something went wrong while downloading " + assetName, status.getException());
+                                } else {
+                                    Bukkit.getServer().getConsoleSender().sendMessage(CustomHeads.chError + "Failed to download " + assetName + " : " + status);
+                                }
+                            }
+                        });
+                        break;
                     }
-
-                    public void failed(AsyncFileDownloader.DownloaderStatus status) {
-                        if (status == AsyncFileDownloader.DownloaderStatus.ERROR) {
-                            Bukkit.getLogger().log(Level.WARNING, "Something went wrong while downloading " + assetName, status.getException());
-                        } else {
-                            Bukkit.getServer().getConsoleSender().sendMessage(CustomHeads.chError + "Failed to download " + assetName + " : " + status);
-                        }
-                    }
-                });
-                break;
+                }
             }
-        }
+
+            public void error(Exception exception) {
+                exception.printStackTrace();
+            }
+        });
+//        getResponseAsJson(apiURLFormatted + "/releases", new FetchResult<JsonElement>() {
+//            public void success(JsonElement js) {
+//                JsonArray releaseList = js.getAsJsonArray();
+//                JsonObject release = null;
+//                for (JsonElement jsonElement : releaseList) {
+//                    if (jsonElement.getAsJsonObject().get("tag_name").getAsString().equals(tagName)) {
+//                        release = jsonElement.getAsJsonObject();
+//                        break;
+//                    }
+//                }
+//
+//                if (release == null)
+//                    throw new NullPointerException("Cannot find release with Tag: " + tagName);
+//
+//
+//            }
+//
+//            public void error(Exception exception) {
+//                Bukkit.getLogger().log(Level.WARNING, "Failed to fetch latest Data", exception);
+//            }
+//        });
     }
 
     public void downloadLatest(String assetName, File downloadTo, AsyncFileDownloader.AfterTask... afterTask) {
-        download(getResponseAsJson("/releases/latest").getAsJsonObject().get("tag_name").getAsString(), assetName, downloadTo, afterTask);
-    }
+        getResponseAsJson(apiURLFormatted + "/releases/latest", new FetchResult<JsonElement>() {
+            public void success(JsonElement jsonElement) {
+                download(jsonElement.getAsJsonObject().get("tag_name").getAsString(), assetName, downloadTo, afterTask);
+            }
 
-    private JsonElement getResponseAsJson(String path) {
-        if (responseCache.containsKey(path)) {
-            return (JsonElement) responseCache.get(path)[1];
-        }
-        JsonElement response = null;
-        try {
-            HttpURLConnection apiConnection = (HttpURLConnection) new URL(apiURLFormatted + path).openConnection();
-            apiConnection.setReadTimeout(10000);
-            if (apiConnection.getResponseCode() != HttpURLConnection.HTTP_OK)
-                throw new Exception("Server responded with " + apiConnection.getResponseCode());
-            response = new JsonParser().parse(new InputStreamReader(apiConnection.getInputStream()));
-            if (response.isJsonObject() && response.getAsJsonObject().has("message"))
-                throw new NullPointerException("Release API resopnded with: " + response.getAsJsonObject().get("message").getAsString());
-            responseCache.put(path, new Object[]{System.currentTimeMillis(), response});
-        } catch (Exception e) {
-        }
-        return response;
+            public void error(Exception exception) {
+                Bukkit.getLogger().log(Level.WARNING, "Failed to fetch latest Data", exception);
+            }
+        });
     }
 
 }

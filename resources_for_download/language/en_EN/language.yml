@@ -17,6 +17,10 @@ LANGUAGE:
   REDOWNLOAD_BACKUP_FAILED: '&eLanguage: &7Failed to backup Files'
   REDOWNLOAD_DOWNLOADING: '&eLanguage: &7Downloading Language Files...'
   REDOWNLOAD_DONE: '&eLanguage: &7Done'
+  DOWNLOAD_FETCHING: '&7Fetching Data'
+  DOWNLOAD_FETCHFAILED: '&cFailed to Fetch Data'
+  DOWNLOAD_SUCCESSFUL: '&eLanguage: Successfully downloaded &e{LANGUAGE}'
+  DOWNLOAD_TITLE: '&aDownloadable Languages'
 RELOAD:
   CONFIG: '&eReload: &7Reloading Configs...'
   HISTORY: '&eReload: &7Reloading History...'
@@ -33,11 +37,11 @@ ECONOMY:
   PRICE: '&7Price: &e{PRICE}'
   PRICE_FORMAT: '{PRICE}{CURRENCY}'
   FREE: Free
-  BOUGHT: '&7Unlocked' # new
-  BUY_PROMPT: '&eRight Click to Buy' # new
-  BUY_CONFIRM: '&7Buy &9{ITEM} &7for &9{PRICE}?' # new
-  BUY_SUCCESSFUL: '&eHeadShop: &7Successfully bought {ITEM}' # new
-  BUY_FAILED: '&eHeadShop: &7Transaction failed: {REASON}' # new
+  BOUGHT: '&7Unlocked'
+  BUY_PROMPT: '&eRight Click to Buy'
+  BUY_CONFIRM: '&7Buy &9{ITEM} &7for &9{PRICE}?'
+  BUY_SUCCESSFUL: '&eHeadShop: &7Successfully bought {ITEM}'
+  BUY_FAILED: '&eHeadShop: &7Transaction failed: {REASON}'
 # History Messages
 HISTORY_DISABLED: '&eHistory: &cHistory is disabled by the Config'
 HISTORY_INVALID_PLAYER: "&eHistory: &cInvalid Player '{PLAYER}'"

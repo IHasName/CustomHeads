@@ -1,7 +1,7 @@
-main: de.mrstein.customheads.CustomHeads
-name: CustomHeads
-version: 2.9.3
-author: MrStein
+main: ${project.groupId}.${project.artifactId}
+name: ${project.artifactId}
+version: ${project.version}
+author: ${user.name}
 softdepend: [Vault]
 
 commands: 

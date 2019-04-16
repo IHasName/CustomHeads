@@ -39,7 +39,7 @@ public class CHSearchQuery {
             results = new ArrayList<>();
             return;
         }
-        results = CustomHeads.getCategoryLoader().getAllHeads().stream().filter(head -> ChatColor.stripColor(head.getItemMeta().getDisplayName().toLowerCase()).contains(search.toLowerCase())).collect(Collectors.toList());
+        results = CustomHeads.getCategoryManager().getAllHeads().stream().filter(head -> ChatColor.stripColor(head.getItemMeta().getDisplayName().toLowerCase()).contains(search.toLowerCase())).collect(Collectors.toList());
         Collections.reverse(results);
     }
 

@@ -1,16 +1,16 @@
-package de.mrstein.customheads.loader;
+package de.mrstein.customheads.category;
 
 import de.mrstein.customheads.CustomHeads;
-import de.mrstein.customheads.category.BaseCategory;
-import de.mrstein.customheads.category.Category;
-import de.mrstein.customheads.category.CustomHead;
-import de.mrstein.customheads.category.SubCategory;
+import de.mrstein.customheads.utils.ItemEditor;
 import de.mrstein.customheads.utils.JsonFile;
 import lombok.Getter;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
  */
 
 @Getter
-public class CategoryLoader {
+public class CategoryManager {
 
     @Getter
     private static boolean loaded;
@@ -35,7 +35,7 @@ public class CategoryLoader {
 
     private String language;
 
-    public CategoryLoader(String language) {
+    public CategoryManager(String language) {
         loaded = false;
         this.language = language;
         langRootDir = new File("plugins/CustomHeads/language/" + language + "/categories");
@@ -53,7 +53,7 @@ public class CategoryLoader {
         File langRootDir = new File("plugins/CustomHeads/language/" + language + "/categories");
         if (langRootDir.listFiles() == null) {
             CustomHeads.getInstance().getServer().getConsoleSender().sendMessage(CustomHeads.chWarning + "No Categories found in language/" + language + "/categories");
-            CategoryLoader.loaded = true;
+            CategoryManager.loaded = true;
             return;
         }
 
@@ -102,7 +102,19 @@ public class CategoryLoader {
 
         if (!CustomHeads.hasReducedDebug())
             CustomHeads.getInstance().getServer().getConsoleSender().sendMessage(CustomHeads.chPrefix + "Successfully loaded " + loaded + " Categories and " + getAllHeads().size() + " Heads from " + language + "/categories in " + (System.currentTimeMillis() - timestamp) + "ms " + (ignoreInvalid ? "(" + (ignored + invalid) + " " + ((ignored + invalid) == 1 ? "Category was" : "Categories were") + " ignored - " + ignored + " not loaded or not found, " + (invalid > 0 ? "§c" : "") + invalid + " Invalid§7)" : ""));
-        CategoryLoader.loaded = true;
+        CategoryManager.loaded = true;
+    }
+
+    public void updateCategory(Category category, String forLanguage) {
+        File categoryFile;
+        if (!(categoryFile = new File(CustomHeads.getInstance().getDataFolder() + "/language/" + forLanguage)).exists())
+            throw new IllegalArgumentException("Language " + forLanguage + " does not exist");
+        try (OutputStreamWriter outputStream = new OutputStreamWriter(new FileOutputStream(new File(categoryFile + "/categories", category.getName() + ".json")), StandardCharsets.UTF_8)) {
+            outputStream.write(category.toString());
+            outputStream.flush();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public int importSingle(File file) {
@@ -147,7 +159,7 @@ public class CategoryLoader {
         if (categories.containsKey(category.getId())) {
             categories.remove(category.getId());
             List<String> loadedCategories = CustomHeads.getCategoryLoaderConfig().get().isList("categories") ? CustomHeads.getCategoryLoaderConfig().get().getStringList("categories") : new ArrayList<>();
-            loadedCategories.remove(CustomHeads.getCategoryLoader().getSourceFile(category).getName().substring(0, CustomHeads.getCategoryLoader().getSourceFile(category).getName().lastIndexOf(".")));
+            loadedCategories.remove(CustomHeads.getCategoryManager().getSourceFile(category).getName().substring(0, CustomHeads.getCategoryManager().getSourceFile(category).getName().lastIndexOf(".")));
             CustomHeads.getCategoryLoaderConfig().get().set("categories", loadedCategories);
             CustomHeads.getCategoryLoaderConfig().save();
             return true;
@@ -181,17 +193,19 @@ public class CategoryLoader {
 
             // Rewrite Category File
             File categoryFile = getSourceFile(originCategory);
-            try {
-                FileOutputStream outputStream = new FileOutputStream(categoryFile);
-                outputStream.write(originCategory.toString().getBytes());
+            try (OutputStreamWriter outputStream = new OutputStreamWriter(new FileOutputStream(categoryFile), StandardCharsets.UTF_8)) {
+                outputStream.write(originCategory.toString());
                 outputStream.flush();
-                outputStream.close();
             } catch (Exception e) {
                 return false;
             }
             return true;
         }
         return false;
+    }
+
+    public Category createCategory(String name) {
+        return new Category(nextCategoryID(), name, name.toLowerCase(), 0, new ItemEditor(Material.SKULL_ITEM, (byte) 3).setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYmFkYzA0OGE3Y2U3OGY3ZGFkNzJhMDdkYTI3ZDg1YzA5MTY4ODFlNTUyMmVlZWQxZTNkYWYyMTdhMzhjMWEifX19").setDisplayName("Category Icon").setLore("§7Replace this Item\n§7to set the Icon").getItem());
     }
 
     public Category getCategory(String id) {
@@ -248,6 +262,14 @@ public class CategoryLoader {
 //            }
 //        }
 //        return heads;
+    }
+
+    private int nextCategoryID() {
+        int id = 0;
+        while (categories.containsKey(String.valueOf(id))) {
+            id++;
+        }
+        return id;
     }
 
 }

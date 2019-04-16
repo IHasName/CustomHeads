@@ -1,0 +1,294 @@
+{
+  "id": 10,
+  "name": "Персонажи",
+  "permission": "characters",
+  "fixed-icon": false,
+  "icon": {
+    "item": "SKULL_ITEM",
+    "damage": 3,
+    "display-name": "Персонажи",
+    "lore": [
+      "§7Герои из разных игр"
+    ],
+    "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYWVjZjk0ZjRiY2JiZjZlYWRjYjI1YWEzZDA2OWFhNjc4ZWJkYjUyNDFlYjgyZThlMjY4ODljYWYzMjc1NTcwIn19fQ=="
+  },
+  "heads": [
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZWQzZjNlMTE0YzYzMWNhZGM4YTU2MDYwMjFiNGI0ZjllMTVmYTZlYzg5ZDNlZWViMWNlYzgyNWNmMjliODgzIn19fQ==",
+      "name": "§6Фредди",
+      "price": 0,
+      "id": 1
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMmYzZmFjYTNkMTNlNmVjMzczZDdhMjhkYWI4OTU5ZmMyYjdjY2NlNWZiNjE3YjFjNTYzYWFkYmIwMzkzMiJ9fX0=",
+      "name": "§5Бонни",
+      "price": 0,
+      "id": 2
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTdhMWQ0MmVmNzExODc1NzcyOTFkNmFlOTNhNGJlYjhiMTYxYTQzYmMyNjU2MjIwMWNhMjUxNTJiNmZmMzg3In19fQ==",
+      "name": "§eЧика",
+      "price": 0,
+      "id": 3
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYjI4MTJhYWE5NTQ3NzNmMmFkYTVhMmY3N2UzMmJhMmY3ZDhkMWY1ZDFiYjRhMzBmODYyNzk2NDJkM2Q4YmI4In19fQ==",
+      "name": "§cФокси",
+      "price": 0,
+      "id": 4
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvN2VjYWU4ZmRkOTIzM2I4MmRjMmY3YTk0NDU0NTBiNGE1MmYxYzM4M2EyNDE3OTkxYzgyZWQ3MWJmNzk1YWMxIn19fQ==",
+      "name": "§8Марионетка",
+      "price": 0,
+      "id": 5
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzczYWQxZWJlYjliNzUyNTcwOGE5MzNiZGFlMDg2NTk5YThkY2Q2NmQ4YjQxNDUzMWNlNjNiZjk5NTNiZDNlIn19fQ==",
+      "name": "§7Мангл",
+      "price": 0,
+      "id": 6
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZGMzZjJlOTNkMDMyOTRkNGFhOTMxZTk5NjdmMmQ1YmNkMmFmOTA5YmZlMzhlZTgxZDFiZGE3ZjY4MmZkYzMifX19",
+      "name": "§6Игрушка Фредди",
+      "price": 0,
+      "id": 7
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYTc1ZGJlOTcwZDU0N2IyNTYxZjhiNjU4MTMwMzU5MTc2MjQ2Zjg5ZTc0YTRhYmRjNjgzNDE1NWM4YzRjODFhIn19fQ==",
+      "name": "§bИгрушка Бонни",
+      "price": 0,
+      "id": 8
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvY2MzNzY2OGQ1ZWFlMThiYTc2NmNkNWM4ZWJjNzVjNDhkZTFiYTQ0Y2JlNDg5ZDgyOWE1ZWNhODY5MWJmNTU2In19fQ==",
+      "name": "§eИгрушка Чика",
+      "price": 0,
+      "id": 9
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZmJkMjg0OTk3NzUyYTQ4MDJiOGNlYjRiNDY1MTMzOGI0NGI2ZDQ3Nzk2NWI3MzdmMTk4NWI2ZmFmNWUyMmFiIn19fQ==",
+      "name": "§fИгрушка Мангл",
+      "price": 0,
+      "id": 10
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOGE0OGRkNGFkMThhZmIyMmZlNTcyODUyNzA2YjgwMTlhNzhkOGYxNTk0ODZlNzQyZmY3NjFjNjM4ZDIwMmY1YiJ9fX0=",
+      "name": "§bМальчик с шариками",
+      "price": 0,
+      "id": 11
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODIzOGMxMTRiMjdjYTlmZmQ2ZTc3NTRmZWM1ODJjN2UzNjk5MjgyODNiMmQ3ZmNlMTQ5ZWFhMzEyYmQyIn19fQ==",
+      "name": "§cЗойдберг",
+      "price": 0,
+      "id": 12
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjMzZWNhNjk5Mzg0ZjNkMWZjNmNkMWQxZWQ1YThiOGMzNDc5OGM2NTY4ZWIxODQ0ZTUzY2JkYzM1OTgifX19",
+      "name": "§6Эфок",
+      "price": 0,
+      "id": 13
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZmM5NmExNGRjMWNiOTQzYjhmZjNjOTJhYWNiMDEwMmMyMzg5ZWVkZWY1MGQzNmI3MTRkMGRiOThiMjdhIn19fQ==",
+      "name": "§dЗэлда",
+      "price": 0,
+      "id": 14
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZGFhMDU5NjZkYmIzOWY3ODBlN2VhNjNhMjk1NjBkOGViNDhlMGMyNDk3YTgxOGE4OTU2NGE1YTE0YTMzZWYifX19",
+      "name": "§aЛинк",
+      "price": 0,
+      "id": 15
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvM2I3ODU0MzY5MTRkNDQ4ODg2Zjg3NmJlMGY0ODdjZjRjMzMyZDY5NmY2NjU3MGE4NGU4NmY4ZmE2N2YifX19",
+      "name": "§6Ганондорф",
+      "price": 0,
+      "id": 16
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTZhOGNiZTliNWI2NTYzNDVhZTAzNGJlZmVhZDI2YjkzNjc3ZmViYzg4NzI1NDkwNDE2Y2U3YmFiYmQ1OWYzZCJ9fX0=",
+      "name": "§9Стич",
+      "price": 0,
+      "id": 17
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMjNjNzFhODVlZWIzY2Q2NDQ5MTU5Njc1YWE4OTI3OGEyYTFkNTg3YjRkMGI3NjgxNzRmYzJlMTVjOWJlNGQifX19",
+      "name": "§6Грут",
+      "price": 0,
+      "id": 18
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYjViODFlMTc0N2IzMDQwODAxMDY5NzY4YjdjZWU4NWEzMmZlMGVhNTc4ZDdhNDg4NzgzYzc3NzhlNzJkN2U3In19fQ==",
+      "name": "§6Звёздный лорд",
+      "price": 0,
+      "id": 19
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZmJmZWY1ZTA2NTMzOTc5ZDU3Y2FhNGZiY2UyNjBlYzFlNGYyNDE3NGFhNzcyZjYwZjA2OGEwZjlhYzYzZWUifX19",
+      "name": "§2Боба Фетт",
+      "price": 0,
+      "id": 20
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZTMyYzMzNmRhODRhN2JhNjEwYzg4MWFhOTk1Zjk2NjRmMTlkYzJjNDBiZDExNDQ5ZTIwYzZjM2EzZTc1MSJ9fX0=",
+      "name": "§fИмперские штурмовики",
+      "price": 0,
+      "id": 21
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzdlMGQ3MmNmNDQxY2NlOTRjY2UzY2IzYmNjZWM2ZmVjNWY4YWMyZDc5YmM5NjNkOGI3NGQ1NGEyMDYyIn19fQ==",
+      "name": "§3Клоны",
+      "price": 0,
+      "id": 22
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvN2NlYmM5Nzc5OGMyZTM2MDU1MWNhYjNkZDVkYjZkNTM0OTdmZTYzMDQwOTQxYzlhYzQ5MWE1OWNiZjM4M2E3YSJ9fX0=",
+      "name": "§8R2D2",
+      "price": 0,
+      "id": 23
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzFjM2UxZjIyNGI0NDZjY2FjNmE2Y2MzY2Q5ODkxMDE5YTEyMmY5OTY5MWMzOTA3OTkyYTNhZjk5YTIxYjAifX19",
+      "name": "§8Дарт Вейдер",
+      "price": 0,
+      "id": 24
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYjk3MWI5Mjc3MjljNmVhY2UxNjU5M2IzM2E5ODZkNjE5NDNkNjJmNjk2MWRlNmRiNTk5YTgxOGIyYWYzMiJ9fX0=",
+      "name": "§dПатрик",
+      "price": 0,
+      "id": 25
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNWU3MWVmMzlhZjRlMzNlYmNmNjlhNGJlNjM3OTU0M2M1MDE1YWFlYzc2YmFiNmZjM2Q4NjJhNzVkZmUzYzQ3In19fQ==",
+      "name": "§eГубка Боб",
+      "price": 0,
+      "id": 26
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDY5NThlMTJhYWY2ZDFmYTJhN2NkZmUzOTc5ZTY3Zjk4YTZjZGRjMmVmZWRjMGMzMTEyMDE3MjdhYzNiYzc2In19fQ==",
+      "name": "§6Сэнди",
+      "price": 0,
+      "id": 27
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzJjZWU2MmI5OWQ4MDRkZGRlZGNmZTdhNzFhMTBjMmQ3YzhjMTYxNmFhY2I5MWRiODJlNDdhMjJkZDMxNCJ9fX0=",
+      "name": "§bЛедяной король",
+      "price": 0,
+      "id": 28
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNTNkMTg3N2JlOTVhOWVkYjg2ZGYyMjU2ZjIzOTU4MzI0YzJlYzE5ZWY5NDI3N2NlMmZiNWMzMzAxODQxZGMifX19",
+      "name": "§6Джейк",
+      "price": 0,
+      "id": 29
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYjUxZDU5NjZlYTQ3MmM0M2VmNTJhNWY2NTdmZjg1OTIwM2JlYTI4ZmU0YmVkY2U1YTFjZDc4OWIzYWM0YmEifX19",
+      "name": "§fФин",
+      "price": 0,
+      "id": 30
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzVmNWM5ZmY5NGMwZGQ1Y2JiMWUyNzFhODE3ZTZlOWM1NTJlMzkyOGIxNTk1MTlkZDIyNmVmYWJkZCJ9fX0=",
+      "name": "§9Соник",
+      "price": 0,
+      "id": 31
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTQ3ZDQ2YWZjZjNmYmNlMjQ1OGQ0NTJjOWZiMjRjNmFjMzdjZWY5MjUzN2M5M2ZmZjNkNTJmZDc4ZWNmNGNkIn19fQ==",
+      "name": "§6Тэйлс",
+      "price": 0,
+      "id": 32
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTQ2NDQ5MzczNjgyMzgxYTY1Y2FlNjVhMjI1M2Q4YjM2YjI5Mzc3NjQxMmM1ZGY4ZGVhNGQ5NjQzOTNhZjdhIn19fQ==",
+      "name": "§9Метарыцарь",
+      "price": 0,
+      "id": 33
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNmY3ZWI3NWU1NTQyY2M0OTM3YWFhZDViYjg2NTczOTNlYWYwMjY1MDA2ZWFjMWRjOTY2OTFmMzJlMTY0MzcifX19",
+      "name": "§cМарио",
+      "price": 0,
+      "id": 34
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZmYxNTMzODcxZTQ5ZGRhYjhmMWNhODJlZGIxMTUzYTVlMmVkMzc2NGZkMWNlMDI5YmY4MjlmNGIzY2FhYzMifX19",
+      "name": "§2Луиджи",
+      "price": 0,
+      "id": 35
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNjcxZWJjMTFiZGQxNTE0MTBkYTcwZDkzMTI1OWM0ZTk2OTUyOGU2ZjU4ODllOWM0YmIyZGQ3NjNiOWVhZmQifX19",
+      "name": "§aЙоши",
+      "price": 0,
+      "id": 36
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYmViMTIzZThmYTIyNzI5Y2I4M2MyNmU3NjE5ZDI0MWRjMmZkMTYxMzRlMmRjZDk0N2ZkMzk2M2JkZjM3ZiJ9fX0=",
+      "name": "§eПич",
+      "price": 0,
+      "id": 37
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZTg2MDYxMGVkMzA3ODVlNjIyOWU4MmUyODk3YjQyZmRhYmIxZGY2Mjk2ZDM3MzFmYWMyNzQ0ZTU2YTllYjkifX19",
+      "name": "§aБоузер",
+      "price": 0,
+      "id": 38
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvY2E4YjNhMWFmMmQ4ZmMzNzcyOWY2ZjYzZmRiYTVkNWUyMDk3NThkZWQ0YjJmY2Y2YWRkNGI4NWJmNjdlZGQ3MiJ9fX0=",
+      "name": "§6Варио",
+      "price": 0,
+      "id": 39
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzFiZTI5NzUwZGRlYzgwOTk0YmRhNzk2NTNlMjFlZDcwZDViMmViNzkzZGE1MWQ1YTg3Yjg5YmY2N2RjYjk2In19fQ==",
+      "name": "§6Фокс МакКлауд",
+      "price": 0,
+      "id": 40
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZGMyMzU4NmY1MWZjOThiNTU0NTBiYjlhMzdhMDY2Y2FhYzI3NjVjMWQ0NzFjYjg5MTA5NGE4ZWMwMzJiZWZiIn19fQ==",
+      "name": "§cЭш Кетчум",
+      "price": 0,
+      "id": 41
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvM2E4ZDMxNGNjMzFjYThhZGYyZWU5OWJlMzliMzI3MzJiZTZkNmJlODUxMGJhOGVkNGFmMWI4ZmFiMmVmMGY5In19fQ==",
+      "name": "§cСамсас",
+      "price": 0,
+      "id": 42
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNGZjMWQ4OGJlMjUyODE2OGY2N2RhMTZhMTliMTRmMDRlMWU0OTYzYTk5ZGZjYjRlNDlkOTg0YTM1MTMxM2MifX19",
+      "name": "§8Вегета",
+      "price": 0,
+      "id": 43
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYjc3NWExN2MyOTQxYWU2YTJhNWYxODQwNTA5YjlhYjBjMGQ5Njg1OWE5YmMyNDk3OThiODZmMTk1MmIwODMyZSJ9fX0=",
+      "name": "§2Мастер Чиф",
+      "price": 0,
+      "id": 44
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYjlhZmIyZTVmMGI5NzdjNGM2ODNlMDE3ZDJiNDdmY2QxNDg4YWI1NjM5Nzc2NmU1YjM4MDQwNWExMzkyNjAifX19",
+      "name": "§6Доги",
+      "price": 0,
+      "id": 45,
+      "description": "§7Such Pixel\n§7Much Wow"
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNjc1YWI1OTkxN2Y5M2RhYzc4MjdjYzU1YmY4NjVjMzYxN2NmM2Y0ZmFlOWQzZWNjYjllZjdlZWRhMmJmIn19fQ==",
+      "name": "Дональд Дак",
+      "price": 0,
+      "id": 46
+    }
+  ]
+}

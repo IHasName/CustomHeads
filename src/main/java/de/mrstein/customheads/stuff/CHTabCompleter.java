@@ -57,10 +57,10 @@ public class CHTabCompleter implements TabCompleter {
         if (args.length == 3) {
             if (args[0].equalsIgnoreCase("categories")) {
                 if (args[1].equalsIgnoreCase("remove")) {
-                    CustomHeads.getCategoryLoader().getCategoryList().forEach(category -> commandList.add(category.getId()));
+                    CustomHeads.getCategoryManager().getCategoryList().forEach(category -> commandList.add(category.getId()));
                 }
                 if (args[1].equalsIgnoreCase("delete")) {
-                    for (Category category : CustomHeads.getCategoryLoader().getCategoryList()) {
+                    for (Category category : CustomHeads.getCategoryManager().getCategoryList()) {
                         commandList.add(category.getId());
                         if (category.hasSubCategories()) {
                             for (SubCategory subCategory : category.getSubCategories()) {

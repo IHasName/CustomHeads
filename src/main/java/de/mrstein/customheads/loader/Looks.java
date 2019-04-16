@@ -130,7 +130,7 @@ public class Looks {
                         throw new IllegalArgumentException("Slot ID cannot be higher than Inventory Size");
                     switch (contentObject.get("type").getAsString()) {
                         case "category":
-                            Category category = CustomHeads.getCategoryLoader().getCategories().get(contentObject.get("id").getAsInt() + "");
+                            Category category = CustomHeads.getCategoryManager().getCategories().get(String.valueOf(contentObject.get("id").getAsInt()));
                             if (category == null)
                                 throw new NullPointerException("Cannot find Category for ID " + contentObject.get("id") + " for " + menuJson.get("id").getAsString());
                             usedCategories.add(category);
@@ -157,12 +157,12 @@ public class Looks {
 
             for (Map.Entry<String, JsonElement> slotEntry : slots.entrySet()) {
                 Inventory inv = Bukkit.createInventory(null, slots.get(slotEntry.getKey()).getAsJsonObject().get("size").getAsInt(), format(slots.get(slotEntry.getKey()).getAsJsonObject().get("title").getAsString()));
-                Category category = CustomHeads.getCategoryLoader().getCategories().get(slotEntry.getKey());
+                Category category = CustomHeads.getCategoryManager().getCategories().get(slotEntry.getKey());
                 if (category != null && category.hasSubCategories()) {
                     for (JsonElement contents : slotEntry.getValue().getAsJsonObject().get("contents").getAsJsonArray()) {
                         JsonObject subcategoryObject = contents.getAsJsonObject();
                         if (subcategoryObject.get("type").getAsString().equals("category")) {
-                            SubCategory subCategory = CustomHeads.getCategoryLoader().getSubCategory(category.getId() + ":" + subcategoryObject.get("id"));
+                            SubCategory subCategory = CustomHeads.getCategoryManager().getSubCategory(category.getId() + ":" + subcategoryObject.get("id"));
                             if (subCategory == null)
                                 throw new NullPointerException("Cannot find Subcategory for ID " + category.getId() + ":" + subcategoryObject.get("id"));
                             inv.setItem(subcategoryObject.get("slot").getAsInt(), subCategory.getCategoryIcon());

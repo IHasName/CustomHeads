@@ -1,0 +1,215 @@
+{
+  "id": 5,
+  "name": "Цветные головы",
+  "permission": "color",
+  "fixed-icon": false,
+  "icon": {
+    "item": "SKULL_ITEM",
+    "damage": 3,
+    "display-name": "Цвета",
+    "lore": [
+      "§7Все цвета радуги ^-^"
+    ],
+    "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYmMzNWY3MzA5OGQ1ZjViNDkyYWY4N2Q5YzU3ZmQ4ZGFhMWM4MmNmN2Y5YTdlYjljMzg0OTgxYmQ3NmRkOSJ9fX0="
+  },
+  "heads": [
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNTEwMTRlNGY0MWQ3NzI5OTI4ZjIxNTU1NWRhMmVhZjE1OGNlODNkOWUwYzk5NjFiZWY1ZWI3NjEzZDM3ZSJ9fX0=",
+      "name": "§4Тёмно-красный",
+      "price": 0,
+      "id": 1
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvM2Y0NmMzMWQ2ZWU2ZWE2MTlmNzJlNzg1MjMyY2IwNDhhYjI3MDQ2MmRiMGNiMTQ1NDUxNDQzNjI1MWMxYSJ9fX0=",
+      "name": "§4Красный",
+      "price": 0,
+      "id": 2
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTdjMWYxZWFkNGQ1MzFjYWE0YTViMGQ2OWVkYmNlMjlhZjc4OWEyNTUwZTVkZGJkMjM3NzViZTA1ZTJkZjJjNCJ9fX0=",
+      "name": "§cСветло-красный",
+      "price": 0,
+      "id": 3
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNGJhYzc3NTIwYjllZWU2NTA2OGVmMWNkOGFiZWFkYjAxM2I0ZGUzOTUzZmQyOWFjNjhlOTBlNDg2NjIyNyJ9fX0=",
+      "name": "§cСветло-красный",
+      "price": 0,
+      "id": 4
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZmVhNTkwYjY4MTU4OWZiOWIwZTg2NjRlZTk0NWI0MWViMzg1MWZhZjY2YWFmNDg1MjVmYmExNjljMzQyNzAifX19",
+      "name": "§6Оранжевый",
+      "price": 0,
+      "id": 5
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDNjZGIxNmFiYjE3NTFkMWE0ODFlZDg3YjU3ZGIzYjg4M2U5OTYxZGEyZjlkNDg1YTI5ODY0ODdlMiJ9fX0=",
+      "name": "§6Светло-оранжевый",
+      "price": 0,
+      "id": 6
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYmY3NjI5NDAxMWNiZGNkMmU5Mjk0MWRhZmU2YjM3MjZkZmYwMmMzZTFmODRkZmE1N2M2YWJhYjZmYzMzY2U2In19fQ==",
+      "name": "§eКремово-жёлтый",
+      "price": 0,
+      "id": 7
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTRjNDE0MWMxZWRmM2Y3ZTQxMjM2YmQ2NThjNWJjN2I1YWE3YWJmN2UyYTg1MmI2NDcyNTg4MThhY2Q3MGQ4In19fQ==",
+      "name": "§eЖёлтый",
+      "price": 0,
+      "id": 8
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDQ1YjQ0ZmQxOWQ3MmZiM2Q2ZTE4OWM0OTc4YjFjYTY4N2RiZDY1ODBiMThkZGQ4YWE3MTBlZGZmYTUifX19",
+      "name": "§eТёмно-жёлтый",
+      "price": 0,
+      "id": 9
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTg1ZmM5N2M3ZGYyNGE2YWE5YzBhYzg5ZmNiMjJiODE3MDBmNTk5ZjQ1YzMyYzdlMzE3OGI0NDQxNzJkZiJ9fX0=",
+      "name": "§2Средне-зелёный",
+      "price": 0,
+      "id": 10
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMWNmM2U0MjJiMzIyYjFlOTI0NWI0YjM2ODQzMzA0NWM3YjQzYzkwOWU1ZGQ2Yzc5MmU0YjZiZWRhNTQzMDNjIn19fQ==",
+      "name": "§2Тёмно-зелёный",
+      "price": 0,
+      "id": 11
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzZmNjlmN2I3NTM4YjQxZGMzNDM5ZjM2NThhYmJkNTlmYWNjYTM2NmYxOTBiY2YxZDZkMGEwMjZjOGY5NiJ9fX0=",
+      "name": "§2Зелёный",
+      "price": 0,
+      "id": 12
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvY2FkMDE1OTJjYTQ0MTg5ZjhhYmFkMGMyZWZhM2NhZTZhYWZhZTc2ZGFhYTdlYTQ2NjU1Y2MxMjkzNDg5ZmYifX19",
+      "name": "§2Светло-зелёный",
+      "price": 0,
+      "id": 13
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzYxZTViMzMzYzJhMzg2OGJiNmE1OGI2Njc0YTI2MzkzMjM4MTU3MzhlNzdlMDUzOTc3NDE5YWYzZjc3In19fQ==",
+      "name": "§aСветло-зелёный",
+      "price": 0,
+      "id": 14
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYmMzNWY3MzA5OGQ1ZjViNDkyYWY4N2Q5YzU3ZmQ4ZGFhMWM4MmNmN2Y5YTdlYjljMzg0OTgxYmQ3NmRkOSJ9fX0=",
+      "name": "§3Голубой",
+      "price": 0,
+      "id": 15
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzE0ODJiNzU1ODU4NjU3ZmI1MWI3ZDNmYmY0Y2Q4YzA5MGMwNWUzNWJkOGNkYmE5OGIxOTQ5OWQ3ODMzYWNiMiJ9fX0=",
+      "name": "§bНебесно-голубой",
+      "price": 0,
+      "id": 16
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvN2QzMWQyMWNiNTQyOTRlZTNhMjA1NjEzN2QxMjNiNTc2Zjc4YmZjNDg3OGNkODE0NGNkNTFlMTkzMWMzOWI1In19fQ==",
+      "name": "§bСветло-голубой",
+      "price": 0,
+      "id": 17
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNDg5Y2U4OTUyNmZjMTI2MjQ2NzhmMzA1NDkzYWE2NWRhOGExYjM2MDU0NmE1MDVkMTE4ZWIxZmFkNzc1In19fQ==",
+      "name": "§bНебесно-голубой",
+      "price": 0,
+      "id": 18
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvM2IxOWRjNGQ0Njc4ODJkYmNhMWI1YzM3NDY1ZjBjZmM3MGZmMWY4MjllY2Y0YTg2NTc5NmI4ZTVjMjgwOWEifX19",
+      "name": "§3Лазурно-голубой",
+      "price": 0,
+      "id": 19
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYjgzOWUzODFkOWZlZGFiNmY4YjU5Mzk2YTI3NjQyMzhkY2ViMmY3ZWVhODU2ZGM2ZmM0NDc2N2RhMzgyZjEifX19",
+      "name": "§9Голубой",
+      "price": 0,
+      "id": 20
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzk2NTQwY2U3NjIxMjVlMzk4Y2E1M2Q0Y2Q5YjY2ODM5NmQwNDY3ZTEyOGIzMGRhNWFhNjJiZTljZTA2MCJ9fX0=",
+      "name": "§9Тёмно-голубой",
+      "price": 0,
+      "id": 21
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYjc4NGMxNTJiZmMzZTJlMzEzZWYyM2ZjNDZkNDRmY2U0MWU0YWRhZDk0MjFiYWMyZGEzODk0NTExY2MwM2IifX19",
+      "name": "§9Синий",
+      "price": 0,
+      "id": 22
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTIzMDZhOTg3ODdlNTI2Y2U5NzNiZDU2MTI0ZTY0NWEyZTIzMjlkNTYzZGNmYTY4YTFiZTY1NzY3ZjI5YjUifX19",
+      "name": "§1Тёмно-синий",
+      "price": 0,
+      "id": 23
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZTkzNTJiY2FiZmMyN2VkYjQ0Y2ViNTFiMDQ3ODY1NDJmMjZhMjk5YTA1Mjk0NzUzNDYxODZlZTk0NzM4ZiJ9fX0=",
+      "name": "§5Фиолетовый",
+      "price": 0,
+      "id": 24
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODU1NjU0YjNmMWJmYjJjZGYwZjRiNTJkNjM2MGEwM2QzMWRkYWZjNzEwZjhhZmFlYTk5ZmJhNjY3ZTQ4MmRmIn19fQ==",
+      "name": "§dРозовый",
+      "price": 0,
+      "id": 25
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzU1N2RiNWYxNWNhNmYzNzAxOTAzY2NhNDAyY2U3N2VjNmY4ODUwMzZiNjgxMmU4Mjg4YWJkN2U5NCJ9fX0=",
+      "name": "§dРозовый",
+      "price": 0,
+      "id": 26
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTEzM2ZhNTJkZDc0ZDcxMWU1Mzc0N2RhOTYzYjhhZGVjZjkyZGI5NDZiZTExM2I1NmMzOGIzZGMyNzBlZWIzIn19fQ==",
+      "name": "§dПурпурный",
+      "price": 0,
+      "id": 27
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYmFkNTk4M2RjYWJjOTMxYWI2YTQ5ZDJmYjg4NzllYmM1Mjk1Y2I1YmEyZjI3OGUzYzhhM2RhN2JjOGI0NzgifX19",
+      "name": "§6Мокка",
+      "price": 0,
+      "id": 28
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNDU3NGE0Njc3MzcyOTViZDlkZGM4MjU0NWExYTRlMTQ2YTk0M2QwNWVjYzgyMWY5Y2M2YTU0M2ZmZTk5MzRhIn19fQ==",
+      "name": "§6Коричневый",
+      "price": 0,
+      "id": 29
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOWRkZWJiYjA2MmY2YTM4NWE5MWNhMDVmMThmNWMwYWNiZTMzZTJkMDZlZTllNzQxNmNlZjZlZTQzZGZlMmZiIn19fQ==",
+      "name": "§0Чёрный",
+      "price": 0,
+      "id": 30
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjJmMDg1YzZiM2NiMjI4ZTViYTgxZGY1NjJjNDc4Njc2MmYzYzI1NzEyN2U5NzI1Yzc3YjdmZDMwMWQzNyJ9fX0=",
+      "name": "§8Серый",
+      "price": 0,
+      "id": 31
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzFjNDVhNTk1NTAxNDNhNDRlZDRlODdjZTI5NTVlNGExM2U5NGNkZmQ0YzY0ZGVlODgxZGZiNDhkZDkyZSJ9fX0=",
+      "name": "§7Светло-серый",
+      "price": 0,
+      "id": 32
+    },
+    {
+      "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZTVhNzcwZTdlNDRiM2ExZTZjM2I4M2E5N2ZmNjk5N2IxZjViMjY1NTBlOWQ3YWE1ZDUwMjFhMGMyYjZlZSJ9fX0=",
+      "name": "§fБелый",
+      "price": 0,
+      "id": 33
+    }
+  ]
+}

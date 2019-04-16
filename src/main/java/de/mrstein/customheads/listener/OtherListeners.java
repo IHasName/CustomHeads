@@ -11,7 +11,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.HashMap;
 
@@ -43,21 +42,17 @@ public class OtherListeners implements Listener {
 
     @EventHandler
     public void notifyUpdate(PlayerJoinEvent e) {
-        new BukkitRunnable() {
-            final Player player = e.getPlayer();
-            public void run() {
-                if (Utils.hasPermission(player, "heads.admin") && CustomHeads.getHeadsConfig().get().getBoolean("updateNotify")) {
-                    CustomHeads.getSpigetFetcher().fetchUpdates(new SpigetFetcher.FetchResult() {
-                        public void updateAvailable(SpigetFetcher.ResourceRelease release, SpigetFetcher.ResourceUpdate update) {
-                            sendJSONMessage("[\"\",{\"text\":\"§6-- CustomHeads Updater --\n§eFound new Update!\n§7Version: §e" + release.getReleaseName() + "\n§7Whats new: §e" + update.getTitle() + "\n\"},{\"text\":\"§6§nClick here to download the Update\",\"clickEvent\":{\"action\":\"open_url\",\"value\":\"https://www.spigotmc.org/resources/29057\"}}]", player);
-                        }
-
-                        public void noUpdate() {
-                        }
-                    });
+        final Player player = e.getPlayer();
+        if (Utils.hasPermission(player, "heads.admin") && CustomHeads.getHeadsConfig().get().getBoolean("update-notifications.onJoin")) {
+            CustomHeads.getSpigetFetcher().fetchUpdates(new SpigetFetcher.FetchResult() {
+                public void updateAvailable(SpigetFetcher.ResourceRelease release, SpigetFetcher.ResourceUpdate update) {
+                    sendJSONMessage("[\"\",{\"text\":\"§6-- CustomHeads Updater --\n§eFound new Update!\n§7Version: §e" + release.getReleaseName() + "\n§7Whats new: §e" + update.getTitle() + "\n\"},{\"text\":\"§6§nClick here to download the Update\",\"clickEvent\":{\"action\":\"open_url\",\"value\":\"https://www.spigotmc.org/resources/29057\"}}]", player);
                 }
-            }
-        }.runTaskLaterAsynchronously(CustomHeads.getInstance(), 10);
+
+                public void noUpdate() {
+                }
+            });
+        }
     }
 
 }

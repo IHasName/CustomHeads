@@ -1,0 +1,219 @@
+# - Языковой файл: ru_RU -
+# - Перевод сделал ImpossibleMelon, специально для плагина CustomHeads -
+# - Нашли опечатку или неправильный перевод? Обязательно напишите мне в ВКонтакте: https://vk.com/itzmelongames -
+DEFINITION: 'Русский'
+NO_PERMISSION: "&cУ вас недостаточно прав для использования этой команды!"
+# Общие сообщения
+LANG_YES: 'Да'
+LANG_NO: 'Нет'
+CONFIRM_NOTHINGFOUND: '&eПодтвеждение: &7Подтверждать нечего'
+COMMAND_USAGE: '&cИспользование: &7{COMMAND}'
+LINK: '&7Ссылка *клик*'
+LANGUAGE:
+  CHANGE_CHANGING: '&eЯзыковой пакет: &7Загрузка языкового пакета из &a{LANGUAGE}.yml'
+  CHANGE_SUCCESSFUL: '&eЯзыковой пакет: &7Установлен язык &a{LANGUAGE}'
+  CHANGE_ALREADY_USED: '&eЯзыковой пакет: &7Язык уже используется. Используйте команду &e/heads reload &7для перезагрузки.'
+  CHANGE_FAILED: '&eЯзыковой пакет: &7Ошибка в загрузки языкового пакета... Восстановление языка, использованного ранее'
+  REDOWNLOAD_FAILED_WAIT: '&eЯзыковой пакет: &7Пожалуйста, подождите, прежде чем повторно загрузить язык'
+  REDOWNLOAD_BACKING_UP: '&eЯзыковой пакет: &7Резервное копирование старых файлов...'
+  REDOWNLOAD_BACKUP_FAILED: '&eЯзыковой пакет: &7Ошибка резервного копирования файлов'
+  REDOWNLOAD_DOWNLOADING: '&eЯзыковой пакет: &7Загрузка Языкового пакета...'
+  REDOWNLOAD_DONE: '&eЯзыковой пакет: &7Выполнено'
+  # Получение данных
+  DOWNLOAD_FETCHING: '&7Получение данных'
+  DOWNLOAD_FETCHFAILED: '&cПровал получения данных'
+  DOWNLOAD_SUCCESSFUL: '&eЯзык: Успешная загрузка языка: &e{LANGUAGE}'
+  DOWNLOAD_TITLE: '&aЗагружаемые языки'
+# Перезагрузка
+RELOAD:
+  CONFIG: '&eПерезагрузка: &7Перезагрузка конфига...'
+  HISTORY: '&eПерезагрузка: &7Перезагрузка истории...'
+  LANGUAGE: '&eПерезагрузка: &7Перезагрузка Языкового пакета...'
+  FAILED: '&eПерезагрузка: &cЧто-то пошло не так во время перезагрузки... Проверьте журнал ошибок'
+  SUCCESSFUL: '&eПерезагрузка: &aКонфиг успешно перезагружен!'
+HELP_GET_COMMAND: '&7Нажмите на меня, чтобы получить команду'
+SAVED_HEADS_TITLE: "Голова игрока {PLAYER}"
+PUT_ON_HEAD: '&7Ваша голова &r{NAME}'
+NO_PERMISSION_TO_VIEW:
+- "&cУ вас нет прав"
+- "&cдля просмотра!"
+ECONOMY:
+  PRICE: '&7Цена: &e{PRICE}'
+  PRICE_FORMAT: '{PRICE}{CURRENCY}'
+  FREE: Бесплатно
+  BOUGHT: '&7Куплено'
+  BUY_PROMPT: '&eПКМ чтобы купить'
+  BUY_CONFIRM: '&7Купить &9{ITEM} &7за &9{PRICE}?'
+  BUY_SUCCESSFUL: '&eГоловной магазин: &7Вы приобрели {ITEM}'
+  BUY_FAILED: '&eГоловное магазин: &7Транзакция не удалась: {REASON}'
+# Журнал
+HISTORY_DISABLED: '&eЖурнал: &cЖурнал отключен конфигурацией'
+HISTORY_INVALID_PLAYER: "&eЖурнал: &cНеверный ник игрока '{PLAYER}'"
+HISTORY_NO_VIEW_PERMISSION: '&eЖурнал: &cВы не можете показать эту историю игроков'
+# Фейерверки
+CANNOT_PLACE_IN_BLOCK: '&eФейерверк: &cФейерверк уже запущен!'
+CANNOT_PLACE_IN_AIR: '&eФейерверк: &cНе удаётся разместить фейерверк в воздухе'
+ALREADY_IN_USE: '&eФейерверк: &cВы уже активировали один фейерверк. Подождите, предже чем использовать его снова.'
+STARTING: '&eФейерверк: &aНачиниается запуск фейерверка'
+# Поиск
+INVALID_INPUT: "&eПоиск: &cНеверный ввод: '{SEARCH}'"
+CHANGE_SEARCH_STRING: Измени меня, чтобы искать.
+SEARCH_LORE:
+- '&7Измените текст на то, что вы хотели'
+- '&7бы найти и кликните по элементу'
+- '&7Вывод для поиска'
+TO_LONG_INPUT: '&eПоиск: &cПожалуйста, используйте текст, короче 16 символов'
+SEARCHING: "&eПоиск: &7Поиск по запросу: '&r{SEARCH}&7'"
+LOCKED: '(Заблокировано)'
+CYCLE_ARRANGEMENT:
+  PREFIX: '&7Сортировка: &e'
+  DEFAULT: 'По умолчанию'
+  ALPHABETICAL: 'В алфавитном порядке'
+  COLOR: 'По цветам'
+# В версии 1.8 заголовок будет сокращен до 32 символов.
+# Вы можете укоротить, поставив аргумент {short} между.
+SEARCH_TITLE: '&aРезультат поиска&8: &a{RESULTS}'
+LOADING: Загрузка
+NO_RESULTS: '&cНичего не найдено!'
+NO_RESULTS_TRY_AGAIN: '&cПопробуйте снова'
+PAGE_GENERAL_PREFIX: '&cСтраница'
+# Команды категорий
+CATEGORIES:
+  BASE_COMMAND:
+    HEADER: '&eЗагруженные категории'
+    HOVERINFO_CATEGORY:
+    - '&7ID: &e{ID}'
+    - '&7Права: &e{PERMISSION}'
+    - '&7Используется: &e{USED}'
+    HOVERINFO_SUBCATEGORY:
+    - '&7ID: &e{ID}'
+    - '&7Используется: &e{USED}'
+  REMOVE:
+    NOTFOUND: '&eУдаление: &7Нет категории с идентификатором &c{ID}'
+    INUSE: '&eУдаление: &7Нельзя удалить категорию &c{CATEGORY} &7во время её использования'
+    FAILED: '&eУдаление: &cНе удалось удалить категорию'
+    SUCCESSFUL: '&eУдаление: &7Категория &a{CATEGORY} &7(&e{ID}&7) была успешно удалена!'
+  DELETE:
+    CATEGORY:
+      NOTFOUND: '&eУдаление: &7Нет категории с идентификатором &c{ID}'
+      INUSE: '&eУдаление: &7Нельзя удалить категорию &c{CATEGORY} &7во время её использования'
+      CONFIRM: '&eУдаление: &7Введите команду /heads confirm если вы хотите подтвердить §cудаление категории &7{CATEGORY} (Команда будет действовать 15 секунл){nl}&cУдаление нельзя отменить!'
+      FAILED: '&eУдаление: &cНе удалось удалить категорию'
+      SUCCESSFUL: '&eУдаление: &7Категория &a{CATEGORY} &7(&e{ID}&7) была успешно удалена!'
+    SUBCATEGORY:
+      NOTFOUND: '&eУдаление: &7Нет подкатегории с идентификатором &c{ID}'
+      INUSE: '&eУдаление: &7Нельзя уданить подкатегорию &c{CATEGORY} &7во время её использования'
+      CONFIRM: '&eУдаление: &7Введите команду /heads confirm если вы хотите подтвердить §cудаление подкатегории &7{CATEGORY} (Команда будет действовать 15 секунд){nl}&cУдаление нельзя отменить!'
+      FAILED: '&eУдаление: &cНе удалось удалить подкатегорию'
+      SUCCESSFUL: '&eУдаление: &7Подкатегория &a{CATEGORY} &7(&e{ID}&7) была успешно удалена!'
+  IMPORT:
+    NOCATEGORYFOLDER: '&eИмпорт: &7Не удалось найти &cКаталог Категорий'
+    BASE_COMMAND:
+      NOFILES: '&eИмпорт: &7Файлы для импорта не были найдены'
+      LIST: '&bДоступные файлы для испорта'
+      LIST_FORMAT: ' &e{FILE}'
+      CLICKTOIMPORT: '&7Нажмите здесь, чтобы импортировать этот файл'
+    SUCCESSFUL: '&eИмпорт: &7Категория успешно импортирована из &b{FILE}'
+    DUBLICATE_CATEGORY: '&eИмпорт: &7Категория с идентификатором {ID} уже существует'
+    DUBLICATE_SUBCATEGORY: '&eИмпорт: &7Существует копия подкатегории в файле {FILE}'
+    ERROR: '&eИмпорт: &7Произошла ошибка при чтении файла {FILE}'
+    INVALID_FILE: '&eИмпорт: &7Неверный &cФайл категории'
+    FILENOTFOUND: '&eИмпорт: &7Не найден файл &c{FILE}'
+FONTS:
+  GENERAL_NOTFOUND: '&eШрифты: &7Шрифт &c{FONT} &7не найден'
+  CREATE_ALREADYEXISTS: '&eШрифты: &7Шрифт &c{FONT} &7уже существует'
+  CREATE_SUCCESSFUL: '&eШрифты: &7Шрифт &a{FONT} &7был создан'
+  REMOVE_SUCCESSFUL: '&eШрифты: &7Шрифт &b{FONT} &7был удалён'
+  REMOVE_FAILED: '&eШрифты: &7Failed to remove &c{FONT}'
+  NOFONTS: '&eШрифты: &7Нет доступных шрифтов'
+  LIST_HEADER: '&eДоступные шрифты'
+  LIST: '&e{FILE} - Имеет {CHARACTERS} символы'
+  EDIT_TITLE: '&bРедактирование {FONT}'
+  EDIT_ADDCHARACTER: '&aДобавить символ'
+  EDIT_REMOVECHARACTER: '&cУдалить символ'
+  EDIT_REMOVECHARACTER_INFO:
+  - '&7Нажмите Shirf+ЛКМ чтобы'
+  - '&7удалить выбранные символы.'
+  EDIT_ADDCHARACTER_SUCCESSFUL: "&eШрифты: &7Добавлен символ &b{CHARACTER}"
+  EDIT_ADDCHARACTER_FAILED: "&eШрифты: &7Невожможно добавить символ &c{CHARACTER}"
+  EDIT_SELECTED: "&bВыбрано &7- &b{CHARACTER}"
+  EDIT_REMOVECHARCATER_CONFIRM: '&cУдалить выбранные символы?'
+  EDIT_REMOVECHARCATER_FAILED: "&eШрифты: &7Не удалось удалить символ &c{CHARACTER}"
+  EDIT_REMOVECHARCATER_SUCCESSFUL: '&eШрифт: &7Вы успешно удалили символы &b{CHARACTERS}'
+  EDIT_REMOVECHARCATER_PREINFO: '&cСледующие символы будут удалены'
+  EDIT_ADDCHARACTER_TITLE: '&eDragNDrop сумматор символов&7: &e{FONT}'
+  EDIT_ADD_DROPPER_TOGGLE: '&bВид добавления голов: &b{MODE}'
+  EDIT_ADD_DROPPER_NAME: '&bДобавите свои головы сюда!'
+  EDIT_ADD_DROPPER_LORE:
+  - '&7Чтобы добавить свою говолу'
+  - '&7возьмите голову с текстурой'
+  - '&7и дайте ей название. Затем'
+  - '&7Тереключите его с этим'
+  - '&7элементом.'
+  - '&eВ названиях можно'
+  - '&eиспользовать ПРОБЕЛ'
+  EDIT_SAVENEXIT: '&aСохранить и выйти'
+  EDIT_SAVE_SUCCESSFUL: '&eШрифт: &a{FONT} &7был успешно сохранён и обновлён'
+# Дополнительно
+UNDO_INVALID_INPUT: "&eНазад: &7Неверный ввод &c'{TIMES}'"
+UNDO_SUCCESSFUL: '&eНазад: &7Отмена успешна &7{TIMES}'
+UNDO_NOTHING_LEFT: '&eНазад: &7Нечего отменять'
+GET_HEAD_NAME: '&rГолова игрока {PLAYER}'
+GET_INVALID: "&eПолучение: &7Некорректный ник: &c'{PLAYER}'"
+SAVE_GET_TEXTURE: '&eСохранение: &7Получение текстуры...'
+SAVE_OWN_SUCCESSFUL: '&eСохранение: &7Ваша голова была добавлена под именем &b{NAME}.'
+SAVE_OWN_FAILED: '&eСохранение: &cОшибка при сохранении!'
+SAVE_UNAVIABLE: '&eСохранение: &cДобавление кастомных голов отключено!'
+SAVE_NOT_CUSTOM_TEXTURE: '&eСохранение: &cДанная голова без кастомной текстуры!'
+SAVE_SUCCESSFUL: '&eСохранение: &7Голова &b{NAME} &7была добавлена'
+SAVE_ALREADY_EXIST: '&eСохранение: &7Голова с именем &c{NAME} уже существует'
+SAVE_NOT_SKULL: '&eСохранение: &cЭто не голова игрока'
+REMOVE_SUCCESSFUL: '&eСохранение: &7Голова &r{NAME} &7была удалена'
+REMOVE_FAILED: "&eСохранение: &7Данной головы не существует"
+REMOVE_CONFIRMATION: '&cУдалить голову {HEAD}?'
+WRITE_NOFONT: "&eЗапись: &cЭтого шрифта не существует"
+WRITE_TO_LONG: '&eЗапить: &cВаш текст не должен быть длиннее 40 символов'
+WRITE_WRITING: '&eЗапись: &7Написание текста: &b{TEXT}'
+# Кнопки
+BACK_GENERAL: '&cНазад'
+BACK_TO_PREVIOUS: '&7Вернуться в предыдущее меню'
+NEXT_PAGE: '&cСлед. страница'
+PREVIOUS_PAGE: '&cПред. страница'
+# Журнал
+HISTORY_INV_TITLE: '&aЖурнал игрока {PLAYER}'
+HISTORY_SEARCHHISTORY_ACTIVE: '&aПоиск журнала'
+HISTORY_SEARCHHISTORY: '&7Поиск журнала'
+HISTORY_GETHISTORY_ACTIVE: '&aПолучить журнал'
+HISTORY_GETHISTORY: '&7Получить журнал'
+HISTORY_NO_HISTORY_LORE:
+- "&cУ этого игрока"
+- '&cнет журнала...'
+HISTORY_SEARCHHISTORY_LORE:
+- '&7ПКМ для поиска'
+- '&7данного элемента'
+HISTORY_GET_LORE:
+- '&7ПКМ для копирования'
+- '&7головы в инвентарь.'
+# Дополнительно
+ITEM_NAMES:
+  YOUR_HEAD: '&eВаша голова'
+  COLLECTION: '&aРазмер вашей коллекции: &7{SIZE}'
+  HELP: '&aПомощь'
+  HELP_LORE:
+  - '&7Показывает все'
+  - '&7команды плагина'
+  INFO: '&aИнфо'
+  INFO_LORE:
+  - '&7Нажмите Shift+ПКМ'
+  - '&7чтобы надеть эту'
+  - '&7голову.'
+  - '&cВнимание! Это заменит'
+  - '&cтекущий элемент шлема!'
+  SEARCH: Поиск
+  SEARCH_LORE:
+  - '&7Поиск головы'
+  - '&7в Датабазе'
+  FIND_MORE: '&3Найти больше'
+  FIND_MORE_LORE:
+  - '&7Нажмите сюда, чтобы'
+  - '&7получить ссылку.'

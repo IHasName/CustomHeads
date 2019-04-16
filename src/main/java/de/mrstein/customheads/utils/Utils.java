@@ -1,9 +1,7 @@
 package de.mrstein.customheads.utils;
 
 import com.google.common.io.Files;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonParser;
+import com.google.gson.*;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import de.mrstein.customheads.CustomHeads;
@@ -16,7 +14,9 @@ import de.mrstein.customheads.reflection.AnvilGUI;
 import de.mrstein.customheads.reflection.TagEditor;
 import de.mrstein.customheads.stuff.CHSearchQuery;
 import de.mrstein.customheads.updaters.AsyncFileDownloader;
+import de.mrstein.customheads.updaters.FetchResult;
 import de.mrstein.customheads.updaters.GitHubDownloader;
+import de.mrstein.customheads.updaters.JsonFetcher;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.bukkit.Bukkit;
@@ -104,7 +104,7 @@ public class Utils {
                 }
                 event.getPlayer().sendMessage(CustomHeads.getLanguageManager().SEARCHING.replace("{SEARCH}", event.getName()));
                 CHSearchQuery query = new CHSearchQuery(event.getName());
-                List<Category> categories = CustomHeads.getCategoryLoader().getCategoryList();
+                List<Category> categories = CustomHeads.getCategoryManager().getCategoryList();
                 categories.removeAll(CustomHeads.getApi().wrapPlayer(player).getUnlockedCategories(false));
                 query.excludeCategories(categories);
                 if (query.resultsReturned() == 0) {
@@ -163,6 +163,78 @@ public class Utils {
         Inventory preLoader = Bukkit.createInventory(null, 27, CustomHeads.getLanguageManager().LOADING);
         preLoader.setItem(13, CustomHeads.getTagEditor().addTags(new ItemEditor(Material.WATCH).setDisplayName(CustomHeads.getLanguageManager().LOADING).getItem(), "blockMoving"));
         player.openInventory(preLoader);
+    }
+
+    /**
+     * Recursively tries to resolve the given Path
+     *
+     * @param user    Owner of the Project
+     * @param project Project Name
+     * @param branch  Branch Name
+     * @param path    Which Path to look for (Format: parent/child)
+     */
+    public static void getBranchPath(FetchResult<JsonObject> fetchResult, String user, String project, String branch, String path) {
+        JsonFetcher fetcher = new JsonFetcher(String.format("https://api.github.com/repos/%s/%s/branches/%s", user, project, branch));
+        fetcher.fetch(new FetchResult<JsonElement>() {
+            public void success(JsonElement jsonElement) {
+                JsonFetcher treeFetcher = new JsonFetcher(jsonElement.getAsJsonObject().getAsJsonObject("commit").getAsJsonObject("commit").getAsJsonObject("tree").get("url").getAsString());
+                treeFetcher.fetch(new FetchResult<JsonElement>() {
+                    public void success(JsonElement jsonElement) {
+                        if (path.isEmpty()) {
+                            fetchResult.success(jsonElement.getAsJsonObject());
+                        } else {
+                            resolvePath(new FetchResult<JsonObject>() {
+                                public void success(JsonObject jsonObject) {
+                                    fetchResult.success(jsonObject);
+                                }
+
+                                public void error(Exception exception) {
+                                    Bukkit.getLogger().log(Level.WARNING, "Failed to fetch Data", exception);
+                                }
+                            }, jsonElement.getAsJsonObject(), Arrays.asList(path.split("/")).iterator());
+                        }
+                    }
+
+                    public void error(Exception exception) {
+                        Bukkit.getLogger().log(Level.WARNING, "Failed to fetch Data", exception);
+                    }
+                });
+            }
+
+            public void error(Exception exception) {
+                Bukkit.getLogger().log(Level.WARNING, "Failed to fetch Data", exception);
+            }
+        });
+    }
+
+    private static void resolvePath(FetchResult<JsonObject> fetchResult, JsonObject jsonObject, Iterator<String> pathIterator) {
+        if (!pathIterator.hasNext()) {
+            fetchResult.success(jsonObject);
+        } else {
+            String nextPath = pathIterator.next();
+            JsonArray array = jsonObject.get("tree").getAsJsonArray();
+            String nextURLPath = "";
+            for (JsonElement element : array) {
+                JsonObject treePart = element.getAsJsonObject();
+                if (treePart.get("path").getAsString().equals(nextPath)) {
+                    nextURLPath = treePart.get("url").getAsString();
+                }
+            }
+            if (nextURLPath.isEmpty()) {
+                fetchResult.error(new NullPointerException("Invalid Path"));
+                return;
+            }
+            JsonFetcher fetcher = new JsonFetcher(nextURLPath);
+            fetcher.fetch(new FetchResult<JsonElement>() {
+                public void success(JsonElement jsonElement) {
+                    resolvePath(fetchResult, jsonElement.getAsJsonObject(), pathIterator);
+                }
+
+                public void error(Exception exception) {
+                    fetchResult.error(exception);
+                }
+            });
+        }
     }
 
     // Generating this because im lazy >_>
@@ -381,6 +453,55 @@ public class Utils {
         return false;
     }
 
+    public static void runSynced(BukkitRunnable runnable) {
+        runnable.runTask(CustomHeads.getInstance());
+    }
+
+    public static String[] splitEvery(String string, String regex, int index) {
+        if (index <= 0)
+            throw new IllegalArgumentException("Index must be higher than 0");
+        String[] splitted = string.split(regex);
+        if (splitted.length < index)
+            throw new IllegalArgumentException("Index cannot be higher than splitted String");
+        String[] result = new String[splitted.length / index];
+        int nextIndex = 0;
+        int cIndex = 0;
+        StringBuilder builder = new StringBuilder();
+        for (String split : splitted) {
+            cIndex++;
+            builder.append(split).append(" ");
+            if (cIndex == index) {
+                cIndex = 0;
+                result[nextIndex] = builder.substring(0, builder.length() - 1);
+                builder = new StringBuilder();
+                nextIndex++;
+            }
+        }
+        return result;
+    }
+
+    public static void getAvailableLanguages(FetchResult<List<String>> fetchResult) {
+        GitHubDownloader.getRelease(CustomHeads.getInstance().getDescription().getVersion(), "MrSteinMC", "CustomHeads", new FetchResult<JsonObject>() {
+            public void success(JsonObject release) {
+                JsonArray releaseAssets = release.getAsJsonArray("assets");
+                List<String> languages = new ArrayList<>();
+                for (JsonElement assetElement : releaseAssets) {
+                    JsonObject asset = assetElement.getAsJsonObject();
+                    String assetName = asset.get("name").getAsString();
+                    if (assetName.matches("^[a-z]*_[A-Z]*.zip$")) {
+                        languages.add(assetName);
+                    }
+                }
+                fetchResult.success(languages);
+            }
+
+            @Override
+            public void error(Exception exception) {
+                fetchResult.error(exception);
+            }
+        });
+    }
+
     public static void getUUID(String name, Consumer<String> consumer) {
         if (CustomHeads.uuidCache.containsKey(name)) {
             consumer.accept(CustomHeads.uuidCache.get(name));
@@ -526,7 +647,7 @@ public class Utils {
         if (!tags.contains("headID"))
             return null;
         String[] id = tags.get(tags.indexOf("headID") + 1).split(":");
-        return CustomHeads.getApi().getHead(CustomHeads.getCategoryLoader().getCategory(id[0]), Integer.parseInt(id[1]));
+        return CustomHeads.getApi().getHead(CustomHeads.getCategoryManager().getCategory(id[0]), Integer.parseInt(id[1]));
     }
 
     public static String toConfigString(String string) {
@@ -536,7 +657,15 @@ public class Utils {
     }
 
     public static void sendJSONMessage(String json, Player p) {
-        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "tellraw " + p.getName() + " " + json);
+        try {
+            Object chat = getClassbyName("ChatSerializer").getMethod("a", String.class).invoke(null, json);
+            Object packet = getClassbyName("PacketPlayOutChat").getConstructor(getClassbyName("IChatBaseComponent")).newInstance(chat);
+            Object player = p.getClass().getMethod("getHandle").invoke(p);
+            Object connection = player.getClass().getField("playerConnection").get(player);
+            connection.getClass().getMethod("sendPacket", getClassbyName("Packet")).invoke(connection, packet);
+        } catch (Exception e) {
+            CustomHeads.getInstance().getLogger().log(Level.WARNING, "Could not send JSON-Message to Player", e);
+        }
     }
 
     public static List<String> removeColor(List<String> in) {
@@ -546,6 +675,8 @@ public class Utils {
 
     public static Class<?> getClassbyName(String className) {
         try {
+            if (className.equals("ChatSerializer") && !CustomHeads.version.equals("v1_8_R1"))
+                className = "IChatBaseComponent$ChatSerializer";
             return Class.forName("net.minecraft.server." + CustomHeads.version + "." + className);
         } catch (ClassNotFoundException e) {
             e.printStackTrace();

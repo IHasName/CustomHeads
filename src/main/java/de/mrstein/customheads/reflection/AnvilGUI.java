@@ -77,10 +77,10 @@ public class AnvilGUI {
             public void anvilClose(InventoryCloseEvent event) {
                 if (event.getPlayer() instanceof Player) {
                     Inventory inv = event.getInventory();
-                    if (player.getGameMode() == GameMode.SURVIVAL || player.getGameMode() == GameMode.ADVENTURE) {
-                        player.setLevel(player.getLevel() - 1);
-                    }
                     if (inv.equals(AnvilGUI.this.inventory)) {
+                        if (player.getGameMode() == GameMode.SURVIVAL || player.getGameMode() == GameMode.ADVENTURE) {
+                            player.setLevel(player.getLevel() - 1);
+                        }
                         inv.clear();
                         destroy();
                     }
@@ -90,10 +90,14 @@ public class AnvilGUI {
             @EventHandler
             public void playerQuit(PlayerQuitEvent event) {
                 if (event.getPlayer().equals(getPlayer())) {
-                    if (player.getGameMode() == GameMode.SURVIVAL || player.getGameMode() == GameMode.ADVENTURE) {
-                        player.setLevel(player.getLevel() - 1);
+                    if (player.getOpenInventory() != null) {
+                        if (player.getOpenInventory().getTopInventory().equals(AnvilGUI.this.inventory)) {
+                            if (player.getGameMode() == GameMode.SURVIVAL || player.getGameMode() == GameMode.ADVENTURE) {
+                                player.setLevel(player.getLevel() - 1);
+                            }
+                            destroy();
+                        }
                     }
-                    destroy();
                 }
             }
         };

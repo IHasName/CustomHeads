@@ -6,6 +6,7 @@ import de.mrstein.customheads.utils.ItemEditor;
 import de.mrstein.customheads.utils.JsonToItem;
 import de.mrstein.customheads.utils.Utils;
 import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -39,9 +40,10 @@ public class Category extends BaseCategory {
     private ItemStack categoryIcon;
     private List<CustomHead> heads = new ArrayList<>();
     private boolean fixedIcon;
+    @Setter
     private int price;
 
-    private Category(int id, String name, String permission, int price, ItemStack icon) {
+    protected Category(int id, String name, String permission, int price, ItemStack icon) {
         super(String.valueOf(id), name, permission);
         this.price = price;
         categoryIcon = icon;
@@ -95,7 +97,7 @@ public class Category extends BaseCategory {
         return subCategories != null && !subCategories.isEmpty();
     }
 
-    private Category setIcons(List<ItemStack> icons) {
+    public Category setIcons(List<ItemStack> icons) {
         this.icons = icons;
         iterator = icons.iterator();
         return this;

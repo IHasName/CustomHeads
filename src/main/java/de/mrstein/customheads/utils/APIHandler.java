@@ -38,7 +38,7 @@ public class APIHandler implements CustomHeadsAPI {
     // Head Util Impl
     public String getSkullTexture(ItemStack itemStack) {
         Validate.notNull(itemStack, "Item cannot be null");
-        if (!itemStack.getData().toString().equals("SKULL_ITEM(3)")) {
+        if (!itemStack.getData().toString().contains("SKULL_ITEM(3)")) {
             throw new IllegalArgumentException("An PlayerHead is required to get the Texture");
         }
         try {

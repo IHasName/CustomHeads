@@ -93,13 +93,4 @@ public interface CustomHeadsAPI {
      */
     CustomHead getHead(Category category, int id);
 
-    /**
-     * Will return an Head from the given ID.
-     * Might be null if the Head doesnt exists
-     *
-     * @param categoryID Category Head ID
-     * @return Head from Database
-     */
-//    CustomHead getHead(CategoryID categoryID);
-
 }

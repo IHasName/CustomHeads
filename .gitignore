@@ -8,6 +8,8 @@
 superSecretFile.txt
 hs_err_pid*
 target/
+updateutil/
+venv/
 pom.xml.tag
 pom.xml.releaseBackup
 pom.xml.versionsBackup

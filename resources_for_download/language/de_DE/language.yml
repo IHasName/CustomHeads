@@ -17,6 +17,10 @@ LANGUAGE:
   REDOWNLOAD_BACKUP_FAILED: '&eSprache: &7Fehler beim Sichern'
   REDOWNLOAD_DOWNLOADING: '&eSprache: &7Lade Sprachdatein herunter...'
   REDOWNLOAD_DONE: '&eSprache: &7Fertig'
+  DOWNLOAD_FETCHING: '&7Lade Daten'
+  DOWNLOAD_FETCHFAILED: '&cFehler beim Laden'
+  DOWNLOAD_SUCCESSFUL: '&eSprache: &e{LANGUAGE} &7wurde erfolgreich runtergeladen'
+  DOWNLOAD_TITLE: '&aHerunterladbare Sprachen'
 RELOAD:
   CONFIG: '&eReload: &7Lade Configs neu...'
   HISTORY: '&eReload: &7Lade Verlauf neu...'
@@ -33,11 +37,11 @@ ECONOMY:
   PRICE: '&7Preis: &e{PRICE}'
   PRICE_FORMAT: '{PRICE} {CURRENCY}'
   FREE: Gratis
-  BOUGHT: '&7Freigeschaltet' # new
-  BUY_PROMPT: '&eRechtsklick zum kaufen' # new
-  BUY_CONFIRM: '&9{ITEM} &7f{ue}r &9{PRICE} &7kaufen?' # new
-  BUY_SUCCESSFUL: '&eHeadShop: &7{ITEM} erfolgreich gekauft' # new
-  BUY_FAILED: '&eHeadShop: &7Konnte Gegenstand nicht kaufen: {REASON}' # new
+  BOUGHT: '&7Freigeschaltet'
+  BUY_PROMPT: '&eRechtsklick zum kaufen'
+  BUY_CONFIRM: '&9{ITEM} &7f{ue}r &9{PRICE} &7kaufen?'
+  BUY_SUCCESSFUL: '&eHeadShop: &7{ITEM} erfolgreich gekauft'
+  BUY_FAILED: '&eHeadShop: &7Konnte Gegenstand nicht kaufen: {REASON}'
 
 # Verlauf
 HISTORY_DISABLED: '&cVerlauf wurde {ue}ber die Config deaktiviert'

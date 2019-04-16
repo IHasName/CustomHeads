@@ -1,0 +1,205 @@
+{
+  "looks": {
+    "__comment": "Права по-умолчанию: heads.view.menu.<menuname>",
+    "___comment": "Разрешение по-умолчанию начинается с 'permission'",
+    "menus": [
+      {
+        "id": "main-menu",
+        "size": 36,
+        "title": "§aКастомные головы",
+        "permission": "heads.use",
+        "content": [
+          {
+            "id": 0,
+            "type": "category",
+            "slot": 10
+          },
+          {
+            "id": 1,
+            "type": "category",
+            "slot": 11
+          },
+          {
+            "id": 2,
+            "type": "category",
+            "slot": 12
+          },
+          {
+            "id": 3,
+            "type": "category",
+            "slot": 13
+          },
+          {
+            "id": 4,
+            "type": "category",
+            "slot": 14
+          },
+          {
+            "id": 5,
+            "type": "category",
+            "slot": 15
+          },
+          {
+            "id": 6,
+            "type": "category",
+            "slot": 16
+          },
+          {
+            "id": 7,
+            "type": "category",
+            "slot": 20
+          },
+          {
+            "id": 8,
+            "type": "category",
+            "slot": 21
+          },
+          {
+            "id": 9,
+            "type": "category",
+            "slot": 22
+          },
+          {
+            "id": 10,
+            "type": "category",
+            "slot": 23
+          },
+          {
+            "id": 11,
+            "type": "category",
+            "slot": 24
+          },
+          {
+            "id": "saved_heads",
+            "type": "item",
+            "slot": 27
+          },
+          {
+            "id": "your_head",
+            "type": "item",
+            "slot": 31
+          },
+          {
+            "id": "more",
+            "type": "item",
+            "slot": 35
+          }
+        ]
+      },
+      {
+        "id": "more-menu",
+        "size": 36,
+        "title": "§eБольше",
+        "content": [
+          {
+            "id": "help",
+            "type": "item",
+            "slot": 11
+          },
+          {
+            "id": "search",
+            "type": "item",
+            "slot": 13
+          },
+          {
+            "id": "find_more",
+            "type": "item",
+            "slot": 15
+          },
+          {
+            "id": 12,
+            "type": "category",
+            "slot": 22
+          },
+          {
+            "id": "back_mainMenu",
+            "type": "item",
+            "slot": 27
+          }
+        ]
+      }
+    ],
+    "sub_category-looks": {
+      "_comment": "Это повлияет только на внешний вид подкатегорий !",
+      "slots": {
+        "3": {
+          "size": 27,
+          "title": "§6Алфавит",
+          "contents": [
+            {
+              "id": 0,
+              "type": "category",
+              "slot": 11
+            },
+            {
+              "id": 1,
+              "type": "category",
+              "slot": 13
+            },
+            {
+              "id": 2,
+              "type": "category",
+              "slot": 15
+            },
+            {
+              "id": "back_mainMenu",
+              "type": "item",
+              "slot": 18
+            }
+          ]
+        },
+        "12": {
+          "size": 27,
+          "title": "§cГоловы событий",
+          "contents": [
+            {
+              "id": 0,
+              "type": "category",
+              "slot": 11
+            },
+            {
+              "id": 1,
+              "type": "category",
+              "slot": 13
+            },
+            {
+              "id": 2,
+              "type": "category",
+              "slot": 15
+            },
+            {
+              "id": "back_moreMenu",
+              "type": "item",
+              "slot": 18
+            }
+          ]
+        }
+      }
+    },
+    "items": {
+      "__comment": "Готовые головы: your_head, help_item, search, find_more - разрешения остаются прежними.",
+      "more": {
+        "item": "SKULL_ITEM",
+        "damage": 3,
+        "display-name": "§6Больше",
+        "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMWI2ZjFhMjViNmJjMTk5OTQ2NDcyYWVkYjM3MDUyMjU4NGZmNmY0ZTgzMjIxZTU5NDZiZDJlNDFiNWNhMTNiIn19fQ==",
+        "clickAction": {
+          "action": "openMenu",
+          "value": "more-menu"
+        }
+      },
+      "back_mainMenu": {
+        "backButton": {
+          "action": "openMenu",
+          "value": "main-menu"
+        }
+      },
+      "back_moreMenu": {
+        "backButton": {
+          "action": "openMenu",
+          "value": "more-menu"
+        }
+      }
+    }
+  }
+}

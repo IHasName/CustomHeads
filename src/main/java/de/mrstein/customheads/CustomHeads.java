@@ -5,11 +5,11 @@ import com.google.gson.JsonObject;
 import de.mrstein.customheads.api.CustomHeadsAPI;
 import de.mrstein.customheads.api.CustomHeadsPlayer;
 import de.mrstein.customheads.category.Category;
+import de.mrstein.customheads.category.CategoryManager;
 import de.mrstein.customheads.economy.EconomyManager;
 import de.mrstein.customheads.headwriter.HeadFontType;
 import de.mrstein.customheads.listener.InventoryListener;
 import de.mrstein.customheads.listener.OtherListeners;
-import de.mrstein.customheads.loader.CategoryLoader;
 import de.mrstein.customheads.loader.Language;
 import de.mrstein.customheads.loader.Looks;
 import de.mrstein.customheads.reflection.TagEditor;
@@ -73,7 +73,7 @@ public class CustomHeads extends JavaPlugin {
     @Getter
     private static EconomyManager economyManager;
     @Getter
-    private static CategoryLoader categoryLoader;
+    private static CategoryManager categoryManager;
     private static List<String> versions = Arrays.asList("v1_8_R1", "v1_8_R2", "v1_8_R3", "v1_9_R1", "v1_9_R2", "v1_10_R1", "v1_11_R1", "v1_12_R1");
     private static String packet = Bukkit.getServer().getClass().getPackage().getName();
     public static String version = packet.substring(packet.lastIndexOf('.') + 1);
@@ -100,9 +100,9 @@ public class CustomHeads extends JavaPlugin {
     // Language/Looks Loader
     public static boolean reloadTranslations(String language) {
         CustomHeads.languageManager = new Language(language);
-        categoryLoader = new CategoryLoader(language);
+        categoryManager = new CategoryManager(language);
         looks = new Looks(language);
-        return Language.isLoaded() && CategoryLoader.isLoaded() && Looks.isLoaded();
+        return Language.isLoaded() && CategoryManager.isLoaded() && Looks.isLoaded();
     }
 
     // Vault Support (added in v2.9.2)
@@ -228,6 +228,11 @@ public class CustomHeads extends JavaPlugin {
         }
     }
 
+    private void initMetrics() {
+        Metrics metrics = new Metrics(instance);
+        metrics.addCustomChart(new Metrics.SimplePie("used_language", () -> languageManager.getCurrentLanguage()));
+    }
+
     public void onEnable() {
         instance = this;
         File oldHeadFile;
@@ -260,7 +265,7 @@ public class CustomHeads extends JavaPlugin {
                 getServer().getConsoleSender().sendMessage(chWarning + "I wasn't able to find the Default Languge File on your Server...");
                 getServer().getConsoleSender().sendMessage(chPrefix + "§7Downloading necessary Files...");
                 GitHubDownloader gitHubDownloader = new GitHubDownloader("MrSteinMC", "CustomHeads").enableAutoUnzipping();
-                gitHubDownloader.download(getDescription().getVersion(), "language.zip", getDataFolder(), (AsyncFileDownloader.AfterTask) () -> {
+                gitHubDownloader.download(getDescription().getVersion(), "en_EN.zip", new File(getDataFolder(), "language"), (AsyncFileDownloader.AfterTask) () -> {
                     getServer().getConsoleSender().sendMessage(chPrefix + "§7Done downloading! Have fun with the Plugin =D");
                     getServer().getConsoleSender().sendMessage(chPrefix + "§7---------------------------------------------");
                     loadRest();
@@ -322,7 +327,9 @@ public class CustomHeads extends JavaPlugin {
 
         spigetFetcher.fetchUpdates(new SpigetFetcher.FetchResult() {
             public void updateAvailable(SpigetFetcher.ResourceRelease release, SpigetFetcher.ResourceUpdate update) {
-                getServer().getConsoleSender().sendMessage(chPrefix + "§bNew Update for CustomHeads found! v" + release.getReleaseName() + " (Running on v" + getDescription().getVersion() + ") - You can Download it here https://www.spigotmc.org/resources/29057");
+                if (headsConfig.get().getBoolean("update-notifications.console")) {
+                    getServer().getConsoleSender().sendMessage(chPrefix + "§bNew Update for CustomHeads found! v" + release.getReleaseName() + " (Running on v" + getDescription().getVersion() + ") - You can Download it here https://www.spigotmc.org/resources/29057");
+                }
                 if (!USETEXTURES) {
                     getServer().getConsoleSender().sendMessage(chWarning + "Uh oh. Seems like your Server Version " + bukkitVersion + " is not compatable with CustomHeads");
                     getServer().getConsoleSender().sendMessage(chWarning + "I'll disable Custom Textures from Skulls to prevent any Bugs but don't worry only Effects /heads add");
@@ -332,6 +339,8 @@ public class CustomHeads extends JavaPlugin {
             public void noUpdate() {
             }
         });
+
+        initMetrics();
 
         // -- Timers
         // Clear Cache every 5 Minutes
@@ -360,7 +369,7 @@ public class CustomHeads extends JavaPlugin {
                                     String[] categoryArgs = CustomHeads.getTagEditor().getTags(contentItem).get(CustomHeads.getTagEditor().indexOf(contentItem, "openCategory") + 1).split("#>");
                                     if (categoryArgs[0].equals("category")) {
                                         CustomHeadsPlayer customHeadsPlayer = api.wrapPlayer(player);
-                                        Category category = CustomHeads.getCategoryLoader().getCategory(categoryArgs[1]);
+                                        Category category = CustomHeads.getCategoryManager().getCategory(categoryArgs[1]);
                                         ItemStack nextIcon = category.nextIcon();
                                         boolean bought = customHeadsPlayer.getUnlockedCategories(true).contains(category);
                                         nextIcon = new ItemEditor(nextIcon)
@@ -387,5 +396,6 @@ public class CustomHeads extends JavaPlugin {
 
         isInit = true;
     }
+
 
 }

@@ -28,18 +28,15 @@ public class ItemEditor {
 
     public ItemEditor(ItemStack itemStack) {
         this.itemStack = itemStack.clone();
-        if (itemStack.hasItemMeta())
-            meta = itemStack.getItemMeta();
+        meta = itemStack.getItemMeta();
     }
 
     public ItemEditor(Material material) {
-        itemStack = new ItemStack(material);
-        meta = itemStack.getItemMeta();
+        this(new ItemStack(material));
     }
 
     public ItemEditor(Material material, short damage) {
-        itemStack = new ItemStack(material, 1, damage);
-        meta = itemStack.getItemMeta();
+        this(new ItemStack(material, 1, damage));
     }
 
     public short getDamage() {

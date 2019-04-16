@@ -68,7 +68,7 @@ public class PlayerWrapper implements CustomHeadsPlayer {
 
                 if (uuidObject.has("unlockedCategories")) {
                     List<Category> categories = new ArrayList<>();
-                    uuidObject.getAsJsonArray("unlockedCategories").forEach(categoryId -> categories.add(CustomHeads.getCategoryLoader().getCategory(categoryId.getAsString())));
+                    uuidObject.getAsJsonArray("unlockedCategories").forEach(categoryId -> categories.add(CustomHeads.getCategoryManager().getCategory(categoryId.getAsString())));
                     unlockedCategories = categories;
                 }
 
@@ -76,7 +76,7 @@ public class PlayerWrapper implements CustomHeadsPlayer {
                     List<CustomHead> heads = new ArrayList<>();
                     uuidObject.getAsJsonArray("unlockedHeads").forEach(headId -> {
                         String[] idParts = headId.getAsString().split(":");
-                        heads.add(CustomHeads.getApi().getHead(CustomHeads.getCategoryLoader().getCategory(idParts[0]), Integer.parseInt(idParts[1])));
+                        heads.add(CustomHeads.getApi().getHead(CustomHeads.getCategoryManager().getCategory(idParts[0]), Integer.parseInt(idParts[1])));
                     });
                     unlockedHeads = heads;
                 }
@@ -145,7 +145,7 @@ public class PlayerWrapper implements CustomHeadsPlayer {
     }
 
     public List<Category> getUnlockedCategories(boolean ignorePermission) {
-        return CustomHeads.getCategoryLoader().getCategoryList().stream().filter(category -> (!ignorePermission && Utils.hasPermission(player.getPlayer(), category.getPermission())) || unlockedCategories.contains(category)).collect(Collectors.toList());
+        return CustomHeads.getCategoryManager().getCategoryList().stream().filter(category -> (!ignorePermission && Utils.hasPermission(player.getPlayer(), category.getPermission())) || unlockedCategories.contains(category)).collect(Collectors.toList());
     }
 
     public Player unwrap() {

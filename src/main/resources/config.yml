@@ -8,7 +8,7 @@
 # maxUndoHistory: Limits how many times you           #
 # can Undo /heads write - default: 6                  #
 # --------------------------------------------------- #
-# updateNotify: Get Notified when the Plugin          #
+# update-notifications: Get notified when the Plugin  #
 # has an Update ready - default: true                 #
 # --------------------------------------------------- #
 # history: Will act as an Search History and used     #
@@ -48,6 +48,8 @@ economy:
   heads:
     buyable: false
     permanentBuy: true
-updateNotify: true
+update-notifications:
+  onJoin: true
+  console: true
 langFile: none
 reducedDebug: true

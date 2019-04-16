@@ -1,6 +1,8 @@
 package de.mrstein.customheads.category;
 
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.ChatColor;
 
 /*
@@ -9,10 +11,12 @@ import org.bukkit.ChatColor;
  */
 
 @Getter
+@Setter
 public class BaseCategory {
 
     private String permission;
     private String name;
+    @Setter(AccessLevel.NONE)
     private String id;
 
     BaseCategory(String id, String name, String permission) {
