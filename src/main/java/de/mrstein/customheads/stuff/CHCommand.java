@@ -160,12 +160,11 @@ public class CHCommand implements CommandExecutor {
                         return true;
                     }
                     if (args[1].equalsIgnoreCase("download")) {
-                        Inventory inventory = Bukkit.createInventory(null, 9 * 4, CustomHeads.getLanguageManager().LANGUAGE_DOWNLOAD_TITLE);
+                        Inventory inventory = Bukkit.createInventory(player, 9 * 4, CustomHeads.getLanguageManager().LANGUAGE_DOWNLOAD_TITLE);
                         inventory.setItem(13, new ItemEditor(Material.SKULL_ITEM, (byte) 3).setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzMxNmMxNmIxYWM0NzBkMmMxMTQ0MzRmZjg3MzBmMTgxNTcwOTM4M2RiNmYzY2Y3MjBjMzliNmRjZTIxMTYifX19").setDisplayName(CustomHeads.getLanguageManager().LANGUAGE_DOWNLOAD_FETCHING).getItem());
                         player.openInventory(inventory);
                         BukkitTask animationTask = new BukkitRunnable() {
-                            boolean orange = true;
-
+                            boolean orange = false;
                             public void run() {
                                 // Fancy Animations =P
                                 inventory.setItem(13, new ItemEditor(Material.SKULL_ITEM, (byte) 3).setTexture((orange = !orange) ? "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMmQ5MzBlZTIxYWQzYmMzOWRkZmRkZmI0YWE2MjA5MDU2ZTJkOWMxMTVmMTM3ZDc2YWQzYmY2MTI3YzNkMiJ9fX0=" : "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzMxNmMxNmIxYWM0NzBkMmMxMTQ0MzRmZjg3MzBmMTgxNTcwOTM4M2RiNmYzY2Y3MjBjMzliNmRjZTIxMTYifX19").setDisplayName(CustomHeads.getLanguageManager().LANGUAGE_DOWNLOAD_FETCHING).getItem());
@@ -177,7 +176,7 @@ public class CHCommand implements CommandExecutor {
                                 animationTask.cancel();
                                 inventory.setItem(13, null);
                                 for (String language : languages) {
-                                    inventory.addItem(CustomHeads.getTagEditor().addTags(new ItemEditor(Material.PAPER).setDisplayName(language).getItem(), "blockMoving", "invAction", "downloadLanguage", language));
+                                    inventory.addItem(CustomHeads.getTagEditor().addTags(new ItemEditor(Material.PAPER).setDisplayName("§e" + language).getItem(), "blockMoving", "invAction", "downloadLanguage#>" + language));
                                 }
                             }
 

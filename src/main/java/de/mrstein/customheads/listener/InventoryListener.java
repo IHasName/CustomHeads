@@ -432,6 +432,7 @@ public class InventoryListener implements Listener {
             } else if (args[0].equalsIgnoreCase("retrySearch")) {
                 openSearchGUI(player, args[1], event.getInventory().getItem(18) == null ? new String[]{"willClose"} : CustomHeads.getTagEditor().getTags(event.getInventory().getItem(18)).toArray(new String[0]));
             } else if (args[0].equalsIgnoreCase("downloadLanguage")) {
+                player.closeInventory();
                 GitHubDownloader downloader = new GitHubDownloader("MrSteinMC", "CustomHeads").enableAutoUnzipping();
                 downloader.download(CustomHeads.getInstance().getDescription().getVersion(), args[1], new File(CustomHeads.getInstance().getDataFolder(), "language"), (AsyncFileDownloader.AfterTask) () -> player.sendMessage(CustomHeads.getLanguageManager().LANGUAGE_DOWNLOAD_SUCCESSFUL.replace("{LANGUAGE}", args[1])));
             }
