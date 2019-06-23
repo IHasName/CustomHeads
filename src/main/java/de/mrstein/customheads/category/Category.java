@@ -40,8 +40,7 @@ public class Category extends BaseCategory {
     private ItemStack categoryIcon;
     private List<CustomHead> heads = new ArrayList<>();
     private boolean fixedIcon;
-    @Setter
-    private int price;
+    @Setter private int price;
 
     protected Category(int id, String name, String permission, int price, ItemStack icon) {
         super(String.valueOf(id), name, permission);

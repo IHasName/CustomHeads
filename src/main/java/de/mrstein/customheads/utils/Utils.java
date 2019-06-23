@@ -17,8 +17,6 @@ import de.mrstein.customheads.updaters.AsyncFileDownloader;
 import de.mrstein.customheads.updaters.FetchResult;
 import de.mrstein.customheads.updaters.GitHubDownloader;
 import de.mrstein.customheads.updaters.JsonFetcher;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -35,6 +33,7 @@ import java.lang.reflect.Modifier;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.channels.Channels;
+import java.nio.channels.ReadableByteChannel;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -53,6 +52,8 @@ public class Utils {
 
     public static final Gson GSON_PRETTY = new GsonBuilder().disableHtmlEscaping().setPrettyPrinting().create();
     public static final Gson GSON = new GsonBuilder().disableHtmlEscaping().create();
+
+    public static final Random RANDOM = new Random();
 
     private static HashMap<Character, ItemStack> alphabet;
     private static HashMap<String, String[]> subCommands;
@@ -92,7 +93,7 @@ public class Utils {
     }
 
     public static void openSearchGUI(Player player, String itemname, String... action) {
-        AnvilGUI gui = new AnvilGUI(player, event -> {
+        AnvilGUI gui = new AnvilGUI(player, "Search", event -> {
             event.setCancelled(true);
             if (event.getSlot() == AnvilGUI.AnvilSlot.OUTPUT) {
                 if (event.getName().equals("")) {
@@ -134,7 +135,7 @@ public class Utils {
     }
 
     public static void openGetGUI(Player player) {
-        AnvilGUI gui = new AnvilGUI(player, event -> {
+        AnvilGUI gui = new AnvilGUI(player, "Enter Player Name", event -> {
             event.update();
             if (event.getSlot() == AnvilGUI.AnvilSlot.OUTPUT) {
                 if (event.getItem().getType() == Material.PAPER) {
@@ -354,16 +355,22 @@ public class Utils {
         return UUID.fromString(uuidStr.substring(0, 8) + "-" + uuidStr.substring(8, 12) + "-" + uuidStr.substring(12, 16) + "-" + uuidStr.substring(16, 20) + "-" + uuidStr.substring(20));
     }
 
-    public static Inventory cloneInventory(Inventory inventory) {
-        Inventory inv = Bukkit.createInventory(inventory.getHolder(), inventory.getSize(), inventory.getTitle());
+    public static Inventory cloneInventory(Inventory inventory, String title, Player newOwner) {
+        Inventory inv = Bukkit.createInventory(newOwner, inventory.getSize(), title);
         inv.setContents(inventory.getContents());
         return inv;
     }
 
-    public static Inventory cloneInventory(Inventory inventory, Player newOwner) {
-        Inventory inv = Bukkit.createInventory(newOwner, inventory.getSize(), inventory.getTitle());
-        inv.setContents(inventory.getContents());
-        return inv;
+    public static String randomAlphabetic(int length) {
+        return randomString("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".toCharArray(), length);
+    }
+
+    public static String randomString(char[] chars, int length) {
+        StringBuilder builder = new StringBuilder();
+        for(int i = 0; i < RANDOM.nextInt(length); i++) {
+            builder.append(chars[RANDOM.nextInt(chars.length)]);
+        }
+        return builder.toString();
     }
 
     public static boolean inject(Class<?> sourceClass, Object instance, String fieldName, Object value) {
@@ -538,21 +545,19 @@ public class Utils {
     public static void unzipFile(File zipFile, File outputDir) {
         try (ZipInputStream inputStream = new ZipInputStream(new FileInputStream(zipFile))) {
             if (!outputDir.exists())
-                Files.createParentDirs(outputDir);
-            byte[] buffer = new byte[0x1000];
+                Files.createParentDirs(new File(outputDir, "a.temp"));
             ZipEntry zipEntry;
             System.out.println("[FileZipper] Unzipping " + zipFile.getName());
             while ((zipEntry = inputStream.getNextEntry()) != null) {
                 File zipEntryFile = new File(outputDir, zipEntry.getName());
-                if (FilenameUtils.getExtension(zipEntry.getName()).length() > 0) {
+                if (getExtension(zipEntry.getName()).length() > 0) {
                     if (!zipEntryFile.exists())
                         Files.createParentDirs(zipEntryFile);
-                    OutputStream streamOut = new FileOutputStream(zipEntryFile);
-                    int len;
-                    while ((len = inputStream.read(buffer)) > 0) {
-                        streamOut.write(buffer, 0, len);
-                    }
-                    streamOut.close();
+                    ReadableByteChannel byteChannel = Channels.newChannel(inputStream);
+                    FileOutputStream outputStream = new FileOutputStream(zipEntryFile);
+                    outputStream.getChannel().transferFrom(byteChannel, 0, Integer.MAX_VALUE);
+                    outputStream.flush();
+                    outputStream.close();
                 }
             }
             inputStream.closeEntry();
@@ -586,7 +591,10 @@ public class Utils {
             File langRoot = new File("plugins/CustomHeads/language");
 
             for (File langDir : langRoot.listFiles()) {
-                FileUtils.moveDirectory(langDir, new File(backUpRoot + "/" + langDir.getName()));
+                if(!langDir.renameTo(new File(backUpRoot + "/" + langDir.getName()))) {
+                    Bukkit.getLogger().warning("Failed to move Directory");
+                }
+                // FileUtils.moveDirectory(langDir, new File(backUpRoot + "/" + langDir.getName()));
             }
 
         } catch (Exception e) {
@@ -671,6 +679,17 @@ public class Utils {
     public static List<String> removeColor(List<String> in) {
         in.replaceAll(ChatColor::stripColor);
         return in;
+    }
+
+    public static String getExtension(String filename) {
+        filename = filename.replace("\\", "/");
+        if(filename.contains("/")) {
+            filename = filename.substring(filename.lastIndexOf("/")+1);
+        }
+        if(filename.lastIndexOf(".") > 0 && filename.lastIndexOf(".") < filename.length()) {
+            return filename.substring(filename.lastIndexOf(".") + 1);
+        }
+        return "";
     }
 
     public static Class<?> getClassbyName(String className) {

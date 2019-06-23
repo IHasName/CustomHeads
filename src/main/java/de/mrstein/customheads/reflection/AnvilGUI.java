@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
@@ -19,28 +20,26 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.util.HashMap;
+import java.util.logging.Level;
 
 /**
  * @author chasechocolate (Main Class), PhillipsNonstrum (Reflection)
- * @version 1.2
- * Modified for some extra Stuff
+ * @version 1.3
+ * Modified for some extra Stuff and 1.14 Support
  */
 public class AnvilGUI {
 
     private HashMap<AnvilSlot, ItemStack> items = new HashMap<>();
-
     private AnvilClickEventHandler handler;
-
     private ItemStack currentitem = null;
-
     private Inventory inventory;
-
     private Listener listener;
-
     private Player player;
+    private String title;
 
-    public AnvilGUI(final Player player, final AnvilClickEventHandler anvilhandler) {
+    public AnvilGUI(final Player player, String title, final AnvilClickEventHandler anvilhandler) {
         this.player = player;
+        this.title = title;
         handler = anvilhandler;
         this.listener = new Listener() {
             @EventHandler
@@ -126,25 +125,37 @@ public class AnvilGUI {
             player.setLevel(player.getLevel() + 1);
         }
         try {
+
             Object p = player.getClass().getMethod("getHandle").invoke(player);
-            Object container = getClassbyName("ContainerAnvil").getConstructor(getClassbyName("PlayerInventory"), getClassbyName("World"), getClassbyName("BlockPosition"), getClassbyName("EntityHuman")).newInstance(p.getClass().getField("inventory").get(p), p.getClass().getField("world").get(p), getClassbyName("BlockPosition").getConstructor(int.class, int.class, int.class).newInstance(0, 0, 0), p);
-            getClassbyName("Container").getField("checkReachable").set(container, false);
+
+            int nextContainerId = (int) p.getClass().getMethod("nextContainerCounter").invoke(p);
+
+            Location location = player.getLocation();
+            Object container = CustomHeads.version.contains("v1_14_") ?
+                    getClassbyName("ContainerAnvil").getConstructor(int.class, getClassbyName("PlayerInventory"), getClassbyName("ContainerAccess")).newInstance(nextContainerId, p.getClass().getField("inventory").get(p), getClassbyName("ContainerAccess").getMethod("at", getClassbyName("World"), getClassbyName("BlockPosition")).invoke(getClassbyName("ContainerAccess"), p.getClass().getField("world").get(p), getClassbyName("BlockPosition").getConstructor(int.class, int.class, int.class).newInstance(location.getBlockX(), location.getBlockY(), location.getBlockZ()))):
+                    getClassbyName("ContainerAnvil").getConstructor(getClassbyName("PlayerInventory"), getClassbyName("World"), getClassbyName("BlockPosition"), getClassbyName("EntityHuman")).newInstance(p.getClass().getField("inventory").get(p), p.getClass().getField("world").get(p), getClassbyName("BlockPosition").getConstructor(int.class, int.class, int.class).newInstance(location.getBlockX(), location.getBlockY(), location.getBlockZ()), p);;
+
             Object bukkitView = container.getClass().getMethod("getBukkitView").invoke(container);
             inventory = (Inventory) bukkitView.getClass().getMethod("getTopInventory").invoke(bukkitView);
             for (AnvilSlot slot : items.keySet()) {
                 inventory.setItem(slot.getSlot(), items.get(slot));
             }
-            int c = (int) p.getClass().getMethod("nextContainerCounter").invoke(p);
+
+            getClassbyName("Container").getField("checkReachable").set(container, false);
             Constructor<?> chatMessageConstructor = getClassbyName("ChatMessage").getConstructor(String.class, Object[].class);
             Object connection = p.getClass().getField("playerConnection").get(p);
-            Object packet = getClassbyName("PacketPlayOutOpenWindow").getConstructor(int.class, String.class, getClassbyName("IChatBaseComponent"), int.class).newInstance(c, "minecraft:anvil", chatMessageConstructor.newInstance("Repairing", new Object[]{}), 0);
+            Object packet = CustomHeads.version.contains("v1_14_") ?
+                    getClassbyName("PacketPlayOutOpenWindow").getConstructor(int.class, getClassbyName("Containers"), getClassbyName("IChatBaseComponent")).newInstance(nextContainerId, getClassbyName("Containers").getField("ANVIL").get(getClassbyName("Containers")), chatMessageConstructor.newInstance(title, new Object[]{})) :
+                    getClassbyName("PacketPlayOutOpenWindow").getConstructor(int.class, String.class, getClassbyName("IChatBaseComponent"), int.class).newInstance(nextContainerId, "minecraft:anvil", chatMessageConstructor.newInstance(title, new Object[]{}), 0);
             connection.getClass().getMethod("sendPacket", getClassbyName("Packet")).invoke(connection, packet);
             Field activeContainerField = getClassbyName("EntityHuman").getDeclaredField("activeContainer");
             activeContainerField.setAccessible(true);
             activeContainerField.set(p, container);
-            getClassbyName("Container").getField("windowId").set(activeContainerField.get(p), c);
-        } catch (Exception e) {
-            e.printStackTrace();
+            Field windowIdField = getClassbyName("Container").getField("windowId");
+            windowIdField.setAccessible(true);
+            windowIdField.set(activeContainerField.get(p), nextContainerId);
+        } catch (Exception exception) {
+            Bukkit.getLogger().log(Level.WARNING, "Failed to open AnvilGUI", exception);
         }
     }
 

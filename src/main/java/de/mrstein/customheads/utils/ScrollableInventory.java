@@ -3,7 +3,6 @@ package de.mrstein.customheads.utils;
 import de.mrstein.customheads.CustomHeads;
 import de.mrstein.customheads.loader.Language;
 import de.mrstein.customheads.reflection.TagEditor;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -44,7 +43,7 @@ public class ScrollableInventory {
 
     public ScrollableInventory(String title, List<ItemStack> content) {
         inventory = Bukkit.createInventory(null, 54, title);
-        uid = RandomStringUtils.randomAlphabetic(6);
+        uid = Utils.randomAlphabetic(6);
         setContent(content);
         cachedInventories.put(uid, this);
         cacheTime = System.currentTimeMillis();

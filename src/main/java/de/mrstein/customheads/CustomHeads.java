@@ -45,36 +45,26 @@ import static de.mrstein.customheads.utils.Utils.hasPermission;
 @Getter
 public class CustomHeads extends JavaPlugin {
 
+    private static final boolean BETA = false;
+
     public static final HashMap<String, String> uuidCache = new HashMap<>();
     public static final String chPrefix = "§7[§eCustomHeads§7] ";
     public static final String chError = chPrefix + "§cError §7: §c";
     public static final String chWarning = chPrefix + "§eWarning §7: §e";
     public static int hisOverflow = 18;
-    @Getter
-    private static Configs updateFile;
-    @Getter
-    private static Configs headsConfig;
-    @Getter
-    private static Configs categoryLoaderConfig;
-    @Getter
-    private static JsonFile playerDataFile;
-    @Getter
-    private static Looks looks;
-    @Getter
-    private static CustomHeads instance;
-    @Getter
-    private static Language languageManager;
-    @Getter
-    private static CustomHeadsAPI api;
-    @Getter
-    private static TagEditor tagEditor;
-    @Getter
-    private static SpigetFetcher spigetFetcher;
-    @Getter
-    private static EconomyManager economyManager;
-    @Getter
-    private static CategoryManager categoryManager;
-    private static List<String> versions = Arrays.asList("v1_8_R1", "v1_8_R2", "v1_8_R3", "v1_9_R1", "v1_9_R2", "v1_10_R1", "v1_11_R1", "v1_12_R1");
+    @Getter private static Configs updateFile;
+    @Getter private static Configs headsConfig;
+    @Getter private static Configs categoryLoaderConfig;
+    @Getter private static JsonFile playerDataFile;
+    @Getter private static Looks looks;
+    @Getter private static CustomHeads instance;
+    @Getter private static Language languageManager;
+    @Getter private static CustomHeadsAPI api;
+    @Getter private static TagEditor tagEditor;
+    @Getter private static SpigetFetcher spigetFetcher;
+    @Getter private static EconomyManager economyManager;
+    @Getter private static CategoryManager categoryManager;
+    private static List<String> versions = Arrays.asList("v1_8_R1", "v1_8_R2", "v1_8_R3", "v1_9_R1", "v1_9_R2", "v1_10_R1", "v1_11_R1", "v1_12_R1", "v1_13_R1", "v1_14_R1");
     private static String packet = Bukkit.getServer().getClass().getPackage().getName();
     public static String version = packet.substring(packet.lastIndexOf('.') + 1);
 
@@ -235,6 +225,8 @@ public class CustomHeads extends JavaPlugin {
 
     public void onEnable() {
         instance = this;
+        if(BETA)
+            getServer().getConsoleSender().sendMessage("\n \n \n" + chWarning + "This is a Beta Version of the Plugin! Please update it as soon as the Project gets updated\n \n ");
         File oldHeadFile;
         if ((oldHeadFile = new File("plugins/CustomHeads", "heads.yml")).exists()) {
             oldHeadFile.renameTo(new File("plugins/CustomHeads", "config.yml"));
@@ -268,7 +260,11 @@ public class CustomHeads extends JavaPlugin {
                 gitHubDownloader.download(getDescription().getVersion(), "en_EN.zip", new File(getDataFolder(), "language"), (AsyncFileDownloader.AfterTask) () -> {
                     getServer().getConsoleSender().sendMessage(chPrefix + "§7Done downloading! Have fun with the Plugin =D");
                     getServer().getConsoleSender().sendMessage(chPrefix + "§7---------------------------------------------");
-                    loadRest();
+                    new BukkitRunnable() {
+                        public void run() {
+                            loadRest();
+                        }
+                    }.runTask(instance);
                 });
             }
         } else {
@@ -330,15 +326,16 @@ public class CustomHeads extends JavaPlugin {
                 if (headsConfig.get().getBoolean("update-notifications.console")) {
                     getServer().getConsoleSender().sendMessage(chPrefix + "§bNew Update for CustomHeads found! v" + release.getReleaseName() + " (Running on v" + getDescription().getVersion() + ") - You can Download it here https://www.spigotmc.org/resources/29057");
                 }
-                if (!USETEXTURES) {
-                    getServer().getConsoleSender().sendMessage(chWarning + "Uh oh. Seems like your Server Version " + bukkitVersion + " is not compatable with CustomHeads");
-                    getServer().getConsoleSender().sendMessage(chWarning + "I'll disable Custom Textures from Skulls to prevent any Bugs but don't worry only Effects /heads add");
-                }
             }
 
             public void noUpdate() {
             }
         });
+
+        if (!USETEXTURES) {
+            getServer().getConsoleSender().sendMessage(chWarning + "Uh oh. Seems like your Server Version " + bukkitVersion + " is not compatable with CustomHeads");
+            getServer().getConsoleSender().sendMessage(chWarning + "I'll disable Custom Textures from Skulls to prevent any Bugs but don't worry only Effects /heads add");
+        }
 
         initMetrics();
 
@@ -385,7 +382,7 @@ public class CustomHeads extends JavaPlugin {
                                         contentItem = nextIcon;
                                     }
                                 }
-                                inventoryContent[i] = CustomHeads.getTagEditor().addTags(contentItem, "menuID", CustomHeads.getLooks().getIDbyTitle(player.getOpenInventory().getTopInventory().getTitle()));
+                                inventoryContent[i] = CustomHeads.getTagEditor().addTags(contentItem, "menuID", CustomHeads.getLooks().getIDbyTitle(player.getOpenInventory().getTitle()));
                             }
                             player.getOpenInventory().getTopInventory().setContents(inventoryContent);
                         }

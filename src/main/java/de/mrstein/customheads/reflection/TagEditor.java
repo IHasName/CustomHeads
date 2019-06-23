@@ -4,6 +4,7 @@ import de.mrstein.customheads.CustomHeads;
 import de.mrstein.customheads.utils.Utils;
 import org.bukkit.inventory.ItemStack;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -62,8 +63,20 @@ public class TagEditor {
             Object itemTagCompound = hasNBTTag(itemStack) ? copy.getClass().getMethod("getTag").invoke(copy) : Utils.getClassbyName("NBTTagCompound").newInstance();
             Object nbtTagCompound = ((boolean) itemTagCompound.getClass().getMethod("hasKey", String.class).invoke(itemTagCompound, "tagEditor")) ? itemTagCompound.getClass().getMethod("get", String.class).invoke(itemTagCompound, "tagEditor") : Utils.getClassbyName("NBTTagCompound").newInstance();
             Object nbtTagList = Utils.getClassbyName("NBTTagList").newInstance();
+            Method nbtTagListAdd;
+
+            if (CustomHeads.version.contains("v1_14_")) {
+                nbtTagListAdd = nbtTagList.getClass().getMethod("add", int.class, Utils.getClassbyName("NBTBase"));
+            } else {
+                nbtTagListAdd = nbtTagList.getClass().getMethod("add", Utils.getClassbyName("NBTBase"));
+            }
+            int c = 0;
             for (String tag : tags) {
-                nbtTagList.getClass().getMethod("add", Utils.getClassbyName("NBTBase")).invoke(nbtTagList, Utils.getClassbyName("NBTTagString").getConstructor(String.class).newInstance(tag));
+                if(CustomHeads.version.contains("v1_14_")) {
+                    nbtTagListAdd.invoke(nbtTagList, c++, Utils.getClassbyName("NBTTagString").getConstructor(String.class).newInstance(tag));
+                } else {
+                    nbtTagListAdd.invoke(nbtTagList, Utils.getClassbyName("NBTTagString").getConstructor(String.class).newInstance(tag));
+                }
             }
             nbtTagCompound.getClass().getMethod("set", String.class, Utils.getClassbyName("NBTBase")).invoke(nbtTagCompound, tagname, nbtTagList);
             itemTagCompound.getClass().getMethod("set", String.class, Utils.getClassbyName("NBTBase")).invoke(itemTagCompound, "tagEditor", nbtTagCompound);

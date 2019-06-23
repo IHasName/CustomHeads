@@ -51,7 +51,7 @@ public class EconomyManager {
             if (permanent) {
                 customHeadsPlayer.unlockHead(category, id);
             } else {
-                customHeadsPlayer.unwrap().getInventory().addItem(customHead);
+                customHeadsPlayer.unwrap().getInventory().addItem(customHead.getPlainItem());
             }
             openCategory(category, customHeadsPlayer.unwrap(), new String[]{"openCategory", prevCategory});
             customHeadsPlayer.unwrap().sendMessage(CustomHeads.getLanguageManager().ECONOMY_BUY_SUCCESSFUL.replace("{ITEM}", customHead.getItemMeta().getDisplayName()));

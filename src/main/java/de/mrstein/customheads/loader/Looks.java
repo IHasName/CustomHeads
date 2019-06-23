@@ -37,6 +37,7 @@ public class Looks {
 
     public HashMap<Integer, Inventory> subCategoryLooks = new HashMap<>();
     private HashMap<String, Inventory> createdMenus = new HashMap<>();
+    private HashMap<String, String> createdMenuTitles = new HashMap<>();
     private HashMap<String, String[]> menuInfo = new HashMap<>();
     private HashMap<String, ItemStack> items = new HashMap<>();
 
@@ -149,6 +150,7 @@ public class Looks {
 
                 menuInfo.put(menuJson.get("id").getAsString(), new String[]{menuJson.get("title").getAsString(), menuJson.has("permission") ? menuJson.get("permission").getAsString() : "heads.view.menu." + menuJson.get("id").getAsString()});
                 createdMenus.put(menuJson.get("id").getAsString(), menu);
+                createdMenuTitles.put(menuJson.get("id").getAsString(), menuJson.get("title").getAsString());
             }
 
             // Sub Category Slots
@@ -196,15 +198,13 @@ public class Looks {
 
     public String getIDbyTitle(String title) {
         for (String id : createdMenus.keySet()) {
-            if (createdMenus.get(id).getTitle().equals(title)) return id;
+            if (createdMenuTitles.get(id).equals(title)) return id;
         }
         return null;
     }
 
     public List<String> getMenuTitles() {
-        List<String> titles = new ArrayList<>();
-        createdMenus.values().forEach(inv -> titles.add(inv.getTitle()));
-        return titles;
+        return new ArrayList<>(createdMenuTitles.values());
     }
 
 }

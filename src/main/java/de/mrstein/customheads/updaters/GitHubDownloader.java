@@ -1,12 +1,12 @@
 package de.mrstein.customheads.updaters;
 
+import com.google.common.io.Files;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import de.mrstein.customheads.CustomHeads;
 import de.mrstein.customheads.utils.Utils;
-import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
 
 import java.io.File;
@@ -113,7 +113,9 @@ public class GitHubDownloader {
                                     return;
                                 }
                                 try {
-                                    FileUtils.copyFile(new File(downloadDir, assetName), downloadTo);
+                                    Files.copy(new File(downloadDir, assetName), downloadTo);
+
+                                    //FileUtils.copyFile(new File(downloadDir, assetName), downloadTo);
                                     if (afterTask.length > 0)
                                         afterTask[0].call();
                                 } catch (Exception e) {

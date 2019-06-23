@@ -102,7 +102,7 @@ public class CHCommand implements CommandExecutor {
                 if (menu == null) {
                     return true;
                 }
-                player.openInventory(cloneInventory(menu, player));
+                player.openInventory(cloneInventory(menu, CustomHeads.getLooks().getCreatedMenuTitles().get(headsConfig.get().getString("mainMenu")), player));
                 return true;
             }
             if (args[0].equalsIgnoreCase("help")) {
@@ -674,7 +674,7 @@ public class CHCommand implements CommandExecutor {
                             }
                         }
 
-                        if (player.getItemInHand().getData().toString().equalsIgnoreCase("SKULL_ITEM(3)")) {
+                        if (player.getItemInHand().getData().toString().contains("SKULL_ITEM(3)")) {
                             if (!customHeadsPlayer.hasHead(args[1])) {
                                 ItemEditor itemStack = new ItemEditor(player.getItemInHand());
                                 args[1] = toConfigString(args[1]);

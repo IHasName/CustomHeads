@@ -52,8 +52,9 @@ public class InventoryListener implements Listener {
     @EventHandler
     public void onInvOpen(InventoryOpenEvent event) {
         Player player = (Player) event.getPlayer();
-        if (CustomHeads.getLooks().getMenuTitles().contains(event.getInventory().getTitle())) {
-            if (!hasPermission(player, CustomHeads.getLooks().getMenuInfo(CustomHeads.getLooks().getIDbyTitle(event.getInventory().getTitle()))[1])) {
+
+        if (CustomHeads.getLooks().getMenuTitles().contains(event.getView().getTitle())) {
+            if (!hasPermission(player, CustomHeads.getLooks().getMenuInfo(CustomHeads.getLooks().getIDbyTitle(event.getView().getTitle()))[1])) {
                 player.closeInventory();
                 event.setCancelled(true);
                 return;
@@ -102,7 +103,7 @@ public class InventoryListener implements Listener {
                                 .getItem();
                     }
                 }
-                inventoryContent[i] = CustomHeads.getTagEditor().addTags(contentItem, "menuID", CustomHeads.getLooks().getIDbyTitle(event.getInventory().getTitle()));
+                inventoryContent[i] = CustomHeads.getTagEditor().addTags(contentItem, "menuID", CustomHeads.getLooks().getIDbyTitle(event.getView().getTitle()));
             }
             event.getInventory().setContents(inventoryContent);
         }
@@ -117,14 +118,14 @@ public class InventoryListener implements Listener {
 
 //        player.sendMessage("§7[CHTags Tags] §r" + CustomHeads.getTagEditor().getTags(event.getCurrentItem())); // Yeah debug at its finest
 
-        if (event.getInventory().getTitle().equals(CustomHeads.getLanguageManager().LOADING)) {
+        if (event.getView().getTitle().equals(CustomHeads.getLanguageManager().LOADING)) {
             event.setCancelled(true);
         }
         CustomHeadsPlayer customHeadsPlayer = CustomHeads.getApi().wrapPlayer(player);
         List<String> itemTags = CustomHeads.getTagEditor().getTags(event.getCurrentItem());
 
         // Delete Head
-        if (event.getInventory().getTitle().equals(CustomHeads.getLanguageManager().SAVED_HEADS_TITLE.replace("{PLAYER}", player.getName()))) {
+        if (event.getView().getTitle().equals(CustomHeads.getLanguageManager().SAVED_HEADS_TITLE.replace("{PLAYER}", player.getName()))) {
             if (event.getClick() == ClickType.SHIFT_RIGHT) {
                 event.setCancelled(true);
                 String name = toConfigString(ChatColor.stripColor(event.getCurrentItem().getItemMeta().getDisplayName()));
@@ -136,7 +137,7 @@ public class InventoryListener implements Listener {
         }
 
         // History Inventory
-        if (event.getInventory().getTitle().equalsIgnoreCase(CustomHeads.getLanguageManager().HISTORY_INV_TITLE.replace("{PLAYER}", player.getName()))) {
+        if (event.getView().getTitle().equalsIgnoreCase(CustomHeads.getLanguageManager().HISTORY_INV_TITLE.replace("{PLAYER}", player.getName()))) {
             event.setCancelled(true);
             if (itemTags.contains("history")) {
                 String[] args = itemTags.get(itemTags.indexOf("history") + 1).split("#>");
@@ -423,7 +424,7 @@ public class InventoryListener implements Listener {
                 if (args[1].equalsIgnoreCase("menu")) {
                     Inventory menu = CustomHeads.getLooks().getCreatedMenus().get(args[2]);
                     if (menu != null)
-                        player.openInventory(cloneInventory(menu, player));
+                        player.openInventory(cloneInventory(menu, CustomHeads.getLooks().getCreatedMenuTitles().get(args[2]), player));
                 } else if (args[1].equalsIgnoreCase("category")) {
                     Category originCategory = CustomHeads.getCategoryManager().getCategory(args[2]);
                     if (originCategory != null && customHeadsPlayer.getUnlockedCategories(CustomHeads.hasEconomy() && !CustomHeads.keepCategoryPermissions()).contains(originCategory))

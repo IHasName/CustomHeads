@@ -6,7 +6,6 @@ import de.mrstein.customheads.utils.ItemEditor;
 import de.mrstein.customheads.utils.Utils;
 import lombok.AccessLevel;
 import lombok.Getter;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -81,7 +80,7 @@ public class HeadFontType {
     public HeadFontType enableCache() {
         cached = true;
         cacheTime = System.currentTimeMillis();
-        cacheID = RandomStringUtils.randomAlphabetic(6);
+        cacheID = Utils.randomAlphabetic(6);
         cache.put(cacheID, this);
         return this;
     }

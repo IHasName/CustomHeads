@@ -6,7 +6,6 @@ import de.mrstein.customheads.utils.Configs;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import org.apache.commons.codec.binary.Base64;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -15,6 +14,7 @@ import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
@@ -59,7 +59,8 @@ public class SpigetFetcher {
                     JsonArray versionArray;
                     boolean fromCache = false;
                     if (updateFile.get().isSet("lastVersionFetch") && TimeUnit.MILLISECONDS.toDays(System.currentTimeMillis() - lastFetch) <= 0) {
-                        versionArray = jsonParser.parse(new String(Base64.decodeBase64(updateFile.get().getString("lastVersionFetch").getBytes()))).getAsJsonArray();
+                        versionArray = jsonParser.parse(new String(Base64.getDecoder().decode(updateFile.get().getString("lastVersionFetch").getBytes()))).getAsJsonArray();
+                        //versionArray = jsonParser.parse(new String(Base64.decodeBase64(updateFile.get().getString("lastVersionFetch").getBytes()))).getAsJsonArray();
                         fromCache = true;
                     } else {
                         HttpURLConnection connection = (HttpURLConnection) new URL(versionUrlFormatted).openConnection();
@@ -74,7 +75,8 @@ public class SpigetFetcher {
                     }
                     if (!fromCache) {
                         updateFile.get().set("lastUpdateCheck", System.currentTimeMillis());
-                        updateFile.get().set("lastVersionFetch", new String(Base64.encodeBase64(GSON.toJson(releaseList).getBytes())));
+                        updateFile.get().set("lastVersionFetch", new String(Base64.getEncoder().encode(GSON.toJson(releaseList).getBytes())));
+                        //updateFile.get().set("lastVersionFetch", new String(Base64.encodeBase64(GSON.toJson(releaseList).getBytes())));
                         updateFile.save();
                     }
                     ResourceRelease latestRelease = releaseList.get(0);
@@ -106,7 +108,10 @@ public class SpigetFetcher {
                     JsonArray descriptionArray;
                     boolean fromCache = false;
                     if (updateFile.get().isSet("lastDescriptionFetch") && TimeUnit.MILLISECONDS.toDays(System.currentTimeMillis() - lastFetch) == 0) {
-                        descriptionArray = jsonParser.parse(new String(Base64.decodeBase64(updateFile.get().getString("lastDescriptionFetch")))).getAsJsonArray();
+
+
+                        descriptionArray = jsonParser.parse(new String(Base64.getDecoder().decode(updateFile.get().getString("lastDescriptionFetch")))).getAsJsonArray();
+                        //descriptionArray = jsonParser.parse(new String(Base64.decodeBase64(updateFile.get().getString("lastDescriptionFetch")))).getAsJsonArray();
                         fromCache = true;
                     } else {
                         HttpURLConnection descriptionConnection = (HttpURLConnection) new URL(decriptionUrlFormatted).openConnection();
@@ -120,7 +125,8 @@ public class SpigetFetcher {
                         updateList.add(GSON.fromJson(updateRaw, ResourceUpdate.class));
                     }
                     if (!fromCache) {
-                        updateFile.get().set("lastDescriptionFetch", new String(Base64.encodeBase64(GSON.toJson(updateList).getBytes())));
+                        updateFile.get().set("lastDescriptionFetch", new String(Base64.getEncoder().encode(GSON.toJson(updateList).getBytes())));
+                        //updateFile.get().set("lastDescriptionFetch", new String(Base64.encodeBase64(GSON.toJson(updateList).getBytes())));
                         updateFile.save();
                     }
                     consumer.accept(updateList);

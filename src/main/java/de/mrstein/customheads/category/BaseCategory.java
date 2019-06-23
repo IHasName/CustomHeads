@@ -16,8 +16,7 @@ public class BaseCategory {
 
     private String permission;
     private String name;
-    @Setter(AccessLevel.NONE)
-    private String id;
+    @Setter(AccessLevel.NONE) private String id;
 
     BaseCategory(String id, String name, String permission) {
         this.id = id;

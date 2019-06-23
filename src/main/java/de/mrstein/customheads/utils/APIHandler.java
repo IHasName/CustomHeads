@@ -16,7 +16,6 @@ import de.mrstein.customheads.category.CustomHead;
 import de.mrstein.customheads.headwriter.HeadFontType;
 import de.mrstein.customheads.headwriter.HeadWriter;
 import de.mrstein.customheads.reflection.TagEditor;
-import org.apache.commons.lang3.Validate;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -37,7 +36,9 @@ public class APIHandler implements CustomHeadsAPI {
 
     // Head Util Impl
     public String getSkullTexture(ItemStack itemStack) {
-        Validate.notNull(itemStack, "Item cannot be null");
+        if(itemStack == null) {
+            throw new NullPointerException("Item cannot be null");
+        }
         if (!itemStack.getData().toString().contains("SKULL_ITEM(3)")) {
             throw new IllegalArgumentException("An PlayerHead is required to get the Texture");
         }
