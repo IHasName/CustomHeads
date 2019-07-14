@@ -32,17 +32,12 @@ public class PlayerWrapper implements CustomHeadsPlayer {
 
     private static HashMap<UUID, CustomHeadsPlayer> wrappedPlayersCache = new HashMap<>();
 
-    @Getter
-    private List<CustomHead> unlockedHeads = new ArrayList<>();
+    @Getter private List<CustomHead> unlockedHeads = new ArrayList<>();
     private List<Category> unlockedCategories = new ArrayList<>();
-    @Getter
-    private List<ItemStack> savedHeads = new ArrayList<>();
+    @Getter private List<ItemStack> savedHeads = new ArrayList<>();
 
-    @Getter
-    private SearchHistory searchHistory;
-
-    @Getter
-    private GetHistory getHistory;
+    @Getter private SearchHistory searchHistory;
+    @Getter private GetHistory getHistory;
 
     private OfflinePlayer player;
 
@@ -53,7 +48,7 @@ public class PlayerWrapper implements CustomHeadsPlayer {
             if (dataRoot.has(player.getUniqueId().toString())) {
                 JsonObject uuidObject = dataRoot.getAsJsonObject(player.getUniqueId().toString());
                 uuidObject.getAsJsonObject("savedHeads").entrySet().forEach(entry -> {
-                    ItemEditor editor = new ItemEditor(Material.SKULL_ITEM, (short) 3).setDisplayName(entry.getKey());
+                    ItemEditor editor = new ItemEditor(Material.SKULL_ITEM,  3).setDisplayName(entry.getKey());
                     String textureValue = entry.getValue().getAsString();
                     if (textureValue.length() > 16) {
                         editor.setTexture(textureValue);
@@ -179,15 +174,6 @@ public class PlayerWrapper implements CustomHeadsPlayer {
         }
     }
 
-//    public boolean unlockHead(CategoryID categoryID) {
-//        if(unlockedHeads.contains(CustomHeads.getApi().getHead(categoryID))) {
-//            return false;
-//        } else {
-//            unlockedHeads.add(CustomHeads.getApi().getHead(categoryID));
-//            return true;
-//        }
-//    }
-
     public boolean lockHead(Category category, int id) {
         if (unlockedHeads.contains(CustomHeads.getApi().getHead(category, id))) {
             unlockedHeads.remove(CustomHeads.getApi().getHead(category, id));
@@ -197,20 +183,11 @@ public class PlayerWrapper implements CustomHeadsPlayer {
         }
     }
 
-//    public boolean lockHead(CategoryID categoryID) {
-//        if(unlockedHeads.contains(CustomHeads.getApi().getHead(categoryID))) {
-//            unlockedHeads.remove(CustomHeads.getApi().getHead(categoryID));
-//            return true;
-//        } else {
-//            return false;
-//        }
-//    }
-
     public boolean saveHead(String name, String texture) {
         if (hasHead(name)) {
             return false;
         } else {
-            ItemEditor editor = new ItemEditor(Material.SKULL_ITEM, (short) 3).setDisplayName(name);
+            ItemEditor editor = new ItemEditor(Material.SKULL_ITEM,  3).setDisplayName(name);
             if (texture.length() > 16) {
                 editor.setTexture(texture);
             } else {

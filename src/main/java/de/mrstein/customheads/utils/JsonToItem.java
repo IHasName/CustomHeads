@@ -29,7 +29,11 @@ public class JsonToItem {
         ItemEditor itemEditor = null;
         try {
             JsonObject itemObj = parser.parse(json).getAsJsonObject();
-            itemEditor = new ItemEditor(Material.getMaterial(itemObj.get("item").getAsString()), itemObj.has("damage") ? itemObj.get("damage").getAsShort() : 0).setAmount(itemObj.has("count") ? itemObj.get("count").getAsInt() : 1);
+            Material material = Material.getMaterial(itemObj.get("item").getAsString());
+            if(material == null) {
+                throw new IllegalArgumentException("Invalid Material Name: " + itemObj.get("item").getAsString());
+            }
+            itemEditor = new ItemEditor(material, itemObj.has("damage") ? itemObj.get("damage").getAsShort() : 0).setAmount(itemObj.has("count") ? itemObj.get("count").getAsInt() : 1);
             if (itemObj.has("display-name"))
                 itemEditor.setDisplayName(format(itemObj.get("display-name").getAsString()));
             if (itemObj.has("lore")) {

@@ -18,7 +18,7 @@ public class Language {
 
     @Getter
     private static boolean loaded;
-    // Other or multible use
+    // Other or multiple use
     public final String LOCKED;
     public final String INVALID_INPUT;
     public final String NO_PERMISSION;

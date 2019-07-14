@@ -246,22 +246,6 @@ public class CategoryManager {
             }
         }
         return customHeads;
-
-//        List<ItemStack> heads = new ArrayList<>();
-//        for (Category category : categories.values()) {
-//            if (category.hasSubCategories()) {
-//                for (SubCategory subCategory : category.getSubCategories()) {
-//                    for (ItemStack itemStack : subCategory.getHeads()) {
-//                        heads.add(CustomHeads.getTagEditor().addTags(itemStack, "category", subCategory.getOriginCategory().getId(), "wearable"));
-//                    }
-//                }
-//            } else {
-//                for (ItemStack itemStack : category.getHeads()) {
-//                    heads.add(CustomHeads.getTagEditor().addTags(itemStack, "category", category.getId(), "wearable"));
-//                }
-//            }
-//        }
-//        return heads;
     }
 
     private int nextCategoryID() {

@@ -60,7 +60,6 @@ public class SpigetFetcher {
                     boolean fromCache = false;
                     if (updateFile.get().isSet("lastVersionFetch") && TimeUnit.MILLISECONDS.toDays(System.currentTimeMillis() - lastFetch) <= 0) {
                         versionArray = jsonParser.parse(new String(Base64.getDecoder().decode(updateFile.get().getString("lastVersionFetch").getBytes()))).getAsJsonArray();
-                        //versionArray = jsonParser.parse(new String(Base64.decodeBase64(updateFile.get().getString("lastVersionFetch").getBytes()))).getAsJsonArray();
                         fromCache = true;
                     } else {
                         HttpURLConnection connection = (HttpURLConnection) new URL(versionUrlFormatted).openConnection();
@@ -76,7 +75,6 @@ public class SpigetFetcher {
                     if (!fromCache) {
                         updateFile.get().set("lastUpdateCheck", System.currentTimeMillis());
                         updateFile.get().set("lastVersionFetch", new String(Base64.getEncoder().encode(GSON.toJson(releaseList).getBytes())));
-                        //updateFile.get().set("lastVersionFetch", new String(Base64.encodeBase64(GSON.toJson(releaseList).getBytes())));
                         updateFile.save();
                     }
                     ResourceRelease latestRelease = releaseList.get(0);
@@ -111,7 +109,6 @@ public class SpigetFetcher {
 
 
                         descriptionArray = jsonParser.parse(new String(Base64.getDecoder().decode(updateFile.get().getString("lastDescriptionFetch")))).getAsJsonArray();
-                        //descriptionArray = jsonParser.parse(new String(Base64.decodeBase64(updateFile.get().getString("lastDescriptionFetch")))).getAsJsonArray();
                         fromCache = true;
                     } else {
                         HttpURLConnection descriptionConnection = (HttpURLConnection) new URL(decriptionUrlFormatted).openConnection();
@@ -126,7 +123,6 @@ public class SpigetFetcher {
                     }
                     if (!fromCache) {
                         updateFile.get().set("lastDescriptionFetch", new String(Base64.getEncoder().encode(GSON.toJson(updateList).getBytes())));
-                        //updateFile.get().set("lastDescriptionFetch", new String(Base64.encodeBase64(GSON.toJson(updateList).getBytes())));
                         updateFile.save();
                     }
                     consumer.accept(updateList);

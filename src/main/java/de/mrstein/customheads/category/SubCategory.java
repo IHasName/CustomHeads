@@ -54,10 +54,6 @@ public class SubCategory extends BaseCategory {
                 headObject.addProperty("name", itemEditor.getDisplayName());
                 headObject.addProperty("id", head.getId());
                 headObject.addProperty("price", head.getPrice());
-                // TODO remove
-//                headObject.addProperty("id", ++Category.counter);
-//                headObject.addProperty("price", 0);
-                // TODO remove
                 if (itemEditor.hasLore())
                     headObject.addProperty("description", itemEditor.getLoreAsString());
                 heads.add(headObject);

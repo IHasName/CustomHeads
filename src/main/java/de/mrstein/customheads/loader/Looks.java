@@ -98,6 +98,10 @@ public class Looks {
                                     tags.add("openMenu");
                                     tags.add(clickAction.get("value").getAsString());
                                     break;
+                                case "executeCommand":
+                                    tags.add("executeCommand");
+                                    tags.add(clickAction.get("value").getAsString());
+                                    break;
                                 default:
                                     break;
                             }
@@ -107,11 +111,11 @@ public class Looks {
                 }
             }
 
-            items.put("your_head", CustomHeads.getTagEditor().setTags(new ItemEditor(Material.SKULL_ITEM, (short) 3).setDisplayName(CustomHeads.getLanguageManager().ITEMS_YOUR_HEAD).getItem(), "chItem", "your_head", "clonable", "tempTags"));
-            items.put("help", CustomHeads.getTagEditor().setTags(new ItemEditor(Material.SKULL_ITEM, (short) 3).setDisplayName(CustomHeads.getLanguageManager().ITEMS_HELP).setLore(CustomHeads.getLanguageManager().ITEMS_HELP_LORE).setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNmE1M2JkZDE1NDU1MzFjOWViYjljNmY4OTViYzU3NjAxMmY2MTgyMGU2ZjQ4OTg4NTk4OGE3ZTg3MDlhM2Y0OCJ9fX0=").getItem(), "chItem", "help", "needsPermission", "heads.view.help"));
+            items.put("your_head", CustomHeads.getTagEditor().setTags(new ItemEditor(Material.SKULL_ITEM,  3).setDisplayName(CustomHeads.getLanguageManager().ITEMS_YOUR_HEAD).getItem(), "chItem", "your_head", "clonable", "tempTags"));
+            items.put("help", CustomHeads.getTagEditor().setTags(new ItemEditor(Material.SKULL_ITEM,  3).setDisplayName(CustomHeads.getLanguageManager().ITEMS_HELP).setLore(CustomHeads.getLanguageManager().ITEMS_HELP_LORE).setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNmE1M2JkZDE1NDU1MzFjOWViYjljNmY4OTViYzU3NjAxMmY2MTgyMGU2ZjQ4OTg4NTk4OGE3ZTg3MDlhM2Y0OCJ9fX0=").getItem(), "chItem", "help", "needsPermission", "heads.view.help"));
             items.put("search", CustomHeads.getTagEditor().setTags(new ItemEditor(Material.NAME_TAG).setDisplayName(CustomHeads.getLanguageManager().ITEMS_SEARCH).setLore(CustomHeads.getLanguageManager().ITEMS_SEARCH_LORE).getItem(), "chItem", "search", "needsPermission", "heads.use.more.search"));
             items.put("find_more", CustomHeads.getTagEditor().setTags(new ItemEditor(Material.PAPER).setDisplayName(CustomHeads.getLanguageManager().ITEMS_FIND_MORE).setLore(CustomHeads.getLanguageManager().ITEMS_FIND_MORE_LORE).getItem(), "chItem", "find_more"));
-            items.put("saved_heads", CustomHeads.getTagEditor().setTags(new ItemEditor(Material.SKULL_ITEM, (short) 3).setDisplayName(CustomHeads.getLanguageManager().ITEMS_COLLECTION).setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzM3NjQ4YWU3YTU2NGE1Mjg3NzkyYjA1ZmFjNzljNmI2YmQ0N2Y2MTZhNTU5Y2U4YjU0M2U2OTQ3MjM1YmNlIn19fQ==").getItem(), "chItem", "saved_heads"));
+            items.put("saved_heads", CustomHeads.getTagEditor().setTags(new ItemEditor(Material.SKULL_ITEM,  3).setDisplayName(CustomHeads.getLanguageManager().ITEMS_COLLECTION).setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzM3NjQ4YWU3YTU2NGE1Mjg3NzkyYjA1ZmFjNzljNmI2YmQ0N2Y2MTZhNTU5Y2U4YjU0M2U2OTQ3MjM1YmNlIn19fQ==").getItem(), "chItem", "saved_heads"));
 
             // Menus
             JsonArray menus = jsonLooks.getAsJsonArray("menus");

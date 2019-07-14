@@ -23,7 +23,7 @@ import java.util.List;
 @Getter
 public class HeadFontType {
 
-    private char[] availibleCharacters = "abcdefghijklmnopqrstuvwxyz0123456789!?#$%&@_'\"()[]{}<>+-/=:,;\\ ".toCharArray();
+    private char[] availableCharacters = "abcdefghijklmnopqrstuvwxyz0123456789!?#$%&@_'\"()[]{}<>+-/=:,;\\ ".toCharArray();
 
     private static HashMap<String, HeadFontType> cache = new HashMap<>();
     private HashMap<Character, ItemStack> characters = new HashMap<>();
@@ -44,10 +44,10 @@ public class HeadFontType {
         if (exists()) {
             if (fontFile.get().isConfigurationSection("characters")) {
                 for (String key : fontFile.get().getConfigurationSection("characters").getKeys(false)) {
-                    if (!Utils.charArrayContains(availibleCharacters, key.charAt(0))) {
+                    if (!Utils.charArrayContains(availableCharacters, key.charAt(0))) {
                         throw new UnsupportedOperationException("Unsupported Character: '" + key.charAt(0) + "'");
                     }
-                    characters.put(key.charAt(0), new ItemEditor(Material.SKULL_ITEM, (short) 3).setTexture(fontFile.get().getString("characters." + key)).getItem());
+                    characters.put(key.charAt(0), new ItemEditor(Material.SKULL_ITEM,  3).setTexture(fontFile.get().getString("characters." + key)).getItem());
                 }
             }
         }
@@ -62,8 +62,8 @@ public class HeadFontType {
     }
 
     public boolean addCharacter(char character, String texture, boolean forceReplace) {
-        if (Utils.charArrayContains(availibleCharacters, character) && (!characters.containsKey(character) || forceReplace)) {
-            characters.put(character, new ItemEditor(Material.SKULL_ITEM, (short) 3).setTexture(texture).getItem());
+        if (Utils.charArrayContains(availableCharacters, character) && (!characters.containsKey(character) || forceReplace)) {
+            characters.put(character, new ItemEditor(Material.SKULL_ITEM,  3).setTexture(texture).getItem());
             return true;
         }
         return false;

@@ -160,6 +160,13 @@ public class InventoryListener implements Listener {
             }
         }
 
+        for(ItemStack item : event.getInventory().getContents()) {
+            if(CustomHeads.getTagEditor().hasMyTags(item) && !CustomHeads.getTagEditor().hasMyTags(event.getCurrentItem())) {
+                event.setCancelled(true);
+                break;
+            }
+        }
+
         if (!CustomHeads.getTagEditor().hasMyTags(event.getCurrentItem())) {
             return;
         }
@@ -196,7 +203,7 @@ public class InventoryListener implements Listener {
                     adder.setItem(4, CustomHeads.getTagEditor().addTags(new ItemEditor(Material.PAPER).setDisplayName(CustomHeads.getLanguageManager().FONTS_EDIT_ADD_TOGGLE.replace("{MODE}", CustomHeads.getLanguageManager().NO)).getItem(), "editFont", "adderToggle"));
                     adder.setItem(13, CustomHeads.getTagEditor().addTags(new ItemEditor(Material.HOPPER).setDisplayName(CustomHeads.getLanguageManager().FONTS_EDIT_ADD_DROPPER_NAME).setLore(CustomHeads.getLanguageManager().FONTS_EDIT_ADD_DROPPER_LORE).getItem(), "editFont", "adder", "fontCacheID", font.getCacheID()));
                     adder.setItem(18, Utils.getBackButton("openScInv", currentScrollInventory.getUid()));
-                    adder.setItem(26, CustomHeads.getTagEditor().addTags(new ItemEditor(Material.SKULL_ITEM, (short) 3).setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMWI2ZjFhMjViNmJjMTk5OTQ2NDcyYWVkYjM3MDUyMjU4NGZmNmY0ZTgzMjIxZTU5NDZiZDJlNDFiNWNhMTNiIn19fQ==").setDisplayName(CustomHeads.getLanguageManager().FONTS_EDIT_SAVENEXIT).getItem(), "editFont", "saveAndExit", "fontCacheID", font.getCacheID(), "openScInv", currentScrollInventory.getUid()));
+                    adder.setItem(26, CustomHeads.getTagEditor().addTags(new ItemEditor(Material.SKULL_ITEM,  3).setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMWI2ZjFhMjViNmJjMTk5OTQ2NDcyYWVkYjM3MDUyMjU4NGZmNmY0ZTgzMjIxZTU5NDZiZDJlNDFiNWNhMTNiIn19fQ==").setDisplayName(CustomHeads.getLanguageManager().FONTS_EDIT_SAVENEXIT).getItem(), "editFont", "saveAndExit", "fontCacheID", font.getCacheID(), "openScInv", currentScrollInventory.getUid()));
                     player.openInventory(adder);
                     break;
                 }
@@ -223,7 +230,7 @@ public class InventoryListener implements Listener {
                                     listString = listString.substring(1, listString.length() - 1);
                                     loreInfo.add("&7" + listString);
                                 }
-                                player.openInventory(getDialog(CustomHeads.getLanguageManager().FONTS_EDIT_REMOVECHARCATER_CONFIRM, new String[]{"confirmDelete", "characters#>" + CustomHeads.getTagEditor().getTags(selected.get(0)).get(itemTags.indexOf("fontName") + 1) + "#>" + ech.substring(0, ech.length() - 2), "invAction", "willClose"}, new String[]{"§cThis cannot be undone!"}, new String[]{"invAction", "willClose"}, null, new ItemEditor(Material.SKULL_ITEM, (short) 3).setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYmFkYzA0OGE3Y2U3OGY3ZGFkNzJhMDdkYTI3ZDg1YzA5MTY4ODFlNTUyMmVlZWQxZTNkYWYyMTdhMzhjMWEifX19").setDisplayName(CustomHeads.getLanguageManager().FONTS_EDIT_REMOVECHARCATER_PREINFO).setLore(loreInfo).getItem()));
+                                player.openInventory(getDialog(CustomHeads.getLanguageManager().FONTS_EDIT_REMOVECHARCATER_CONFIRM, new String[]{"confirmDelete", "characters#>" + CustomHeads.getTagEditor().getTags(selected.get(0)).get(itemTags.indexOf("fontName") + 1) + "#>" + ech.substring(0, ech.length() - 2), "invAction", "willClose"}, new String[]{"§cThis cannot be undone!"}, new String[]{"invAction", "willClose"}, null, new ItemEditor(Material.SKULL_ITEM,  3).setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYmFkYzA0OGE3Y2U3OGY3ZGFkNzJhMDdkYTI3ZDg1YzA5MTY4ODFlNTUyMmVlZWQxZTNkYWYyMTdhMzhjMWEifX19").setDisplayName(CustomHeads.getLanguageManager().FONTS_EDIT_REMOVECHARCATER_PREINFO).setLore(loreInfo).getItem()));
                             }
                         }
                         getInventory(item).refreshCurrentPage();
@@ -241,7 +248,7 @@ public class InventoryListener implements Listener {
                         } else {
                             item = CustomHeads.getTagEditor().addTags(new ItemEditor(event.getCurrentItem()).getItem(), "charSelected");
                             String character = CustomHeads.getTagEditor().getTags(item).get(itemTags.indexOf("character") + 1);
-                            item = CustomHeads.getTagEditor().copyTags(item, new ItemEditor(Material.SKULL_ITEM, (short) 3).setDisplayName(CustomHeads.getLanguageManager().FONTS_EDIT_SELECTED.replace("{CHARACTER}", character.equals(" ") ? "BLANK" : character)).getItem());
+                            item = CustomHeads.getTagEditor().copyTags(item, new ItemEditor(Material.SKULL_ITEM,  3).setDisplayName(CustomHeads.getLanguageManager().FONTS_EDIT_SELECTED.replace("{CHARACTER}", character.equals(" ") ? "BLANK" : character)).getItem());
                         }
                         event.setCurrentItem(item);
                     }
@@ -294,7 +301,8 @@ public class InventoryListener implements Listener {
             }
         }
 
-        if (itemTags.contains("executeCommand")) {
+        if(itemTags.contains("executeCommand")) {
+            event.setCancelled(true);
             player.performCommand(itemTags.get(itemTags.indexOf("executeCommand") + 1));
         }
 
@@ -434,7 +442,7 @@ public class InventoryListener implements Listener {
                 openSearchGUI(player, args[1], event.getInventory().getItem(18) == null ? new String[]{"willClose"} : CustomHeads.getTagEditor().getTags(event.getInventory().getItem(18)).toArray(new String[0]));
             } else if (args[0].equalsIgnoreCase("downloadLanguage")) {
                 player.closeInventory();
-                GitHubDownloader downloader = new GitHubDownloader("MrSteinMC", "CustomHeads").enableAutoUnzipping();
+                GitHubDownloader downloader = new GitHubDownloader("IHasName", "CustomHeads").enableAutoUnzipping();
                 downloader.download(CustomHeads.getInstance().getDescription().getVersion(), args[1], new File(CustomHeads.getInstance().getDataFolder(), "language"), (AsyncFileDownloader.AfterTask) () -> player.sendMessage(CustomHeads.getLanguageManager().LANGUAGE_DOWNLOAD_SUCCESSFUL.replace("{LANGUAGE}", args[1])));
             }
         }

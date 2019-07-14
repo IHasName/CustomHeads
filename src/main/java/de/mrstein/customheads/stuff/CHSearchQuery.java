@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 
 public class CHSearchQuery {
 
-    private List<String> badversions = Arrays.asList("v1_8_R1", "v1_8_R2", "v1_8_R3");
+    private List<String> badVersions = Arrays.asList("v1_8_R1", "v1_8_R2", "v1_8_R3");
     private List<CustomHead> results;
 
     private boolean recordHistory = true;
@@ -58,7 +58,7 @@ public class CHSearchQuery {
             customHeadsPlayer.getSearchHistory().addEntry(search);
 
         String title = CustomHeads.getLanguageManager().SEARCH_TITLE.replace("{RESULTS}", "" + results.size());
-        title = badversions.contains(CustomHeads.version) ?
+        title = badVersions.contains(CustomHeads.version) ?
                 title.contains("{short}") ?
                         title.substring(0, title.lastIndexOf("{short}") >= 32 ?
                                 32 :
@@ -67,15 +67,18 @@ public class CHSearchQuery {
                 title.replace("{short}", "");
         List<ItemStack> heads = new ArrayList<>();
         results.forEach(customHead -> {
-            boolean bought = customHeadsPlayer.getUnlockedHeads().contains(customHead);
             ItemEditor itemEditor = new ItemEditor(customHead);
-            heads.add(bought ? CustomHeads.getTagEditor().addTags(itemEditor.addLoreLine(CustomHeads.getLanguageManager().ECONOMY_BOUGHT).getItem(), "wearable", "clonable") : CustomHeads.getTagEditor().addTags(itemEditor.addLoreLine(Utils.formatPrice(customHead.getPrice(), true)).getItem(), "buyHead", "buyHead#>" + customHead.getOriginCategory().getId() + ":" + customHead.getId()));
+            if(CustomHeads.hasEconomy()) {
+                heads.add(customHeadsPlayer.getUnlockedHeads().contains(customHead) ? CustomHeads.getTagEditor().addTags(itemEditor.addLoreLine(CustomHeads.getLanguageManager().ECONOMY_BOUGHT).getItem(), "wearable", "clonable") : CustomHeads.getTagEditor().addTags(itemEditor.addLoreLine(Utils.formatPrice(customHead.getPrice(), true)).getItem(), "buyHead", "buyHead#>" + customHead.getOriginCategory().getId() + ":" + customHead.getId()));
+            } else {
+                heads.add(CustomHeads.getTagEditor().addTags(itemEditor.getItem(), "wearable", "clonable"));
+            }
         });
         ScrollableInventory searchInventory = new ScrollableInventory(title, heads);
         if (!backAction.equals("willClose"))
             searchInventory.setBarItem(1, Utils.getBackButton("invAction", backAction));
         searchInventory.setBarItem(2, CustomHeads.getTagEditor().setTags(new ItemEditor(Material.PAPER).setDisplayName(CustomHeads.getLanguageManager().ITEMS_INFO).setLore(CustomHeads.getLanguageManager().ITEMS_INFO_LORE).getItem(), "dec", "info-item", "blockMoving"));
-        searchInventory.setBarItem(3, CustomHeads.getTagEditor().setTags(new ItemEditor(Material.SKULL_ITEM, (short) 3).setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZTJiYzYzYzBlNjEzY2UzZmE3ZGVkNDEyM2U2OTkwNzE3OGU2MjI0MGNjYWZlZmNhMjBlZGM5NTM4MTRhNzIifX19").setDisplayName(CustomHeads.getLanguageManager().CYCLE_ARRANGEMENT_PREFIX + CustomHeads.getLanguageManager().CYCLE_ARRANGEMENT_DEFAULT).getItem(), "scrollInv", "reArrange#>next", "originalName", CustomHeads.getLanguageManager().CYCLE_ARRANGEMENT_PREFIX));
+        searchInventory.setBarItem(3, CustomHeads.getTagEditor().setTags(new ItemEditor(Material.SKULL_ITEM,  3).setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZTJiYzYzYzBlNjEzY2UzZmE3ZGVkNDEyM2U2OTkwNzE3OGU2MjI0MGNjYWZlZmNhMjBlZGM5NTM4MTRhNzIifX19").setDisplayName(CustomHeads.getLanguageManager().CYCLE_ARRANGEMENT_PREFIX + CustomHeads.getLanguageManager().CYCLE_ARRANGEMENT_DEFAULT).getItem(), "scrollInv", "reArrange#>next", "originalName", CustomHeads.getLanguageManager().CYCLE_ARRANGEMENT_PREFIX));
         player.openInventory(searchInventory.getAsInventory());
         return searchInventory;
     }

@@ -45,7 +45,7 @@ import static de.mrstein.customheads.utils.Utils.hasPermission;
 @Getter
 public class CustomHeads extends JavaPlugin {
 
-    private static final boolean BETA = false;
+    private static final boolean BETA = true;
 
     public static final HashMap<String, String> uuidCache = new HashMap<>();
     public static final String chPrefix = "§7[§eCustomHeads§7] ";
@@ -226,7 +226,7 @@ public class CustomHeads extends JavaPlugin {
     public void onEnable() {
         instance = this;
         if(BETA)
-            getServer().getConsoleSender().sendMessage("\n \n \n" + chWarning + "This is a Beta Version of the Plugin! Please update it as soon as the Project gets updated\n \n ");
+            getServer().getConsoleSender().sendMessage("\n \n" + chWarning + "This is a Beta Version of the Plugin! Please update it as soon as the Project gets updated\n ");
         File oldHeadFile;
         if ((oldHeadFile = new File("plugins/CustomHeads", "heads.yml")).exists()) {
             oldHeadFile.renameTo(new File("plugins/CustomHeads", "config.yml"));
@@ -256,7 +256,7 @@ public class CustomHeads extends JavaPlugin {
                 }
                 getServer().getConsoleSender().sendMessage(chWarning + "I wasn't able to find the Default Languge File on your Server...");
                 getServer().getConsoleSender().sendMessage(chPrefix + "§7Downloading necessary Files...");
-                GitHubDownloader gitHubDownloader = new GitHubDownloader("MrSteinMC", "CustomHeads").enableAutoUnzipping();
+                GitHubDownloader gitHubDownloader = new GitHubDownloader("IHasName", "CustomHeads").enableAutoUnzipping();
                 gitHubDownloader.download(getDescription().getVersion(), "en_EN.zip", new File(getDataFolder(), "language"), (AsyncFileDownloader.AfterTask) () -> {
                     getServer().getConsoleSender().sendMessage(chPrefix + "§7Done downloading! Have fun with the Plugin =D");
                     getServer().getConsoleSender().sendMessage(chPrefix + "§7---------------------------------------------");

@@ -64,14 +64,6 @@ public interface CustomHeadsPlayer {
     boolean unlockHead(Category category, int id);
 
     /**
-     * Unlocks an Head from the Given ID
-     *
-     * @param categoryID Category HeadID
-     * @return false when the ID doesnt exists
-     */
-//    boolean unlockHead(CategoryID categoryID);
-
-    /**
      * Locks an Head from the Given ID
      *
      * @param category Which Category to pull from
@@ -79,14 +71,6 @@ public interface CustomHeadsPlayer {
      * @return false when the ID doesnt exists
      */
     boolean lockHead(Category category, int id);
-
-    /**
-     * Locks an Head from the Given ID
-     *
-     * @param categoryID Category Head ID
-     * @return false when the ID doesnt exists
-     */
-//    boolean lockHead(CategoryID categoryID);
 
     /**
      * Gets an List of the Heads a Player saved

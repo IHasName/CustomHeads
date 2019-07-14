@@ -166,15 +166,13 @@ public class Category extends BaseCategory {
                     String subCategoryID = categoryJson.get("id").getAsInt() + ":" + jsonObject.get("id").getAsInt();
                     for (JsonElement rawHeadObject : jsonObject.get("heads").getAsJsonArray()) {
                         JsonObject headObject = rawHeadObject.getAsJsonObject();
-                        ItemEditor head = new ItemEditor(Material.SKULL_ITEM, (short) 3).setTexture(headObject.get("texture").getAsString()).setDisplayName(headObject.get("name").getAsString());
+                        ItemEditor head = new ItemEditor(Material.SKULL_ITEM,  3).setTexture(headObject.get("texture").getAsString()).setDisplayName(headObject.get("name").getAsString());
                         if (headObject.has("description"))
                             head.setLore(headObject.get("description").getAsString());
                         int price = headObject.has("price") ? headObject.get("price").getAsInt() : 0;
                         int id = headObject.has("id") ? category.checkID(headObject.get("id").getAsInt()) : category.nextID();
-//                        CategoryID categoryID = new CategoryID(category, id);
                         CustomHead customHead = new CustomHead(head.getItem(), category, id, price);
                         category.addID(id);
-//                        registeredHeads.put(categoryID, customHead);
                         subHeads.add(customHead);
                     }
                     subCategories.add(new SubCategory(subCategoryID, Utils.format(jsonObject.get("name").getAsString()), CustomHeads.getTagEditor().setTags(icon, "openCategory", "subCategory#>" + categoryJson.get("id") + ":" + jsonObject.get("id"), "icon-fixed"), category, subHeads));
@@ -196,15 +194,13 @@ public class Category extends BaseCategory {
             } else {
                 for (JsonElement rawHeadObject : categoryJson.get("heads").getAsJsonArray()) {
                     JsonObject headObject = rawHeadObject.getAsJsonObject();
-                    ItemEditor head = new ItemEditor(Material.SKULL_ITEM, (short) 3).setTexture(headObject.get("texture").getAsString()).setDisplayName(headObject.get("name").getAsString());
+                    ItemEditor head = new ItemEditor(Material.SKULL_ITEM,  3).setTexture(headObject.get("texture").getAsString()).setDisplayName(headObject.get("name").getAsString());
                     if (headObject.has("description"))
                         head.setLore(headObject.get("description").getAsString());
                     int price = headObject.has("price") ? headObject.get("price").getAsInt() : 0;
                     int id = headObject.has("id") ? category.checkID(headObject.get("id").getAsInt()) : category.nextID();
-//                    CategoryID categoryID = new CategoryID(category, id);
                     CustomHead customHead = new CustomHead(head.getItem(), category, id, price);
                     category.addID(id);
-//                    registeredHeads.put(categoryID, customHead);
                     heads.add(customHead);
                 }
             }

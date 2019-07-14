@@ -32,11 +32,11 @@ public class ItemEditor {
     }
 
     public ItemEditor(Material material) {
-        this(new ItemStack(material));
+        this(material, 0);
     }
 
-    public ItemEditor(Material material, short damage) {
-        this(new ItemStack(material, 1, damage));
+    public ItemEditor(Material material, int damage) {
+        this(new ItemStack(material, 1,  (short) damage));
     }
 
     public short getDamage() {

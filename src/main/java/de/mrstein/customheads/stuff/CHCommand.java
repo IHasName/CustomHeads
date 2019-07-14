@@ -1,6 +1,5 @@
 package de.mrstein.customheads.stuff;
 
-import com.google.gson.JsonObject;
 import de.mrstein.customheads.CustomHeads;
 import de.mrstein.customheads.api.CustomHeadsPlayer;
 import de.mrstein.customheads.category.Category;
@@ -25,7 +24,6 @@ import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
@@ -42,8 +40,8 @@ public class CHCommand implements CommandExecutor {
 
     private static final Comparator<Category> categoryComparator = Comparator.comparing(category -> Integer.parseInt(category.getId()));
     public HashMap<Player, String[]> haltedCommands = new HashMap<>();
-    private String[] rdmans = {"CustomHeads says: Hmm", "CustomHeads says: Does the Console have an Inventory?", "CustomHeads says: That tickels!", "CustomHeads says: No", "CustomHeads says: Im lost", "CustomHeads says: I don't think this is what you are searching for", "CustomHeads says: Hold on... Nevermind", "CustomHeads says: Sorry", "CustomHeads says: Spoilers... There will be a new Command soon =]"};
-    private FireworkEffect.Type[] fxtypes = {FireworkEffect.Type.BALL, FireworkEffect.Type.BALL_LARGE, FireworkEffect.Type.BURST, FireworkEffect.Type.STAR};
+    private String[] rdmAns = {"CustomHeads says: Hmm", "CustomHeads says: Does the Console have an Inventory?", "CustomHeads says: That tickels!", "CustomHeads says: No", "CustomHeads says: Im lost", "CustomHeads says: I don't think this is what you are searching for", "CustomHeads says: Hold on... Nevermind", "CustomHeads says: Sorry", "CustomHeads says: Spoilers... There will be a new Command soon =]"};
+    private FireworkEffect.Type[] fxTypes = {FireworkEffect.Type.BALL, FireworkEffect.Type.BALL_LARGE, FireworkEffect.Type.BURST, FireworkEffect.Type.STAR};
     private BlockFace[] faces = {BlockFace.NORTH, BlockFace.NORTH_EAST, BlockFace.NORTH_NORTH_EAST};
     private Random ran = new Random();
 
@@ -55,30 +53,11 @@ public class CHCommand implements CommandExecutor {
                     return true;
                 }
                 if (args[0].equalsIgnoreCase("info")) {
-                    CustomHeads.getSpigetFetcher().getLastUpdates(resourceUpdates -> {
-                        sender.sendMessage("§7Version: §e" + CustomHeads.getInstance().getDescription().getVersion() + " §7Update: §e" + resourceUpdates.size());
-                    });
+                    CustomHeads.getSpigetFetcher().getLastUpdates(resourceUpdates -> sender.sendMessage("§7Version: §e" + CustomHeads.getInstance().getDescription().getVersion() + " §7Update: §e" + resourceUpdates.size()));
                     return true;
                 }
                 if (args[0].equalsIgnoreCase("redownload")) {
                     redownloadLanguageFiles(sender);
-                    return true;
-                }
-                if (args[0].equalsIgnoreCase("gittest")) {
-                    Utils.getBranchPath(new FetchResult<JsonObject>() {
-                        public void success(JsonObject jsonObject) {
-                            try (FileWriter writer = new FileWriter(new File(CustomHeads.getInstance().getDataFolder(), "testfetch.json"))) {
-                                writer.write(GSON_PRETTY.toJson(jsonObject));
-                                writer.flush();
-                            } catch (Exception e) {
-                                Bukkit.getLogger().log(Level.WARNING, "Failed to fetch Data", e);
-                            }
-                        }
-
-                        public void error(Exception exception) {
-                            Bukkit.getLogger().log(Level.WARNING, "Failed to fetch Data", exception);
-                        }
-                    }, "MrSteinMC", "CustomHeads", "master", "resources_for_download/zipped/language");
                     return true;
                 }
                 // Cache Cleaner
@@ -91,7 +70,7 @@ public class CHCommand implements CommandExecutor {
 //                }
             }
             Random rdm = new Random();
-            sender.sendMessage(rdmans[rdm.nextInt(rdmans.length)]);
+            sender.sendMessage(rdmAns[rdm.nextInt(rdmAns.length)]);
             return true;
         }
         Player player = (Player) sender;
@@ -100,7 +79,7 @@ public class CHCommand implements CommandExecutor {
             if (args.length == 0) {
                 Inventory menu = CustomHeads.getLooks().getCreatedMenus().get(headsConfig.get().getString("mainMenu"));
                 if (menu == null) {
-                    return true;
+                    return false;
                 }
                 player.openInventory(cloneInventory(menu, CustomHeads.getLooks().getCreatedMenuTitles().get(headsConfig.get().getString("mainMenu")), player));
                 return true;
@@ -119,9 +98,7 @@ public class CHCommand implements CommandExecutor {
             }
             if (args[0].equalsIgnoreCase("changelog")) {
                 if (hasPermission(player, "heads.admin")) {
-                    CustomHeads.getSpigetFetcher().getLatestUpdate(resourceUpdate -> {
-                        player.sendMessage("§6- Recent Update Changelog -\n \n§e" + resourceUpdate.getTitle() + "\n \n§7You can read the full Update here:\nhttps://www.spigotmc.org/resources/29057/update?update=" + resourceUpdate.getReleaseId());
-                    });
+                    CustomHeads.getSpigetFetcher().getLatestUpdate(resourceUpdate -> player.sendMessage("§6- Recent Update Changelog -\n \n§e" + resourceUpdate.getTitle() + "\n \n§7You can read the full Update here:\nhttps://www.spigotmc.org/resources/29057/update?update=" + resourceUpdate.getReleaseId()));
                     return true;
                 }
                 player.sendMessage(CustomHeads.getLanguageManager().NO_PERMISSION);
@@ -201,20 +178,6 @@ public class CHCommand implements CommandExecutor {
                     if (args[1].equalsIgnoreCase("gettags")) {
                         player.sendMessage("[Tags] " + CustomHeads.getTagEditor().getTags(player.getItemInHand()));
                     }
-                    if (args[1].equalsIgnoreCase("count")) {
-                        player.sendMessage("Counting Categories...");
-                        for (Category category : CustomHeads.getCategoryManager().getCategoryList()) {
-                            File outFile = new File("plugins/CustomHeads/parsedCategories", CustomHeads.getCategoryManager().getSourceFile(category).getName());
-                            Files.createParentDirs(outFile);
-                            OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(outFile), StandardCharsets.UTF_8);
-//                            FileWriter writer = new FileWriter(outFile);
-                            writer.write(category.toString());
-                            writer.flush();
-                            writer.close();
-                            player.sendMessage("Counting  " + category.getPlainName() + "...");
-                        }
-                        player.sendMessage("Done counting... but forgot how many it were");
-                    }
                     if(args[1].equalsIgnoreCase("getid")) {
                         CustomHead customHead = CustomHeads.getApi().getHead(CustomHeads.getCategoryManager().getCategory(args[2]), Integer.parseInt(args[3]));
                         player.sendMessage("[" + customHead
@@ -230,7 +193,6 @@ public class CHCommand implements CommandExecutor {
                 return true;
             }
             */
-
             if (args[0].equalsIgnoreCase("categories")) {
                 if (hasPermission(player, "heads.admin")) {
                     if (args.length < 2) {
@@ -489,7 +451,7 @@ public class CHCommand implements CommandExecutor {
                             Firework f = (Firework) saveLoc.get(cPlayer).getWorld().spawnEntity(saveLoc.get(cPlayer), EntityType.FIREWORK);
                             FireworkMeta fm = f.getFireworkMeta();
                             FireworkEffect.Builder fx = FireworkEffect.builder();
-                            fx.flicker(ran.nextBoolean()).trail(ran.nextBoolean()).with(fxtypes[ran.nextInt(fxtypes.length)]);
+                            fx.flicker(ran.nextBoolean()).trail(ran.nextBoolean()).with(fxTypes[ran.nextInt(fxTypes.length)]);
                             int c = ran.nextInt(2) + 2;
                             for (int i = 0; i < c; i++) {
                                 fx.withColor(Color.fromRGB(ran.nextInt(200) + 50, ran.nextInt(200) + 50, ran.nextInt(200) + 50));
@@ -526,7 +488,7 @@ public class CHCommand implements CommandExecutor {
                     if (query.resultsReturned() == 0) {
                         Inventory noRes = Bukkit.createInventory(player, 9 * 3, CustomHeads.getLanguageManager().NO_RESULTS);
                         noRes.setItem(13, CustomHeads.getTagEditor().setTags(new ItemEditor(Material.BARRIER).setDisplayName(CustomHeads.getLanguageManager().NO_RESULTS).getItem(), "blockMoving"));
-                        noRes.setItem(26, CustomHeads.getTagEditor().setTags(new ItemEditor(Material.SKULL_ITEM, (short) 3).setDisplayName(CustomHeads.getLanguageManager().NO_RESULTS_TRY_AGAIN).setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMWI2ZjFhMjViNmJjMTk5OTQ2NDcyYWVkYjM3MDUyMjU4NGZmNmY0ZTgzMjIxZTU5NDZiZDJlNDFiNWNhMTNiIn19fQ==").getItem(), "invAction", "retrySearch#>" + args[1]));
+                        noRes.setItem(26, CustomHeads.getTagEditor().setTags(new ItemEditor(Material.SKULL_ITEM,  3).setDisplayName(CustomHeads.getLanguageManager().NO_RESULTS_TRY_AGAIN).setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMWI2ZjFhMjViNmJjMTk5OTQ2NDcyYWVkYjM3MDUyMjU4NGZmNmY0ZTgzMjIxZTU5NDZiZDJlNDFiNWNhMTNiIn19fQ==").getItem(), "invAction", "retrySearch#>" + args[1]));
                         player.openInventory(noRes);
                         return true;
                     }
@@ -562,10 +524,20 @@ public class CHCommand implements CommandExecutor {
                 return true;
             }
             if (args[0].equalsIgnoreCase("get")) {
-                if (hasPermission(player, "heads.use.more.get")) {
+                if (hasPermission(player, "heads.use.more.get") || hasPermission(player, "heads.use.more.get.all")) {
                     if (args.length <= 1) {
                         openGetGUI(player);
                         player.updateInventory();
+                        return true;
+                    }
+                    if(args[1].equalsIgnoreCase("-all")) {
+                        if(!hasPermission(player, "heads.use.more.get.all")) {
+                            player.sendMessage(CustomHeads.getLanguageManager().NO_PERMISSION);
+                            return true;
+                        }
+                        ScrollableInventory scrollableInventory = new ScrollableInventory("Online Players", Bukkit.getOnlinePlayers().stream().map(p -> new ItemEditor(Material.SKULL_ITEM, 3).setOwner(p.getName()).setDisplayName("§a" + p.getName()).getItem()).collect(Collectors.toList()));
+                        scrollableInventory.setContentsClonable(true).setContentMovable(false);
+                        player.openInventory(scrollableInventory.getAsInventory());
                         return true;
                     }
                     if (args[1].length() > 16 || args[1].length() < 3) {
@@ -573,7 +545,7 @@ public class CHCommand implements CommandExecutor {
                         return true;
                     }
                     CustomHeads.getApi().wrapPlayer(player).getGetHistory().addEntry(args[1]);
-                    player.getInventory().addItem(new ItemEditor(Material.SKULL_ITEM, (short) 3).setDisplayName(CustomHeads.getLanguageManager().GET_HEAD_NAME.replace("{PLAYER}", args[1])).setOwner(args[1]).getItem());
+                    player.getInventory().addItem(new ItemEditor(Material.SKULL_ITEM,  3).setDisplayName(CustomHeads.getLanguageManager().GET_HEAD_NAME.replace("{PLAYER}", args[1])).setOwner(args[1]).getItem());
                     return true;
                 }
                 player.sendMessage(CustomHeads.getLanguageManager().NO_PERMISSION);

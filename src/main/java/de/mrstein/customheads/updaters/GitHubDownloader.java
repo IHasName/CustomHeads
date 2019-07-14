@@ -7,6 +7,8 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import de.mrstein.customheads.CustomHeads;
 import de.mrstein.customheads.utils.Utils;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import org.bukkit.Bukkit;
 
 import java.io.File;
@@ -61,8 +63,10 @@ public class GitHubDownloader {
             if (apiConnection.getResponseCode() != HttpURLConnection.HTTP_OK)
                 fetchResult.error(new Exception("Server responded with " + apiConnection.getResponseCode()));
             response = new JsonParser().parse(new InputStreamReader(apiConnection.getInputStream()));
-            if (response.isJsonObject() && response.getAsJsonObject().has("message"))
+            if (response.isJsonObject() && response.getAsJsonObject().has("message")) {
                 fetchResult.error(new NullPointerException("Release API resopnded with: " + response.getAsJsonObject().get("message").getAsString()));
+                return;
+            }
             responseCache.put(url, new CachedResponse<>(System.currentTimeMillis(), response));
             fetchResult.success(response);
         } catch (Exception e) {
@@ -71,26 +75,38 @@ public class GitHubDownloader {
     }
 
     public static void getRelease(String tag, String author, String project, FetchResult<JsonObject> fetchResult) {
-        getResponseAsJson(String.format(GITHUB_REPO_URL, author, project) + "/releases", new FetchResult<JsonElement>() {
-            public void success(JsonElement js) {
-                JsonArray releaseList = js.getAsJsonArray();
-                JsonObject release = null;
-                for (JsonElement jsonElement : releaseList) {
-                    if (jsonElement.getAsJsonObject().get("tag_name").getAsString().equals(tag)) {
-                        release = jsonElement.getAsJsonObject();
-                        break;
-                    }
-                }
-
-                if (release == null) {
-                    fetchResult.error(new NullPointerException("Unkown Tag"));
+        getRateLimit(new FetchResult<JsonObject>() {
+            public void success(JsonObject rateLimit) {
+                if(rateLimit.get("remaining").getAsInt() == 0) {
+                    fetchResult.error(new RateLimitExceededException(rateLimit.get("reset").getAsLong()));
                     return;
                 }
-                fetchResult.success(release);
+                getResponseAsJson(String.format(GITHUB_REPO_URL, author, project) + "/releases", new FetchResult<JsonElement>() {
+                    public void success(JsonElement js) {
+                        JsonArray releaseList = js.getAsJsonArray();
+                        JsonObject release = null;
+                        for (JsonElement jsonElement : releaseList) {
+                            if (jsonElement.getAsJsonObject().get("tag_name").getAsString().equals(tag)) {
+                                release = jsonElement.getAsJsonObject();
+                                break;
+                            }
+                        }
+
+                        if (release == null) {
+                            fetchResult.error(new NullPointerException("Unkown Tag"));
+                            return;
+                        }
+                        fetchResult.success(release);
+                    }
+
+                    public void error(Exception exception) {
+                        Bukkit.getLogger().log(Level.WARNING, "Failed to get Release", exception);
+                    }
+                });
             }
 
             public void error(Exception exception) {
-                Bukkit.getLogger().log(Level.WARNING, "Failed to get Release", exception);
+
             }
         });
     }
@@ -137,7 +153,8 @@ public class GitHubDownloader {
             }
 
             public void error(Exception exception) {
-                exception.printStackTrace();
+                Bukkit.getLogger().log(Level.WARNING, "Failed to download Files", exception);
+//                exception.printStackTrace();
             }
         });
     }
@@ -152,6 +169,33 @@ public class GitHubDownloader {
                 Bukkit.getLogger().log(Level.WARNING, "Failed to fetch latest Data", exception);
             }
         });
+    }
+
+    private static void getRateLimit(FetchResult<JsonObject> result) {
+        getResponseAsJson("https://api.github.com/rate_limit", new FetchResult<JsonElement>() {
+            public void success(JsonElement element) {
+                try {
+                    result.success(element.getAsJsonObject().getAsJsonObject("rate"));
+                } catch(Exception e) {
+                    result.error(e);
+                }
+            }
+
+            @Override
+            public void error(Exception exception) {
+                exception.printStackTrace();
+            }
+        });
+    }
+
+    @Getter
+    @AllArgsConstructor
+    public static class RateLimitExceededException extends Exception {
+        private long reset;
+
+        public String getMessage() {
+            return "Rate Limit exceeded. Try again later";
+        }
     }
 
 }
