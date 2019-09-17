@@ -58,13 +58,7 @@ public class CHSearchQuery {
             customHeadsPlayer.getSearchHistory().addEntry(search);
 
         String title = CustomHeads.getLanguageManager().SEARCH_TITLE.replace("{RESULTS}", "" + results.size());
-        title = badVersions.contains(CustomHeads.version) ?
-                title.contains("{short}") ?
-                        title.substring(0, title.lastIndexOf("{short}") >= 32 ?
-                                32 :
-                                title.lastIndexOf("{short}")) :
-                        title.substring(0, title.length() >= 32 ? 32 : title.length()) :
-                title.replace("{short}", "");
+        title = badVersions.contains(CustomHeads.version) ? title.contains("{short}") ? title.substring(0, title.lastIndexOf("{short}") >= 32 ? 29 : title.lastIndexOf("{short}")) + "..." : title.substring(0, title.length() >= 32 ? 29 : title.length()) + "..." : title.replace("{short}", "");
         List<ItemStack> heads = new ArrayList<>();
         results.forEach(customHead -> {
             ItemEditor itemEditor = new ItemEditor(customHead);

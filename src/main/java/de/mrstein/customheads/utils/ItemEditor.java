@@ -141,7 +141,8 @@ public class ItemEditor {
     public ItemEditor setTexture(String texture) {
         if (itemStack.getType() != Material.SKULL_ITEM)
             throw new IllegalArgumentException("ItemStack is not an Player Head");
-        Utils.inject(meta.getClass(), meta, "profile", GameProfileBuilder.createProfileWithTexture(texture));
+        if(!Utils.injectFieldValue(meta.getClass(), meta, "profile", GameProfileBuilder.createProfileWithTexture(texture)))
+            throw new IllegalStateException("Unable to inject Gameprofile");
         return this;
     }
 

@@ -45,7 +45,7 @@ import static de.mrstein.customheads.utils.Utils.hasPermission;
 @Getter
 public class CustomHeads extends JavaPlugin {
 
-    private static final boolean BETA = true;
+    private static final boolean BETA = false;
 
     public static final HashMap<String, String> uuidCache = new HashMap<>();
     public static final String chPrefix = "§7[§eCustomHeads§7] ";
@@ -64,7 +64,7 @@ public class CustomHeads extends JavaPlugin {
     @Getter private static SpigetFetcher spigetFetcher;
     @Getter private static EconomyManager economyManager;
     @Getter private static CategoryManager categoryManager;
-    private static List<String> versions = Arrays.asList("v1_8_R1", "v1_8_R2", "v1_8_R3", "v1_9_R1", "v1_9_R2", "v1_10_R1", "v1_11_R1", "v1_12_R1", "v1_13_R1", "v1_14_R1");
+    private static List<String> versions = Arrays.asList("v1_8_R1", "v1_8_R2", "v1_8_R3", "v1_9_R1", "v1_9_R2", "v1_10_R1", "v1_11_R1", "v1_12_R1", "v1_13_R1", "v1_13_R2", "v1_14_R1");
     private static String packet = Bukkit.getServer().getClass().getPackage().getName();
     public static String version = packet.substring(packet.lastIndexOf('.') + 1);
 

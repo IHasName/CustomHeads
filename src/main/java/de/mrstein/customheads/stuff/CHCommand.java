@@ -270,7 +270,7 @@ public class CHCommand implements CommandExecutor {
                             haltedCommands.put(player, args);
                             new BukkitRunnable() {
                                 public void run() {
-                                    if (haltedCommands.containsKey(player) && haltedCommands.get(player).equals(args)) {
+                                    if (haltedCommands.containsKey(player) && Arrays.equals(haltedCommands.get(player), args)) {
                                         haltedCommands.remove(player);
                                     }
                                 }
@@ -535,7 +535,7 @@ public class CHCommand implements CommandExecutor {
                             player.sendMessage(CustomHeads.getLanguageManager().NO_PERMISSION);
                             return true;
                         }
-                        ScrollableInventory scrollableInventory = new ScrollableInventory("Online Players", Bukkit.getOnlinePlayers().stream().map(p -> new ItemEditor(Material.SKULL_ITEM, 3).setOwner(p.getName()).setDisplayName("§a" + p.getName()).getItem()).collect(Collectors.toList()));
+                        ScrollableInventory scrollableInventory = new ScrollableInventory(" ", Bukkit.getOnlinePlayers().stream().map(p -> new ItemEditor(Material.SKULL_ITEM, 3).setOwner(p.getName()).setDisplayName("§a" + p.getName()).getItem()).collect(Collectors.toList()));
                         scrollableInventory.setContentsClonable(true).setContentMovable(false);
                         player.openInventory(scrollableInventory.getAsInventory());
                         return true;

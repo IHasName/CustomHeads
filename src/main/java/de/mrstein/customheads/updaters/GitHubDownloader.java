@@ -93,7 +93,7 @@ public class GitHubDownloader {
                         }
 
                         if (release == null) {
-                            fetchResult.error(new NullPointerException("Unkown Tag"));
+                            fetchResult.error(new NullPointerException("Unkown Tag: " + tag));
                             return;
                         }
                         fetchResult.success(release);

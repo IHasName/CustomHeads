@@ -28,7 +28,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.*;
 import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.channels.Channels;
@@ -300,31 +299,22 @@ public class Utils {
         return builder.toString();
     }
 
-    public static boolean inject(Class<?> sourceClass, Object instance, String fieldName, Object value) {
+    public static boolean injectFieldValue(Class<?> sourceClass, Object instance, String fieldName, Object value) {
         try {
             Field field = sourceClass.getDeclaredField(fieldName);
-            Field modifiersField = Field.class.getDeclaredField("modifiers");
-            int modifiers = modifiersField.getModifiers();
             if (!field.isAccessible()) {
                 field.setAccessible(true);
-            }
-            if ((modifiers & Modifier.FINAL) == Modifier.FINAL) {
-                modifiersField.setAccessible(true);
-                modifiersField.setInt(field, modifiers & ~Modifier.FINAL);
             }
             try {
                 field.set(instance, value);
             } finally {
-                if ((modifiers & Modifier.FINAL) == Modifier.FINAL) {
-                    modifiersField.setInt(field, modifiers | Modifier.FINAL);
-                }
                 if (!field.isAccessible()) {
                     field.setAccessible(false);
                 }
             }
             return true;
         } catch (Exception e) {
-            Bukkit.getLogger().log(Level.WARNING, "Unable to inject Gameprofile", e);
+            Bukkit.getLogger().log(Level.WARNING, "Unable to inject Object Value into Field", e);
         }
         return false;
     }
@@ -511,6 +501,7 @@ public class Utils {
             Date date = new Date(System.currentTimeMillis());
 
             File backUpRoot = new File("plugins/CustomHeads/language-backups/" + format.format(date));
+            Files.createParentDirs(backUpRoot);
             int c = 0;
             while (backUpRoot.exists()) {
                 backUpRoot = new File(backUpRoot + "_" + ++c);
@@ -532,7 +523,7 @@ public class Utils {
 
         sender.sendMessage((console ? CustomHeads.chPrefix : "") + CustomHeads.getLanguageManager().LANGUAGE_REDOWNLOAD_DOWNLOADING);
         GitHubDownloader gitGetter = new GitHubDownloader("IHasName", "CustomHeads").enableAutoUnzipping();
-        gitGetter.download(CustomHeads.getInstance().getDescription().getVersion(), "en_EN.zip", new File("plugins/CustomHeads"), (AsyncFileDownloader.AfterTask) () -> {
+        gitGetter.download(CustomHeads.getInstance().getDescription().getVersion(), "en_EN.zip", new File("plugins/CustomHeads/language"), (AsyncFileDownloader.AfterTask) () -> {
             CustomHeads.reload();
             sender.sendMessage((console ? CustomHeads.chPrefix : "") + CustomHeads.getLanguageManager().LANGUAGE_REDOWNLOAD_DONE);
         });

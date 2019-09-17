@@ -1,0 +1,212 @@
+# - Language File : en_EN -
+DEFINITION: 'Spanish'
+NO_PERMISSION: "&cNo tienes permiso para usar este comando!"
+# General Messages
+LANG_YES: 'Si'
+LANG_NO: 'No'
+CONFIRM_NOTHINGFOUND: '&eConfirmar: &7 No se ha encontrado nada para confirmar en este momento'
+COMMAND_USAGE: '&cUsa: &7{COMMAND}'
+LINK: '&7Link'
+LANGUAGE:
+  CHANGE_CHANGING: '&eIdioma: &7Cargando idioma desde &a{LANGUAGE}.yml'
+  CHANGE_SUCCESSFUL: '&eIdioma: &7El idioma se ha configurado en &a{LANGUAGE}'
+  CHANGE_ALREADY_USED: '&eIdioma: &7Idioma ya usado. Prueba /heads reinicia para recargar el idioma'
+  CHANGE_FAILED: '&eIdioma: &7Error al establecer el idioma ... Restaurando el idioma utilizado antes'
+  REDOWNLOAD_FAILED_WAIT: '&eIdioma: &7Espere antes de volver a descargar el idioma nuevamente'
+  REDOWNLOAD_BACKING_UP: '&eIdioma: &7Copia de seguridad de archivos antiguos...'
+  REDOWNLOAD_BACKUP_FAILED: '&eIdioma: &7Error al hacer copia de seguridad de los archivos'
+  REDOWNLOAD_DOWNLOADING: '&eIdioma: &7Descargar archivos de idioma...'
+  REDOWNLOAD_DONE: '&eIdioma: &7Hecho'
+  DOWNLOAD_FETCHING: '&7Recuperacion de datos'
+  DOWNLOAD_FETCHFAILED: '&cFallo en la recuperacion de datos'
+  DOWNLOAD_SUCCESSFUL: '&eIdioma: Descargado exitosamente &e{LANGUAGE}'
+  DOWNLOAD_TITLE: '&aIdiomas descargables'
+RELOAD:
+  CONFIG: '&eRecargar: &7Recargando configuraciones...'
+  HISTORY: '&eRecargar: &7Historial de recarga...'
+  LANGUAGE: '&eRecargar: &7Lenguaje de recarga...'
+  FAILED: '&eRecargar: &cAlgo salió mal al recargar... Consulte su registro para obtener más información.'
+  SUCCESSFUL: '&eRecargar: &aConfiguraciones recargadas'
+HELP_GET_COMMAND: '&7Haz clic en mí para obtener el comando'
+SAVED_HEADS_TITLE: "{PLAYER} Cabezas guardadas"
+PUT_ON_HEAD: '&7Tu cabeza es ahora &r{NAME}'
+NO_PERMISSION_TO_VIEW:
+- "&cNo tienes permiso"
+- "&cpara ver esto"
+ECONOMY:
+  PRICE: '&7Precio: &e{PRICE}'
+  PRICE_FORMAT: '{PRICE}{CURRENCY}'
+  FREE: Gratis
+  BOUGHT: '&7Desbloqueado'
+  BUY_PROMPT: '&eHaga clic derecho para comprar'
+  BUY_CONFIRM: '&7Comprar &9{ITEM} &7por &9{PRICE}?'
+  BUY_SUCCESSFUL: '&eHeadShop: &7Comprado con éxito {ITEM}'
+  BUY_FAILED: '&eHeadShop: &7Transacción fallida: {REASON}'
+# History Messages
+HISTORY_DISABLED: '&eHistoria: &cLa configuración deshabilita el historial'
+HISTORY_INVALID_PLAYER: "&eHistoria: &cJugador inválido '{PLAYER}'"
+HISTORY_NO_VIEW_PERMISSION: '&eHistoria: &cNo puedes mostrar este Historial de jugadores'
+# Firework Messages
+CANNOT_PLACE_IN_BLOCK: '&eFuegos artificiales: &cNo se pueden colocar fuegos artificiales en un bloque'
+CANNOT_PLACE_IN_AIR: '&eFuegos artificiales: &cNo se pueden colocar fuegos artificiales en el aire'
+ALREADY_IN_USE: '&eFuegos artificiales: &cYa has activado un Firework. Espera antes de reutilizarlo'
+STARTING: '&eFuegos artificiales: &aComenzando algunos fuegos artificiales'
+# Search
+INVALID_INPUT: "&eBuscar: &centrada inválida: '{SEARCH}'"
+CHANGE_SEARCH_STRING: Cambiame para buscar
+SEARCH_LORE:
+- '&7Cambia el texto a lo que quieras'
+- '&7para buscar y hacer clic en el elemento en el'
+- '&7Salida a buscar'
+TO_LONG_INPUT: '&eBuscar: &cUtilice un texto que sea más corto que 16'
+SEARCHING: "&eBuscar: &7Buscando '&r{SEARCH}&7'"
+LOCKED: '(Locked)'
+CYCLE_ARRANGEMENT:
+  PREFIX: '&7Arreglo: &e'
+  DEFAULT: 'Default'
+  ALPHABETICAL: 'Alfabéticamente'
+  COLOR: 'Color'
+# Title will be shorted to 32 Characters in 1.8
+# Also can be shorted by Putting {short} between
+SEARCH_TITLE: '&aBuscar &8: &a{RESULTS} Resultados(s)'
+LOADING: Cargando
+NO_RESULTS: '&cNo se han encontrado resultados!'
+NO_RESULTS_TRY_AGAIN: '&cInténtalo de nuevo'
+PAGE_GENERAL_PREFIX: '&cPágina'
+# Categories Command
+CATEGORIES:
+  BASE_COMMAND:
+    HEADER: '&eCategorías cargadas actualmente'
+    HOVERINFO_CATEGORY:
+    - '&7ID: &e{ID}'
+    - '&7Permiso: &e{PERMISSION}'
+    - '&7Utilizar: &e{USED}'
+    HOVERINFO_SUBCATEGORY:
+    - '&7ID: &e{ID}'
+    - '&7Usado: &e{USED}'
+  REMOVE:
+    NOTFOUND: '&eRetirar: &7No existe tal categoría con el ID: &c{ID}'
+    INUSE: '&eRetirar: &7No se puede eliminar &c{CATEGORY} &7mientras se usa'
+    FAILED: '&eRetirar: &cNo se pudo eliminar la categoría'
+    SUCCESSFUL: '&eRetirar: &a{CATEGORY} &7(&e{ID}&7) ha sido removido!'
+  DELETE:
+    CATEGORY:
+      NOTFOUND: '&eBorrar: &7No existe tal categoría con el ID: &c{ID}'
+      INUSE: '&eRetirar: &7No se puede eliminar &c{CATEGORY} &7mientras se usa'
+      CONFIRM: '&eBorrar: &7Por favor escribe /heads confirma si estás seguro de que quieres §cborrar &7{CATEGORY} (El comando estará disponible durante 15 segundos.){nl}&cLa eliminación no se puede deshacer!'
+      FAILED: '&eBorrar: &cNo se pudo eliminar la categoría'
+      SUCCESSFUL: '&eBorrar: &a{CATEGORY} &7(&e{ID}&7) ha sido eliminado!'
+    SUBCATEGORY:
+      NOTFOUND: '&eBorrar: &7No existe tal Subcategoría con el ID: &c{ID}'
+      INUSE: '&eRetirar: &7No se puede eliminar &c{CATEGORY} &7mientras se usa'
+      CONFIRM: '&eBorrar: &7Por favor escribe /heads confirma si estás seguro de que quieres §cborrar &7{CATEGORY} (El comando estará disponible durante 15 segundos.){nl}&cLa eliminación no se puede deshacer!'
+      FAILED: '&eBorrar: &cNo se pudo eliminar la subcategoría'
+      SUCCESSFUL: '&eBorrar: &a{CATEGORY} &7(&e{ID}&7) ha sido eliminado!'
+  IMPORT:
+    NOCATEGORYFOLDER: '&eImportar: &7No se pudo encontrar el directorio &cCategory'
+    BASE_COMMAND:
+      NOFILES: '&eImportar: &7No se encontraron archivos para importar'
+      LIST: '&bArchivos disponibles para importar'
+      LIST_FORMAT: ' &e{FILE}'
+      CLICKTOIMPORT: '&7Haga clic aquí para importar este archivo'
+    SUCCESSFUL: '&eImportar: &7Categoría importada con éxito de &b{FILE}'
+    DUBLICATE_CATEGORY: '&eImportar: &7Ya hay una categoría con el ID {ID}'
+    DUBLICATE_SUBCATEGORY: '&eImportar: &7Hay una subcategoría duplicada en {FILE}'
+    ERROR: '&eImportar: &7Ocurrió un error al leer {FILE}'
+    INVALID_FILE: '&eImportar: &7Archivo invalido &cCategoria'
+    FILENOTFOUND: '&eImportar: &7No pudo encontrar &c{FILE}'
+FONTS:
+  GENERAL_NOTFOUND: '&eFuentes: &c{FONT} &7no pudo ser encontrado'
+  CREATE_ALREADYEXISTS: '&eFuentes: &c{FONT} &7ya existe'
+  CREATE_SUCCESSFUL: '&eFuentes: &a{FONT} &7Ha sido creado'
+  REMOVE_SUCCESSFUL: '&eFuentes: &b{FONT} &7ha sido removido'
+  REMOVE_FAILED: '&eFuentes: &7Error al eliminar &c{FONT}'
+  NOFONTS: '&eFuentes: &7No se encontraron fuentes disponibles'
+  LIST_HEADER: '&eFuentes Disponibles'
+  LIST: '&e{FILE} - Tiene {CHARACTERS} Caracteres'
+  EDIT_TITLE: '&bEdición {FONT}'
+  EDIT_ADDCHARACTER: '&aAñadir personaje'
+  EDIT_REMOVECHARACTER: '&cEliminar personaje'
+  EDIT_REMOVECHARACTER_INFO:
+  - '&7Haga clic para alternar'
+  - '&7Shift + Clic izquierdo para eliminar'
+  - '&7Personajes seleccionados'
+  EDIT_ADDCHARACTER_SUCCESSFUL: "&eFuentes: &7Adicional &b{CHARACTER}"
+  EDIT_ADDCHARACTER_FAILED: "&eFuentes: &7No se puede agregar &c{CHARACTER}"
+  EDIT_SELECTED: "&bSeleccionado &7- &b{CHARACTER}"
+  EDIT_REMOVECHARCATER_CONFIRM: '&cEliminar estos personajes?'
+  EDIT_REMOVECHARCATER_FAILED: "&eFuentes: &7No se pudo eliminar &c{CHARACTER}"
+  EDIT_REMOVECHARCATER_SUCCESSFUL: '&eFuentes: &7Eliminado exitosamente &b{CHARACTERS} &7Caracteres'
+  EDIT_REMOVECHARCATER_PREINFO: '&cLos siguientes personajes serán eliminados'
+  EDIT_ADDCHARACTER_TITLE: '&eDragNDrop Sumador de personajes &7: &e{FONT}'
+  EDIT_ADD_DROPPER_TOGGLE: '&bForzar agregar caracteres: &b{MODE}'
+  EDIT_ADD_DROPPER_NAME: '&bDeja tus personajes aquí!'
+  EDIT_ADD_DROPPER_LORE:
+  - '&7Para agregar algo toma la cabeza'
+  - '&7con tu textura y nómbralo'
+  - '&7después del personaje que quieres agregar.'
+  - '&7Luego cámbielo con este elemento'
+  - '&ePuedes usar BLANK para un personaje espacial'
+  EDIT_SAVENEXIT: '&aGuardar cambios y salir'
+  EDIT_SAVE_SUCCESSFUL: '&eFuentes: &a{FONT} &7ha sido guardado y actualizado'
+# More
+UNDO_INVALID_INPUT: "&eDeshacer: &7entrada inválida &c'{TIMES}'"
+UNDO_SUCCESSFUL: '&eDeshacer: &7Deshacer exitoso &7{TIMES}'
+UNDO_NOTHING_LEFT: '&eDeshacer: &7Nada queda por deshacer'
+GET_HEAD_NAME: '&rCabeza de {PLAYER}'
+GET_INVALID: "&eObtener: &7Nombre de jugador inválido: &c'{PLAYER}'"
+SAVE_GET_TEXTURE: '&eSalvar: &7Obteniendo textura...'
+SAVE_OWN_SUCCESSFUL: '&eSalvar: &7Tu cabeza ha sido agregada como &b{NAME}.'
+SAVE_OWN_FAILED: '&eSalvar: &cNo se pudo salvar la cabeza!'
+SAVE_UNAVIABLE: '&eSalvar: &cAgregar textura personalizada desde cabezas está actualmente deshabilitado!'
+SAVE_NOT_CUSTOM_TEXTURE: '&eSalvar: &cEso no es una cabeza con textura personalizada!'
+SAVE_SUCCESSFUL: '&eSalvar: &b{NAME} &7ha sido añadido'
+SAVE_ALREADY_EXIST: '&eSalvar: &c{NAME} ya existe'
+SAVE_NOT_SKULL: '&eSalvar: &cEso no es una cabeza de jugador'
+REMOVE_SUCCESSFUL: '&eSalvar: &7La cabeza &r{NAME} &7ha sido removido'
+REMOVE_FAILED: "&eSalvar: &7Esta cabeza no existe"
+REMOVE_CONFIRMATION: '&cBorrar {HEAD}?'
+WRITE_NOFONT: "&eEscribir: &cEsta fuente no existe"
+WRITE_TO_LONG: '&eEscribir: &cSu texto no puede tener más de 40 caracteres'
+WRITE_WRITING: '&eEscribir: &7Escrito &b{TEXT}'
+# Buttons
+BACK_GENERAL: '&cAtrás'
+BACK_TO_PREVIOUS: '&7Volver al menú anterior'
+NEXT_PAGE: '&cSiguiente página'
+PREVIOUS_PAGE: '&cPagina anterior'
+# History
+HISTORY_INV_TITLE: '&aHistoria de {PLAYER}'
+HISTORY_SEARCHHISTORY_ACTIVE: '&aBuscar Historia'
+HISTORY_SEARCHHISTORY: '&7Buscar Historia'
+HISTORY_GETHISTORY_ACTIVE: '&aObtener historia'
+HISTORY_GETHISTORY: '&7Obtener historia'
+HISTORY_NO_HISTORY_LORE:
+- "&cEste jugador no"
+- '&ctener una historia'
+HISTORY_SEARCHHISTORY_LORE:
+- '&7Haga clic derecho para buscar'
+- '&7para esto'
+HISTORY_GET_LORE:
+- '&7Haga clic derecho para copiar'
+- '&7Dirígete al inventario'
+# Extra
+ITEM_NAMES:
+  YOUR_HEAD: '&eTu cabeza'
+  COLLECTION: '&aMi colección &7{SIZE}'
+  HELP: '&aAyuda'
+  HELP_LORE:
+  - '&7Te muestra todos los comandos'
+  INFO: '&aInfo'
+  INFO_LORE:
+  - '&7Shift + Botón derecho del ratón'
+  - '&7aplicar calavera al casco'
+  - '&7Slot'
+  - '&cAdvertencia! Reemplaza actual'
+  - '&cArtículo de casco!'
+  SEARCH: Buscar
+  SEARCH_LORE:
+  - '&7Busca una cabeza'
+  - '&7en la base de datos'
+  FIND_MORE: '&3Encuentra más'
+  FIND_MORE_LORE:
+  - '&7Haga clic en mí para obtener el enlace'

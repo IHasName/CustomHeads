@@ -1,0 +1,607 @@
+{
+  "id": 12,
+  "name": "Cabezas de Eventos",
+  "permission": "event_heads",
+  "fixed-icon": false,
+  "icon": {
+    "item": "SKULL_ITEM",
+    "damage": 3,
+    "display-name": "Cabezas de Eventos",
+    "lore": [
+      "§bPascua",
+      "§7Halloween",
+      "§7Navidad"
+    ],
+    "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNTYyODUzMWViNWYwNTY5ZWRhZTE2YzhhNDNlYjIyZWVjZjdjMTUyMzViODM1YWUxNDE0YzI2OWNhZDEyY2E3In19fQ=="
+  },
+  "sub_categories": [
+    {
+      "id": 0,
+      "name": "§bPascua",
+      "icon": {
+        "item": "SKULL_ITEM",
+        "damage": 3,
+        "display-name": "§bPascua",
+        "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNTYyODUzMWViNWYwNTY5ZWRhZTE2YzhhNDNlYjIyZWVjZjdjMTUyMzViODM1YWUxNDE0YzI2OWNhZDEyY2E3In19fQ=="
+      },
+      "heads": [
+        {
+          "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOGM1MGFlZTg4MDEzZThmYWY0MjdlMTlmM2I4OTgyOGI4NmJiZjAzZGQyZjE3YzRjNzYwZDFkZGUyMmRlMyJ9fX0=",
+          "name": "§6Huevo de chocolate",
+          "id": 1,
+          "price": 0
+        },
+        {
+          "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZWViMzM1MTgyZGI1ZjNiZTgwZmNjZjZlYWJlNTk5ZjQxMDdkNGZmMGU5ZjQ0ZjM0MTc0Y2VmYTZlMmI1NzY4In19fQ==",
+          "name": "Huevo de pascua azul",
+          "id": 2,
+          "price": 0
+        },
+        {
+          "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYjJjZDVkZjlkN2YxZmE4MzQxZmNjZTJmM2MxMThlMmY1MTdlNGQyZDk5ZGYyYzUxZDYxZDkzZWQ3ZjgzZTEzIn19fQ==",
+          "name": "§aHuevo de pascua verde",
+          "id": 3,
+          "price": 0
+        },
+        {
+          "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzc2NTk1ZWZmY2M1NjI3ZTg1YjE0YzljODgyNDY3MWI1ZWMyOTY1NjU5YzhjNDE3ODQ5YTY2Nzg3OGZhNDkwIn19fQ==",
+          "name": "§dHuevo de pascua rosa",
+          "id": 4,
+          "price": 0
+        },
+        {
+          "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNGViNWFiYjEyMzUyN2E3YTFmNWM5NTg5NzE1OTY0YjU5Zjc2ODI0OTI2ZDNiOTgyZmE4NDExZDQ2MDZjNzkifX19",
+          "name": "§fHuevo de pascua blanco (Rayas rojas y naranjas)",
+          "id": 5,
+          "price": 0
+        },
+        {
+          "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMjY0NDMwZTQ5M2ZlYjVlYWExNDU1ODJlNTRlNzYxYTg2MDNmYjE2Y2MwZmYxMjY4YTVkMWU4NjRlNmY0NzlmNiJ9fX0=",
+          "name": "§fHuevo de pascua blanco (Raya púrpura)",
+          "id": 6,
+          "price": 0
+        },
+        {
+          "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYjNkNjliMjNhZTU5MmM2NDdlYjhkY2ViOWRhYWNlNDQxMzlmNzQ4ZTczNGRjODQ5NjI2MTNjMzY2YTA4YiJ9fX0=",
+          "name": "§cHuevo de pascua rojo",
+          "id": 7,
+          "price": 0
+        },
+        {
+          "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNjU2ZjdmM2YzNTM2NTA2NjI2ZDVmMzViNDVkN2ZkZjJkOGFhYjI2MDA4NDU2NjU5ZWZlYjkxZTRjM2E5YzUifX19",
+          "name": "§bHuevo de pascua multicolor",
+          "id": 8,
+          "price": 0
+        },
+        {
+          "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNThiOWUyOWFiMWE3OTVlMmI4ODdmYWYxYjFhMzEwMjVlN2NjMzA3MzMzMGFmZWMzNzUzOTNiNDVmYTMzNWQxIn19fQ==",
+          "name": "§dHuevo de pascua rosa (Rayas magentas)",
+          "id": 9,
+          "price": 0
+        },
+        {
+          "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTViOGRjYmVhMjdmNDJmNWFlOTEwNDQ1ZTA1ZGFjODlkMzEwYWFmMjM2YTZjMjEyM2I4NTI4MTIwIn19fQ==",
+          "name": "§dHuevo de pascua rosa (Rayas amarillas y magentas)",
+          "id": 10,
+          "price": 0
+        },
+        {
+          "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZmI4YjJiZGZjNWQxM2I5ZjQ1OTkwZWUyZWFhODJlNDRhZmIyYTY5YjU2YWM5Mjc2YTEzMjkyYjI0YzNlMWRlIn19fQ==",
+          "name": "§6Huevo de pascua",
+          "id": 11,
+          "price": 0
+        },
+        {
+          "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTg4OWYxMWM4ODM4YzA5ZTFlY2YyZjgzNDM5ZWJjYjlmMzI0ZTU2N2IwZTlkYzRiN2MyNWQ5M2U1MGZmMmIifX19",
+          "name": "§5Huevo de pascua violeta",
+          "id": 12,
+          "price": 0
+        },
+        {
+          "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTdkYWZmNDIzOWU1NjBmN2Y1M2IxY2NiY2ViYzYxNGYwZGRmMzU4MWE2ZmFkNWJkODE1NjcyOTFlY2Y0NTcxIn19fQ==",
+          "name": "§eHuevo de pascua amarillo (Puntos naranjas)",
+          "id": 13,
+          "price": 0
+        },
+        {
+          "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDM2ZmU4M2M0MmM2Y2U3Mzg2Y2YyMzMzYTFjNTk1ZDBiNDMzZGE3YmM1NTkyYjg2ODY2ODU1MWQ2OWI5YjAifX19",
+          "name": "§eHuevo de pascua amarillo (Puntos de lima)",
+          "id": 14,
+          "price": 0
+        },
+        {
+          "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNDY0MmFmYTM5Njg1M2I4MWIxN2JlZjVjOGQ3YTQ0YzEyZGU2ODlhNTZhZjQ3NDg0NjY3OTgzOTlkYTNjZmVhZSJ9fX0=",
+          "name": "§bHuevo de Pascua azul claro",
+          "id": 15,
+          "price": 0
+        },
+        {
+          "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODNjMjVhN2ExODgxOTZiMTg3MTcyNjRmZmU4MzdjYTM0OGNmNzE5ZTgyNzE3OWVkYzRiNzhjYmNiOGM3ZGQ4In19fQ==",
+          "name": "§6Canasta de huevos de pascua",
+          "id": 16,
+          "price": 0
+        },
+        {
+          "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZTJiZjA1ZDNlNzU2YzMzNzk4NzdhOGFjOGZkZmE0NDE4Y2RlNmY1Y2M3ZTk5MTAzYTEyZmY5YWMxNDk5NyJ9fX0=",
+          "name": "§6Canasta de huevos de pascua (volteada)",
+          "id": 17,
+          "price": 0
+        },
+        {
+          "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZGEzZGRjZTJjNTU2ZjIyZmRhMzE3OTc4MzlmZmQxZDA0MjhhZmUxMmE0NWMwNzM1NTk1MWY0NDRjNzc0YWQifX19",
+          "name": "§6Canasta de huevos de pascua (de lado)",
+          "id": 18,
+          "price": 0
+        },
+        {
+          "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYmU1MGFmNTA0MzhhZmZjNjVjZTNiN2E4NWI4ZTgyY2ZiYzNjYWIxOTdjMjVkNGE2MTQyMzBhMmQxZTA2MDVkIn19fQ==",
+          "name": "§8Conejo de Pascua",
+          "id": 19,
+          "price": 0
+        }
+      ]
+    },
+    {
+      "id": 1,
+      "name": "§cHalloween",
+      "icon": {
+        "item": "SKULL_ITEM",
+        "damage": 3,
+        "display-name": "§cHalloween",
+        "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYjcxNzVhM2JkYzI5YzViMTE0ZTc1NmIyMmRhYWUzZWIyMWFkNWJhZWVmNjQ3NjIzNzQ3OTcyMTJhOWIwNDcifX19"
+      },
+      "heads": [
+        {
+          "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvY2Q1NDE1NDFkYWFmZjUwODk2Y2QyNThiZGJkZDRjZjgwYzNiYTgxNjczNTcyNjA3OGJmZTM5MzkyN2U1N2YxIn19fQ==",
+          "name": "§cAraña",
+          "id": 20,
+          "price": 0
+        },
+        {
+          "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOThiN2NhM2M3ZDMxNGE2MWFiZWQ4ZmMxOGQ3OTdmYzMwYjZlZmM4NDQ1NDI1YzRlMjUwOTk3ZTUyZTZjYiJ9fX0=",
+          "name": "§6Herobrine",
+          "id": 21,
+          "price": 0
+        },
+        {
+          "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvM2U5MWU5NTgyMmZlOThjYzVhNTY1OGU4MjRiMWI4Y2YxNGQ0ZGU5MmYwZTFhZjI0ODE1MzcyNDM1YzllYWI2In19fQ==",
+          "name": "§7Momia",
+          "id": 22,
+          "price": 0
+        },
+        {
+          "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvY2Q4Y2RjYTg3Mjk2Njc5Y2EyNmFhZDY3MDQzYmYxZDQ0Yjk4MjYyMTljY2E5ZjRjNDlhNDExM2IxNzZlNGMifX19",
+          "name": "§8Gato negro",
+          "id": 23,
+          "price": 0
+        },
+        {
+          "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNGM2NTcwZjEyNDI5OTJmNmViYTIzZWU1ODI1OThjMzllM2U3NDUzODMyNzNkZWVmOGIzOTc3NTgzZmUzY2Y1In19fQ==",
+          "name": "§6Calabaza de Halloween",
+          "id": 24,
+          "price": 0
+        },
+        {
+          "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMDI4OWQ0YjRjOTYyOTU5MTVmMDY4Yjk5YzI3ZDM5NDI3M2Y5ZjI2NGZjOTY4YzVkNWM0N2RmMmY1YmUyIn19fQ==",
+          "name": "§6Jack o Lantern",
+          "id": 25,
+          "price": 0
+        },
+        {
+          "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZWUyOGEwM2VkMmViOTBlYWZmMWExMTlhNWI1NTQ0NTI3MDFiOTdhZjQ3YmZmNzNjZTcxMDg0OWM2YjAifX19",
+          "name": "§6Calabaza tallada",
+          "id": 26,
+          "price": 0
+        },
+        {
+          "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOWRhMzkyNjllZjQ1ZjgyNWVjNjFiYjRmOGFhMDliZDNjZjA3OTk2ZmI2ZmFjMzM4YTZlOTFkNjY5OWFlNDI1In19fQ==",
+          "name": "§cDiablo",
+          "id": 27,
+          "price": 0
+        },
+        {
+          "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTM3ZjhmOTVjMTI1NzU3Y2JmNzY3YTExZjUyYTRlNjY5MWNlMThhMjU5NzhjNjhjZmEzOTEwMzYwZmUifX19",
+          "name": "§7Esqueleto minero",
+          "id": 28,
+          "price": 0
+        },
+        {
+          "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZGQ1MDI2MzkyMzNkOGFlZWRjM2Y0NzNmYTlmODhlM2ZkMjZiNmVkYWFjMjlhODM4ZWI4ZDllMDI2NDc1YWIifX19",
+          "name": "§fEsqueleto con sombrero",
+          "id": 29,
+          "price": 0
+        },
+        {
+          "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTFmNTRmZjliYjQyODUxOTEyYWE4N2ExYmRhNWI3Y2Q5ODE0Y2NjY2ZiZTIyNWZkZGE4ODdhZDYxODBkOSJ9fX0=",
+          "name": "§fCráneo",
+          "id": 30,
+          "price": 0
+        },
+        {
+          "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZGRlZGJlZTQyYmU0NzJlM2ViNzkxZTdkYmRmYWYxOGM4ZmU1OTNjNjM4YmExMzk2YzllZjY4ZjU1NWNiY2UifX19",
+          "name": "§7Bruja",
+          "id": 31,
+          "price": 0
+        },
+        {
+          "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjk1NWJkNTExNjM1YTc3ZTYxNmEyNDExMmM5ZmM0NTdiMjdjOGExNDZhNWU2ZGU3MjdmMTdlOTg5ODgyIn19fQ==",
+          "name": "§5Caldero de hechizos",
+          "id": 32,
+          "price": 0
+        },
+        {
+          "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNjhkMjE4MzY0MDIxOGFiMzMwYWM1NmQyYWFiN2UyOWE5NzkwYTU0NWY2OTE2MTllMzg1NzhlYTRhNjlhZTBiNiJ9fX0=",
+          "name": "§fFantasma",
+          "id": 33,
+          "price": 0
+        },
+        {
+          "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODZkYmMxZGViYzU3NDM4YTVkZTRiYTkxNTE1MTM4MmFiYzNkOGYxMzE4ZTJhMzVlNzhkZmIzMGYwNGJjNDY3In19fQ==",
+          "name": "§cPayaso",
+          "id": 34,
+          "price": 0
+        },
+        {
+          "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDdjYmUwNjFiNDQ1Yjg4Y2IyZGY1OWFjY2M4ZDJjMWMxMjExOGZlMGIyMTI3ZTZlNzU4MTM1NTBhZGFjNjdjZiJ9fX0=",
+          "name": "§2Monstruo de Frankensteins",
+          "id": 35,
+          "price": 0
+        },
+        {
+          "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNWNhNDc5NDZkNzI4NTgzNGVmMWUxNzYyOWY3MjgyYjY1ZTkxNDM1OTdmZTdiZjJiZTFkZTI0M2YxYzYzIn19fQ==",
+          "name": "§aOgro",
+          "id": 36,
+          "price": 0
+        },
+        {
+          "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZTFjOTkzNGNkZDU1YTllNjMzNTk2MmE4Nzc2MjYwZDc5MTYxNTA4MTM0ODNlOTU2YzI4NjFiMTFhOGEyNjdmNyJ9fX0=",
+          "name": "§8Hombre-lobo",
+          "id": 37,
+          "price": 0
+        },
+        {
+          "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzY4ZjFjMzM2MjViNGI0NGMzNjdiNTRjNTRhYmQxY2VhMDg4MzQ1MWYxN2Q0ZjcwM2JhM2E4N2JiOWI4MDM3In19fQ==",
+          "name": "§3Tazón de caramelo",
+          "id": 38,
+          "price": 0
+        },
+        {
+          "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOGQ0NDc1NmUwYjRlY2U4ZDc0NjI5NmEzZDVlMjk3ZTE0MTVmNGJhMTc2NDdmZmUyMjgzODUzODNkMTYxYTkifX19",
+          "name": "§8Dracula",
+          "id": 39,
+          "price": 0
+        },
+        {
+          "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjc1MzFhYzE1N2FiM2IxMjI5NjVlZTRkZjE2ZTE0YWY1ZGJlNjg2OWQzMDFhMTdkNWYwZjIyOGU1ZTAyYmFmIn19fQ==",
+          "name": "§7Máscara de miedo",
+          "id": 40,
+          "price": 0
+        },
+        {
+          "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvM2ZkMmRkMWQ1YzkzZTU5NWU3OWJmMWRkYTMzMmJiODJkMjNlYzk2M2U3YTMwNGZjMjFjMjM0ZGY0NWE2ZWYifX19",
+          "name": "§6Zombie",
+          "id": 41,
+          "price": 0
+        },
+        {
+          "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNGNmMWIzYjNmNTM5ZDJmNjNjMTcyZTk0Y2FjZmFhMzkxZThiMzg1Y2RkNjMzZjNiOTkxYzc0ZTQ0YjI4In19fQ==",
+          "name": "§8Murciélago",
+          "id": 42,
+          "price": 0
+        },
+        {
+          "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvM2E0ZTI1ZDI4MWEzM2U0ZmE1MWQyYWE2MjQwZWNhNzVmNGM3MDJhNGIxOWNiYjZhYTMxMThmNjkxNzIyZTRjIn19fQ==",
+          "name": "§8Mickey asustadizo",
+          "id": 43,
+          "price": 0
+        },
+        {
+          "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYjE4YmUyN2ZmZGZiOTE4MjUyYmM1YjYyZGZjYjBiYWYxNDZiNjU2MzYyMDQ4YjczYjhiY2Y0ZmI1YWE0NyJ9fX0=",
+          "name": "§cJason",
+          "id": 44,
+          "price": 0
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "§cNavidad",
+      "icon": {
+        "item": "SKULL_ITEM",
+        "damage": 3,
+        "display-name": "§cNavidad",
+        "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNWVhMTkxNjczZTFjODkxMjI5ZmMxODM4OTllNjdlZDQwOWM0ZmYyMmZkZTcxMmRkNmQ1YmU0YTRmNzJlNCJ9fX0="
+      },
+      "heads": [
+        {
+          "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMmQ2MWNjYmZkY2RmODk0MWFkYWY3NmM2YzBlMDE4MmQyYzhiYmI1ZGMxOGYzNzQ4OTU2NTJiYzY2MWI2ZWQifX19",
+          "name": "§cSanta (detallado)",
+          "id": 45,
+          "price": 0
+        },
+        {
+          "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTRlNDI0YjE2NzZmZWVjM2EzZjhlYmFkZTllN2Q2YTZmNzFmNzc1NmE4NjlmMzZmN2RmMGZjMTgyZDQzNmUifX19",
+          "name": "§cSanta",
+          "id": 46,
+          "price": 0
+        },
+        {
+          "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZWJkNDZiMzhiMjFiMzQyY2FmOTE3YWQ5Y2E0MmFmYjY4Mzg4YTU1OTFiY2M5YWRlZDFlOGUzNDZlMTg4OTAifX19",
+          "name": "§6Rudolf, el reno de nariz roja",
+          "id": 47,
+          "price": 0
+        },
+        {
+          "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNDQ5MjdjZTViYTIyYWQxZTc1N2Q2YTMzM2UyNzViMzZkYTFhODQzNmZjZWYwNzczNDBhYjUzZTNmYiJ9fX0=",
+          "name": "§6Reno",
+          "id": 48,
+          "price": 0
+        },
+        {
+          "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOThlMzM0ZTRiZWUwNDI2NDc1OWE3NjZiYzE5NTVjZmFmM2Y1NjIwMTQyOGZhZmVjOGQ0YmYxYmIzNmFlNiJ9fX0=",
+          "name": "§fMuñeco de nieve",
+          "id": 49,
+          "price": 0
+        },
+        {
+          "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNTgxNzFlZTUyY2RlOGE4Zjk4MTdkMGEyYzc4MmM3NjE1YmZkNTMwMWRjOTIwNzZlNzhmZTkyYWFkMWE5M2JmIn19fQ==",
+          "name": "§fMuñeco de nieve con sombrero rojo a rayas",
+          "id": 50,
+          "price": 0
+        },
+        {
+          "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYjI0MDcwYzliNjY1OWVkMjViMmNhMTI2OTE1ZjRkODgyMGZhZmNlNDMyNGVkOWE4ZjRiOGE1MDYzNDUzMDdmIn19fQ==",
+          "name": "§fMuñeco de nieve con sombrero",
+          "id": 51,
+          "price": 0
+        },
+        {
+          "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODc4YzA0N2M0YmY0Njc3ZmViMmU4MmI4ODVhNzI0ZjQ0ODdiM2IwYmQ3ODQ1ZWQ4YTM1NTNlNDg5Zjk3In19fQ==",
+          "name": "§fMuñeco de nieve con sombrero azul a rayas",
+          "id": 52,
+          "price": 0
+        },
+        {
+          "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZmZjYTZiMTA1NDc2ZmRlZGVhYzU4YTNlNDIyNGFjMWMxNTZhMTZiM2U2MjExNjYzNmMzYzc3ZWI5OWVlIn19fQ==",
+          "name": "§fMuñeco de nieve normal",
+          "id": 53,
+          "price": 0
+        },
+        {
+          "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZmY2ODQ5NzE5NzVmMjA5ZTY4NjEzM2Y2ZjNjZTNkYWFiM2YyYmZjZmE0Yzc4N2I3MDMyNzNjYmI4NGFhZWEifX19",
+          "name": "§cBola de navidad roja",
+          "id": 54,
+          "price": 0
+        },
+        {
+          "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYmQzMmYxYTBlZTM4MWU5ZDk4NzMxNzFhNzk2ZTFjZTY4NGFiNjMzZTM2Y2M2MmY0OThhM2NkNjcxYTRjZTJjIn19fQ==",
+          "name": "§6GBola de navidad dorada",
+          "id": 55,
+          "price": 0
+        },
+        {
+          "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjI2ZTZmNjFlYWM2MzQxNzU2ZWY4YWU5Y2JhNjIxZTliZjk2Y2JiOTRlMTVjODk1NjhlZTJkNzc2ZGY4YiJ9fX0=",
+          "name": "§2Bola de navidad verde",
+          "id": 56,
+          "price": 0
+        },
+        {
+          "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYTRlODk1ZjY5ZDYzNTgzYWQ1ODAyNDVkNDIzODhiZGRjODk1MjZhODk0NjFjNzliZmU5NzA5ZDE2ODJhNDAifX19",
+          "name": "§eBola de navidad amarilla",
+          "id": 57,
+          "price": 0
+        },
+        {
+          "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMWU4MTUwMjk1YzM5MjU5YmJhYmU2MzM4ZWI5NmVkZGQ4ODcyYzI5YmVjNDYyYjEzYTRjZjI5OTYzNGZhODkifX19",
+          "name": "§9Bola de navidad azul",
+          "id": 58,
+          "price": 0
+        },
+        {
+          "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODg2NjJiYTA3MDhlOGQ2MGQ1NjM2NWVjMmJjMDBmZjE3OTJmMTY2MzRmYzg0NWE4NDNhODRkZTA4MWVhNGYifX19",
+          "name": "§5Bola de navidad púrpura",
+          "id": 59,
+          "price": 0
+        },
+        {
+          "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYjI0MDcwYzliNjY1OWVkMjViMmNhMTI2OTE1ZjRkODgyMGZhZmNlNDMyNGVkOWE4ZjRiOGE1MDYzNDUzMDdmIn19fQ==",
+          "name": "§fBola de navidad blanca",
+          "id": 60,
+          "price": 0
+        },
+        {
+          "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTI2ZTM0NjI4N2EyMWRiZmNhNWI1OGMxNDJkOGQ1NzEyYmRjODRmNWI3NWQ0MzE0ZWQyYTgzYjIyMmVmZmEifX19",
+          "name": "§3Bola de navidad cian",
+          "id": 61,
+          "price": 0
+        },
+        {
+          "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNmVhMTc3ZjFiNzRjYTU3YTFjY2U5MzhlOGQ5OTRiYzFmNjM3ZTVmNjljODJlZmYyOTYxMmExM2JhOGIyZGQ3In19fQ==",
+          "name": "§6Bola de navidad naranja",
+          "id": 62,
+          "price": 0
+        },
+        {
+          "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNmNlZjlhYTE0ZTg4NDc3M2VhYzEzNGE0ZWU4OTcyMDYzZjQ2NmRlNjc4MzYzY2Y3YjFhMjFhODViNyJ9fX0=",
+          "name": "§cRegalo de Navidad rojo y amarillo",
+          "id": 63,
+          "price": 0
+        },
+        {
+          "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjU2MTJkYzdiODZkNzFhZmMxMTk3MzAxYzE1ZmQ5NzllOWYzOWU3YjFmNDFkOGYxZWJkZjgxMTU1NzZlMmUifX19",
+          "name": "§9Regalo de Navidad azul y blanco",
+          "id": 64,
+          "price": 0
+        },
+        {
+          "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNTEyZTk0NTFjZGIxOTZiNzgxOTVhOGYwYTRiOWMxYzBhMDRmNTgyNzg4NzkyN2I2YTgyYWFkMzljYWIyZjQzMCJ9fX0=",
+          "name": "§3Regalo de Navidad cian y morado",
+          "id": 65,
+          "price": 0
+        },
+        {
+          "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNmI0Y2RlMTZhNDAxNGRlMGE3NjUxZjYwNjdmMTI2OTViYjVmZWQ2ZmVhZWMxZTk0MTNjYTQyNzFlN2M4MTkifX19",
+          "name": "§6Regalo de Navidad dorado y morado",
+          "id": 66,
+          "price": 0
+        },
+        {
+          "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTcxNWY1MzdmZTdhZjZmNWFhNmViOThhZDY5MDJjMTNkMDVmYjM2YzE2YjMxMWVkODMyYjA5YjU5ODgyOCJ9fX0=",
+          "name": "§2Regalo de Navidad verde y rojo",
+          "id": 67,
+          "price": 0
+        },
+        {
+          "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDA4Y2U3ZGViYTU2YjcyNmE4MzJiNjExMTVjYTE2MzM2MTM1OWMzMDQzNGY3ZDVlM2MzZmFhNmZlNDA1MiJ9fX0=",
+          "name": "§aRegalo de Navidad verde lima y azul claro",
+          "id": 68,
+          "price": 0
+        },
+        {
+          "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMWI2NzMwZGU3ZTViOTQxZWZjNmU4Y2JhZjU3NTVmOTQyMWEyMGRlODcxNzU5NjgyY2Q4ODhjYzRhODEyODIifX19",
+          "name": "§9Regalo de Navidad azul y magenta",
+          "id": 69,
+          "price": 0
+        },
+        {
+          "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTI4ZTY5MmQ4NmUyMjQ0OTc5MTVhMzk1ODNkYmUzOGVkZmZkMzljYmJhNDU3Y2M5NWE3YWMzZWEyNWQ0NDUifX19",
+          "name": "§6Regalo de Navidad naranja y azul claro",
+          "id": 70,
+          "price": 0
+        },
+        {
+          "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODdmY2FlNTgxY2Q2N2U2MTJkMzU1YzExNGI2YjgxODk0MjM2MGQwM2U0YTFiYTJiYzYxYjgxYTdlMTA3MjYyIn19fQ==",
+          "name": "§5Regalo de Navidad morado y dorado",
+          "id": 71,
+          "price": 0
+        },
+        {
+          "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNDdlNTVmY2M4MDlhMmFjMTg2MWRhMmE2N2Y3ZjMxYmQ3MjM3ODg3ZDE2MmVjYTFlZGE1MjZhNzUxMmE2NDkxMCJ9fX0=",
+          "name": "§dRegalo de Navidad magenta y amarillo",
+          "id": 72,
+          "price": 0
+        },
+        {
+          "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvN2ZjZDFjODJlMmZiM2ZhMzY4Y2ZhOWE1MDZhYjZjOTg2NDc1OTVkMjE1ZDY0NzFhZDQ3Y2NlMjk2ODVhZiJ9fX0=",
+          "name": "§3Regalo de Navidad verde claro y turquesa",
+          "id": 73,
+          "price": 0
+        },
+        {
+          "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNGFjYjNjMWUxYjM0Zjg3MzRhZWRmYWJkMWUxZjVlMGIyODBiZWY5MjRmYjhiYmYzZTY5MmQyNTM4MjY2ZjQifX19",
+          "name": "§5Regalo de Navidad morado y magenta",
+          "id": 74,
+          "price": 0
+        },
+        {
+          "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTBjNzVhMDViMzQ0ZWEwNDM4NjM5NzRjMTgwYmE4MTdhZWE2ODY3OGNiZWE1ZTRiYTM5NWY3NGQ0ODAzZDFkIn19fQ==",
+          "name": "§dRegalo de Navidad rosa y azul claro",
+          "id": 75,
+          "price": 0
+        },
+        {
+          "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNWM3MTJiMTk3MWM1ZjQyZWVmZjgwNTUxMTc5MjIwYzA4YjgyMTNlYWNiZTZiYzE5ZDIzOGMxM2Y4NmUyYzAifX19",
+          "name": "§8Regalo de Navidad negro y verde claro",
+          "id": 76,
+          "price": 0
+        },
+        {
+          "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZWUzYThmZDA4NTI5Nzc0NDRkOWZkNzc5N2NhYzA3YjhkMzk0OGFkZGM0M2YwYmI1Y2UyNWFlNzJkOTVkYyJ9fX0=",
+          "name": "§6Regalo de Navidad naranja y verde claro",
+          "id": 77,
+          "price": 0
+        },
+        {
+          "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODRlMWM0MmYxMTM4M2I5ZGM4ZTY3ZjI4NDZmYTMxMWIxNjMyMGYyYzJlYzdlMTc1NTM4ZGJmZjFkZDk0YmI3In19fQ==",
+          "name": "§bRegalo de Navidad azul claro y amarillo",
+          "id": 78,
+          "price": 0
+        },
+        {
+          "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZWQ5N2Y0ZjQ0ZTc5NmY3OWNhNDMwOTdmYWE3YjRmZTkxYzQ0NWM3NmU1YzI2YTVhZDc5NGY1ZTQ3OTgzNyJ9fX0=",
+          "name": "§2Regalo de Navidad verde y rosa",
+          "id": 79,
+          "price": 0
+        },
+        {
+          "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYjM5MTY1MWQ3ZjUzYzMzYThkNzM5NDM4NjA0ZTQ4N2VlZjcwOTA0YWQ1NDI4YzM2ZDVkNzliOTg0ZGQ0MDdiIn19fQ==",
+          "name": "§cNavidad mario",
+          "id": 80,
+          "price": 0
+        },
+        {
+          "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNmRkNjYzMTM2Y2FmYTExODA2ZmRiY2E2YjU5NmFmZDg1MTY2YjRlYzAyMTQyYzhkNWFjODk0MWQ4OWFiNyJ9fX0=",
+          "name": "§fGlobo de nieve",
+          "id": 81,
+          "price": 0
+        },
+        {
+          "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTg2MTU2ZDdmMjEzMjY2OWMzNjdhYjg5NTIzYzJlMWI5ODY2ZTQwYjJiODkxMzkzNzQ0NjU3ZjFjMzU1In19fQ==",
+          "name": "§7Globo de nieve",
+          "id": 82,
+          "price": 0
+        },
+        {
+          "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvN2JiZThmZDFhYTM5ZjE1MDc2ZTg4NGRmZTZkZGI5YTNmMzc2MWRiMzFlMmIxZjk5NDBiNWRmZDM0ZDFjNGQifX19",
+          "name": "§6Globo de nieve enmarcado",
+          "id": 83,
+          "price": 0
+        },
+        {
+          "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYTc5YzkzMmMzMWUxNmZkNjVjZTNjOTljY2E5ODY0NWFiMmYxNmIyNjIzYjVlMWU3MmM2ZGU2ODlhNjUxODdmIn19fQ==",
+          "name": "§6Cabeza de pan de jengibre",
+          "id": 84,
+          "price": 0
+        },
+        {
+          "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNDBmNDg1NTkzNjc3YWFiMjhkYmNhNDViMTAyMmYyMWIxYmM3ODk2YmM5ZmU0NDA2YWJlNGQ2MDcwNTc4MjYifX19",
+          "name": "§6Casa de jengibre",
+          "id": 85,
+          "price": 0
+        },
+        {
+          "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNTVhZmQ3Y2FjMzY1Mzk4YjE1YjAzNDlkNDkyZmNmZWQwYjdjZDE5NTZlNGUzNGQzYmQ1MTNkZjgxMTJiIn19fQ==",
+          "name": "§aDuende",
+          "id": 86,
+          "price": 0
+        },
+        {
+          "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTU3YmU0N2JlNmY0YjI2YjA3OWM3NzU4YjY2Y2E4ODhiOWMzNGVhZWQ3MmU2ZTU4YjEzZDg3ZmZkYTBiMyJ9fX0=",
+          "name": "§aDuende",
+          "id": 87,
+          "price": 0
+        },
+        {
+          "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzE5YzM1NjY2M2NmNTYyNjM3NDg3NDZjNjI0NjIwNzllMDJiN2IyZWVmOTVhZGVkMDY5ZmFhY2M1NGIzMTI5In19fQ==",
+          "name": "§aDuende",
+          "id": 88,
+          "price": 0
+        },
+        {
+          "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDg4YWRiMjIxYzZlYTRmNGU4YWRiYTc2ZWY4NGMyODExYTYwODQ0YjQzMTNmYzkyM2QxMzU5YmNlNTE3MTRjYSJ9fX0=",
+          "name": "§aDuende",
+          "id": 89,
+          "price": 0
+        },
+        {
+          "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZmM2ZTc5ZDE3MTc5MDJmNzFkYzU1M2M1MzczZmYyZTE3YmFlNjE5YjM5ZjhkZGJkZDIzMzgzZGQ1NWIzOTYifX19",
+          "name": "§aDuende",
+          "id": 90,
+          "price": 0
+        },
+        {
+          "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMmI2MDgxYWFjZmQzNDdjMTI2YWI0ZTkwOTA5ZmRkMzdhNGRlYjVjYTE5MTg0ZWI0Yzk1OTE3MzRmODU4NjgifX19",
+          "name": "§aDuende",
+          "id": 91,
+          "price": 0
+        },
+        {
+          "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvN2ZiYmY5ZTRlZmQwMTkzYzUyNjQ3MTliYTQ3OGI5MTdhMjYwNzE0NmY2ZWE4MGNiNWZlMDkzYzNiOTlhNGMifX19",
+          "name": "§aDuende",
+          "id": 92,
+          "price": 0
+        }
+      ]
+    }
+  ]
+}
