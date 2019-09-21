@@ -147,7 +147,7 @@ public class TagEditor {
             Object copy = getAsMNSCopy(item);
             Object itemCompound = copy.getClass().getMethod("getTag").invoke(copy);
             Object tagCompound = itemCompound.getClass().getMethod("getCompound", String.class).invoke(itemCompound, "tagEditor");
-            return tagCompound != null && tagCompound.getClass().getMethod("getList", String.class, int.class).invoke(tagCompound, tagname, 8) != null;
+            return tagCompound != null && (boolean) tagCompound.getClass().getMethod("hasKey", String.class).invoke(tagCompound, tagname);
         } catch (Exception e) {
         }
         return false;
