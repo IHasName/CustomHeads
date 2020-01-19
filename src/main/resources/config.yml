@@ -20,14 +20,30 @@
 # historyMode can either be TEMP or FILE              #
 # Overflow: default: 18 max: 27                       #
 # --------------------------------------------------- #
-# keepCategoryPermissions: Used when Economy is       #
-# enabled. Categories will only be able the be        #
-# unlocked with Money when false                      #
-# (or for free when not defined)                      #
+#                 Economy: Category                   #
+# buyable: Defines if Categories can be bought with   #
+# Money (only available when Economy is enabled)      #
+# keePermissions: When set to true, Categories you    #
+# have the Permission for will be unlocked without    #
+# having to buy them                                  #
+#                  Economy: Heads                     #
+# buyable: Defines if Heads can be bought with Money  #
+# (only available when Economy is enabled)            #
+# permanentBuy: Unlocks the Heads permanently once    #
+# bought                                              #
+# --------------------------------------------------- #
+# update-notifications: Choose if you cant to receive #
+# Update Notifications Ingame and or via Console      #
+# --------------------------------------------------- #
+# disabledCategories: A List of Categories which will #
+# be ignored by the Plugin                            #
 # --------------------------------------------------- #
 # langFile: Used to determine which Language is used. #
 # You can use the default Languages as template to    #
 # create your own Language Settings.                  #
+# --------------------------------------------------- #
+# reducedDebug: Will suppress any Debug Info from the #
+# Plugin                                              #
 #                                                     #
 # Feel free to send me your Languages so others can   #
 # use it too! (You will also be credited in the       #
@@ -51,5 +67,6 @@ economy:
 update-notifications:
   onJoin: true
   console: true
+disabledCategories: []
 langFile: none
 reducedDebug: true
