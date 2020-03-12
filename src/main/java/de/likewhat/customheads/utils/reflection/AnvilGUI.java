@@ -24,8 +24,8 @@ import java.util.logging.Level;
 
 /**
  * @author chasechocolate (Main Class), PhillipsNonstrum (Reflection)
- * @version 1.3
- * Modified for some extra Stuff and 1.14 Support
+ * @version 1.4
+ * Modified for some extra Stuff and 1.14+ Support
  */
 public class AnvilGUI {
 
@@ -133,7 +133,7 @@ public class AnvilGUI {
             int nextContainerId = (int) p.getClass().getMethod("nextContainerCounter").invoke(p);
 
             Location location = player.getLocation();
-            Object container = Integer.parseInt(CustomHeads.version.split("_")[1]) > 14/*CustomHeads.version.contains("v1_14_")*/ ?
+            Object container = NBTTagUtils.MC_VERSION > 13 ?
                     getClassbyName("ContainerAnvil").getConstructor(int.class, getClassbyName("PlayerInventory"), getClassbyName("ContainerAccess")).newInstance(nextContainerId, p.getClass().getField("inventory").get(p), getClassbyName("ContainerAccess").getMethod("at", getClassbyName("World"), getClassbyName("BlockPosition")).invoke(getClassbyName("ContainerAccess"), p.getClass().getField("world").get(p), getClassbyName("BlockPosition").getConstructor(int.class, int.class, int.class).newInstance(location.getBlockX(), location.getBlockY(), location.getBlockZ()))):
                     getClassbyName("ContainerAnvil").getConstructor(getClassbyName("PlayerInventory"), getClassbyName("World"), getClassbyName("BlockPosition"), getClassbyName("EntityHuman")).newInstance(p.getClass().getField("inventory").get(p), p.getClass().getField("world").get(p), getClassbyName("BlockPosition").getConstructor(int.class, int.class, int.class).newInstance(location.getBlockX(), location.getBlockY(), location.getBlockZ()), p);;
 
@@ -146,7 +146,7 @@ public class AnvilGUI {
             getClassbyName("Container").getField("checkReachable").set(container, false);
             Constructor<?> chatMessageConstructor = getClassbyName("ChatMessage").getConstructor(String.class, Object[].class);
             Object connection = p.getClass().getField("playerConnection").get(p);
-            Object packet = Integer.parseInt(CustomHeads.version.split("_")[1]) > 14/*CustomHeads.version.contains("v1_14_")*/ ?
+            Object packet = NBTTagUtils.MC_VERSION > 13 ?
                     getClassbyName("PacketPlayOutOpenWindow").getConstructor(int.class, getClassbyName("Containers"), getClassbyName("IChatBaseComponent")).newInstance(nextContainerId, getClassbyName("Containers").getField("ANVIL").get(getClassbyName("Containers")), chatMessageConstructor.newInstance(title, new Object[]{})) :
                     getClassbyName("PacketPlayOutOpenWindow").getConstructor(int.class, String.class, getClassbyName("IChatBaseComponent"), int.class).newInstance(nextContainerId, "minecraft:anvil", chatMessageConstructor.newInstance(title, new Object[]{}), 0);
             connection.getClass().getMethod("sendPacket", getClassbyName("Packet")).invoke(connection, packet);

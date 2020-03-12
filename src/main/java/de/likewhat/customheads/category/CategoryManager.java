@@ -51,9 +51,6 @@ public class CategoryManager {
             return;
         }
 
-
-        //boolean ignoreInvalid = CustomHeads.getCategoryLoaderConfig().get().getBoolean("ignoreInvalid");
-
         List<File> fileList = Arrays.asList(langRootDir.listFiles((dir, name) -> name.endsWith(".json") && !CustomHeads.getHeadsConfig().get().getList("disabledCategories").contains(name.substring(0, name.lastIndexOf(".")))));
 
         if (!CustomHeads.hasReducedDebug())
@@ -67,12 +64,8 @@ public class CategoryManager {
             try {
                 Category category = Category.getConverter().fromJson(jsf.getJson(), Category.class);
                 if (category == null) {
-                    //if (ignoreInvalid) {
-                        invalid++;
-                        Bukkit.getServer().getConsoleSender().sendMessage(CustomHeads.chWarning + " Invalid Category in " + file.getName());
-                    /*} else {
-                        throw new NullPointerException("Invalid Category in " + file.getName());
-                    }*/
+                    invalid++;
+                    Bukkit.getServer().getConsoleSender().sendMessage(CustomHeads.chWarning + " Invalid Category in " + file.getName());
                 } else {
                     if (categories.containsKey(category.getId())) {
                         CustomHeads.getInstance().getServer().getConsoleSender().sendMessage(CustomHeads.chWarning + file.getName() + ": §cAn Category with ID " + category.getId() + " (" + categories.get(category.getId()).getName() + ") already exists.");
@@ -93,12 +86,8 @@ public class CategoryManager {
                     }
                 }
             } catch (Exception e) {
-                /*if (ignoreInvalid) {
-                    invalid++;
-                } else {*/
-                    CustomHeads.getInstance().getLogger().log(Level.WARNING, "Something went wrong while loading Category File " + file.getName(), e);
-                    return;
-                //}
+                CustomHeads.getInstance().getLogger().log(Level.WARNING, "Something went wrong while loading Category File " + file.getName(), e);
+                return;
             }
         }
 
@@ -143,12 +132,6 @@ public class CategoryManager {
                 disabledCategories.add(file.getName().substring(0, file.getName().lastIndexOf(".")));
                 CustomHeads.getHeadsConfig().get().set("disabledCategories", disabledCategories);
                 CustomHeads.getHeadsConfig().save();
-                /*
-                List<String> loadedCategories = CustomHeads.getCategoryLoaderConfig().get().isList("categories") ? CustomHeads.getCategoryLoaderConfig().get().getStringList("categories") : new ArrayList<>();
-                loadedCategories.add(file.getName().substring(0, file.getName().lastIndexOf(".")));
-                CustomHeads.getCategoryLoaderConfig().get().set("categories", loadedCategories);
-                CustomHeads.getCategoryLoaderConfig().save();
-                */
             }
         } catch (Exception e) {
             CustomHeads.getInstance().getLogger().log(Level.WARNING, "Something went wrong while loading Category File " + file.getName(), e);
@@ -171,13 +154,6 @@ public class CategoryManager {
             CustomHeads.getHeadsConfig().get().set("disabledCategories", disabledCategories);
             CustomHeads.getHeadsConfig().save();
             return true;
-            /*
-            List<String> loadedCategories = CustomHeads.getCategoryLoaderConfig().get().isList("categories") ? CustomHeads.getCategoryLoaderConfig().get().getStringList("categories") : new ArrayList<>();
-            loadedCategories.remove(CustomHeads.getCategoryManager().getSourceFile(category).getName().substring(0, CustomHeads.getCategoryManager().getSourceFile(category).getName().lastIndexOf(".")));
-            CustomHeads.getCategoryLoaderConfig().get().set("categories", loadedCategories);
-            CustomHeads.getCategoryLoaderConfig().save();
-            return true;
-            */
         }
         return false;
     }

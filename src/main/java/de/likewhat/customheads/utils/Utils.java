@@ -292,6 +292,19 @@ public class Utils {
         return dialog;
     }
 
+    /**
+     *
+     * @param player Player who will see the Inventory
+     * @param title Title of the Dialog
+     * @param callback true when Yes is selected
+     * @param yesLore Lore of the Yes Button
+     * @param noLore Lore of the No Button
+     * @param middleItem Item in the Middle of the Dialog
+     */
+    public static void showInteractiveDialog(Player player, String title, SimpleCallback<Boolean> callback, String[] yesLore, String[] noLore, ItemStack middleItem) {
+        new InteractiveDialog(title, callback, yesLore, noLore, middleItem).showTo(player);
+    }
+
     public static boolean hasPermission(Player player, String permission) {
         return player.hasPermission(permission) || player.hasPermission("heads.admin") || player.hasPermission("heads.*") || player.isOp();
     }

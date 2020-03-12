@@ -8,6 +8,7 @@ import de.likewhat.customheads.category.Category;
 import de.likewhat.customheads.category.CategoryManager;
 import de.likewhat.customheads.economy.EconomyManager;
 import de.likewhat.customheads.headwriter.HeadFontType;
+import de.likewhat.customheads.listener.CategoryEditorListener;
 import de.likewhat.customheads.listener.InventoryListener;
 import de.likewhat.customheads.listener.OtherListeners;
 import de.likewhat.customheads.loader.Language;
@@ -16,7 +17,6 @@ import de.likewhat.customheads.utils.*;
 import de.likewhat.customheads.utils.reflection.TagEditor;
 import de.likewhat.customheads.utils.stuff.CHCommand;
 import de.likewhat.customheads.utils.stuff.CHTabCompleter;
-import de.likewhat.customheads.utils.updaters.AsyncFileDownloader;
 import de.likewhat.customheads.utils.updaters.GitHubDownloader;
 import de.likewhat.customheads.utils.updaters.SpigetFetcher;
 import lombok.Getter;
@@ -46,7 +46,7 @@ import static de.likewhat.customheads.utils.Utils.hasPermission;
 @Getter
 public class CustomHeads extends JavaPlugin {
 
-    private static final boolean BETA = false;
+    private static final boolean BETA = true;
 
     public static final HashMap<String, String> uuidCache = new HashMap<>();
     public static final String chPrefix = "§7[§eCustomHeads§7] ";
@@ -55,7 +55,6 @@ public class CustomHeads extends JavaPlugin {
     public static int hisOverflow = 18;
     @Getter private static Configs updateFile;
     @Getter private static Configs headsConfig;
-//    @Getter private static Configs categoryLoaderConfig;
     @Getter private static JsonFile playerDataFile;
     @Getter private static Looks looks;
     @Getter private static CustomHeads instance;
@@ -147,7 +146,6 @@ public class CustomHeads extends JavaPlugin {
     public static boolean hasReducedDebug() {
         return reducedDebug;
     }
-
 
     public static boolean reload(CommandSender sender) {
         boolean console = sender instanceof ConsoleCommandSender;
@@ -260,7 +258,7 @@ public class CustomHeads extends JavaPlugin {
                 getServer().getConsoleSender().sendMessage(chWarning + "I wasn't able to find the Default Languge File on your Server...");
                 getServer().getConsoleSender().sendMessage(chPrefix + "§7Downloading necessary Files...");
                 GitHubDownloader gitHubDownloader = new GitHubDownloader("IHasName", "CustomHeads").enableAutoUnzipping();
-                gitHubDownloader.download(getDescription().getVersion(), "en_EN.zip", new File(getDataFolder(), "language"), (AsyncFileDownloader.AfterTask) () -> {
+                gitHubDownloader.download(getDescription().getVersion(), "en_EN.zip", new File(getDataFolder(), "language"), () -> {
                     getServer().getConsoleSender().sendMessage(chPrefix + "§7Done downloading! Have fun with the Plugin =D");
                     getServer().getConsoleSender().sendMessage(chPrefix + "§7---------------------------------------------");
                     Utils.runSynced(new BukkitRunnable() {
@@ -283,7 +281,6 @@ public class CustomHeads extends JavaPlugin {
         categoriesBuyable = headsConfig.get().getBoolean("economy.category.buyable");
         headsBuyable = headsConfig.get().getBoolean("economy.heads.buyable");
         headsPermanentBuy = headsConfig.get().getBoolean("economy.heads.permanentBuy");
-//        categoryLoaderConfig = new Configs(instance, "loadedCategories.yml", true);
 
         tagEditor = new TagEditor("chTags");
 
@@ -318,8 +315,7 @@ public class CustomHeads extends JavaPlugin {
         // Register Listeners
         manager.registerEvents(new InventoryListener(), this);
         manager.registerEvents(new OtherListeners(), this);
-        // TODO Implement after 2.9.9 Update
-//        manager.registerEvents(new CategoryEditorListener(), this);
+        manager.registerEvents(new CategoryEditorListener(), this);
 
         // Setting up APIHandler
         api = new APIHandler();

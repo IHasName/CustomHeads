@@ -36,7 +36,6 @@ import java.util.logging.Level;
 
 import static de.likewhat.customheads.utils.Utils.hasPermission;
 
-// TODO Implement after 2.9.9
 public class CategoryEditorListener implements Listener {
 
     private HashMap<UUID, String> cachedPlayers = new HashMap<>();
@@ -125,9 +124,24 @@ public class CategoryEditorListener implements Listener {
                         CategoryEditor.openCategoryOverview(player);
                     }
                     break;
-                case "convert":
+                case "convert": {
+                    /*
+                    Setup: Check if Category has Heads: if true -> Ask if Player wants to move them into the Subcategory
+                     */
+                    Category category = CustomHeads.getCategoryManager().getCategory(args[1]);
+                    if (category == null) {
+                        throw new NullPointerException("Convert: Given Category wasn't found. Please report this Error to me");
+                    }
+                    if(args.length > 2) {
+
+                    } else {
+                        if (category.hasHeads()) {
+                            Utils.getDialog("Move existing Heads into this Subcategory?", new String[]{"cEditor", "convert", "y"}, null, new String[]{"cEditor", "convert", "n"}, new String[]{"The existing Heads", "will be deleted!"}, new ItemEditor(Material.SKULL_ITEM, 3).setDisplayName("Move existing Heads into this Subcategory?").setTexture("").getItem());
+                        }
+                    }
                     event.setCancelled(true);
                     break;
+                }
                 case "blockMoving":
                     event.setCancelled(true);
                     break;

@@ -54,8 +54,8 @@ public class CategorySetup {
             return;
 
         setupInventory = Bukkit.createInventory(null, 9*4, "Category Setup " + category.getPlainName());
-        ItemStack createItem = new ItemEditor(Material.SKULL_ITEM, (byte)3).setDisplayName("§aCreate").setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTMwZjQ1MzdkMjE0ZDM4NjY2ZTYzMDRlOWM4NTFjZDZmN2U0MWEwZWI3YzI1MDQ5YzlkMjJjOGM1ZjY1NDVkZiJ9fX0=").getItem();
-        ItemStack cancelItem = new ItemEditor(Material.SKULL_ITEM, (byte)3).setDisplayName("§cCancel").setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNWE2Nzg3YmEzMjU2NGU3YzJmM2EwY2U2NDQ5OGVjYmIyM2I4OTg0NWU1YTY2YjVjZWM3NzM2ZjcyOWVkMzcifX19").getItem();
+        ItemStack createItem = new ItemEditor(Material.SKULL_ITEM, 3).setDisplayName("§aCreate").setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTMwZjQ1MzdkMjE0ZDM4NjY2ZTYzMDRlOWM4NTFjZDZmN2U0MWEwZWI3YzI1MDQ5YzlkMjJjOGM1ZjY1NDVkZiJ9fX0=").getItem();
+        ItemStack cancelItem = new ItemEditor(Material.SKULL_ITEM, 3).setDisplayName("§cCancel").setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNWE2Nzg3YmEzMjU2NGU3YzJmM2EwY2U2NDQ5OGVjYmIyM2I4OTg0NWU1YTY2YjVjZWM3NzM2ZjcyOWVkMzcifX19").getItem();
         setupInventory.setItem(27, cancelItem);
         setupInventory.setItem(35, createItem);
 
