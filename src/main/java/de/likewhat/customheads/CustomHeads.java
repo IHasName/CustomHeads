@@ -17,6 +17,7 @@ import de.likewhat.customheads.utils.*;
 import de.likewhat.customheads.utils.reflection.TagEditor;
 import de.likewhat.customheads.utils.stuff.CHCommand;
 import de.likewhat.customheads.utils.stuff.CHTabCompleter;
+import de.likewhat.customheads.utils.updaters.FetchResult;
 import de.likewhat.customheads.utils.updaters.GitHubDownloader;
 import de.likewhat.customheads.utils.updaters.SpigetFetcher;
 import lombok.Getter;
@@ -242,32 +243,62 @@ public class CustomHeads extends JavaPlugin {
         }
 
         // Check if Language File exists
-        if (!new File("plugins/CustomHeads/language/" + headsConfig.get().getString("langFile")).exists()) {
-            getServer().getConsoleSender().sendMessage(chWarning + "Could not find language/" + headsConfig.get().getString("langFile") + ". Using default instead");
-            headsConfig.get().set("langFile", "en_EN");
-            headsConfig.save();
-            headsConfig.reload();
-
-            // Check if default Language is present if not download it
-            if (!new File("plugins/CustomHeads/language/en_EN").exists()) {
-                if (new File("plugins/CustomHeads/downloads").listFiles() != null) {
-                    for (File file : new File("plugins/CustomHeads/downloads").listFiles()) {
-                        file.delete();
+        String selectedLanguage = headsConfig.get().getString("langFile");
+        if (!new File("plugins/CustomHeads/language/" + selectedLanguage).exists()) {
+            getServer().getConsoleSender().sendMessage(chWarning + "Could not find language/" + selectedLanguage + ". Looking up available Languages...");
+            Utils.getAvailableLanguages(new FetchResult<List<String>>() {
+                public void success(List<String> strings) {
+                    if(strings.contains(selectedLanguage + ".zip")) {
+                        getServer().getConsoleSender().sendMessage(chPrefix + "§7Downloading " + selectedLanguage + "...");
+                        GitHubDownloader gitHubDownloader = new GitHubDownloader("IHasName", "CustomHeads").enableAutoUnzipping();
+                        gitHubDownloader.download(getDescription().getVersion(), selectedLanguage + ".zip", new File(getDataFolder(), "language"), () -> {
+                            getServer().getConsoleSender().sendMessage(chPrefix + "§7Done downloading! Have fun with the Plugin =D");
+                            getServer().getConsoleSender().sendMessage(chPrefix + "§7---------------------------------------------");
+                            Utils.runSynced(new BukkitRunnable() {
+                                public void run() {
+                                    loadRest();
+                                }
+                            });
+                        });
                     }
                 }
-                getServer().getConsoleSender().sendMessage(chWarning + "I wasn't able to find the Default Languge File on your Server...");
-                getServer().getConsoleSender().sendMessage(chPrefix + "§7Downloading necessary Files...");
-                GitHubDownloader gitHubDownloader = new GitHubDownloader("IHasName", "CustomHeads").enableAutoUnzipping();
-                gitHubDownloader.download(getDescription().getVersion(), "en_EN.zip", new File(getDataFolder(), "language"), () -> {
-                    getServer().getConsoleSender().sendMessage(chPrefix + "§7Done downloading! Have fun with the Plugin =D");
-                    getServer().getConsoleSender().sendMessage(chPrefix + "§7---------------------------------------------");
-                    Utils.runSynced(new BukkitRunnable() {
-                        public void run() {
-                            loadRest();
+
+                public void error(Exception exception) {
+                    if(exception instanceof GitHubDownloader.RateLimitExceededException) {
+                        GitHubDownloader.RateLimitExceededException rateLimitException = (GitHubDownloader.RateLimitExceededException)exception;
+                        getLogger().log(Level.SEVERE, "GitHub Rate-Limited the Plugins Requests. Please try again later. (Time until Reset: " + rateLimitException.getTimeUntilReset() + ")");
+                        Bukkit.getPluginManager().disablePlugin(instance);
+                    } else {
+                        getLogger().log(Level.WARNING, "Failed to lookup Languages trying to use default instead");
+                        headsConfig.get().set("langFile", "en_EN");
+                        headsConfig.save();
+                        headsConfig.reload();
+
+                        // Check if default Language is present if not download it
+                        if (!new File("plugins/CustomHeads/language/en_EN").exists()) {
+                            if (new File("plugins/CustomHeads/downloads").listFiles() != null) {
+                                for (File file : new File("plugins/CustomHeads/downloads").listFiles()) {
+                                    file.delete();
+                                }
+                            }
+                            getServer().getConsoleSender().sendMessage(chWarning + "I wasn't able to find the Default Languge File on your Server...");
+                            getServer().getConsoleSender().sendMessage(chPrefix + "§7Downloading necessary Files...");
+                            GitHubDownloader gitHubDownloader = new GitHubDownloader("IHasName", "CustomHeads").enableAutoUnzipping();
+                            gitHubDownloader.download(getDescription().getVersion(), "en_EN.zip", new File(getDataFolder(), "language"), () -> {
+                                getServer().getConsoleSender().sendMessage(chPrefix + "§7Done downloading! Have fun with the Plugin =D");
+                                getServer().getConsoleSender().sendMessage(chPrefix + "§7---------------------------------------------");
+                                Utils.runSynced(new BukkitRunnable() {
+                                    public void run() {
+                                        loadRest();
+                                    }
+                                });
+                            });
                         }
-                    });
-                });
-            }
+                    }
+                }
+            });
+
+
         } else {
             loadRest();
         }
@@ -302,15 +333,7 @@ public class CustomHeads extends JavaPlugin {
             return;
         }
 
-        // Add Category Permissions
         PluginManager manager = getServer().getPluginManager();
-//        categoryManager.getCategoryList().forEach(category -> {
-//            System.out.println("Adding Permission: " + category.getPermission());
-//            Permission categoryPermission = new Permission(category.getPermission() + ".allheads");
-//            categoryPermission.getChildren().put(category.getPermission(), true);
-//            categoryPermission.addParent(category.getPermission() + ".allheads", false);
-//            manager.addPermission(categoryPermission);
-//        });
 
         // Register Listeners
         manager.registerEvents(new InventoryListener(), this);

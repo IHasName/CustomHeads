@@ -52,6 +52,7 @@ public class AsyncFileDownloader {
                         out.flush();
                         out.close();
                         callback.complete();
+                        return;
                     }
                     callback.failed(DownloaderStatus.HTTP_ERROR.setDescription("Server Responded with " + connection.getResponseCode() + "(" + connection.getResponseMessage() + ")"));
                 } catch (IOException e) {

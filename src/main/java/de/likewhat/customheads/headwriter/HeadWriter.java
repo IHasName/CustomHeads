@@ -2,6 +2,7 @@ package de.likewhat.customheads.headwriter;
 
 import de.likewhat.customheads.CustomHeads;
 import de.likewhat.customheads.utils.ItemEditor;
+import de.likewhat.customheads.utils.reflection.NBTTagUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.BlockFace;
@@ -93,7 +94,8 @@ public class HeadWriter {
                 }
             }
             try {
-                CustomHeads.getApi().setSkull(loc.getBlock(), new ItemEditor(fontType.getCharacter(text.charAt(i))).getTexture(), AXIS[Math.round((location.getYaw() * (-1)) / 90f) & 0x3]);
+                BlockFace f = AXIS[Math.round((location.getYaw() * (-1)) / 90f) & 0x3];
+                CustomHeads.getApi().setSkull(loc.getBlock(), new ItemEditor(fontType.getCharacter(text.charAt(i))).getTexture(), NBTTagUtils.MC_VERSION > 12 ? f.getOppositeFace() : f);
             } catch (Exception e) {
                 if (recHis) {
                     player.sendMessage("§cUnsupported Character at collum " + (i + 1) + ": " + text.charAt(i));

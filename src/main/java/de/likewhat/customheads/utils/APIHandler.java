@@ -110,12 +110,24 @@ public class APIHandler implements CustomHeadsAPI {
                 block.setType(Material.SKULL);
                 skull = (Skull) block.getState();
                 skull.setSkullType(SkullType.PLAYER);
+                skull.setRawData((byte) 1);
             }
-            tileEntitySkullClass.getMethod("setGameProfile", GameProfile.class).invoke(tileEntitySkullClass.cast(nmsWorld.getClass().getMethod("getTileEntity", blockPositionClass).invoke(nmsWorld, blockPositionConstructor.newInstance(block.getX(), block.getY(), block.getZ()))), GameProfileBuilder.createProfileWithTexture(texture));
+
             skull.setRotation(blockFace);
             skull.update();
+            setSkullTexture(block, texture);
         } catch (Exception e) {
             CustomHeads.getInstance().getLogger().log(Level.WARNING, "Error placing Skull", e);
+        }
+    }
+
+    private void setSkullTexture(Block block, String texture) {
+        try {
+            Object nmsWorld = block.getWorld().getClass().getMethod("getHandle").invoke(block.getWorld());
+            Object craftSkull = tileEntitySkullClass.cast(nmsWorld.getClass().getMethod("getTileEntity", blockPositionClass).invoke(nmsWorld, blockPositionConstructor.newInstance(block.getX(), block.getY(), block.getZ())));
+            tileEntitySkullClass.getMethod("setGameProfile", GameProfile.class).invoke(craftSkull, GameProfileBuilder.createProfileWithTexture(texture));
+        } catch (Exception e) {
+            CustomHeads.getInstance().getLogger().log(Level.WARNING, "Failed to set Skull Texture", e);
         }
     }
 

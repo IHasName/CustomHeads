@@ -71,7 +71,7 @@ public class InventoryListener implements Listener {
                         boolean bought = customHeadsPlayer.getUnlockedCategories(true).contains(category);
                         nextIcon = new ItemEditor(nextIcon)
                                 .setDisplayName(customHeadsPlayer.getUnlockedCategories(CustomHeads.hasEconomy() && !CustomHeads.keepCategoryPermissions()).contains(category) ? "§a" + nextIcon.getItemMeta().getDisplayName() : "§7" + ChatColor.stripColor(nextIcon.getItemMeta().getDisplayName()) + " " + CustomHeads.getLanguageManager().LOCKED)
-                                .addLoreLine(CustomHeads.hasEconomy() && CustomHeads.categoriesBuyable() ? bought ? CustomHeads.getLanguageManager().ECONOMY_BOUGHT : Utils.getCategoryPriceFormatted(category, true) + "\n" + CustomHeads.getLanguageManager().ECONOMY_BUY_PROMPT : null)
+                                .addLoreLine(CustomHeads.hasEconomy() && CustomHeads.categoriesBuyable() ? bought || hasPermission(player, category.getPermission()) ? CustomHeads.getLanguageManager().ECONOMY_BOUGHT : Utils.getCategoryPriceFormatted(category, true) + "\n" + CustomHeads.getLanguageManager().ECONOMY_BUY_PROMPT : null)
                                 .addLoreLines(hasPermission(player, "heads.view.permissions") ? Arrays.asList(" ", "§7§oPermission: " + category.getPermission()) : null)
                                 .getItem();
                         if (CustomHeads.hasEconomy()) {
@@ -118,7 +118,7 @@ public class InventoryListener implements Listener {
             return;
         }
 
-//        player.sendMessage("§7[CHTags Tags] §r" + CustomHeads.getTagEditor().getTags(event.getCurrentItem())); // Yeah debug at its finest
+        player.sendMessage("§7[CHTags Tags] §r" + CustomHeads.getTagEditor().getTags(event.getCurrentItem())); // Yeah debug at its finest
 
         if (event.getView().getTitle().equals(CustomHeads.getLanguageManager().LOADING)) {
             event.setCancelled(true);
@@ -173,7 +173,7 @@ public class InventoryListener implements Listener {
 
         String menuID = null;
         if (itemTags.contains("menuID")) {
-            menuID = itemTags.get(itemTags.indexOf("menuID") + 1);
+            menuID = itemTags.get(itemTags.indexOf("menuID") + 1).toLowerCase();
         }
 
         if (itemTags.contains("blockMoving")) {
@@ -313,7 +313,7 @@ public class InventoryListener implements Listener {
                     Category category = CustomHeads.getCategoryManager().getCategory(args[1]);
                     if (category != null) {
                         if (menuID != null) {
-                            openCategory(category, player, new String[]{"openMenu", itemTags.get(itemTags.indexOf("menuID") + 1).toLowerCase()});
+                            openCategory(category, player, new String[]{"openMenu", menuID});
                         } else {
                             if (category.hasSubCategories()) {
                                 // Last null because it'll only open the SubCategory Menu
@@ -329,6 +329,9 @@ public class InventoryListener implements Listener {
                 if (subCategory != null) {
                     openCategory(subCategory, player, new String[]{"openCategory", "category#>" + subCategory.getOriginCategory().getId()});
                 }
+            }
+            if(menuID != null) {
+                lastMenu.put(player, menuID);
             }
         }
 
@@ -365,7 +368,7 @@ public class InventoryListener implements Listener {
                         currentScrollInventory.refreshCurrentPage();
                     } else {
                         Category category = buyHead.getOriginCategory();
-                        player.openInventory(getDialog(CustomHeads.getLanguageManager().ECONOMY_BUY_CONFIRM.replace("{ITEM}", ChatColor.stripColor(buyHead.getItemMeta().getDisplayName())).replace("{PRICE}", getHeadPriceFormatted(buyHead, false)), new String[]{"confirmBuy", "head#>" + idParts[0] + ":" + idParts[1] + "#>" + category.getId()}, null, new String[]{"openCategory", "category#>" + category.getId()}, null, buyHead.getPlainItem()));
+                        player.openInventory(getDialog(CustomHeads.getLanguageManager().ECONOMY_BUY_CONFIRM.replace("{ITEM}", ChatColor.stripColor(buyHead.getItemMeta().getDisplayName())).replace("{PRICE}", getHeadPriceFormatted(buyHead, false)), new String[]{"confirmBuy", "head#>" + idParts[0] + ":" + idParts[1] + "#>" + category.getId()}, null, new String[]{"openCategory", "category#>" + category.getId(), "menuID", getLastMenu(player, false)}, null, buyHead.getPlainItem()));
                     }
                 }
             }
@@ -509,10 +512,10 @@ public class InventoryListener implements Listener {
         }
 
         if (itemTags.contains("wearable")) {
-            if (event.getClick() == ClickType.SHIFT_RIGHT) {
+            if (event.getClick() == ClickType.SHIFT_RIGHT && !itemTags.contains("buyHead")) {
                 event.setCancelled(true);
                 player.sendMessage(CustomHeads.getLanguageManager().PUT_ON_HEAD.replace("{NAME}", event.getCurrentItem().getItemMeta().getDisplayName()));
-                player.getInventory().setHelmet(CustomHeads.getTagEditor().setTags(event.getCurrentItem(), ""));
+                player.getInventory().setHelmet(TagEditor.clearTags(event.getCurrentItem()));
                 player.setItemOnCursor(null);
                 player.updateInventory();
                 return;
@@ -528,7 +531,12 @@ public class InventoryListener implements Listener {
 
         if (itemTags.contains("clonable")) {
             event.setCancelled(true);
-            if (getHeadFromItem(event.getCurrentItem()) == null || customHeadsPlayer.getUnlockedHeads().contains(getHeadFromItem(event.getCurrentItem())) || getHeadFromItem(event.getCurrentItem()).isFree()) {
+            Category category = null;
+            if(itemTags.contains("headID")) {
+                String[] id = itemTags.get(itemTags.indexOf("headID")+1).split(":");
+                category = CustomHeads.getCategoryManager().getCategory(id[0]);
+            }
+            if (getHeadFromItem(event.getCurrentItem()) == null || (category != null && hasPermission(player, "heads.viewCategory." + category.getPermission().replaceFirst("heads.viewCategory.", "") + ".allheads")) || customHeadsPlayer.getUnlockedHeads().contains(getHeadFromItem(event.getCurrentItem())) || getHeadFromItem(event.getCurrentItem()).isFree()) {
                 ItemEditor itemEditor = new ItemEditor(event.getCurrentItem());
                 if (event.getClick() == ClickType.SHIFT_LEFT) {
                     player.getInventory().addItem(TagEditor.clearTags(itemEditor.removeLoreLine(itemEditor.hasLore() ? itemEditor.getLore().size() - 1 : 0).getItem()));
@@ -578,6 +586,14 @@ public class InventoryListener implements Listener {
                 player.updateInventory();
                 break;
             }
+        }
+    }
+
+    @EventHandler
+    public void onEvent(InventoryCloseEvent event) {
+        Player player = (Player) event.getPlayer();
+        if(lastMenu.containsKey(player)) {
+            lastMenu.remove(player);
         }
     }
 

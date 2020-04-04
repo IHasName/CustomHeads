@@ -143,7 +143,7 @@ public class GitHubDownloader {
                                 if (status == AsyncFileDownloader.DownloaderStatus.ERROR) {
                                     Bukkit.getLogger().log(Level.WARNING, "Something went wrong while downloading " + assetName, status.getException());
                                 } else {
-                                    Bukkit.getServer().getConsoleSender().sendMessage(CustomHeads.chError + "Failed to download " + assetName + " : " + status);
+                                    Bukkit.getServer().getConsoleSender().sendMessage(CustomHeads.chError + "Failed to download " + assetName + ". " + status);
                                 }
                             }
                         });
@@ -192,8 +192,19 @@ public class GitHubDownloader {
     public static class RateLimitExceededException extends Exception {
         private long reset;
 
+        public String getTimeUntilReset() {
+            long now = System.currentTimeMillis();
+            long timeLeft = reset - now;
+            if(timeLeft < 0) {
+                return "0";
+            }
+            timeLeft /= 1000;
+            long time = timeLeft % 86400;
+            return (int) Math.floor((time % 86400) / 3600) + "h " + (int) Math.floor((time % 3600) / 60) + "m " + (int) Math.floor((time % 60)) + "s";
+        }
+
         public String getMessage() {
-            return "Rate Limit exceeded. Try again later";
+            return "Rate Limit exceeded. Try again later (Time until Reset: " + getTimeUntilReset() + ")";
         }
     }
 

@@ -448,7 +448,7 @@ public class CHCommand implements CommandExecutor {
                     }
                     player.sendMessage(CustomHeads.getLanguageManager().STARTING);
                     CustomHeads.getApi().setSkull(player.getLocation().getBlock(), "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOGEzZDVkNWIyY2YzMzEyOTllNjNkNzYxOGExNDI2NmU4Y2NjNjE1OGU5ZTMxZmNiMGJkOTExZTEyZmY3NzM2In19fQ==", faces[ran.nextInt(faces.length)]);
-                    OtherListeners.CACHED_LOCATIONS.put(player, player.getLocation().getBlock().getLocation().add(.5, 0, .5));
+                    OtherListeners.CACHED_LOCATIONS.put(player, player.getLocation().getBlock().getLocation().add(.5, .5, .5));
                     new BukkitRunnable() {
                         Player cPlayer = player;
                         int counter = 10;
