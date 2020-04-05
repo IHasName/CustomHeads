@@ -40,7 +40,7 @@ public class EconomyManager {
         }
     }
 
-    public void buyHead(CustomHeadsPlayer customHeadsPlayer, Category category, int id, String prevCategory, boolean permanent) {
+    public void buyHead(CustomHeadsPlayer customHeadsPlayer, Category category, int id, boolean permanent) {
         CustomHead customHead = CustomHeads.getApi().getHead(category, id);
         if (customHead == null) {
             CustomHeads.getInstance().getLogger().warning("Received invalid Head ID while buying (" + category.getId() + ":" + id + ")");
@@ -53,7 +53,7 @@ public class EconomyManager {
             } else {
                 customHeadsPlayer.unwrap().getInventory().addItem(customHead.getPlainItem());
             }
-            openCategory(category, customHeadsPlayer.unwrap(), new String[]{"openCategory", prevCategory});
+//            openCategory(category, customHeadsPlayer.unwrap(), new String[]{"openCategory", prevCategory});
             customHeadsPlayer.unwrap().sendMessage(CustomHeads.getLanguageManager().ECONOMY_BUY_SUCCESSFUL.replace("{ITEM}", customHead.getItemMeta().getDisplayName()));
         } else {
             customHeadsPlayer.unwrap().sendMessage(CustomHeads.getLanguageManager().ECONOMY_BUY_FAILED.replace("{REASON}", economyResponse.errorMessage).replace("{ITEM}", customHead.getItemMeta().getDisplayName()));

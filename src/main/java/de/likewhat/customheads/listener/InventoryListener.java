@@ -368,7 +368,7 @@ public class InventoryListener implements Listener {
                         currentScrollInventory.refreshCurrentPage();
                     } else {
                         Category category = buyHead.getOriginCategory();
-                        player.openInventory(getDialog(CustomHeads.getLanguageManager().ECONOMY_BUY_CONFIRM.replace("{ITEM}", ChatColor.stripColor(buyHead.getItemMeta().getDisplayName())).replace("{PRICE}", getHeadPriceFormatted(buyHead, false)), new String[]{"confirmBuy", "head#>" + idParts[0] + ":" + idParts[1] + "#>" + category.getId()}, null, new String[]{"openCategory", "category#>" + category.getId(), "menuID", getLastMenu(player, false)}, null, buyHead.getPlainItem()));
+                        player.openInventory(getDialog(CustomHeads.getLanguageManager().ECONOMY_BUY_CONFIRM.replace("{ITEM}", ChatColor.stripColor(buyHead.getItemMeta().getDisplayName())).replace("{PRICE}", getHeadPriceFormatted(buyHead, false)), new String[]{"confirmBuy", "head#>" + idParts[0] + ":" + idParts[1] + "#>" + category.getId(), "menuID", getLastMenu(player, false), "openCategory", "category#>" + category.getId()}, null, new String[]{"openCategory", "category#>" + category.getId(), "menuID", getLastMenu(player, false)}, null, buyHead.getPlainItem()));
                     }
                 }
             }
@@ -382,7 +382,7 @@ public class InventoryListener implements Listener {
                     CustomHeads.getEconomyManager().buyCategory(customHeadsPlayer, CustomHeads.getCategoryManager().getCategory(args[1]), args[2]);
                 } else if (args[0].equals("head")) {
                     String[] idParts = args[1].split(":");
-                    CustomHeads.getEconomyManager().buyHead(customHeadsPlayer, CustomHeads.getCategoryManager().getCategory(idParts[0]), Integer.parseInt(idParts[1]), args[2], CustomHeads.headsPermanentBuy());
+                    CustomHeads.getEconomyManager().buyHead(customHeadsPlayer, CustomHeads.getCategoryManager().getCategory(idParts[0]), Integer.parseInt(idParts[1]), CustomHeads.headsPermanentBuy());
                 }
             }
         }
@@ -593,6 +593,7 @@ public class InventoryListener implements Listener {
     public void onEvent(InventoryCloseEvent event) {
         Player player = (Player) event.getPlayer();
         if(lastMenu.containsKey(player)) {
+//            player.sendMessage("Clearing Last Menu");
             lastMenu.remove(player);
         }
     }

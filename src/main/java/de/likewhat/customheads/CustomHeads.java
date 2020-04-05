@@ -47,7 +47,7 @@ import static de.likewhat.customheads.utils.Utils.hasPermission;
 @Getter
 public class CustomHeads extends JavaPlugin {
 
-    private static final boolean BETA = false;
+    private static final boolean DEV_BUILD = true;
 
     public static final HashMap<String, String> uuidCache = new HashMap<>();
     public static final String chPrefix = "§7[§eCustomHeads§7] ";
@@ -226,8 +226,8 @@ public class CustomHeads extends JavaPlugin {
 
     public void onEnable() {
         instance = this;
-        if(BETA) {
-            getServer().getConsoleSender().sendMessage("[CustomHeads]\n§e=============================================================================================\nThis is a Beta Version of the Plugin! Please update it as soon as a new Version gets released\n=============================================================================================");
+        if(DEV_BUILD) {
+            getServer().getConsoleSender().sendMessage("[CustomHeads]\n§e=============================================================================================\nThis is a Dev Version of the Plugin! Please update update as soon as a new Version gets released\n=============================================================================================");
         }
         File oldHeadFile;
         if ((oldHeadFile = new File("plugins/CustomHeads", "heads.yml")).exists()) {
@@ -253,13 +253,15 @@ public class CustomHeads extends JavaPlugin {
                         GitHubDownloader gitHubDownloader = new GitHubDownloader("IHasName", "CustomHeads").enableAutoUnzipping();
                         gitHubDownloader.download(getDescription().getVersion(), selectedLanguage + ".zip", new File(getDataFolder(), "language"), () -> {
                             getServer().getConsoleSender().sendMessage(chPrefix + "§7Done downloading! Have fun with the Plugin =D");
-                            getServer().getConsoleSender().sendMessage(chPrefix + "§7---------------------------------------------");
                             Utils.runSynced(new BukkitRunnable() {
                                 public void run() {
                                     loadRest();
                                 }
                             });
                         });
+                    } else {
+                        getLogger().log(Level.WARNING, "Couldn't find selected Language. Using default instead");
+                        downloadDefaultLanguage();
                     }
                 }
 
@@ -270,30 +272,7 @@ public class CustomHeads extends JavaPlugin {
                         Bukkit.getPluginManager().disablePlugin(instance);
                     } else {
                         getLogger().log(Level.WARNING, "Failed to lookup Languages trying to use default instead");
-                        headsConfig.get().set("langFile", "en_EN");
-                        headsConfig.save();
-                        headsConfig.reload();
-
-                        // Check if default Language is present if not download it
-                        if (!new File("plugins/CustomHeads/language/en_EN").exists()) {
-                            if (new File("plugins/CustomHeads/downloads").listFiles() != null) {
-                                for (File file : new File("plugins/CustomHeads/downloads").listFiles()) {
-                                    file.delete();
-                                }
-                            }
-                            getServer().getConsoleSender().sendMessage(chWarning + "I wasn't able to find the Default Languge File on your Server...");
-                            getServer().getConsoleSender().sendMessage(chPrefix + "§7Downloading necessary Files...");
-                            GitHubDownloader gitHubDownloader = new GitHubDownloader("IHasName", "CustomHeads").enableAutoUnzipping();
-                            gitHubDownloader.download(getDescription().getVersion(), "en_EN.zip", new File(getDataFolder(), "language"), () -> {
-                                getServer().getConsoleSender().sendMessage(chPrefix + "§7Done downloading! Have fun with the Plugin =D");
-                                getServer().getConsoleSender().sendMessage(chPrefix + "§7---------------------------------------------");
-                                Utils.runSynced(new BukkitRunnable() {
-                                    public void run() {
-                                        loadRest();
-                                    }
-                                });
-                            });
-                        }
+                        downloadDefaultLanguage();
                     }
                 }
             });
@@ -303,6 +282,32 @@ public class CustomHeads extends JavaPlugin {
             loadRest();
         }
 
+    }
+
+    private void downloadDefaultLanguage() {
+        headsConfig.get().set("langFile", "en_EN");
+        headsConfig.save();
+        headsConfig.reload();
+
+        // Check if default Language is present if not download it
+        if (!new File("plugins/CustomHeads/language/en_EN").exists()) {
+            if (new File("plugins/CustomHeads/downloads").listFiles() != null) {
+                for (File file : new File("plugins/CustomHeads/downloads").listFiles()) {
+                    file.delete();
+                }
+            }
+            getServer().getConsoleSender().sendMessage(chWarning + "I wasn't able to find the Default Languge File on your Server...");
+            getServer().getConsoleSender().sendMessage(chPrefix + "§7Downloading necessary Files...");
+            GitHubDownloader gitHubDownloader = new GitHubDownloader("IHasName", "CustomHeads").enableAutoUnzipping();
+            gitHubDownloader.download(getDescription().getVersion(), "en_EN.zip", new File(getDataFolder(), "language"), () -> {
+                getServer().getConsoleSender().sendMessage(chPrefix + "§7Done downloading! Have fun with the Plugin =D");
+                Utils.runSynced(new BukkitRunnable() {
+                    public void run() {
+                        loadRest();
+                    }
+                });
+            });
+        }
     }
 
     // Load rest of the Plugin after Language Download

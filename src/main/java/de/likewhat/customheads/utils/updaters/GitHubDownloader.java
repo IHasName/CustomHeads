@@ -106,7 +106,7 @@ public class GitHubDownloader {
             }
 
             public void error(Exception exception) {
-
+                fetchResult.error(exception);
             }
         });
     }

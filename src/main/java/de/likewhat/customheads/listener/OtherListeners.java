@@ -31,7 +31,7 @@ public class OtherListeners implements Listener {
 
     @EventHandler
     public void fireworkbreak(BlockBreakEvent event) {
-        if (CACHED_LOCATIONS.containsValue(event.getBlock().getLocation().add(.5, 0, .5))) {
+        if (CACHED_LOCATIONS.containsValue(event.getBlock().getLocation().add(.5, .5, .5))) {
             event.setCancelled(true);
         }
     }
