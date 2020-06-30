@@ -4,6 +4,7 @@ import de.likewhat.customheads.CustomHeads;
 import de.likewhat.customheads.api.CustomHeadsPlayer;
 import de.likewhat.customheads.category.Category;
 import de.likewhat.customheads.category.CategorySetup;
+import de.likewhat.customheads.category.CustomHead;
 import de.likewhat.customheads.category.SubCategory;
 import de.likewhat.customheads.headwriter.HeadFontType;
 import de.likewhat.customheads.headwriter.HeadWriter;
@@ -55,7 +56,7 @@ public class CHCommand implements CommandExecutor {
                     return true;
                 }
                 if (args[0].equalsIgnoreCase("info")) {
-                    CustomHeads.getSpigetFetcher().getLastUpdates(resourceUpdates -> sender.sendMessage("§7Version: §e" + CustomHeads.getInstance().getDescription().getVersion() + " §7Update: §e" + resourceUpdates.size()));
+                    CustomHeads.getSpigetFetcher().getVersions(resourceUpdates -> sender.sendMessage("§7Version: §e" + CustomHeads.getInstance().getDescription().getVersion() + " §7Update: §e" + resourceUpdates.size()));
                     return true;
                 }
                 if (args[0].equalsIgnoreCase("redownload")) {
@@ -179,7 +180,7 @@ public class CHCommand implements CommandExecutor {
                 return true;
             }
 
-            /* Test Command plez Ignore
+            ///* Test Command plez Ignore
             if (args[0].equalsIgnoreCase("test")) {
                 try {
                     Configs tempcon = new Configs(CustomHeads.getInstance(), "test.yml", false, "testing");
@@ -200,7 +201,7 @@ public class CHCommand implements CommandExecutor {
                 }
                 return true;
             }
-            */
+            //*/
             if (args[0].equalsIgnoreCase("categories")) {
                 if (hasPermission(player, "heads.admin")) {
                     if (args.length < 2) {

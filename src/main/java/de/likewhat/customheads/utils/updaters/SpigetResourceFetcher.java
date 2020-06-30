@@ -21,7 +21,7 @@ import java.util.function.Consumer;
 import java.util.logging.Level;
 
 /*
- * Project: CustomHeads in SpigetFetcher
+ * Project: CustomHeads in SpigetResourceFetcher
  *   by LikeWhat
  */
 
@@ -30,24 +30,24 @@ import java.util.logging.Level;
  * <p>Uses Spiget Resource API by inventivetalent
  *
  * @author LikeWhat
- * @version 1.1
+ * @version 1.2
  */
-public class SpigetFetcher {
+public class SpigetResourceFetcher {
 
     private static final Gson GSON = new GsonBuilder().disableHtmlEscaping().registerTypeAdapter(ResourceRelease.class, new ResourceRelease.Serializer()).registerTypeAdapter(ResourceUpdate.class, new ResourceUpdate.Serializer()).create();
 
-    private static final String VERSION_URL = "https://api.spiget.org/v2/resources/%s/versions?size=2147483647&sort=-releaseDate";
+    private static final String VERSIONS_URL = "https://api.spiget.org/v2/resources/%s/versions?size=2147483647&sort=-releaseDate";
     private static final String DESCRIPTION_URL = "https://api.spiget.org/v2/resources/%s/updates?size=2147483647&sort=-date";
     @Setter
-    private static String userAgent = "UpdateChecker-1.1";
-    private String decriptionUrlFormatted;
+    private static String userAgent = "SpigetResourceFetcher/1.2";
+    private String descriptionUrlFormatted;
     private String versionUrlFormatted;
 
     private static JsonParser jsonParser = new JsonParser();
 
-    public SpigetFetcher(int resourceId) {
-        decriptionUrlFormatted = String.format(DESCRIPTION_URL, resourceId);
-        versionUrlFormatted = String.format(VERSION_URL, resourceId);
+    public SpigetResourceFetcher(int resourceId) {
+        descriptionUrlFormatted = String.format(DESCRIPTION_URL, resourceId);
+        versionUrlFormatted = String.format(VERSIONS_URL, resourceId);
     }
 
     public void fetchUpdates(FetchResult resultFetcher) {
@@ -77,27 +77,32 @@ public class SpigetFetcher {
                         updateFile.get().set("lastVersionFetch", new String(Base64.getEncoder().encode(GSON.toJson(releaseList).getBytes())));
                         updateFile.save();
                     }
-                    ResourceRelease latestRelease = releaseList.get(0);
-                    int latestVersion = Integer.parseInt(latestRelease.getReleaseName().replace(".", ""));
-                    int currentVersion = Integer.parseInt(CustomHeads.getInstance().getDescription().getVersion().replace(".", ""));
 
-                    if (latestVersion > currentVersion) {
-                        getLastUpdates(updateList -> resultFetcher.updateAvailable(latestRelease, updateList.get(0)));
-                    } else {
-                        resultFetcher.noUpdate();
+                    ResourceRelease latestRelease = releaseList.get(0);
+                    String[] latestVersionString = latestRelease.getReleaseName().split(".");
+                    String[] currentVersionString = CustomHeads.getInstance().getDescription().getVersion().split(".");
+                    for(int i = 0; i < Math.max(latestVersionString.length, currentVersionString.length); i++) {
+                        int latestVersion = i < latestVersionString.length ? Integer.parseInt(latestVersionString[i]) : 0;
+                        int currentVersion = i < currentVersionString.length ? Integer.parseInt(currentVersionString[i]) : 0;
+
+                        if(latestVersion < currentVersion) {
+                            getVersions(updateList -> resultFetcher.updateAvailable(latestRelease, updateList.get(0)));
+                        } else {
+                            resultFetcher.noUpdate();
+                        }
                     }
                 } catch (Exception e) {
-                    Bukkit.getLogger().log(Level.WARNING, "Couldnt fetch Version List", e);
+                    Bukkit.getLogger().log(Level.WARNING, "Failed to fetch Version List", e);
                 }
             }
         }.runTaskAsynchronously(CustomHeads.getInstance());
     }
 
     public void getLatestUpdate(Consumer<ResourceUpdate> consumer) {
-        getLastUpdates(resourceUpdates -> consumer.accept(resourceUpdates.get(0)));
+        getVersions(resourceUpdates -> consumer.accept(resourceUpdates.get(0)));
     }
 
-    public void getLastUpdates(Consumer<List<ResourceUpdate>> consumer) {
+    public void getVersions(Consumer<List<ResourceUpdate>> consumer) {
         new BukkitRunnable() {
             public void run() {
                 try {
@@ -106,12 +111,10 @@ public class SpigetFetcher {
                     JsonArray descriptionArray;
                     boolean fromCache = false;
                     if (updateFile.get().isSet("lastDescriptionFetch") && TimeUnit.MILLISECONDS.toDays(System.currentTimeMillis() - lastFetch) == 0) {
-
-
                         descriptionArray = jsonParser.parse(new String(Base64.getDecoder().decode(updateFile.get().getString("lastDescriptionFetch")))).getAsJsonArray();
                         fromCache = true;
                     } else {
-                        HttpURLConnection descriptionConnection = (HttpURLConnection) new URL(decriptionUrlFormatted).openConnection();
+                        HttpURLConnection descriptionConnection = (HttpURLConnection) new URL(descriptionUrlFormatted).openConnection();
                         descriptionConnection.addRequestProperty("User-Agent", userAgent);
                         descriptionConnection.setReadTimeout(5000);
                         descriptionArray = jsonParser.parse(new InputStreamReader(descriptionConnection.getInputStream())).getAsJsonArray();
@@ -128,7 +131,7 @@ public class SpigetFetcher {
                     consumer.accept(updateList);
                     return;
                 } catch (Exception e) {
-                    Bukkit.getLogger().log(Level.WARNING, "Couldnt fetch Update List", e);
+                    Bukkit.getLogger().log(Level.WARNING, "Failed to fetch Update List", e);
                 }
                 consumer.accept(null);
             }

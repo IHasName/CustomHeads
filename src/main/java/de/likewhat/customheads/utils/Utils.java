@@ -285,6 +285,7 @@ public class Utils {
     }
 
     public static Inventory getDialog(String title, String[] yesAction, String[] yesActionLore, String[] noAction, String[] noActionLore, ItemStack middleItem) {
+        System.out.println("title: " + title + "\nyesAction: " + Utils.GSON.toJson(yesAction) + " noAction: " + Utils.GSON.toJson(noAction));
         Inventory dialog = Bukkit.createInventory(null, 9 * 3, title.length() > 32 ? title.substring(0, 29) + "..." : title);
         dialog.setItem(11, CustomHeads.getTagEditor().setTags(new ItemEditor(Material.SKULL_ITEM,  3).setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzYxZTViMzMzYzJhMzg2OGJiNmE1OGI2Njc0YTI2MzkzMjM4MTU3MzhlNzdlMDUzOTc3NDE5YWYzZjc3In19fQ==").setDisplayName("§a" + CustomHeads.getLanguageManager().YES).setLore(yesActionLore).getItem(), yesAction));
         dialog.setItem(13, CustomHeads.getTagEditor().setTags(middleItem, "blockMoving"));
@@ -697,13 +698,13 @@ public class Utils {
         return replist;
     }
 
-    public static int[] appendArray(int[] array, int with) {
+    public static int[] pushArray(int[] array, int with) {
         int[] newArray = Arrays.copyOf(array, array.length + 1);
         newArray[array.length] = with;
         return newArray;
     }
 
-    public static <T> T[] appendArray(T[] array, T with) {
+    public static <T> T[] pushArray(T[] array, T with) {
         T[] newArray = Arrays.copyOf(array, array.length + 1);
         newArray[array.length] = with;
         return newArray;

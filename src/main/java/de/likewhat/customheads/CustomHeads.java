@@ -19,7 +19,7 @@ import de.likewhat.customheads.utils.stuff.CHCommand;
 import de.likewhat.customheads.utils.stuff.CHTabCompleter;
 import de.likewhat.customheads.utils.updaters.FetchResult;
 import de.likewhat.customheads.utils.updaters.GitHubDownloader;
-import de.likewhat.customheads.utils.updaters.SpigetFetcher;
+import de.likewhat.customheads.utils.updaters.SpigetResourceFetcher;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -47,7 +47,7 @@ import static de.likewhat.customheads.utils.Utils.hasPermission;
 @Getter
 public class CustomHeads extends JavaPlugin {
 
-    private static final boolean DEV_BUILD = true;
+    private static final boolean DEV_BUILD = false;
 
     public static final HashMap<String, String> uuidCache = new HashMap<>();
     public static final String chPrefix = "§7[§eCustomHeads§7] ";
@@ -62,7 +62,7 @@ public class CustomHeads extends JavaPlugin {
     @Getter private static Language languageManager;
     @Getter private static CustomHeadsAPI api;
     @Getter private static TagEditor tagEditor;
-    @Getter private static SpigetFetcher spigetFetcher;
+    @Getter private static SpigetResourceFetcher spigetFetcher;
     @Getter private static EconomyManager economyManager;
     @Getter private static CategoryManager categoryManager;
     private static List<String> versions = Arrays.asList("v1_8_R1", "v1_8_R2", "v1_8_R3", "v1_9_R1", "v1_9_R2", "v1_10_R1", "v1_11_R1", "v1_12_R1", "v1_13_R1", "v1_13_R2", "v1_14_R1", "v1_15_R1");
@@ -318,6 +318,9 @@ public class CustomHeads extends JavaPlugin {
         headsBuyable = headsConfig.get().getBoolean("economy.heads.buyable");
         headsPermanentBuy = headsConfig.get().getBoolean("economy.heads.permanentBuy");
 
+        // Setting up APIHandler
+        api = new APIHandler();
+
         tagEditor = new TagEditor("chTags");
 
         JsonFile.setDefaultSubfolder("plugins/CustomHeads");
@@ -345,9 +348,6 @@ public class CustomHeads extends JavaPlugin {
         manager.registerEvents(new OtherListeners(), this);
         manager.registerEvents(new CategoryEditorListener(), this);
 
-        // Setting up APIHandler
-        api = new APIHandler();
-
         // Reload Configs
         reloadHistoryData();
         headsConfig.save();
@@ -357,11 +357,11 @@ public class CustomHeads extends JavaPlugin {
         getCommand("heads").setTabCompleter(new CHTabCompleter());
 
         // Check for updates
-        spigetFetcher = new SpigetFetcher(29057);
-        SpigetFetcher.setUserAgent("UC-CustomHeads");
+        spigetFetcher = new SpigetResourceFetcher(29057);
+        SpigetResourceFetcher.setUserAgent("UC-CustomHeads");
 
-        spigetFetcher.fetchUpdates(new SpigetFetcher.FetchResult() {
-            public void updateAvailable(SpigetFetcher.ResourceRelease release, SpigetFetcher.ResourceUpdate update) {
+        spigetFetcher.fetchUpdates(new SpigetResourceFetcher.FetchResult() {
+            public void updateAvailable(SpigetResourceFetcher.ResourceRelease release, SpigetResourceFetcher.ResourceUpdate update) {
                 if (headsConfig.get().getBoolean("update-notifications.console")) {
                     getServer().getConsoleSender().sendMessage(chPrefix + "§bNew Update for CustomHeads found! v" + release.getReleaseName() + " (Running on v" + getDescription().getVersion() + ") - You can Download it here https://www.spigotmc.org/resources/29057");
                 }

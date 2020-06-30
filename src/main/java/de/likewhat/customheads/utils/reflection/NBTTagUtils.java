@@ -30,7 +30,10 @@ public class NBTTagUtils {
                 case 14:
                     return Utils.getMCServerClassByName("NBTTagString").getConstructor(String.class).newInstance(string);
                 case 15:
+                case 16:
                     return Utils.getMCServerClassByName("NBTTagString").getMethod("a", String.class).invoke(null, string);
+                default:
+                    throw new UnsupportedOperationException("Unsupported MC_VERSION: " + MC_VERSION + " Please report this to me on my Discord (Link's on the Spigot Page)");
             }
         } catch(Exception e) {
             e.printStackTrace();
@@ -51,8 +54,11 @@ public class NBTTagUtils {
                     break;
                 case 14:
                 case 15:
+                case 16:
                     list.getClass().getMethod("add", int.class, Utils.getMCServerClassByName("NBTBase")).invoke(list, list.getClass().getMethod("size").invoke(list), objectToAdd);
                     break;
+                default:
+                    throw new UnsupportedOperationException("Unsupported MC_VERSION: " + MC_VERSION + " Please report this to me on my Discord (Link's on the Spigot Page)");
             }
         } catch(Exception e) {
 

@@ -50,8 +50,8 @@ public class GitHubDownloader {
         return this;
     }
 
-    private static void getResponseAsJson(String url, FetchResult<JsonElement> fetchResult) {
-        if (responseCache.containsKey(url)) {
+    private static void getResponseAsJson(String url, FetchResult<JsonElement> fetchResult, boolean force) {
+        if (responseCache.containsKey(url) && !force) {
             fetchResult.success(responseCache.get(url).getData());
             return;
         }
@@ -60,8 +60,10 @@ public class GitHubDownloader {
             JsonElement response;
             HttpURLConnection apiConnection = (HttpURLConnection) new URL(url).openConnection();
             apiConnection.setReadTimeout(10000);
-            if (apiConnection.getResponseCode() != HttpURLConnection.HTTP_OK)
+            if (apiConnection.getResponseCode() != HttpURLConnection.HTTP_OK) {
                 fetchResult.error(new Exception("Server responded with " + apiConnection.getResponseCode()));
+                return;
+            }
             response = new JsonParser().parse(new InputStreamReader(apiConnection.getInputStream()));
             if (response.isJsonObject() && response.getAsJsonObject().has("message")) {
                 fetchResult.error(new NullPointerException("Release API resopnded with: " + response.getAsJsonObject().get("message").getAsString()));
@@ -102,7 +104,7 @@ public class GitHubDownloader {
                     public void error(Exception exception) {
                         Bukkit.getLogger().log(Level.WARNING, "Failed to get Release", exception);
                     }
-                });
+                }, false);
             }
 
             public void error(Exception exception) {
@@ -167,7 +169,7 @@ public class GitHubDownloader {
             public void error(Exception exception) {
                 Bukkit.getLogger().log(Level.WARNING, "Failed to fetch latest Data", exception);
             }
-        });
+        }, false);
     }
 
     private static void getRateLimit(FetchResult<JsonObject> result) {
@@ -184,7 +186,7 @@ public class GitHubDownloader {
             public void error(Exception exception) {
                 exception.printStackTrace();
             }
-        });
+        }, true);
     }
 
     @Getter
@@ -196,7 +198,7 @@ public class GitHubDownloader {
             long now = System.currentTimeMillis();
             long timeLeft = reset - now;
             if(timeLeft < 0) {
-                return "0";
+                return "0s";
             }
             timeLeft /= 1000;
             long time = timeLeft % 86400;

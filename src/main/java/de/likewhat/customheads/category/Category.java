@@ -121,7 +121,7 @@ public class Category extends BaseCategory {
     }
 
     private void addID(int id) {
-        ids = Utils.appendArray(ids, id);
+        ids = Utils.pushArray(ids, id);
     }
 
     private int checkID(int id) {
