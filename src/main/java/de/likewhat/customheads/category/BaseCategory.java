@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.ChatColor;
 
+import java.util.List;
+
 /*
  *  Project: CustomHeads in BaseCategory
  *     by LikeWhat
@@ -12,7 +14,7 @@ import org.bukkit.ChatColor;
 
 @Getter
 @Setter
-public class BaseCategory {
+public abstract class BaseCategory {
 
     private String permission;
     private String name;
@@ -23,6 +25,8 @@ public class BaseCategory {
         this.name = name;
         this.permission = permission;
     }
+
+    public abstract List<CustomHead> getHeads();
 
     public String getPlainName() {
         return ChatColor.stripColor(name);

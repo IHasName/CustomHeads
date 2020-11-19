@@ -28,7 +28,6 @@ import java.util.stream.Collectors;
 public class Category extends BaseCategory {
 
     private static final Gson CATEGORY_TO_JSON = new GsonBuilder().disableHtmlEscaping().setPrettyPrinting().registerTypeAdapter(Category.class, new Serializer()).registerTypeAdapter(SubCategory.class, new SubCategory.Serializer()).create();
-//    public static int counter = 0;
     private int lastID = 1;
 
     private List<SubCategory> subCategories;
@@ -54,12 +53,11 @@ public class Category extends BaseCategory {
         return CATEGORY_TO_JSON;
     }
 
-    //Public Methods
     public boolean hasCategoryIcon() {
         return categoryIcon != null;
     }
 
-    private Category setCategoryIcon(ItemStack icon) {
+    Category setCategoryIcon(ItemStack icon) {
         categoryIcon = icon;
         return this;
     }
@@ -74,7 +72,7 @@ public class Category extends BaseCategory {
         return heads;
     }
 
-    public Category setHeads(List<CustomHead> heads) {
+    Category setHeads(List<CustomHead> heads) {
         this.heads = heads;
         return this;
     }
@@ -83,7 +81,7 @@ public class Category extends BaseCategory {
         return !heads.isEmpty();
     }
 
-    public Category setSubCategories(List<SubCategory> subCategories) {
+    Category setSubCategories(List<SubCategory> subCategories) {
         this.subCategories = subCategories;
         return this;
     }
@@ -96,7 +94,7 @@ public class Category extends BaseCategory {
         return subCategories != null && !subCategories.isEmpty();
     }
 
-    public Category setIcons(List<ItemStack> icons) {
+    Category setIcons(List<ItemStack> icons) {
         this.icons = icons;
         iterator = icons.iterator();
         return this;

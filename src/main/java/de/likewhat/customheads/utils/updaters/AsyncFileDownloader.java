@@ -1,7 +1,7 @@
 package de.likewhat.customheads.utils.updaters;
 
 import com.google.common.io.Files;
-import de.likewhat.customheads.CustomHeads;
+import de.likewhat.customheads.utils.Utils;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
@@ -36,7 +36,7 @@ public class AsyncFileDownloader {
 
     public void startDownload(FileDownloaderCallback callback) {
         System.out.println("Downloading " + fileName + "...");
-        new BukkitRunnable() {
+        Utils.runAsync(new BukkitRunnable() {
             public void run() {
                 try {
                     HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
@@ -59,7 +59,7 @@ public class AsyncFileDownloader {
                     callback.failed(DownloaderStatus.ERROR.setDescription("Failed to download File").setException(e));
                 }
             }
-        }.runTaskAsynchronously(CustomHeads.getInstance());
+        });
     }
 
     public enum DownloaderStatus {
@@ -95,11 +95,9 @@ public class AsyncFileDownloader {
     }
 
     public interface FileDownloaderCallback {
-
         void complete();
 
         void failed(AsyncFileDownloader.DownloaderStatus status);
-
     }
 
     public interface AfterTask {

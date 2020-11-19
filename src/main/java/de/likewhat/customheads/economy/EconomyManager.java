@@ -4,9 +4,11 @@ import de.likewhat.customheads.CustomHeads;
 import de.likewhat.customheads.api.CustomHeadsPlayer;
 import de.likewhat.customheads.category.Category;
 import de.likewhat.customheads.category.CustomHead;
+import de.likewhat.customheads.utils.SimpleCallback;
 import lombok.Getter;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
 import static de.likewhat.customheads.utils.Utils.openCategory;
@@ -57,6 +59,17 @@ public class EconomyManager {
             customHeadsPlayer.unwrap().sendMessage(CustomHeads.getLanguageManager().ECONOMY_BUY_SUCCESSFUL.replace("{ITEM}", customHead.getItemMeta().getDisplayName()));
         } else {
             customHeadsPlayer.unwrap().sendMessage(CustomHeads.getLanguageManager().ECONOMY_BUY_FAILED.replace("{REASON}", economyResponse.errorMessage).replace("{ITEM}", customHead.getItemMeta().getDisplayName()));
+        }
+    }
+
+    public void buyItem(Player player, int price, String itemName, SimpleCallback<Boolean> successCallback) {
+        EconomyResponse economyResponse = economyPlugin.withdrawPlayer(player, price);
+        if (economyResponse.transactionSuccess()) {
+            player.sendMessage(CustomHeads.getLanguageManager().ECONOMY_BUY_SUCCESSFUL.replace("{ITEM}", itemName));
+            successCallback.call(true);
+        } else {
+            player.sendMessage(CustomHeads.getLanguageManager().ECONOMY_BUY_FAILED.replace("{REASON}", economyResponse.errorMessage).replace("{ITEM}", itemName));
+            successCallback.call(false);
         }
     }
 

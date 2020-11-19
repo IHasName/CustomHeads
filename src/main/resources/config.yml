@@ -64,6 +64,8 @@ economy:
   heads:
     buyable: false
     permanentBuy: true
+  get-command:
+    price-per-head: 0
 update-notifications:
   onJoin: true
   console: true

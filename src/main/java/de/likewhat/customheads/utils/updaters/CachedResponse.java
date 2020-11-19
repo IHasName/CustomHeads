@@ -12,11 +12,11 @@ import lombok.Getter;
 @Getter
 public class CachedResponse<T> {
 
-    private final long time;
+    private final long cacheTime;
     private final T data;
 
-    public CachedResponse(long time, T data) {
-        this.time = time;
+    public CachedResponse(long cacheTime, T data) {
+        this.cacheTime = cacheTime;
         this.data = data;
     }
 }

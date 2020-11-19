@@ -85,7 +85,7 @@ public class GameProfileBuilder {
     }
 
     public static GameProfile createProfileWithTexture(String texture) {
-        GameProfile profile = new GameProfile(UUID.randomUUID(), null);
+        GameProfile profile = new GameProfile(UUID.randomUUID(), "0");
         PropertyMap propertyMap = profile.getProperties();
         propertyMap.put("textures", new Property("textures", texture));
         return profile;

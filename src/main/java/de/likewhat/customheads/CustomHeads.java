@@ -26,7 +26,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
-import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.PluginManager;
@@ -36,6 +35,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.io.File;
 import java.util.*;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 import static de.likewhat.customheads.utils.Utils.hasPermission;
 
@@ -47,7 +47,7 @@ import static de.likewhat.customheads.utils.Utils.hasPermission;
 @Getter
 public class CustomHeads extends JavaPlugin {
 
-    private static final boolean DEV_BUILD = false;
+    private static final boolean DEV_BUILD = true;
 
     public static final HashMap<String, String> uuidCache = new HashMap<>();
     public static final String chPrefix = "§7[§eCustomHeads§7] ";
@@ -65,9 +65,10 @@ public class CustomHeads extends JavaPlugin {
     @Getter private static SpigetResourceFetcher spigetFetcher;
     @Getter private static EconomyManager economyManager;
     @Getter private static CategoryManager categoryManager;
-    private static List<String> versions = Arrays.asList("v1_8_R1", "v1_8_R2", "v1_8_R3", "v1_9_R1", "v1_9_R2", "v1_10_R1", "v1_11_R1", "v1_12_R1", "v1_13_R1", "v1_13_R2", "v1_14_R1", "v1_15_R1");
+    private static List<String> versions = Arrays.asList("v1_8_R1", "v1_8_R2", "v1_8_R3", "v1_9_R1", "v1_9_R2", "v1_10_R1", "v1_11_R1", "v1_12_R1", "v1_13_R1", "v1_13_R2", "v1_14_R1", "v1_15_R1", "v1_16_R1");
     private static String packet = Bukkit.getServer().getClass().getPackage().getName();
     public static String version = packet.substring(packet.lastIndexOf('.') + 1);
+    @Getter private static int getCommandPrice = 0;
 
     public static final boolean USE_TEXTURES = versions.contains(version);
     private static boolean keepCategoryPermissions = false;
@@ -171,13 +172,14 @@ public class CustomHeads extends JavaPlugin {
         return true;
     }
 
-    public static boolean reload() {
+    public static boolean silentReload() {
         headsConfig.reload();
         reducedDebug = headsConfig.get().getBoolean("reducedDebug");
         categoriesBuyable = headsConfig.get().getBoolean("economy.category.buyable");
         headsBuyable = headsConfig.get().getBoolean("economy.heads.buyable");
         headsPermanentBuy = headsConfig.get().getBoolean("economy.heads.permanentBuy");
         keepCategoryPermissions = headsConfig.get().getBoolean("economy.category.keepPermissions");
+
         reloadHistoryData();
         reloadEconomy();
         PlayerWrapper.clearCache();
@@ -190,7 +192,7 @@ public class CustomHeads extends JavaPlugin {
 
     public void onDisable() {
         if (isInit) {
-            OtherListeners.CACHED_LOCATIONS.values().forEach(loc -> loc.getBlock().setType(Material.AIR));
+            CHCommand.CACHED_FIREWORKS.forEach(loc -> loc.getBlock().setType(Material.AIR));
             PlayerWrapper.clearCache();
         }
     }
@@ -213,9 +215,9 @@ public class CustomHeads extends JavaPlugin {
             playerDataFile.saveJson();
             headsConfig.get().set("heads", null);
             headsConfig.save();
-            getServer().getConsoleSender().sendMessage(chPrefix + "Successfully converted Head Data");
+            getServer().getConsoleSender().sendMessage(chPrefix + "Successfully converted old Head Data");
         } catch (Exception e) {
-            getLogger().log(Level.WARNING, "Failed to convertFromJson Head Data...", e);
+            getLogger().log(Level.WARNING, "Failed to convert old Head Data...", e);
         }
     }
 
@@ -276,12 +278,9 @@ public class CustomHeads extends JavaPlugin {
                     }
                 }
             });
-
-
         } else {
             loadRest();
         }
-
     }
 
     private void downloadDefaultLanguage() {
@@ -296,7 +295,7 @@ public class CustomHeads extends JavaPlugin {
                     file.delete();
                 }
             }
-            getServer().getConsoleSender().sendMessage(chWarning + "I wasn't able to find the Default Languge File on your Server...");
+            getServer().getConsoleSender().sendMessage(chWarning + "I wasn't able to find the Default Language File on your Server...");
             getServer().getConsoleSender().sendMessage(chPrefix + "§7Downloading necessary Files...");
             GitHubDownloader gitHubDownloader = new GitHubDownloader("IHasName", "CustomHeads").enableAutoUnzipping();
             gitHubDownloader.download(getDescription().getVersion(), "en_EN.zip", new File(getDataFolder(), "language"), () -> {
@@ -317,6 +316,8 @@ public class CustomHeads extends JavaPlugin {
         categoriesBuyable = headsConfig.get().getBoolean("economy.category.buyable");
         headsBuyable = headsConfig.get().getBoolean("economy.heads.buyable");
         headsPermanentBuy = headsConfig.get().getBoolean("economy.heads.permanentBuy");
+
+        getCommandPrice = headsConfig.get().getInt("economy.get-command.price-per-head");
 
         // Setting up APIHandler
         api = new APIHandler();
@@ -356,30 +357,36 @@ public class CustomHeads extends JavaPlugin {
         getCommand("heads").setExecutor(new CHCommand());
         getCommand("heads").setTabCompleter(new CHTabCompleter());
 
-        // Check for updates
         spigetFetcher = new SpigetResourceFetcher(29057);
         SpigetResourceFetcher.setUserAgent("UC-CustomHeads");
 
-        spigetFetcher.fetchUpdates(new SpigetResourceFetcher.FetchResult() {
-            public void updateAvailable(SpigetResourceFetcher.ResourceRelease release, SpigetResourceFetcher.ResourceUpdate update) {
-                if (headsConfig.get().getBoolean("update-notifications.console")) {
-                    getServer().getConsoleSender().sendMessage(chPrefix + "§bNew Update for CustomHeads found! v" + release.getReleaseName() + " (Running on v" + getDescription().getVersion() + ") - You can Download it here https://www.spigotmc.org/resources/29057");
+        // Don't check for updates if the Plugin is a Dev Build
+        if(!DEV_BUILD) {
+            // Check for updates
+            spigetFetcher.fetchUpdates(new SpigetResourceFetcher.FetchResult() {
+                public void updateAvailable(SpigetResourceFetcher.ResourceRelease release, SpigetResourceFetcher.ResourceUpdate update) {
+                    if (headsConfig.get().getBoolean("update-notifications.console")) {
+                        getServer().getConsoleSender().sendMessage(chPrefix + "§bNew Update for CustomHeads found! v" + release.getReleaseName() + " (Running on v" + getDescription().getVersion() + ") - You can Download it here https://www.spigotmc.org/resources/29057");
+                    }
                 }
-            }
 
-            public void noUpdate() {
-            }
-        });
+                public void noUpdate() {
+                }
+            });
+        }
 
         if (!USE_TEXTURES) {
             getServer().getConsoleSender().sendMessage(chWarning + "Hrm. Seems like CustomHeads wasn't tested on this Minecraft Version yet...");
             getServer().getConsoleSender().sendMessage(chWarning + "Please report this to me on Discord (Link's on the Spigot Page)");
         }
 
-        initMetrics();
+        // No need to report Metrics for Dev Builds
+        if(!DEV_BUILD) {
+            initMetrics();
+        }
 
         // -- Timers
-        // Clear Cache every 5 Minutes
+        // Clear Cache every 30 Minutes
         new BukkitRunnable() {
             public void run() {
                 uuidCache.clear();
@@ -389,48 +396,45 @@ public class CustomHeads extends JavaPlugin {
                 ScrollableInventory.clearCache();
                 PlayerWrapper.clearCache();
             }
-        }.runTaskTimer(instance, 6000, 6000);
+        }.runTaskTimer(instance, 36000, 36000);
 
         // Animation Timer
-        new BukkitRunnable() {
-            public void run() {
-                for (Player player : getServer().getOnlinePlayers()) {
-                    if (player.getOpenInventory() != null && player.getOpenInventory().getType() == InventoryType.CHEST) {
-                        if (CustomHeads.getLooks().getMenuTitles().contains(player.getOpenInventory().getTitle())) {
-                            ItemStack[] inventoryContent = player.getOpenInventory().getTopInventory().getContents();
-                            for (int i = 0; i < inventoryContent.length; i++) {
-                                if (inventoryContent[i] == null) continue;
-                                ItemStack contentItem = inventoryContent[i];
-                                if (CustomHeads.getTagEditor().getTags(contentItem).contains("openCategory") && CustomHeads.getTagEditor().getTags(contentItem).contains("icon-loop")) {
-                                    String[] categoryArgs = CustomHeads.getTagEditor().getTags(contentItem).get(CustomHeads.getTagEditor().indexOf(contentItem, "openCategory") + 1).split("#>");
-                                    if (categoryArgs[0].equals("category")) {
-                                        CustomHeadsPlayer customHeadsPlayer = api.wrapPlayer(player);
-                                        Category category = CustomHeads.getCategoryManager().getCategory(categoryArgs[1]);
-                                        ItemStack nextIcon = category.nextIcon();
-                                        boolean bought = customHeadsPlayer.getUnlockedCategories(true).contains(category);
-                                        nextIcon = new ItemEditor(nextIcon)
-                                                .setDisplayName(customHeadsPlayer.getUnlockedCategories(CustomHeads.hasEconomy() && !CustomHeads.keepCategoryPermissions()).contains(category) ? "§a" + nextIcon.getItemMeta().getDisplayName() : "§7" + ChatColor.stripColor(nextIcon.getItemMeta().getDisplayName()) + " " + CustomHeads.getLanguageManager().LOCKED)
-                                                .addLoreLine(CustomHeads.hasEconomy() && CustomHeads.categoriesBuyable() ? bought ? CustomHeads.getLanguageManager().ECONOMY_BOUGHT : Utils.getCategoryPriceFormatted(category, true) + "\n" + CustomHeads.getLanguageManager().ECONOMY_BUY_PROMPT : null)
-                                                .addLoreLines(hasPermission(player, "heads.view.permissions") ? Arrays.asList(" ", "§7§oPermission: " + category.getPermission()) : null)
-                                                .getItem();
-                                        if (CustomHeads.hasEconomy() && !CustomHeads.keepCategoryPermissions()) {
-                                            if (!bought) {
-                                                nextIcon = CustomHeads.getTagEditor().addTags(nextIcon, "buyCategory", category.getId());
-                                            }
+        Utils.runAsyncTimer(
+            new BukkitRunnable() {
+                public void run() {
+                    getServer().getOnlinePlayers().stream().filter(player -> player.getOpenInventory() != null && player.getOpenInventory().getType() == InventoryType.CHEST && CustomHeads.getLooks().getMenuTitles().contains(player.getOpenInventory().getTitle())).collect(Collectors.toList()).forEach(player -> {
+                        ItemStack[] inventoryContent = player.getOpenInventory().getTopInventory().getContents();
+                        for (int i = 0; i < inventoryContent.length; i++) {
+                            if (inventoryContent[i] == null) continue;
+                            ItemStack contentItem = inventoryContent[i];
+                            if (CustomHeads.getTagEditor().getTags(contentItem).contains("openCategory") && CustomHeads.getTagEditor().getTags(contentItem).contains("icon-loop")) {
+                                String[] categoryArgs = CustomHeads.getTagEditor().getTags(contentItem).get(CustomHeads.getTagEditor().indexOf(contentItem, "openCategory") + 1).split("#>");
+                                if (categoryArgs[0].equals("category")) {
+                                    CustomHeadsPlayer customHeadsPlayer = api.wrapPlayer(player);
+                                    Category category = CustomHeads.getCategoryManager().getCategory(categoryArgs[1]);
+                                    ItemStack nextIcon = category.nextIcon();
+                                    boolean bought = customHeadsPlayer.getUnlockedCategories(true).contains(category);
+                                    nextIcon = new ItemEditor(nextIcon)
+                                            .setDisplayName(customHeadsPlayer.getUnlockedCategories(CustomHeads.hasEconomy() && !CustomHeads.keepCategoryPermissions()).contains(category) ? "§a" + nextIcon.getItemMeta().getDisplayName() : "§7" + ChatColor.stripColor(nextIcon.getItemMeta().getDisplayName()) + " " + CustomHeads.getLanguageManager().LOCKED)
+                                            .addLoreLine(CustomHeads.hasEconomy() && CustomHeads.categoriesBuyable() ? bought ? CustomHeads.getLanguageManager().ECONOMY_BOUGHT : Utils.getCategoryPriceFormatted(category, true) + "\n" + CustomHeads.getLanguageManager().ECONOMY_BUY_PROMPT : null)
+                                            .addLoreLines(hasPermission(player, "heads.view.permissions") ? Arrays.asList(" ", "§7§oPermission: " + category.getPermission()) : null)
+                                            .getItem();
+                                    if (CustomHeads.hasEconomy() && !CustomHeads.keepCategoryPermissions()) {
+                                        if (!bought) {
+                                            nextIcon = CustomHeads.getTagEditor().addTags(nextIcon, "buyCategory", category.getId());
                                         }
-                                        contentItem = nextIcon;
                                     }
-                                }
-                                if(tagEditor.hasMyTags(contentItem)) {
-                                    inventoryContent[i] = CustomHeads.getTagEditor().addTags(contentItem, "menuID", CustomHeads.getLooks().getIDbyTitle(player.getOpenInventory().getTitle()));
+                                    contentItem = nextIcon;
                                 }
                             }
-                            player.getOpenInventory().getTopInventory().setContents(inventoryContent);
+                            if (tagEditor.hasMyTags(contentItem)) {
+                                inventoryContent[i] = CustomHeads.getTagEditor().addTags(contentItem, "menuID", CustomHeads.getLooks().getIDbyTitle(player.getOpenInventory().getTitle()));
+                            }
                         }
-                    }
+                        player.getOpenInventory().getTopInventory().setContents(inventoryContent);
+                    });
                 }
-            }
-        }.runTaskTimer(instance, 0, 20);
+        }, 0, 20);
 
         isInit = true;
     }

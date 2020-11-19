@@ -122,6 +122,4 @@ public interface CustomHeadsPlayer {
     SearchHistory getSearchHistory();
 
     GetHistory getGetHistory();
-
-    // Im no professional Description Writer so shhhhhhhhhhhhh...
 }

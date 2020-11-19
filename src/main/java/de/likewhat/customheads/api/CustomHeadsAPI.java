@@ -10,6 +10,7 @@ package de.likewhat.customheads.api;
 import de.likewhat.customheads.category.Category;
 import de.likewhat.customheads.category.CustomHead;
 import de.likewhat.customheads.headwriter.HeadFontType;
+import de.likewhat.customheads.utils.FireworksBatteryHandler;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
@@ -92,5 +93,26 @@ public interface CustomHeadsAPI {
      * @return Head from Database
      */
     CustomHead getHead(Category category, int id);
+
+    /**
+     * Starts a Firework in the world
+     *
+     * @param location Location where to start the Firework
+     * @param shots Sets how many shots the Battery has
+     * @param delay Delay between the shots (Ticks)
+     */
+    void createFireworkBattery(Location location, int shots, int delay);
+
+    /**
+     * Starts a Firework in the world
+     * Has a Callback
+     * @see FireworksBatteryHandler
+     *
+     * @param location Location where to start the Firework
+     * @param shots Sets how many shots the Battery has
+     * @param delay Delay between the shots (Ticks)
+     * @param handler Contains callables for when the Firework starts, ends and when the next Firework is launched
+     */
+    void createFireworkBattery(Location location, int shots, int delay, FireworksBatteryHandler handler);
 
 }

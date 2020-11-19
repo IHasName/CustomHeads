@@ -285,7 +285,7 @@ public class Utils {
     }
 
     public static Inventory getDialog(String title, String[] yesAction, String[] yesActionLore, String[] noAction, String[] noActionLore, ItemStack middleItem) {
-        System.out.println("title: " + title + "\nyesAction: " + Utils.GSON.toJson(yesAction) + " noAction: " + Utils.GSON.toJson(noAction));
+        //System.out.println("title: " + title + "\nyesAction: " + Utils.GSON.toJson(yesAction) + " noAction: " + Utils.GSON.toJson(noAction));
         Inventory dialog = Bukkit.createInventory(null, 9 * 3, title.length() > 32 ? title.substring(0, 29) + "..." : title);
         dialog.setItem(11, CustomHeads.getTagEditor().setTags(new ItemEditor(Material.SKULL_ITEM,  3).setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzYxZTViMzMzYzJhMzg2OGJiNmE1OGI2Njc0YTI2MzkzMjM4MTU3MzhlNzdlMDUzOTc3NDE5YWYzZjc3In19fQ==").setDisplayName("§a" + CustomHeads.getLanguageManager().YES).setLore(yesActionLore).getItem(), yesAction));
         dialog.setItem(13, CustomHeads.getTagEditor().setTags(middleItem, "blockMoving"));
@@ -384,15 +384,24 @@ public class Utils {
             }
         }
         openPreloader(player);
-        ScrollableInventory inventory = new ScrollableInventory(baseCategory.getName());
-        inventory.setContent(categoryHeads.stream().map(customHead -> {
-            boolean bought = customHeadsPlayer.getUnlockedHeads().contains(customHead);
-            ItemEditor itemEditor = new ItemEditor(customHead);
-            return CustomHeads.hasEconomy() && CustomHeads.headsBuyable() ? (bought || hasPermission(player, "heads.viewCategory." + baseCategory.getPermission().replaceFirst("heads.viewCategory.", "") + ".allheads")) ? CustomHeads.getTagEditor().addTags(itemEditor.addLoreLine(CustomHeads.getLanguageManager().ECONOMY_BOUGHT).getItem(), "wearable", "clonable") : CustomHeads.getTagEditor().addTags(itemEditor.addLoreLine(formatPrice(customHead.getPrice(), true)).getItem(), "buyHead", "buyHead#>" + customHead.getOriginCategory().getId() + ":" + customHead.getId()) : CustomHeads.getTagEditor().addTags(itemEditor.getItem(), "wearable", "clonable");
-        }).collect(Collectors.toList()));
-        inventory.setBarItem(1, Utils.getBackButton(backAction));
-        inventory.setBarItem(3, CustomHeads.getTagEditor().setTags(new ItemEditor(Material.PAPER).setDisplayName(CustomHeads.getLanguageManager().ITEMS_INFO).setLore(CustomHeads.getLanguageManager().ITEMS_INFO_LORE).getItem(), "dec", "info-item", "blockMoving"));
-        player.openInventory(inventory.getAsInventory());
+
+        runAsync(new BukkitRunnable() {
+            public void run() {
+                ScrollableInventory inventory = new ScrollableInventory(baseCategory.getName());
+                inventory.setContent(categoryHeads.stream().map(customHead -> {
+                    boolean bought = customHeadsPlayer.getUnlockedHeads().contains(customHead);
+                    ItemEditor itemEditor = new ItemEditor(customHead);
+                    return CustomHeads.hasEconomy() && CustomHeads.headsBuyable() ? (bought || hasPermission(player, "heads.unlockAllHeads." + baseCategory.getPermission().replaceFirst("heads.viewCategory.", ""))) ? CustomHeads.getTagEditor().addTags(itemEditor.addLoreLine(CustomHeads.getLanguageManager().ECONOMY_BOUGHT).getItem(), "wearable", "clonable") : CustomHeads.getTagEditor().addTags(itemEditor.addLoreLine(formatPrice(customHead.getPrice(), true)).getItem(), "buyHead", "buyHead#>" + customHead.getOriginCategory().getId() + ":" + customHead.getId()) : CustomHeads.getTagEditor().addTags(itemEditor.getItem(), "wearable", "clonable");
+                }).collect(Collectors.toList()));
+                inventory.setBarItem(1, Utils.getBackButton(backAction));
+                inventory.setBarItem(3, CustomHeads.getTagEditor().setTags(new ItemEditor(Material.PAPER).setDisplayName(CustomHeads.getLanguageManager().ITEMS_INFO).setLore(CustomHeads.getLanguageManager().ITEMS_INFO_LORE).getItem(), "dec", "info-item", "blockMoving"));
+                runSyncedLater(new BukkitRunnable() {
+                    public void run() {
+                        player.openInventory(inventory.getAsInventory());
+                    }
+                }, 10);
+            }
+        });
     }
 
     public static boolean hasCustomTexture(ItemStack itemStack) {
@@ -414,6 +423,27 @@ public class Utils {
         runnable.runTask(CustomHeads.getInstance());
     }
 
+    public static void runSyncedLater(BukkitRunnable runnable, long delay) {
+        runnable.runTaskLater(CustomHeads.getInstance(), delay);
+    }
+
+    public static void runSyncedTimer(BukkitRunnable runnable, long delay, long time) {
+        runnable.runTaskTimer(CustomHeads.getInstance(), delay, time);
+    }
+
+    public static void runAsync(BukkitRunnable runnable) {
+        runnable.runTaskAsynchronously(CustomHeads.getInstance());
+    }
+
+    public static void runAsyncLater(BukkitRunnable runnable, long delay) {
+        runnable.runTaskLaterAsynchronously(CustomHeads.getInstance(), delay);
+    }
+
+    public static void runAsyncTimer(BukkitRunnable runnable, long delay, long time) {
+        runnable.runTaskTimerAsynchronously(CustomHeads.getInstance(), delay, time);
+    }
+
+    // I created this Code at Random just to Split Text
     public static String[] splitEvery(String string, String regex, int index) {
         if (index <= 0)
             throw new IllegalArgumentException("Index must be higher than 0");
@@ -471,7 +501,7 @@ public class Utils {
             consumer.accept(CustomHeads.uuidCache.get(name));
             return;
         }
-        new BukkitRunnable() {
+        Utils.runAsync(new BukkitRunnable() {
             public void run() {
                 try {
                     HttpURLConnection connection = (HttpURLConnection) new URL(String.format("https://api.mojang.com/users/profiles/minecraft/%s", name)).openConnection();
@@ -489,14 +519,22 @@ public class Utils {
                             consumer.accept(null);
                             return;
                         }
-                        consumer.accept(new JsonParser().parse(json).getAsJsonObject().get("id").getAsString());
+                        Utils.runSynced(new BukkitRunnable() {
+                            public void run() {
+                                consumer.accept(new JsonParser().parse(json).getAsJsonObject().get("id").getAsString());
+                            }
+                        });
                     }
                 } catch (Exception whoops) {
                     Bukkit.getLogger().log(Level.WARNING, "Couldn't get UUID from " + name, whoops);
-                    consumer.accept(null);
+                    Utils.runSynced(new BukkitRunnable() {
+                        public void run() {
+                            consumer.accept(null);
+                        }
+                    });
                 }
             }
-        }.runTaskAsynchronously(CustomHeads.getInstance());
+        });
     }
 
     public static void unzipFile(File zipFile, File outputDir) {
@@ -564,7 +602,7 @@ public class Utils {
         sender.sendMessage((console ? CustomHeads.chPrefix : "") + CustomHeads.getLanguageManager().LANGUAGE_REDOWNLOAD_DOWNLOADING);
         GitHubDownloader gitGetter = new GitHubDownloader("IHasName", "CustomHeads").enableAutoUnzipping();
         gitGetter.download(CustomHeads.getInstance().getDescription().getVersion(), "en_EN.zip", new File("plugins/CustomHeads/language"), (AsyncFileDownloader.AfterTask) () -> {
-            CustomHeads.reload();
+            CustomHeads.silentReload();
             sender.sendMessage((console ? CustomHeads.chPrefix : "") + CustomHeads.getLanguageManager().LANGUAGE_REDOWNLOAD_DONE);
         });
         return true;

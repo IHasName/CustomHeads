@@ -21,15 +21,23 @@ import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Skull;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Firework;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.FireworkMeta;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.Vector;
 
 import java.lang.reflect.Constructor;
+import java.util.Random;
 import java.util.logging.Level;
 
 public class APIHandler implements CustomHeadsAPI {
 
     private static Class<?> tileEntitySkullClass, blockPositionClass;
     private static Constructor<?> blockPositionConstructor;
+    private FireworkEffect.Type[] fxTypes = {FireworkEffect.Type.BALL, FireworkEffect.Type.BALL_LARGE, FireworkEffect.Type.BURST, FireworkEffect.Type.STAR};
+
 
     static {
         tileEntitySkullClass = Utils.getMCServerClassByName("TileEntitySkull");
@@ -140,4 +148,68 @@ public class APIHandler implements CustomHeadsAPI {
         return PlayerWrapper.wrapPlayer(player);
     }
 
+    public void createFireworkBattery(Location location, int shots, int delay) {
+        createFireworkBattery(location, shots, delay, new FireworksBatteryHandler() {
+            public void onStart() {}
+            public void onNext() {}
+            public void onEnd() {}
+        });
+    }
+
+    public void createFireworkBattery(Location location, int shots, int delay, FireworksBatteryHandler handler) {
+        Random random = new Random();
+
+//        if(placeBlock) {
+//            CustomHeads.getApi().setSkull(location.getBlock(), "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOGEzZDVkNWIyY2YzMzEyOTllNjNkNzYxOGExNDI2NmU4Y2NjNjE1OGU5ZTMxZmNiMGJkOTExZTEyZmY3NzM2In19fQ==", faces[random.nextInt(faces.length)]);
+//        }
+        handler.onStart();
+        new BukkitRunnable() {
+            int counter = shots;
+
+            public void run() {
+                if (counter == 0) {
+//                    if(placeBlock) {
+//                        location.getWorld().playEffect(location.getBlock().getLocation(), Effect.STEP_SOUND, 17);
+//                        location.getBlock().setType(Material.AIR);
+//                    }
+                    handler.onEnd();
+//                    callback.call(location);
+                    cancel();
+                    return;
+                }
+                Firework f = (Firework) location.getWorld().spawnEntity(location, EntityType.FIREWORK);
+                FireworkMeta fm = f.getFireworkMeta();
+                FireworkEffect.Builder fx = FireworkEffect.builder();
+                fx.flicker(random.nextBoolean()).trail(random.nextBoolean()).with(fxTypes[random.nextInt(fxTypes.length)]);
+                int c = random.nextInt(2) + 2;
+                for (int i = 0; i < c; i++) {
+                    fx.withColor(Color.fromRGB(random.nextInt(200) + 50, random.nextInt(200) + 50, random.nextInt(200) + 50));
+                    if (random.nextBoolean()) {
+                        fx.withFade(Color.fromRGB(random.nextInt(200) + 50, random.nextInt(200) + 50, random.nextInt(200) + 50));
+                    }
+                }
+                fm.addEffect(fx.build());
+                fm.setPower(random.nextInt(2) + 1);
+                f.setFireworkMeta(fm);
+                f.setVelocity(new Vector(random.nextDouble() * (random.nextBoolean() ? .01 : -.01), .2, random.nextDouble() * (random.nextBoolean() ? .01 : -.01)));
+//                World world = location.getWorld();
+                handler.onNext();
+//                if(placeBlock) {
+//                    if (NBTTagUtils.MC_VERSION > 13) {
+//                        try {
+//                            Class<?> particleClass = Utils.getClassByName("org.bukkit.Particle");
+//                            World.class.getMethod("spawnParticle", particleClass, Location.class, int.class).invoke(world, NMSUtils.getEnumFromClass(particleClass, "LAVA"), location, 6);
+//                        } catch (Exception e) {
+//                            e.printStackTrace();
+//                        }
+//                    } else {
+//                        for (int i = 0; i < 6; i++) {
+//                            world.playEffect(location, Effect.LAVA_POP, 0);
+//                        }
+//                    }
+//                }
+                counter--;
+            }
+        }.runTaskTimer(CustomHeads.getInstance(), 10, delay);
+    }
 }

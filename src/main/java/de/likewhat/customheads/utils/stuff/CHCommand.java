@@ -8,7 +8,6 @@ import de.likewhat.customheads.category.CustomHead;
 import de.likewhat.customheads.category.SubCategory;
 import de.likewhat.customheads.headwriter.HeadFontType;
 import de.likewhat.customheads.headwriter.HeadWriter;
-import de.likewhat.customheads.listener.OtherListeners;
 import de.likewhat.customheads.utils.*;
 import de.likewhat.customheads.utils.reflection.NBTTagUtils;
 import de.likewhat.customheads.utils.updaters.FetchResult;
@@ -17,15 +16,11 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
-import org.bukkit.util.Vector;
 
 import java.io.File;
 import java.util.*;
@@ -47,6 +42,8 @@ public class CHCommand implements CommandExecutor {
     private FireworkEffect.Type[] fxTypes = {FireworkEffect.Type.BALL, FireworkEffect.Type.BALL_LARGE, FireworkEffect.Type.BURST, FireworkEffect.Type.STAR};
     private BlockFace[] faces = {BlockFace.NORTH, BlockFace.NORTH_EAST, BlockFace.NORTH_NORTH_EAST};
     private Random ran = new Random();
+    private List<Player> active_fireworks = new ArrayList<>();
+    public static final List<Location> CACHED_FIREWORKS = new ArrayList<>();
 
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if (!(sender instanceof Player)) {
@@ -443,51 +440,33 @@ public class CHCommand implements CommandExecutor {
                         player.sendMessage(CustomHeads.getLanguageManager().CANNOT_PLACE_IN_AIR);
                         return true;
                     }
-                    if (OtherListeners.CACHED_LOCATIONS.containsKey(player)) {
+                    if (active_fireworks.contains(player)) {
                         player.sendMessage(CustomHeads.getLanguageManager().ALREADY_IN_USE);
                         return true;
                     }
                     player.sendMessage(CustomHeads.getLanguageManager().STARTING);
-                    CustomHeads.getApi().setSkull(player.getLocation().getBlock(), "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOGEzZDVkNWIyY2YzMzEyOTllNjNkNzYxOGExNDI2NmU4Y2NjNjE1OGU5ZTMxZmNiMGJkOTExZTEyZmY3NzM2In19fQ==", faces[ran.nextInt(faces.length)]);
-                    OtherListeners.CACHED_LOCATIONS.put(player, player.getLocation().getBlock().getLocation().add(.5, .5, .5));
-                    new BukkitRunnable() {
-                        Player cPlayer = player;
-                        int counter = 10;
+                    active_fireworks.add(player);
+                    Location startLocation = player.getLocation().getBlock().getLocation().add(.5, .5, .5);
+                    CACHED_FIREWORKS.add(startLocation);
+//                    OtherListeners.CACHED_LOCATIONS.put(player, player.getLocation().getBlock().getLocation().add(.5, .5, .5));
+//                    CustomHeads.getApi().createFireworkBattery(startLocation, 10, 20, location -> {
+//                        location.getWorld().playEffect(location.getBlock().getLocation(), Effect.STEP_SOUND, 17);
+//                        location.getBlock().setType(Material.AIR);
+//                    });
+                    CustomHeads.getApi().createFireworkBattery(startLocation, 10, 20, new FireworksBatteryHandler() {
+                        Location location = startLocation.clone();
 
-                        public void run() {
-                            if (!OtherListeners.CACHED_LOCATIONS.containsKey(cPlayer)) {
-                                cancel();
-                                return;
-                            }
-                            if (counter <= 0) {
-                                OtherListeners.CACHED_LOCATIONS.get(cPlayer).getWorld().playEffect(OtherListeners.CACHED_LOCATIONS.get(cPlayer).getBlock().getLocation(), Effect.STEP_SOUND, 17);
-                                OtherListeners.CACHED_LOCATIONS.get(cPlayer).getBlock().setType(Material.AIR);
-                                OtherListeners.CACHED_LOCATIONS.remove(cPlayer);
-                                cancel();
-                                return;
-                            }
-                            Firework f = (Firework) OtherListeners.CACHED_LOCATIONS.get(cPlayer).getWorld().spawnEntity(OtherListeners.CACHED_LOCATIONS.get(cPlayer), EntityType.FIREWORK);
-                            FireworkMeta fm = f.getFireworkMeta();
-                            FireworkEffect.Builder fx = FireworkEffect.builder();
-                            fx.flicker(ran.nextBoolean()).trail(ran.nextBoolean()).with(fxTypes[ran.nextInt(fxTypes.length)]);
-                            int c = ran.nextInt(2) + 2;
-                            for (int i = 0; i < c; i++) {
-                                fx.withColor(Color.fromRGB(ran.nextInt(200) + 50, ran.nextInt(200) + 50, ran.nextInt(200) + 50));
-                                if (ran.nextBoolean()) {
-                                    fx.withFade(Color.fromRGB(ran.nextInt(200) + 50, ran.nextInt(200) + 50, ran.nextInt(200) + 50));
-                                }
-                            }
-                            fm.addEffect(fx.build());
-                            fm.setPower(ran.nextInt(2) + 1);
-                            f.setFireworkMeta(fm);
-                            f.setVelocity(new Vector(ran.nextDouble() * (ran.nextBoolean() ? .01 : -.01), .2, ran.nextDouble() * (ran.nextBoolean() ? .01 : -.01)));
-                            Location location = OtherListeners.CACHED_LOCATIONS.get(cPlayer);
+                        public void onStart() {
+                            CustomHeads.getApi().setSkull(location.getBlock(), "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOGEzZDVkNWIyY2YzMzEyOTllNjNkNzYxOGExNDI2NmU4Y2NjNjE1OGU5ZTMxZmNiMGJkOTExZTEyZmY3NzM2In19fQ==", faces[ran.nextInt(faces.length)]);
+                        }
+
+                        public void onNext() {
                             World world = location.getWorld();
-                            if(NBTTagUtils.MC_VERSION > 13) {
+                            if (NBTTagUtils.MC_VERSION > 13) {
                                 try {
                                     Class<?> particleClass = Utils.getClassByName("org.bukkit.Particle");
                                     World.class.getMethod("spawnParticle", particleClass, Location.class, int.class).invoke(world, NMSUtils.getEnumFromClass(particleClass, "LAVA"), location, 6);
-                                } catch(Exception e) {
+                                } catch (Exception e) {
                                     e.printStackTrace();
                                 }
                             } else {
@@ -495,9 +474,61 @@ public class CHCommand implements CommandExecutor {
                                     world.playEffect(location, Effect.LAVA_POP, 0);
                                 }
                             }
-                            counter--;
                         }
-                    }.runTaskTimer(CustomHeads.getInstance(), 10, 20);
+
+                        public void onEnd() {
+                            location.getWorld().playEffect(location.getBlock().getLocation(), Effect.STEP_SOUND, 17);
+                            location.getBlock().setType(Material.AIR);
+                        }
+                    });
+//                    new BukkitRunnable() {
+//                        Player cPlayer = player;
+//                        int counter = 10;
+//
+//                        public void run() {
+//                            if (!OtherListeners.CACHED_LOCATIONS.containsKey(cPlayer)) {
+//                                cancel();
+//                                return;
+//                            }
+//                            if (counter <= 0) {
+//                                OtherListeners.CACHED_LOCATIONS.get(cPlayer).getWorld().playEffect(OtherListeners.CACHED_LOCATIONS.get(cPlayer).getBlock().getLocation(), Effect.STEP_SOUND, 17);
+//                                OtherListeners.CACHED_LOCATIONS.get(cPlayer).getBlock().setType(Material.AIR);
+//                                OtherListeners.CACHED_LOCATIONS.remove(cPlayer);
+//                                cancel();
+//                                return;
+//                            }
+//                            Firework f = (Firework) OtherListeners.CACHED_LOCATIONS.get(cPlayer).getWorld().spawnEntity(OtherListeners.CACHED_LOCATIONS.get(cPlayer), EntityType.FIREWORK);
+//                            FireworkMeta fm = f.getFireworkMeta();
+//                            FireworkEffect.Builder fx = FireworkEffect.builder();
+//                            fx.flicker(ran.nextBoolean()).trail(ran.nextBoolean()).with(fxTypes[ran.nextInt(fxTypes.length)]);
+//                            int c = ran.nextInt(2) + 2;
+//                            for (int i = 0; i < c; i++) {
+//                                fx.withColor(Color.fromRGB(ran.nextInt(200) + 50, ran.nextInt(200) + 50, ran.nextInt(200) + 50));
+//                                if (ran.nextBoolean()) {
+//                                    fx.withFade(Color.fromRGB(ran.nextInt(200) + 50, ran.nextInt(200) + 50, ran.nextInt(200) + 50));
+//                                }
+//                            }
+//                            fm.addEffect(fx.build());
+//                            fm.setPower(ran.nextInt(2) + 1);
+//                            f.setFireworkMeta(fm);
+//                            f.setVelocity(new Vector(ran.nextDouble() * (ran.nextBoolean() ? .01 : -.01), .2, ran.nextDouble() * (ran.nextBoolean() ? .01 : -.01)));
+//                            Location location = OtherListeners.CACHED_LOCATIONS.get(cPlayer);
+//                            World world = location.getWorld();
+//                            if(NBTTagUtils.MC_VERSION > 13) {
+//                                try {
+//                                    Class<?> particleClass = Utils.getClassByName("org.bukkit.Particle");
+//                                    World.class.getMethod("spawnParticle", particleClass, Location.class, int.class).invoke(world, NMSUtils.getEnumFromClass(particleClass, "LAVA"), location, 6);
+//                                } catch(Exception e) {
+//                                    e.printStackTrace();
+//                                }
+//                            } else {
+//                                for (int i = 0; i < 6; i++) {
+//                                    world.playEffect(location, Effect.LAVA_POP, 0);
+//                                }
+//                            }
+//                            counter--;
+//                        }
+//                    }.runTaskTimer(CustomHeads.getInstance(), 10, 20);
                     return true;
                 }
                 player.sendMessage(CustomHeads.getLanguageManager().NO_PERMISSION);
@@ -578,8 +609,27 @@ public class CHCommand implements CommandExecutor {
                         player.sendMessage(CustomHeads.getLanguageManager().GET_INVALID.replace("{PLAYER}", args[1]));
                         return true;
                     }
-                    CustomHeads.getApi().wrapPlayer(player).getGetHistory().addEntry(args[1]);
-                    player.getInventory().addItem(new ItemEditor(Material.SKULL_ITEM,  3).setDisplayName(CustomHeads.getLanguageManager().GET_HEAD_NAME.replace("{PLAYER}", args[1])).setOwner(args[1]).getItem());
+                    ItemStack playerHead = new ItemEditor(Material.SKULL_ITEM, 3).setDisplayName(CustomHeads.getLanguageManager().GET_HEAD_NAME.replace("{PLAYER}", args[1])).setOwner(args[1]).getItem();
+
+                    if(CustomHeads.getGetCommandPrice() > 0 && CustomHeads.hasEconomy()) {
+                        Utils.showInteractiveDialog(player, CustomHeads.getLanguageManager().ECONOMY_BUY_CONFIRM.replace("{ITEM}", args[1]).replace("{PRICE}", Utils.formatPrice(CustomHeads.getGetCommandPrice(), false)), yesPressed -> {
+                            if(yesPressed) {
+                                CustomHeads.getEconomyManager().buyItem(player, CustomHeads.getGetCommandPrice(), playerHead.getItemMeta().getDisplayName(), successful -> {
+                                    if(successful) {
+                                        player.getInventory().addItem(playerHead);
+                                    }
+                                });
+                            } else {
+                                player.closeInventory();
+                            }
+                        }, null, null, playerHead);
+                        return true;
+                    }
+                    CustomHeads.getApi()
+                            .wrapPlayer(player)
+                            .getGetHistory()
+                            .addEntry(args[1]);
+                    player.getInventory().addItem(playerHead);
                     return true;
                 }
                 player.sendMessage(CustomHeads.getLanguageManager().NO_PERMISSION);
@@ -652,6 +702,28 @@ public class CHCommand implements CommandExecutor {
                 }
                 player.sendMessage(CustomHeads.getLanguageManager().NO_PERMISSION);
                 return true;
+            }
+            if(args[0].equalsIgnoreCase("random")) {
+                List<CustomHead> heads = CustomHeads.getCategoryManager().getAllHeads();
+                CustomHead randomHead = heads.get(RANDOM.nextInt(heads.size()));
+                if(randomHead.isFree()) {
+                    player.getInventory().addItem(randomHead);
+                } else {
+//                    Category category = randomHead.getOriginCategory();
+                    Utils.showInteractiveDialog(player, CustomHeads.getLanguageManager().ECONOMY_BUY_CONFIRM.replace("{ITEM}", ChatColor.stripColor(randomHead.getItemMeta().getDisplayName())).replace("{PRICE}", getHeadPriceFormatted(randomHead, false)), new SimpleCallback<Boolean>() {
+                        CustomHead head = randomHead;
+                        CustomHeadsPlayer p = CustomHeads.getApi().wrapPlayer(player);
+                        public void call(Boolean buySuccessful) {
+                            if(buySuccessful) {
+                                CustomHeads.getEconomyManager().buyHead(p, head.getOriginCategory(), head.getId(), CustomHeads.headsPermanentBuy());
+                                p.unwrap().getInventory().addItem(head.getPlainItem());
+                            } else {
+                                p.unwrap().closeInventory();
+                            }
+
+                        }
+                    }, null, null, randomHead.getPlainItem());
+                }
             }
             if (args.length > 1) {
                 CustomHeadsPlayer customHeadsPlayer = CustomHeads.getApi().wrapPlayer(player);

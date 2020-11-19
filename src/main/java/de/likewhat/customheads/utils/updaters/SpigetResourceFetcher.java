@@ -3,6 +3,7 @@ package de.likewhat.customheads.utils.updaters;
 import com.google.gson.*;
 import de.likewhat.customheads.CustomHeads;
 import de.likewhat.customheads.utils.Configs;
+import de.likewhat.customheads.utils.Utils;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -51,51 +52,52 @@ public class SpigetResourceFetcher {
     }
 
     public void fetchUpdates(FetchResult resultFetcher) {
-        new BukkitRunnable() {
-            public void run() {
-                try {
-                    Configs updateFile = CustomHeads.getUpdateFile();
-                    long lastFetch = updateFile.get().getLong("lastUpdateCheck");
-                    JsonArray versionArray;
-                    boolean fromCache = false;
-                    if (updateFile.get().isSet("lastVersionFetch") && TimeUnit.MILLISECONDS.toDays(System.currentTimeMillis() - lastFetch) <= 0) {
-                        versionArray = jsonParser.parse(new String(Base64.getDecoder().decode(updateFile.get().getString("lastVersionFetch").getBytes()))).getAsJsonArray();
-                        fromCache = true;
-                    } else {
-                        HttpURLConnection connection = (HttpURLConnection) new URL(versionUrlFormatted).openConnection();
-                        connection.addRequestProperty("User-Agent", userAgent);
-                        connection.setReadTimeout(5000);
-                        versionArray = jsonParser.parse(new InputStreamReader(connection.getInputStream())).getAsJsonArray();
-                    }
-
-                    List<ResourceRelease> releaseList = new ArrayList<>();
-                    for (JsonElement resourceRaw : versionArray) {
-                        releaseList.add(GSON.fromJson(resourceRaw, ResourceRelease.class));
-                    }
-                    if (!fromCache) {
-                        updateFile.get().set("lastUpdateCheck", System.currentTimeMillis());
-                        updateFile.get().set("lastVersionFetch", new String(Base64.getEncoder().encode(GSON.toJson(releaseList).getBytes())));
-                        updateFile.save();
-                    }
-
-                    ResourceRelease latestRelease = releaseList.get(0);
-                    String[] latestVersionString = latestRelease.getReleaseName().split(".");
-                    String[] currentVersionString = CustomHeads.getInstance().getDescription().getVersion().split(".");
-                    for(int i = 0; i < Math.max(latestVersionString.length, currentVersionString.length); i++) {
-                        int latestVersion = i < latestVersionString.length ? Integer.parseInt(latestVersionString[i]) : 0;
-                        int currentVersion = i < currentVersionString.length ? Integer.parseInt(currentVersionString[i]) : 0;
-
-                        if(latestVersion < currentVersion) {
-                            getVersions(updateList -> resultFetcher.updateAvailable(latestRelease, updateList.get(0)));
+        Utils.runAsync(
+            new BukkitRunnable() {
+                public void run() {
+                    try {
+                        Configs updateFile = CustomHeads.getUpdateFile();
+                        long lastFetch = updateFile.get().getLong("lastUpdateCheck");
+                        JsonArray versionArray;
+                        boolean fromCache = false;
+                        if (updateFile.get().isSet("lastVersionFetch") && TimeUnit.MILLISECONDS.toDays(System.currentTimeMillis() - lastFetch) <= 0) {
+                            versionArray = jsonParser.parse(new String(Base64.getDecoder().decode(updateFile.get().getString("lastVersionFetch").getBytes()))).getAsJsonArray();
+                            fromCache = true;
                         } else {
-                            resultFetcher.noUpdate();
+                            HttpURLConnection connection = (HttpURLConnection) new URL(versionUrlFormatted).openConnection();
+                            connection.addRequestProperty("User-Agent", userAgent);
+                            connection.setReadTimeout(5000);
+                            versionArray = jsonParser.parse(new InputStreamReader(connection.getInputStream())).getAsJsonArray();
                         }
+
+                        List<ResourceRelease> releaseList = new ArrayList<>();
+                        for (JsonElement resourceRaw : versionArray) {
+                            releaseList.add(GSON.fromJson(resourceRaw, ResourceRelease.class));
+                        }
+                        if (!fromCache) {
+                            updateFile.get().set("lastUpdateCheck", System.currentTimeMillis());
+                            updateFile.get().set("lastVersionFetch", new String(Base64.getEncoder().encode(GSON.toJson(releaseList).getBytes())));
+                            updateFile.save();
+                        }
+
+                        ResourceRelease latestRelease = releaseList.get(0);
+                        String[] latestVersionString = latestRelease.getReleaseName().split(".");
+                        String[] currentVersionString = CustomHeads.getInstance().getDescription().getVersion().split(".");
+                        for(int i = 0; i < Math.max(latestVersionString.length, currentVersionString.length); i++) {
+                            int latestVersion = i < latestVersionString.length ? Integer.parseInt(latestVersionString[i]) : 0;
+                            int currentVersion = i < currentVersionString.length ? Integer.parseInt(currentVersionString[i]) : 0;
+
+                            if(latestVersion < currentVersion) {
+                                getVersions(updateList -> resultFetcher.updateAvailable(latestRelease, updateList.get(0)));
+                            } else {
+                                resultFetcher.noUpdate();
+                            }
+                        }
+                    } catch (Exception e) {
+                        Bukkit.getLogger().log(Level.WARNING, "Failed to fetch Version List", e);
                     }
-                } catch (Exception e) {
-                    Bukkit.getLogger().log(Level.WARNING, "Failed to fetch Version List", e);
                 }
-            }
-        }.runTaskAsynchronously(CustomHeads.getInstance());
+        });
     }
 
     public void getLatestUpdate(Consumer<ResourceUpdate> consumer) {
@@ -103,39 +105,40 @@ public class SpigetResourceFetcher {
     }
 
     public void getVersions(Consumer<List<ResourceUpdate>> consumer) {
-        new BukkitRunnable() {
-            public void run() {
-                try {
-                    Configs updateFile = CustomHeads.getUpdateFile();
-                    long lastFetch = updateFile.get().getLong("lastUpdateCheck");
-                    JsonArray descriptionArray;
-                    boolean fromCache = false;
-                    if (updateFile.get().isSet("lastDescriptionFetch") && TimeUnit.MILLISECONDS.toDays(System.currentTimeMillis() - lastFetch) == 0) {
-                        descriptionArray = jsonParser.parse(new String(Base64.getDecoder().decode(updateFile.get().getString("lastDescriptionFetch")))).getAsJsonArray();
-                        fromCache = true;
-                    } else {
-                        HttpURLConnection descriptionConnection = (HttpURLConnection) new URL(descriptionUrlFormatted).openConnection();
-                        descriptionConnection.addRequestProperty("User-Agent", userAgent);
-                        descriptionConnection.setReadTimeout(5000);
-                        descriptionArray = jsonParser.parse(new InputStreamReader(descriptionConnection.getInputStream())).getAsJsonArray();
-                    }
+        Utils.runAsync(
+            new BukkitRunnable() {
+                public void run() {
+                    try {
+                        Configs updateFile = CustomHeads.getUpdateFile();
+                        long lastFetch = updateFile.get().getLong("lastUpdateCheck");
+                        JsonArray descriptionArray;
+                        boolean fromCache = false;
+                        if (updateFile.get().isSet("lastDescriptionFetch") && TimeUnit.MILLISECONDS.toDays(System.currentTimeMillis() - lastFetch) == 0) {
+                            descriptionArray = jsonParser.parse(new String(Base64.getDecoder().decode(updateFile.get().getString("lastDescriptionFetch")))).getAsJsonArray();
+                            fromCache = true;
+                        } else {
+                            HttpURLConnection descriptionConnection = (HttpURLConnection) new URL(descriptionUrlFormatted).openConnection();
+                            descriptionConnection.addRequestProperty("User-Agent", userAgent);
+                            descriptionConnection.setReadTimeout(5000);
+                            descriptionArray = jsonParser.parse(new InputStreamReader(descriptionConnection.getInputStream())).getAsJsonArray();
+                        }
 
-                    List<ResourceUpdate> updateList = new ArrayList<>();
-                    for (JsonElement updateRaw : descriptionArray) {
-                        updateList.add(GSON.fromJson(updateRaw, ResourceUpdate.class));
+                        List<ResourceUpdate> updateList = new ArrayList<>();
+                        for (JsonElement updateRaw : descriptionArray) {
+                            updateList.add(GSON.fromJson(updateRaw, ResourceUpdate.class));
+                        }
+                        if (!fromCache) {
+                            updateFile.get().set("lastDescriptionFetch", new String(Base64.getEncoder().encode(GSON.toJson(updateList).getBytes())));
+                            updateFile.save();
+                        }
+                        consumer.accept(updateList);
+                        return;
+                    } catch (Exception e) {
+                        Bukkit.getLogger().log(Level.WARNING, "Failed to fetch Update List", e);
                     }
-                    if (!fromCache) {
-                        updateFile.get().set("lastDescriptionFetch", new String(Base64.getEncoder().encode(GSON.toJson(updateList).getBytes())));
-                        updateFile.save();
-                    }
-                    consumer.accept(updateList);
-                    return;
-                } catch (Exception e) {
-                    Bukkit.getLogger().log(Level.WARNING, "Failed to fetch Update List", e);
+                    consumer.accept(null);
                 }
-                consumer.accept(null);
-            }
-        }.runTaskAsynchronously(CustomHeads.getInstance());
+        });
     }
 
     public interface FetchResult {

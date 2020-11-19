@@ -54,7 +54,6 @@ public class InteractiveDialog {
                     destroy();
                 }
             }
-
         };
         Bukkit.getPluginManager().registerEvents(listener, CustomHeads.getInstance());
     }

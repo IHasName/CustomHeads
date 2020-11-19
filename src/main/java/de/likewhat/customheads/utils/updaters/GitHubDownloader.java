@@ -42,7 +42,7 @@ public class GitHubDownloader {
     }
 
     public static void clearCache() {
-        responseCache.values().removeIf(cachedResponse -> cachedResponse.getTime() - System.currentTimeMillis() > 600000);
+        responseCache.values().removeIf(cachedResponse -> cachedResponse.getCacheTime() - System.currentTimeMillis() > 600000);
     }
 
     public GitHubDownloader enableAutoUnzipping() {
@@ -202,7 +202,7 @@ public class GitHubDownloader {
             }
             timeLeft /= 1000;
             long time = timeLeft % 86400;
-            return (int) Math.floor((time % 86400) / 3600) + "h " + (int) Math.floor((time % 3600) / 60) + "m " + (int) Math.floor((time % 60)) + "s";
+            return (int) Math.floor((time % 86400f) / 3600f) + "h " + (int) Math.floor((time % 3600f) / 60f) + "m " + (int) Math.floor((time % 60)) + "s";
         }
 
         public String getMessage() {

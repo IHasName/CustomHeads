@@ -39,10 +39,10 @@ public class CHSearchQuery {
             results = new ArrayList<>();
             return;
         }
-        results = CustomHeads.getCategoryManager().getAllHeads().stream().filter(head -> {
-            String nameStripped = ChatColor.stripColor(head.getItemMeta().getDisplayName().toLowerCase());
-            return Arrays.stream(search.split(" ")).anyMatch(s -> s.equalsIgnoreCase(nameStripped));
-        }).collect(Collectors.toList());
+        results = CustomHeads.getCategoryManager().getAllHeads().stream().filter(head -> ChatColor.stripColor(head.getItemMeta().getDisplayName().toLowerCase()).contains(search.toLowerCase())
+            //String nameStripped = ChatColor.stripColor(head.getItemMeta().getDisplayName().toLowerCase());
+            //return Arrays.stream(search.split(" ")).anyMatch(s -> s.contains(nameStripped));
+        ).collect(Collectors.toList());
         Collections.reverse(results);
     }
 
