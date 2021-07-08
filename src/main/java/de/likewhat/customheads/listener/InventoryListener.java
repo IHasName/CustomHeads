@@ -2,6 +2,7 @@ package de.likewhat.customheads.listener;
 
 import de.likewhat.customheads.CustomHeads;
 import de.likewhat.customheads.api.CustomHeadsPlayer;
+import de.likewhat.customheads.api.events.PlayerClickCustomHeadEvent;
 import de.likewhat.customheads.category.BaseCategory;
 import de.likewhat.customheads.category.Category;
 import de.likewhat.customheads.category.CustomHead;
@@ -132,22 +133,32 @@ public class InventoryListener implements Listener {
     @EventHandler
     public void onInvClick(InventoryClickEvent event) {
         Player player = (Player) event.getWhoClicked();
-        if(event.getRawSlot() >= event.getInventory().getSize() && event.isShiftClick()) {
+        if(event.getClickedInventory() != null && event.getClickedInventory().getType() == InventoryType.PLAYER && event.isShiftClick()) {
             handleInventoryAction(event);
-            return;
         }
-
         if (event.getInventory() == null || event.getRawSlot() >= event.getInventory().getSize() || event.getInventory().getType() != InventoryType.CHEST || !hasPermission(player, "heads.use")) {
             return;
         }
 
-        player.sendMessage("§7[CHTags Tags] §r" + CustomHeads.getTagEditor().getTags(event.getCurrentItem()) + " lastActiveMenu: " + lastActiveMenu.getOrDefault(player.getUniqueId(), "none")); // Yeah debug at its finest
+        //player.sendMessage("§7[CHTags Tags] §r" + CustomHeads.getTagEditor().getTags(event.getCurrentItem()) + " lastActiveMenu: " + lastActiveMenu.getOrDefault(player.getUniqueId(), "none")); // Yeah debug at its finest
 
         if (event.getView().getTitle().equals(CustomHeads.getLanguageManager().LOADING)) {
             event.setCancelled(true);
         }
         CustomHeadsPlayer customHeadsPlayer = CustomHeads.getApi().wrapPlayer(player);
         List<String> itemTags = CustomHeads.getTagEditor().getTags(event.getCurrentItem());
+
+        if(itemTags.contains("headID")) {
+            CustomHead head = Utils.getHeadFromItem(event.getCurrentItem());
+            if(head != null) {
+                PlayerClickCustomHeadEvent otherClickEvent = new PlayerClickCustomHeadEvent(player, head);
+                Bukkit.getPluginManager().callEvent(otherClickEvent);
+                if(otherClickEvent.isCancelled()) {
+                    event.setCancelled(true);
+                    return;
+                }
+            }
+        }
 
         // Delete Head
         if (event.getView().getTitle().equals(CustomHeads.getLanguageManager().SAVED_HEADS_TITLE.replace("{PLAYER}", player.getName()))) {

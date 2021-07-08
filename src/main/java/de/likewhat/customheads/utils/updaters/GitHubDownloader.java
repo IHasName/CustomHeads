@@ -80,6 +80,7 @@ public class GitHubDownloader {
         getRateLimit(new FetchResult<JsonObject>() {
             public void success(JsonObject rateLimit) {
                 if(rateLimit.get("remaining").getAsInt() == 0) {
+                    Bukkit.getLogger().info(Utils.GSON_PRETTY.toJson(rateLimit));
                     fetchResult.error(new RateLimitExceededException(rateLimit.get("reset").getAsLong()));
                     return;
                 }

@@ -29,7 +29,7 @@ public class CustomHead extends ItemStack {
     }
 
     public String toString() {
-        return originCategory.getId() + ":" + id + " - " + price;
+        return "CustomHead:{" + originCategory.getId() + ":" + id + " - " + price + "}";
     }
 
     public boolean isFree() {

@@ -14,6 +14,7 @@ import de.likewhat.customheads.listener.OtherListeners;
 import de.likewhat.customheads.loader.Language;
 import de.likewhat.customheads.loader.Looks;
 import de.likewhat.customheads.utils.*;
+import de.likewhat.customheads.utils.reflection.NBTTagUtils;
 import de.likewhat.customheads.utils.reflection.TagEditor;
 import de.likewhat.customheads.utils.stuff.CHCommand;
 import de.likewhat.customheads.utils.stuff.CHTabCompleter;
@@ -271,6 +272,8 @@ public class CustomHeads extends JavaPlugin {
                     if(exception instanceof GitHubDownloader.RateLimitExceededException) {
                         GitHubDownloader.RateLimitExceededException rateLimitException = (GitHubDownloader.RateLimitExceededException)exception;
                         getLogger().log(Level.SEVERE, "GitHub Rate-Limited the Plugins Requests. Please try again later. (Time until Reset: " + rateLimitException.getTimeUntilReset() + ")");
+                        getLogger().log(Level.SEVERE, "If this Error continues to occur try downloading it manually from Github (https://github.com/IHasName/CustomHeads/releases/download/" + instance.getDescription().getVersion() + "/en_EN.zip)");
+                        getLogger().log(Level.INFO, "A Tutorial on how to do that can be found on the Wiki");
                         Bukkit.getPluginManager().disablePlugin(instance);
                     } else {
                         getLogger().log(Level.WARNING, "Failed to lookup Languages trying to use default instead");
@@ -376,6 +379,9 @@ public class CustomHeads extends JavaPlugin {
         }
 
         if (!USE_TEXTURES) {
+            if(NBTTagUtils.MC_VERSION == 17) {
+                return;
+            }
             getServer().getConsoleSender().sendMessage(chWarning + "Hrm. Seems like CustomHeads wasn't tested on this Minecraft Version yet...");
             getServer().getConsoleSender().sendMessage(chWarning + "Please report this to me on Discord (Link's on the Spigot Page)");
         }

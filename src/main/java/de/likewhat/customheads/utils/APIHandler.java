@@ -40,8 +40,8 @@ public class APIHandler implements CustomHeadsAPI {
 
 
     static {
-        tileEntitySkullClass = Utils.getMCServerClassByName("TileEntitySkull");
-        blockPositionClass = Utils.getMCServerClassByName("BlockPosition");
+        tileEntitySkullClass = Utils.getMCServerClassByName("TileEntitySkull", "world.level.block.entity");
+        blockPositionClass = Utils.getMCServerClassByName("BlockPosition", "core");
         try {
             blockPositionConstructor = blockPositionClass.getConstructor(int.class, int.class, int.class);
         } catch(Exception e) {
@@ -106,13 +106,13 @@ public class APIHandler implements CustomHeadsAPI {
                 Object skullInstance = tileEntitySkullClass.getConstructor().newInstance();
                 Object positionInstance = blockPositionConstructor.newInstance(location.getBlockX(), location.getBlockY(), location.getBlockZ());
 
-                tileEntitySkullClass.getMethod("setLocation", Utils.getMCServerClassByName("World"), blockPositionClass).invoke(skullInstance, nmsWorld, positionInstance);
+                tileEntitySkullClass.getMethod("setLocation", Utils.getMCServerClassByName("World", "world.level"), blockPositionClass).invoke(skullInstance, nmsWorld, positionInstance);
 
                 Class<?> craftBlockDataClass = Utils.getCBClass("block.data.CraftBlockData");
                 Object blockDataState = craftBlockDataClass.getMethod("getState").invoke(craftBlockDataClass.cast(Material.class.getMethod("createBlockData").invoke(NMSUtils.getEnumFromClass(Material.class, "player_head"))));
 
-                nmsWorld.getClass().getMethod("setTypeAndData", blockPositionClass, Utils.getMCServerClassByName("IBlockData"), int.class).invoke(nmsWorld, positionInstance, blockDataState, 3);
-                nmsWorld.getClass().getMethod("setTileEntity", blockPositionClass, Utils.getMCServerClassByName("TileEntity")).invoke(nmsWorld, positionInstance, skullInstance);
+                nmsWorld.getClass().getMethod("setTypeAndData", blockPositionClass, Utils.getMCServerClassByName("IBlockData", "world.level.block.state"), int.class).invoke(nmsWorld, positionInstance, blockDataState, 3);
+                nmsWorld.getClass().getMethod("setTileEntity", blockPositionClass, Utils.getMCServerClassByName("TileEntity", "world.level.block.entity")).invoke(nmsWorld, positionInstance, skullInstance);
                 skull = (Skull) block.getState();
             } else {
                 block.setType(Material.SKULL);
@@ -139,8 +139,16 @@ public class APIHandler implements CustomHeadsAPI {
         }
     }
 
-    public CustomHead getHead(Category category, int id) {
-        return category.getHeads().stream().filter(customHead -> customHead.getId() == id).findFirst().orElse(null);
+    public CustomHead getHead(String categoryId, int headId) {
+        Category category = CustomHeads.getCategoryManager().getCategory(categoryId);
+        if(category == null) {
+            throw new NullPointerException("Unknown Category ID: " + categoryId);
+        }
+        return category.getHeads().stream().filter(customHead -> customHead.getId() == headId).findFirst().orElse(null);
+    }
+
+    public CustomHead getHead(Category category, int headId) {
+        return category.getHeads().stream().filter(customHead -> customHead.getId() == headId).findFirst().orElse(null);
     }
 
     // API Impl

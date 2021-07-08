@@ -4,6 +4,7 @@ import de.likewhat.customheads.CustomHeads;
 import de.likewhat.customheads.utils.Utils;
 import org.bukkit.inventory.ItemStack;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -26,15 +27,15 @@ public class TagEditor {
     public static ItemStack clearTags(ItemStack itemStack) {
         try {
             Object copy = getAsMNSCopy(itemStack);
-            Object itemTagCompound = hasNBTTag(itemStack) ? copy.getClass().getMethod("getTag").invoke(copy) : Utils.getMCServerClassByName("NBTTagCompound").newInstance();
-            Object nbtTagCompound = Utils.getMCServerClassByName("NBTTagCompound").newInstance();
-            itemTagCompound.getClass().getMethod("set", String.class, Utils.getMCServerClassByName("NBTBase")).invoke(itemTagCompound, "tagEditor", nbtTagCompound);
-            copy.getClass().getMethod("setTag", Utils.getMCServerClassByName("NBTTagCompound")).invoke(copy, itemTagCompound);
-            return (ItemStack) Utils.getCBClass("inventory.CraftItemStack").getMethod("asBukkitCopy", Utils.getMCServerClassByName("ItemStack")).invoke(Utils.getCBClass("inventory.CraftItemStack"), copy);
+            Object itemTagCompound = hasNBTTag(itemStack) ? copy.getClass().getMethod("getTag").invoke(copy) : NBTTagUtils.createInstance("NBTTagCompound");
+            Object nbtTagCompound = NBTTagUtils.createInstance("NBTTagCompound");
+            itemTagCompound.getClass().getMethod("set", String.class, NBTTagUtils.getNBTClass("NBTBase")).invoke(itemTagCompound, "tagEditor", nbtTagCompound);
+            copy.getClass().getMethod("setTag", NBTTagUtils.getNBTClass("NBTTagCompound")).invoke(copy, itemTagCompound);
+            return asBukkitCopy(copy);
         } catch (Exception e) {
             CustomHeads.getInstance().getLogger().log(Level.WARNING, "Failed to reset Tags from Item", e);
+            return null;
         }
-        return itemStack;
     }
 
     public static Object getAsMNSCopy(ItemStack item) {
@@ -59,20 +60,20 @@ public class TagEditor {
     public ItemStack setTags(ItemStack itemStack, List<String> tags) {
         try {
             Object copy = getAsMNSCopy(itemStack);
-            Object itemTagCompound = hasNBTTag(itemStack) ? copy.getClass().getMethod("getTag").invoke(copy) : Utils.getMCServerClassByName("NBTTagCompound").newInstance();
-            Object nbtTagCompound = ((boolean) itemTagCompound.getClass().getMethod("hasKey", String.class).invoke(itemTagCompound, "tagEditor")) ? itemTagCompound.getClass().getMethod("get", String.class).invoke(itemTagCompound, "tagEditor") : Utils.getMCServerClassByName("NBTTagCompound").newInstance();
-            Object nbtTagList = Utils.getMCServerClassByName("NBTTagList").newInstance();
+            Object itemTagCompound = hasNBTTag(itemStack) ? copy.getClass().getMethod("getTag").invoke(copy) : NBTTagUtils.createInstance("NBTTagCompound");
+            Object nbtTagCompound = ((boolean) itemTagCompound.getClass().getMethod("hasKey", String.class).invoke(itemTagCompound, "tagEditor")) ? itemTagCompound.getClass().getMethod("get", String.class).invoke(itemTagCompound, "tagEditor") : NBTTagUtils.createInstance("NBTTagCompound");
+            Object nbtTagList = NBTTagUtils.createInstance("NBTTagList");
             for (String tag : tags) {
-                NBTTagUtils.addObjectToNBTList(nbtTagList, NBTTagUtils.createNBTTagString(tag));
+                NBTTagUtils.addObjectToNBTList(nbtTagList, NBTTagUtils.createInstance("NBTTagString", tag));
             }
-            nbtTagCompound.getClass().getMethod("set", String.class, Utils.getMCServerClassByName("NBTBase")).invoke(nbtTagCompound, tagname, nbtTagList);
-            itemTagCompound.getClass().getMethod("set", String.class, Utils.getMCServerClassByName("NBTBase")).invoke(itemTagCompound, "tagEditor", nbtTagCompound);
-            copy.getClass().getMethod("setTag", Utils.getMCServerClassByName("NBTTagCompound")).invoke(copy, itemTagCompound);
-            return (ItemStack) Utils.getCBClass("inventory.CraftItemStack").getMethod("asBukkitCopy", Utils.getMCServerClassByName("ItemStack")).invoke(Utils.getCBClass("inventory.CraftItemStack"), copy);
+            nbtTagCompound.getClass().getMethod("set", String.class, NBTTagUtils.getNBTClass("NBTBase")).invoke(nbtTagCompound, tagname, nbtTagList);
+            itemTagCompound.getClass().getMethod("set", String.class, NBTTagUtils.getNBTClass("NBTBase")).invoke(itemTagCompound, "tagEditor", nbtTagCompound);
+            copy.getClass().getMethod("setTag", NBTTagUtils.getNBTClass("NBTTagCompound")).invoke(copy, itemTagCompound);
+            return asBukkitCopy(copy);
         } catch (Exception e) {
             CustomHeads.getInstance().getLogger().log(Level.WARNING, "Failed to save Tags to Item", e);
+            return null;
         }
-        return itemStack;
     }
 
     public ItemStack setTags(ItemStack itemStack, String... tags) {
@@ -142,6 +143,15 @@ public class TagEditor {
         } catch (Exception e) {
             return false;
         }
+    }
+
+    private static ItemStack asBukkitCopy(Object object) {
+        try {
+            return (ItemStack) Utils.getCBClass("inventory.CraftItemStack").getMethod("asBukkitCopy", Utils.getMCServerClassByName("ItemStack", "world.item")).invoke(Utils.getCBClass("inventory.CraftItemStack"), object);
+        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
 }

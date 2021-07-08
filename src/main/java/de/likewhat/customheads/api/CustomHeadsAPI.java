@@ -88,11 +88,21 @@ public interface CustomHeadsAPI {
      * Will return an Head from the given ID.
      * Might be null if the Head doesnt exists
      *
-     * @param category from Which Category to pull from
-     * @param id       Head ID
+     * @param categoryId from Which Category to pull from
+     * @param headId     Head ID
      * @return Head from Database
      */
-    CustomHead getHead(Category category, int id);
+    CustomHead getHead(Category categoryId, int headId);
+
+    /**
+     * Will return an Head from the given ID.
+     * Might be null if the Head doesnt exists
+     *
+     * @param categoryId from Which Category to pull from
+     * @param headId     Head ID
+     * @return Head from Database
+     */
+    CustomHead getHead(String categoryId, int headId);
 
     /**
      * Starts a Firework in the world

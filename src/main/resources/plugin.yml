@@ -1,7 +1,7 @@
 main: ${project.groupId}.${project.artifactId}
 name: ${project.artifactId}
 version: ${project.version}
-author: ${user.name}
+author: LikeWhat
 softdepend: [Vault]
 
 commands: 

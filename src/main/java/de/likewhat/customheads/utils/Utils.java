@@ -11,6 +11,7 @@ import de.likewhat.customheads.category.Category;
 import de.likewhat.customheads.category.CustomHead;
 import de.likewhat.customheads.category.SubCategory;
 import de.likewhat.customheads.utils.reflection.AnvilGUI;
+import de.likewhat.customheads.utils.reflection.NBTTagUtils;
 import de.likewhat.customheads.utils.reflection.TagEditor;
 import de.likewhat.customheads.utils.stuff.CHSearchQuery;
 import de.likewhat.customheads.utils.updaters.AsyncFileDownloader;
@@ -669,11 +670,11 @@ public class Utils {
 
     public static void sendJSONMessage(String json, Player p) {
         try {
-            Object chat = getMCServerClassByName("ChatSerializer").getMethod("a", String.class).invoke(null, json);
-            Object packet = getMCServerClassByName("PacketPlayOutChat").getConstructor(getMCServerClassByName("IChatBaseComponent")).newInstance(chat);
+            Object chat = getMCServerClassByName("ChatSerializer", "network.chat").getMethod("a", String.class).invoke(null, json);
+            Object packet = getMCServerClassByName("PacketPlayOutChat", "network.protocol.game").getConstructor(getMCServerClassByName("IChatBaseComponent", "network.chat")).newInstance(chat);
             Object player = p.getClass().getMethod("getHandle").invoke(p);
             Object connection = player.getClass().getField("playerConnection").get(player);
-            connection.getClass().getMethod("sendPacket", getMCServerClassByName("Packet")).invoke(connection, packet);
+            connection.getClass().getMethod("sendPacket", getMCServerClassByName("Packet", "network.protocol.game")).invoke(connection, packet);
         } catch (Exception e) {
             CustomHeads.getInstance().getLogger().log(Level.WARNING, "Could not send JSON-Message to Player", e);
         }
@@ -695,11 +696,19 @@ public class Utils {
         return "";
     }
 
-    public static Class<?> getMCServerClassByName(String className) {
+    public static Class<?> getMCServerClassByName(String className, String... alternativePrefix) {
         try {
             if (className.equals("ChatSerializer") && !CustomHeads.version.equals("v1_8_R1"))
                 className = "IChatBaseComponent$ChatSerializer";
-            return Class.forName("net.minecraft.server." + CustomHeads.version + "." + className);
+            if(NBTTagUtils.MC_VERSION >= 17) {
+                String altPrefix = "";
+                if(alternativePrefix != null && alternativePrefix.length > 0) {
+                    altPrefix = alternativePrefix[0] + ".";
+                }
+                return Class.forName("net.minecraft." + altPrefix + className);
+            } else {
+                return Class.forName("net.minecraft.server." + CustomHeads.version + "." + className);
+            }
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }

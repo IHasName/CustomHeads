@@ -81,7 +81,7 @@ public class Category extends BaseCategory {
         return !heads.isEmpty();
     }
 
-    Category setSubCategories(List<SubCategory> subCategories) {
+    public Category setSubCategories(List<SubCategory> subCategories) {
         this.subCategories = subCategories;
         return this;
     }
