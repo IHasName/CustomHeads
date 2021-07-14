@@ -1,6 +1,7 @@
 package de.likewhat.customheads.utils.reflection;
 
 import de.likewhat.customheads.CustomHeads;
+import de.likewhat.customheads.utils.Utils;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Bukkit;
@@ -133,9 +134,33 @@ public class AnvilGUI {
             int nextContainerId = (int) p.getClass().getMethod("nextContainerCounter").invoke(p);
 
             Location location = player.getLocation();
-            Object container = NBTTagUtils.MC_VERSION > 13 ?
-                    getClassbyName("ContainerAnvil").getConstructor(int.class, getClassbyName("PlayerInventory"), getClassbyName("ContainerAccess")).newInstance(nextContainerId, p.getClass().getField("inventory").get(p), getClassbyName("ContainerAccess").getMethod("at", getClassbyName("World"), getClassbyName("BlockPosition")).invoke(getClassbyName("ContainerAccess"), p.getClass().getField("world").get(p), getClassbyName("BlockPosition").getConstructor(int.class, int.class, int.class).newInstance(location.getBlockX(), location.getBlockY(), location.getBlockZ()))):
-                    getClassbyName("ContainerAnvil").getConstructor(getClassbyName("PlayerInventory"), getClassbyName("World"), getClassbyName("BlockPosition"), getClassbyName("EntityHuman")).newInstance(p.getClass().getField("inventory").get(p), p.getClass().getField("world").get(p), getClassbyName("BlockPosition").getConstructor(int.class, int.class, int.class).newInstance(location.getBlockX(), location.getBlockY(), location.getBlockZ()), p);;
+
+            Constructor<?> chatMessageConstructor = Utils.getMCServerClassByName("ChatMessage", "network.chat").getConstructor(String.class, Object[].class);
+            Object container;
+            Object packet;
+            switch (NBTTagUtils.MC_VERSION) {
+                case 8:
+                case 9:
+                case 10:
+                case 11:
+                case 12:
+                case 13:
+                    container = getClassbyName("ContainerAnvil").getConstructor(getClassbyName("PlayerInventory"), getClassbyName("World"), getClassbyName("BlockPosition"), getClassbyName("EntityHuman")).newInstance(p.getClass().getField("inventory").get(p), p.getClass().getField("world").get(p), getClassbyName("BlockPosition").getConstructor(int.class, int.class, int.class).newInstance(location.getBlockX(), location.getBlockY(), location.getBlockZ()), p);
+                    packet = getClassbyName("PacketPlayOutOpenWindow").getConstructor(int.class, String.class, getClassbyName("IChatBaseComponent"), int.class).newInstance(nextContainerId, "minecraft:anvil", chatMessageConstructor.newInstance(title, new Object[]{}), 0);
+                    break;
+                case 14:
+                case 15:
+                case 16:
+                    container = Utils.getMCServerClassByName("ContainerAnvil", "world.inventory").getConstructor(int.class, Utils.getMCServerClassByName("PlayerInventory", "world.entity.player"), getClassbyName("ContainerAccess")).newInstance(nextContainerId, p.getClass().getField("inventory").get(p), getClassbyName("ContainerAccess").getMethod("at", Utils.getMCServerClassByName("World", "world.level"), Utils.getMCServerClassByName("BlockPosition", "core")).invoke(Utils.getMCServerClassByName("ContainerAccess", "world.inventory"), p.getClass().getField("world").get(p), Utils.getMCServerClassByName("BlockPosition", "core").getConstructor(int.class, int.class, int.class).newInstance(location.getBlockX(), location.getBlockY(), location.getBlockZ())));
+                    packet = Utils.getMCServerClassByName("PacketPlayOutOpenWindow", "network.protocol.game").getConstructor(int.class, Utils.getMCServerClassByName("Container", "world.inventory"), Utils.getMCServerClassByName("IChatBaseComponent", "network.chat")).newInstance(nextContainerId, Utils.getMCServerClassByName("Containers", "world.inventory").getField("ANVIL").get(Utils.getMCServerClassByName("Containers", "world.inventory")), chatMessageConstructor.newInstance(title, new Object[]{}));
+                    break;
+                case 17:
+                    container = Utils.getMCServerClassByName("ContainerAnvil", "world.inventory").getConstructor(int.class, Utils.getMCServerClassByName("PlayerInventory", "world.entity.player"), getClassbyName("ContainerAccess")).newInstance(nextContainerId, p.getClass().getField("inventory").get(p), getClassbyName("ContainerAccess").getMethod("at", Utils.getMCServerClassByName("World", "world.level"), Utils.getMCServerClassByName("BlockPosition", "core")).invoke(Utils.getMCServerClassByName("ContainerAccess", "world.inventory"), p.getClass().getField("world").get(p), Utils.getMCServerClassByName("BlockPosition", "core").getConstructor(int.class, int.class, int.class).newInstance(location.getBlockX(), location.getBlockY(), location.getBlockZ())));
+                    packet = Utils.getMCServerClassByName("PacketPlayOutOpenWindow", "network.protocol.game").getConstructor(int.class, Utils.getMCServerClassByName("Container", "world.inventory"), Utils.getMCServerClassByName("IChatBaseComponent", "network.chat")).newInstance(nextContainerId, Utils.getMCServerClassByName("Containers", "world.inventory").getField("h").get(Utils.getMCServerClassByName("Containers", "world.inventory")), chatMessageConstructor.newInstance(title, new Object[]{}));
+                    break;
+                default:
+                    throw new UnsupportedOperationException("Current MC Version (" + CustomHeads.version + ") isn't supported for AnvilGUI");
+            }
 
             Object bukkitView = container.getClass().getMethod("getBukkitView").invoke(container);
             inventory = (Inventory) bukkitView.getClass().getMethod("getTopInventory").invoke(bukkitView);
@@ -143,17 +168,14 @@ public class AnvilGUI {
                 inventory.setItem(slot.getSlot(), items.get(slot));
             }
 
-            getClassbyName("Container").getField("checkReachable").set(container, false);
-            Constructor<?> chatMessageConstructor = getClassbyName("ChatMessage").getConstructor(String.class, Object[].class);
+            Utils.getMCServerClassByName("Container", "world.inventory").getField("checkReachable").set(container, false);
             Object connection = p.getClass().getField("playerConnection").get(p);
-            Object packet = NBTTagUtils.MC_VERSION > 13 ?
-                    getClassbyName("PacketPlayOutOpenWindow").getConstructor(int.class, getClassbyName("Containers"), getClassbyName("IChatBaseComponent")).newInstance(nextContainerId, getClassbyName("Containers").getField("ANVIL").get(getClassbyName("Containers")), chatMessageConstructor.newInstance(title, new Object[]{})) :
-                    getClassbyName("PacketPlayOutOpenWindow").getConstructor(int.class, String.class, getClassbyName("IChatBaseComponent"), int.class).newInstance(nextContainerId, "minecraft:anvil", chatMessageConstructor.newInstance(title, new Object[]{}), 0);
-            connection.getClass().getMethod("sendPacket", getClassbyName("Packet")).invoke(connection, packet);
-            Field activeContainerField = getClassbyName("EntityHuman").getDeclaredField("activeContainer");
+
+            connection.getClass().getMethod("sendPacket", Utils.getMCServerClassByName("Packet", "network.protocol")).invoke(connection, packet);
+            Field activeContainerField = Utils.getMCServerClassByName("EntityHuman", "world.entity.player").getDeclaredField("activeContainer");
             activeContainerField.setAccessible(true);
             activeContainerField.set(p, container);
-            Field windowIdField = getClassbyName("Container").getField("windowId");
+            Field windowIdField = Utils.getMCServerClassByName("Container", "world.inventory").getField("windowId");
             windowIdField.setAccessible(true);
             windowIdField.set(activeContainerField.get(p), nextContainerId);
         } catch (Exception exception) {
