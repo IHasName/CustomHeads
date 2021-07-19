@@ -138,8 +138,8 @@ public class Utils {
 
             }
         });
-        gui.setSlot(AnvilGUI.AnvilSlot.OUTPUT, new ItemEditor(Material.PAPER).setDisplayName(itemName).setLore(CustomHeads.getLanguageManager().SEARCH_LORE).getItem());
         gui.setSlot(AnvilGUI.AnvilSlot.INPUT_LEFT, new ItemEditor(Material.PAPER).setDisplayName(itemName).setLore(CustomHeads.getLanguageManager().SEARCH_LORE).getItem());
+        gui.setSlot(AnvilGUI.AnvilSlot.OUTPUT, new ItemEditor(Material.PAPER).setDisplayName(itemName).setLore(CustomHeads.getLanguageManager().SEARCH_LORE).getItem());
         gui.open();
         player.updateInventory();
     }

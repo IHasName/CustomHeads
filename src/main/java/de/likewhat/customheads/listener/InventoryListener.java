@@ -208,7 +208,7 @@ public class InventoryListener implements Listener {
         String menuID = null;
         if (itemTags.contains("menuID")) {
             menuID = itemTags.get(itemTags.indexOf("menuID") + 1).toLowerCase();
-            player.sendMessage("menuID present: " + menuID);
+            //player.sendMessage("menuID present: " + menuID);
             lastActiveMenu.put(player.getUniqueId(), menuID);
         }
 
