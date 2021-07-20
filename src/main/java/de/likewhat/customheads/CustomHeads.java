@@ -48,7 +48,7 @@ import static de.likewhat.customheads.utils.Utils.hasPermission;
 @Getter
 public class CustomHeads extends JavaPlugin {
 
-    private static final boolean DEV_BUILD = true;
+    private static final boolean DEV_BUILD = false;
 
     public static final HashMap<String, String> uuidCache = new HashMap<>();
     public static final String chPrefix = "§7[§eCustomHeads§7] ";
