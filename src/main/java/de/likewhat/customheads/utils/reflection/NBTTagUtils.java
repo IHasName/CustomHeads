@@ -7,8 +7,6 @@ package de.likewhat.customheads.utils.reflection;
  *  created on 17.12.2019 at 23:29
  */
 
-import de.likewhat.customheads.CustomHeads;
-import de.likewhat.customheads.utils.Utils;
 import org.bukkit.Bukkit;
 
 import java.lang.reflect.Constructor;
@@ -16,18 +14,14 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.logging.Level;
 
+
 public class NBTTagUtils {
 
-    public static final int MC_VERSION;
-    public static final String[] ALLOWED_CLASSES = new String[] {"NBTBase", "NBTTagEnd", "NBTTagByte", "NBTTagShort", "NBTTagInt", "NBTTagLong", "NBTTagFloat", "NBTTagDouble", "NBTTagByteArray", "NBTTagString", "NBTTagList", "NBTTagCompound", "NBTTagIntArray"};
-
-    static {
-        MC_VERSION = Integer.parseInt(CustomHeads.version.split("_")[1]);
-    }
+    private static final String[] ALLOWED_CLASSES = new String[] {"NBTBase", "NBTTagEnd", "NBTTagByte", "NBTTagShort", "NBTTagInt", "NBTTagLong", "NBTTagFloat", "NBTTagDouble", "NBTTagByteArray", "NBTTagString", "NBTTagList", "NBTTagCompound", "NBTTagIntArray"};
 
     public static void addObjectToNBTList(Object list, Object objectToAdd) {
         try {
-            switch (MC_VERSION) {
+            switch (ReflectionUtils.MC_VERSION) {
                 case 8:
                 case 9:
                 case 10:
@@ -37,7 +31,7 @@ public class NBTTagUtils {
                     list.getClass().getMethod("add", getNBTClass("NBTBase")).invoke(list, objectToAdd);
                     break;
                 default:
-                    Bukkit.getLogger().log(Level.WARNING, "Falling back to newest Method since the current Version isn't tested yet... (This may not work so here goes)");
+                    Bukkit.getLogger().log(Level.WARNING, "Falling back to newest Method since the current Version hasn't been tested yet... (This may not work so here goes)");
                 case 14:
                 case 15:
                 case 16:
@@ -55,8 +49,8 @@ public class NBTTagUtils {
             if(!Arrays.asList(ALLOWED_CLASSES).contains(className)) {
                 throw new IllegalArgumentException("Class " + className + " is not allowed!");
             }
-            Class<?> clazz;
-            switch (MC_VERSION) {
+            Class<?> clazz = ReflectionUtils.getMCServerClassByName(className, "nbt");
+            /*switch (ReflectionUtils.MC_VERSION) {
                 case 8:
                 case 9:
                 case 10:
@@ -66,15 +60,14 @@ public class NBTTagUtils {
                 case 14:
                 case 15:
                 case 16:
-                    clazz = Utils.getMCServerClassByName(className);
+                    clazz = ReflectionUtils.getMCServerClassByName(className);
                     break;
                 default:
                     Bukkit.getLogger().log(Level.WARNING, "Falling back to newest Method since the current Version isn't tested yet... (This may not work so here goes)");
                 case 17:
-
-                    clazz = Utils.getClassByName("net.minecraft.nbt." + className);
+                    clazz = ReflectionUtils.getMCServerClassByName(className, "nbt");
                     break;
-            }
+            }*/
             return clazz;
         } catch(Exception e) {
             e.printStackTrace();

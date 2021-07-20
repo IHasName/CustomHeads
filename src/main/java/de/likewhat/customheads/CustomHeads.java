@@ -14,7 +14,6 @@ import de.likewhat.customheads.listener.OtherListeners;
 import de.likewhat.customheads.loader.Language;
 import de.likewhat.customheads.loader.Looks;
 import de.likewhat.customheads.utils.*;
-import de.likewhat.customheads.utils.reflection.NBTTagUtils;
 import de.likewhat.customheads.utils.reflection.TagEditor;
 import de.likewhat.customheads.utils.stuff.CHCommand;
 import de.likewhat.customheads.utils.stuff.CHTabCompleter;
@@ -28,6 +27,7 @@ import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -66,7 +66,7 @@ public class CustomHeads extends JavaPlugin {
     @Getter private static SpigetResourceFetcher spigetFetcher;
     @Getter private static EconomyManager economyManager;
     @Getter private static CategoryManager categoryManager;
-    private static List<String> versions = Arrays.asList("v1_8_R1", "v1_8_R2", "v1_8_R3", "v1_9_R1", "v1_9_R2", "v1_10_R1", "v1_11_R1", "v1_12_R1", "v1_13_R1", "v1_13_R2", "v1_14_R1", "v1_15_R1", "v1_16_R1");
+    private static List<String> versions = Arrays.asList("v1_8_R1", "v1_8_R2", "v1_8_R3", "v1_9_R1", "v1_9_R2", "v1_10_R1", "v1_11_R1", "v1_12_R1", "v1_13_R1", "v1_13_R2", "v1_14_R1", "v1_15_R1", "v1_16_R1", "v1_17_R1");
     private static String packet = Bukkit.getServer().getClass().getPackage().getName();
     public static String version = packet.substring(packet.lastIndexOf('.') + 1);
     @Getter private static int getCommandPrice = 0;
@@ -348,9 +348,9 @@ public class CustomHeads extends JavaPlugin {
         PluginManager manager = getServer().getPluginManager();
 
         // Register Listeners
-        manager.registerEvents(new InventoryListener(), this);
-        manager.registerEvents(new OtherListeners(), this);
-        manager.registerEvents(new CategoryEditorListener(), this);
+        manager.registerEvents(new InventoryListener(), instance);
+        manager.registerEvents(new OtherListeners(), instance);
+        manager.registerEvents(new CategoryEditorListener(), instance);
 
         // Reload Configs
         reloadHistoryData();
@@ -379,11 +379,8 @@ public class CustomHeads extends JavaPlugin {
         }
 
         if (!USE_TEXTURES) {
-            if(NBTTagUtils.MC_VERSION == 17) {
-                return;
-            }
-            getServer().getConsoleSender().sendMessage(chWarning + "Hrm. Seems like CustomHeads wasn't tested on this Minecraft Version yet...");
-            getServer().getConsoleSender().sendMessage(chWarning + "Please report this to me on Discord (Link's on the Spigot Page)");
+            getServer().getConsoleSender().sendMessage(chWarning + "Hrm. Seems like CustomHeads wasn't tested on this Minecraft Version (" + CustomHeads.version + ") yet...");
+            getServer().getConsoleSender().sendMessage(chWarning + "Feel free to join my Discord to know when it gets updated");
         }
 
         // No need to report Metrics for Dev Builds
@@ -393,7 +390,7 @@ public class CustomHeads extends JavaPlugin {
 
         // -- Timers
         // Clear Cache every 30 Minutes
-        new BukkitRunnable() {
+        Utils.runAsyncTimer(new BukkitRunnable() {
             public void run() {
                 uuidCache.clear();
                 HeadFontType.clearCache();
@@ -402,14 +399,15 @@ public class CustomHeads extends JavaPlugin {
                 ScrollableInventory.clearCache();
                 PlayerWrapper.clearCache();
             }
-        }.runTaskTimer(instance, 36000, 36000);
+        }, 36000, 36000);
 
         // Animation Timer
         Utils.runAsyncTimer(
             new BukkitRunnable() {
                 public void run() {
                     getServer().getOnlinePlayers().stream().filter(player -> player.getOpenInventory() != null && player.getOpenInventory().getType() == InventoryType.CHEST && CustomHeads.getLooks().getMenuTitles().contains(player.getOpenInventory().getTitle())).collect(Collectors.toList()).forEach(player -> {
-                        ItemStack[] inventoryContent = player.getOpenInventory().getTopInventory().getContents();
+                        Inventory targetInventory = player.getOpenInventory().getTopInventory();
+                        ItemStack[] inventoryContent = targetInventory.getContents();
                         for (int i = 0; i < inventoryContent.length; i++) {
                             if (inventoryContent[i] == null) continue;
                             ItemStack contentItem = inventoryContent[i];
@@ -434,10 +432,12 @@ public class CustomHeads extends JavaPlugin {
                                 }
                             }
                             if (tagEditor.hasMyTags(contentItem)) {
-                                inventoryContent[i] = CustomHeads.getTagEditor().addTags(contentItem, "menuID", CustomHeads.getLooks().getIDbyTitle(player.getOpenInventory().getTitle()));
+                                contentItem = CustomHeads.getTagEditor().addTags(contentItem, "menuID", CustomHeads.getLooks().getIDbyTitle(player.getOpenInventory().getTitle()));
+                            }
+                            if(!contentItem.equals(inventoryContent[i])) {
+                                targetInventory.setItem(i, contentItem);
                             }
                         }
-                        player.getOpenInventory().getTopInventory().setContents(inventoryContent);
                     });
                 }
         }, 0, 20);

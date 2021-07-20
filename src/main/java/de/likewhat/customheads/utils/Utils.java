@@ -11,7 +11,7 @@ import de.likewhat.customheads.category.Category;
 import de.likewhat.customheads.category.CustomHead;
 import de.likewhat.customheads.category.SubCategory;
 import de.likewhat.customheads.utils.reflection.AnvilGUI;
-import de.likewhat.customheads.utils.reflection.NBTTagUtils;
+import de.likewhat.customheads.utils.reflection.ReflectionUtils;
 import de.likewhat.customheads.utils.reflection.TagEditor;
 import de.likewhat.customheads.utils.stuff.CHSearchQuery;
 import de.likewhat.customheads.utils.updaters.AsyncFileDownloader;
@@ -28,7 +28,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.*;
-import java.lang.reflect.Field;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.channels.Channels;
@@ -333,7 +332,7 @@ public class Utils {
         return builder.toString();
     }
 
-    public static boolean injectFieldValue(Class<?> sourceClass, Object instance, String fieldName, Object value) {
+    /*public static boolean injectFieldValue(Class<?> sourceClass, Object instance, String fieldName, Object value) {
         try {
             Field field = sourceClass.getDeclaredField(fieldName);
             if (!field.isAccessible()) {
@@ -351,7 +350,7 @@ public class Utils {
             Bukkit.getLogger().log(Level.WARNING, "Unable to inject Object Value into Field", e);
         }
         return false;
-    }
+    }*/
 
     public static boolean charArrayContains(char[] charArray, char containsChar) {
         for (char c : charArray) {
@@ -670,11 +669,11 @@ public class Utils {
 
     public static void sendJSONMessage(String json, Player p) {
         try {
-            Object chat = getMCServerClassByName("ChatSerializer", "network.chat").getMethod("a", String.class).invoke(null, json);
-            Object packet = getMCServerClassByName("PacketPlayOutChat", "network.protocol.game").getConstructor(getMCServerClassByName("IChatBaseComponent", "network.chat")).newInstance(chat);
+            Object chat = ReflectionUtils.getMCServerClassByName("ChatSerializer", "network.chat").getMethod("a", String.class).invoke(null, json);
+            Object packet = ReflectionUtils.getMCServerClassByName("PacketPlayOutChat", "network.protocol.game").getConstructor(ReflectionUtils.getMCServerClassByName("IChatBaseComponent", "network.chat")).newInstance(chat);
             Object player = p.getClass().getMethod("getHandle").invoke(p);
             Object connection = player.getClass().getField("playerConnection").get(player);
-            connection.getClass().getMethod("sendPacket", getMCServerClassByName("Packet", "network.protocol.game")).invoke(connection, packet);
+            connection.getClass().getMethod("sendPacket", ReflectionUtils.getMCServerClassByName("Packet", "network.protocol.game")).invoke(connection, packet);
         } catch (Exception e) {
             CustomHeads.getInstance().getLogger().log(Level.WARNING, "Could not send JSON-Message to Player", e);
         }
@@ -694,43 +693,6 @@ public class Utils {
             return filename.substring(filename.lastIndexOf(".") + 1);
         }
         return "";
-    }
-
-    public static Class<?> getMCServerClassByName(String className, String... alternativePrefix) {
-        try {
-            if (className.equals("ChatSerializer") && !CustomHeads.version.equals("v1_8_R1"))
-                className = "IChatBaseComponent$ChatSerializer";
-            if(NBTTagUtils.MC_VERSION >= 17) {
-                String altPrefix = "";
-                if(alternativePrefix != null && alternativePrefix.length > 0) {
-                    altPrefix = alternativePrefix[0] + ".";
-                }
-                return Class.forName("net.minecraft." + altPrefix + className);
-            } else {
-                return Class.forName("net.minecraft.server." + CustomHeads.version + "." + className);
-            }
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    public static Class<?> getClassByName(String className) {
-        try {
-            return Class.forName(className);
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    public static Class<?> getCBClass(String className) {
-        try {
-            return Class.forName("org.bukkit.craftbukkit." + CustomHeads.version + "." + className);
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        return null;
     }
 
     public static String format(String uwat) {

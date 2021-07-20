@@ -9,7 +9,7 @@ import de.likewhat.customheads.category.SubCategory;
 import de.likewhat.customheads.headwriter.HeadFontType;
 import de.likewhat.customheads.headwriter.HeadWriter;
 import de.likewhat.customheads.utils.*;
-import de.likewhat.customheads.utils.reflection.NBTTagUtils;
+import de.likewhat.customheads.utils.reflection.ReflectionUtils;
 import de.likewhat.customheads.utils.updaters.FetchResult;
 import org.bukkit.*;
 import org.bukkit.block.BlockFace;
@@ -448,11 +448,6 @@ public class CHCommand implements CommandExecutor {
                     active_fireworks.add(player);
                     Location startLocation = player.getLocation().getBlock().getLocation().add(.5, .5, .5);
                     CACHED_FIREWORKS.add(startLocation);
-//                    OtherListeners.CACHED_LOCATIONS.put(player, player.getLocation().getBlock().getLocation().add(.5, .5, .5));
-//                    CustomHeads.getApi().createFireworkBattery(startLocation, 10, 20, location -> {
-//                        location.getWorld().playEffect(location.getBlock().getLocation(), Effect.STEP_SOUND, 17);
-//                        location.getBlock().setType(Material.AIR);
-//                    });
                     CustomHeads.getApi().createFireworkBattery(startLocation, 10, 20, new FireworksBatteryHandler() {
                         Location location = startLocation.clone();
 
@@ -462,9 +457,9 @@ public class CHCommand implements CommandExecutor {
 
                         public void onNext() {
                             World world = location.getWorld();
-                            if (NBTTagUtils.MC_VERSION > 13) {
+                            if (ReflectionUtils.MC_VERSION > 13) {
                                 try {
-                                    Class<?> particleClass = Utils.getClassByName("org.bukkit.Particle");
+                                    Class<?> particleClass = ReflectionUtils.getClassByName("org.bukkit.Particle");
                                     World.class.getMethod("spawnParticle", particleClass, Location.class, int.class).invoke(world, NMSUtils.getEnumFromClass(particleClass, "LAVA"), location, 6);
                                 } catch (Exception e) {
                                     e.printStackTrace();
@@ -481,54 +476,6 @@ public class CHCommand implements CommandExecutor {
                             location.getBlock().setType(Material.AIR);
                         }
                     });
-//                    new BukkitRunnable() {
-//                        Player cPlayer = player;
-//                        int counter = 10;
-//
-//                        public void run() {
-//                            if (!OtherListeners.CACHED_LOCATIONS.containsKey(cPlayer)) {
-//                                cancel();
-//                                return;
-//                            }
-//                            if (counter <= 0) {
-//                                OtherListeners.CACHED_LOCATIONS.get(cPlayer).getWorld().playEffect(OtherListeners.CACHED_LOCATIONS.get(cPlayer).getBlock().getLocation(), Effect.STEP_SOUND, 17);
-//                                OtherListeners.CACHED_LOCATIONS.get(cPlayer).getBlock().setType(Material.AIR);
-//                                OtherListeners.CACHED_LOCATIONS.remove(cPlayer);
-//                                cancel();
-//                                return;
-//                            }
-//                            Firework f = (Firework) OtherListeners.CACHED_LOCATIONS.get(cPlayer).getWorld().spawnEntity(OtherListeners.CACHED_LOCATIONS.get(cPlayer), EntityType.FIREWORK);
-//                            FireworkMeta fm = f.getFireworkMeta();
-//                            FireworkEffect.Builder fx = FireworkEffect.builder();
-//                            fx.flicker(ran.nextBoolean()).trail(ran.nextBoolean()).with(fxTypes[ran.nextInt(fxTypes.length)]);
-//                            int c = ran.nextInt(2) + 2;
-//                            for (int i = 0; i < c; i++) {
-//                                fx.withColor(Color.fromRGB(ran.nextInt(200) + 50, ran.nextInt(200) + 50, ran.nextInt(200) + 50));
-//                                if (ran.nextBoolean()) {
-//                                    fx.withFade(Color.fromRGB(ran.nextInt(200) + 50, ran.nextInt(200) + 50, ran.nextInt(200) + 50));
-//                                }
-//                            }
-//                            fm.addEffect(fx.build());
-//                            fm.setPower(ran.nextInt(2) + 1);
-//                            f.setFireworkMeta(fm);
-//                            f.setVelocity(new Vector(ran.nextDouble() * (ran.nextBoolean() ? .01 : -.01), .2, ran.nextDouble() * (ran.nextBoolean() ? .01 : -.01)));
-//                            Location location = OtherListeners.CACHED_LOCATIONS.get(cPlayer);
-//                            World world = location.getWorld();
-//                            if(NBTTagUtils.MC_VERSION > 13) {
-//                                try {
-//                                    Class<?> particleClass = Utils.getClassByName("org.bukkit.Particle");
-//                                    World.class.getMethod("spawnParticle", particleClass, Location.class, int.class).invoke(world, NMSUtils.getEnumFromClass(particleClass, "LAVA"), location, 6);
-//                                } catch(Exception e) {
-//                                    e.printStackTrace();
-//                                }
-//                            } else {
-//                                for (int i = 0; i < 6; i++) {
-//                                    world.playEffect(location, Effect.LAVA_POP, 0);
-//                                }
-//                            }
-//                            counter--;
-//                        }
-//                    }.runTaskTimer(CustomHeads.getInstance(), 10, 20);
                     return true;
                 }
                 player.sendMessage(CustomHeads.getLanguageManager().NO_PERMISSION);

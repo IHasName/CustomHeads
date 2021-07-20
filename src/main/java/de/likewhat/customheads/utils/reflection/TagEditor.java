@@ -1,7 +1,6 @@
 package de.likewhat.customheads.utils.reflection;
 
 import de.likewhat.customheads.CustomHeads;
-import de.likewhat.customheads.utils.Utils;
 import org.bukkit.inventory.ItemStack;
 
 import java.lang.reflect.InvocationTargetException;
@@ -40,7 +39,7 @@ public class TagEditor {
 
     public static Object getAsMNSCopy(ItemStack item) {
         try {
-            return Utils.getCBClass("inventory.CraftItemStack").getMethod("asNMSCopy", ItemStack.class).invoke(Utils.getCBClass("inventory.CraftItemStack"), item);
+            return ReflectionUtils.getCBClass("inventory.CraftItemStack").getMethod("asNMSCopy", ItemStack.class).invoke(ReflectionUtils.getCBClass("inventory.CraftItemStack"), item);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -147,7 +146,7 @@ public class TagEditor {
 
     private static ItemStack asBukkitCopy(Object object) {
         try {
-            return (ItemStack) Utils.getCBClass("inventory.CraftItemStack").getMethod("asBukkitCopy", Utils.getMCServerClassByName("ItemStack", "world.item")).invoke(Utils.getCBClass("inventory.CraftItemStack"), object);
+            return (ItemStack) ReflectionUtils.getCBClass("inventory.CraftItemStack").getMethod("asBukkitCopy", ReflectionUtils.getMCServerClassByName("ItemStack", "world.item")).invoke(ReflectionUtils.getCBClass("inventory.CraftItemStack"), object);
         } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             e.printStackTrace();
         }

@@ -1,6 +1,7 @@
 package de.likewhat.customheads.utils;
 
 import de.likewhat.customheads.CustomHeads;
+import de.likewhat.customheads.utils.reflection.ReflectionUtils;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
@@ -141,7 +142,7 @@ public class ItemEditor {
     public ItemEditor setTexture(String texture) {
         if (itemStack.getType() != Material.SKULL_ITEM)
             throw new IllegalArgumentException("ItemStack is not an Player Head");
-        if(!Utils.injectFieldValue(meta.getClass(), meta, "profile", GameProfileBuilder.createProfileWithTexture(texture)))
+        if(!ReflectionUtils.setField(meta, "profile", GameProfileBuilder.createProfileWithTexture(texture)))
             throw new IllegalStateException("Unable to inject Gameprofile");
         return this;
     }

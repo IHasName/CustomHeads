@@ -15,7 +15,7 @@ import de.likewhat.customheads.category.Category;
 import de.likewhat.customheads.category.CustomHead;
 import de.likewhat.customheads.headwriter.HeadFontType;
 import de.likewhat.customheads.headwriter.HeadWriter;
-import de.likewhat.customheads.utils.reflection.NBTTagUtils;
+import de.likewhat.customheads.utils.reflection.ReflectionUtils;
 import de.likewhat.customheads.utils.reflection.TagEditor;
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -40,8 +40,8 @@ public class APIHandler implements CustomHeadsAPI {
 
 
     static {
-        tileEntitySkullClass = Utils.getMCServerClassByName("TileEntitySkull", "world.level.block.entity");
-        blockPositionClass = Utils.getMCServerClassByName("BlockPosition", "core");
+        tileEntitySkullClass = ReflectionUtils.getMCServerClassByName("TileEntitySkull", "world.level.block.entity");
+        blockPositionClass = ReflectionUtils.getMCServerClassByName("BlockPosition", "core");
         try {
             blockPositionConstructor = blockPositionClass.getConstructor(int.class, int.class, int.class);
         } catch(Exception e) {
@@ -101,18 +101,18 @@ public class APIHandler implements CustomHeadsAPI {
             Skull skull;
             Location location = block.getLocation();
             Object nmsWorld = block.getWorld().getClass().getMethod("getHandle").invoke(block.getWorld());
-            if (NBTTagUtils.MC_VERSION > 12) {
+            if (ReflectionUtils.MC_VERSION > 12) {
                 // Dont
                 Object skullInstance = tileEntitySkullClass.getConstructor().newInstance();
                 Object positionInstance = blockPositionConstructor.newInstance(location.getBlockX(), location.getBlockY(), location.getBlockZ());
 
-                tileEntitySkullClass.getMethod("setLocation", Utils.getMCServerClassByName("World", "world.level"), blockPositionClass).invoke(skullInstance, nmsWorld, positionInstance);
+                tileEntitySkullClass.getMethod("setLocation", ReflectionUtils.getMCServerClassByName("World", "world.level"), blockPositionClass).invoke(skullInstance, nmsWorld, positionInstance);
 
-                Class<?> craftBlockDataClass = Utils.getCBClass("block.data.CraftBlockData");
+                Class<?> craftBlockDataClass = ReflectionUtils.getCBClass("block.data.CraftBlockData");
                 Object blockDataState = craftBlockDataClass.getMethod("getState").invoke(craftBlockDataClass.cast(Material.class.getMethod("createBlockData").invoke(NMSUtils.getEnumFromClass(Material.class, "player_head"))));
 
-                nmsWorld.getClass().getMethod("setTypeAndData", blockPositionClass, Utils.getMCServerClassByName("IBlockData", "world.level.block.state"), int.class).invoke(nmsWorld, positionInstance, blockDataState, 3);
-                nmsWorld.getClass().getMethod("setTileEntity", blockPositionClass, Utils.getMCServerClassByName("TileEntity", "world.level.block.entity")).invoke(nmsWorld, positionInstance, skullInstance);
+                nmsWorld.getClass().getMethod("setTypeAndData", blockPositionClass, ReflectionUtils.getMCServerClassByName("IBlockData", "world.level.block.state"), int.class).invoke(nmsWorld, positionInstance, blockDataState, 3);
+                nmsWorld.getClass().getMethod("setTileEntity", blockPositionClass, ReflectionUtils.getMCServerClassByName("TileEntity", "world.level.block.entity")).invoke(nmsWorld, positionInstance, skullInstance);
                 skull = (Skull) block.getState();
             } else {
                 block.setType(Material.SKULL);
@@ -203,9 +203,9 @@ public class APIHandler implements CustomHeadsAPI {
 //                World world = location.getWorld();
                 handler.onNext();
 //                if(placeBlock) {
-//                    if (NBTTagUtils.MC_VERSION > 13) {
+//                    if (ReflectionUtils.MC_VERSION > 13) {
 //                        try {
-//                            Class<?> particleClass = Utils.getClassByName("org.bukkit.Particle");
+//                            Class<?> particleClass = ReflectionUtils.getClassByName("org.bukkit.Particle");
 //                            World.class.getMethod("spawnParticle", particleClass, Location.class, int.class).invoke(world, NMSUtils.getEnumFromClass(particleClass, "LAVA"), location, 6);
 //                        } catch (Exception e) {
 //                            e.printStackTrace();
