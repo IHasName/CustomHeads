@@ -1,4 +1,4 @@
-package de.likewhat.customheads.utils.stuff;
+package de.likewhat.customheads.utils.history;
 
 /*
  *  Project: CustomHeads in GetHistory
@@ -17,59 +17,40 @@ import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.Inventory;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Getter
-public class GetHistory {
-
-    private List<String> entries = new ArrayList<>();
-
-    private OfflinePlayer offlinePlayer;
+public class GetHistory extends OverflowableHistory{
 
     public GetHistory(OfflinePlayer player) {
-        offlinePlayer = player;
-        JsonObject uuidObject = CustomHeads.getPlayerDataFile().getJson().getAsJsonObject().getAsJsonObject(player.getUniqueId().toString());
+        super(player);
+    }
+
+    public void loadEntries() {
+        JsonObject uuidObject = CustomHeads.getPlayerDataFile().getJson().getAsJsonObject().getAsJsonObject(super.offlinePlayer.getUniqueId().toString());
         JsonObject historyObject;
         if (uuidObject.has("history") && (historyObject = uuidObject.getAsJsonObject("history")).has("getHistory")) {
             for (JsonElement element : historyObject.getAsJsonArray("getHistory")) {
-                entries.add(element.getAsString());
+                super.entries.add(element.getAsString());
             }
         }
-        handleOverflow();
-    }
-
-    public void addEntry(String entry) {
-        entries.add(entry);
-        handleOverflow();
+        super.handleOverflow();
     }
 
     public Inventory getInventory() {
-        Inventory hisInv = Bukkit.createInventory(null, 9 * 5, CustomHeads.getLanguageManager().HISTORY_INV_TITLE.replace("{PLAYER}", offlinePlayer.getName()));
+        Inventory hisInv = Bukkit.createInventory(null, 9 * 5, CustomHeads.getLanguageManager().HISTORY_INV_TITLE.replace("{PLAYER}", super.offlinePlayer.getName()));
         hisInv.setItem(0, CustomHeads.getTagEditor().setTags(new ItemEditor(Material.STAINED_GLASS_PANE,  15).setDisplayName(CustomHeads.getLanguageManager().HISTORY_SEARCHHISTORY).getItem(), "history", "open#>search"));
         hisInv.setItem(1, new ItemEditor(Material.STAINED_GLASS_PANE,  5).setDisplayName(CustomHeads.getLanguageManager().HISTORY_GETHISTORY_ACTIVE).getItem());
-        hisInv.setItem(8, new ItemEditor(Material.SKULL_ITEM,  3).setDisplayName("§b" + offlinePlayer.getName()).setOwner(offlinePlayer.getName()).getItem());
+        hisInv.setItem(8, new ItemEditor(Material.SKULL_ITEM,  3).setDisplayName("§b" + super.offlinePlayer.getName()).setOwner(offlinePlayer.getName()).getItem());
         for (int i = 9; i < 18; i++) {
             hisInv.setItem(i, new ItemEditor(Material.STAINED_GLASS_PANE,  1).setDisplayName("§0").getItem());
         }
         if (hasHistory()) {
-            for (int i = 0; i < entries.size(); i++) {
-                hisInv.setItem(i + 18, new ItemEditor(Material.SKULL_ITEM,  3).setDisplayName("§a" + entries.get(i)).setLore(CustomHeads.getLanguageManager().HISTORY_GET_LORE).setOwner(entries.get(i)).getItem());
+            for (int i = 0; i < super.entries.size(); i++) {
+                hisInv.setItem(i + 18, new ItemEditor(Material.SKULL_ITEM,  3).setDisplayName("§a" + super.entries.get(i)).setLore(CustomHeads.getLanguageManager().HISTORY_GET_LORE).setOwner(super.entries.get(i)).getItem());
             }
         } else {
             hisInv.setItem(31, new ItemEditor(Material.BARRIER).setDisplayName("§0").setLore(CustomHeads.getLanguageManager().HISTORY_NO_HISTORY_LORE).getItem());
         }
         return hisInv;
-    }
-
-    public boolean hasHistory() {
-        return !entries.isEmpty();
-    }
-
-    private void handleOverflow() {
-        while (entries.size() > CustomHeads.hisOverflow) {
-            entries.remove(0);
-        }
     }
 
 }

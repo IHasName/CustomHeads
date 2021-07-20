@@ -11,7 +11,7 @@ import java.util.logging.Level;
 public class ReflectionUtils {
 
     public static final int MC_VERSION;
-    private static HashMap<String, Class<?>> cachedClasses = new HashMap<>();
+    private static final HashMap<String, Class<?>> cachedClasses = new HashMap<>();
 
     static {
         MC_VERSION = Integer.parseInt(CustomHeads.version.split("_")[1]);

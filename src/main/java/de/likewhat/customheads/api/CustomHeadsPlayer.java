@@ -9,8 +9,8 @@ package de.likewhat.customheads.api;
 
 import de.likewhat.customheads.category.Category;
 import de.likewhat.customheads.category.CustomHead;
-import de.likewhat.customheads.utils.stuff.GetHistory;
-import de.likewhat.customheads.utils.stuff.SearchHistory;
+import de.likewhat.customheads.utils.history.GetHistory;
+import de.likewhat.customheads.utils.history.SearchHistory;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 

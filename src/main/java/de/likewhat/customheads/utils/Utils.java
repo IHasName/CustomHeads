@@ -13,7 +13,6 @@ import de.likewhat.customheads.category.SubCategory;
 import de.likewhat.customheads.utils.reflection.AnvilGUI;
 import de.likewhat.customheads.utils.reflection.ReflectionUtils;
 import de.likewhat.customheads.utils.reflection.TagEditor;
-import de.likewhat.customheads.utils.stuff.CHSearchQuery;
 import de.likewhat.customheads.utils.updaters.AsyncFileDownloader;
 import de.likewhat.customheads.utils.updaters.FetchResult;
 import de.likewhat.customheads.utils.updaters.GitHubDownloader;
@@ -652,7 +651,6 @@ public class Utils {
             Object chat = ReflectionUtils.getMCServerClassByName("ChatSerializer", "network.chat").getMethod("a", String.class).invoke(null, json);
             Object packet;
             if(ReflectionUtils.MC_VERSION >= 16) {
-
                 Class<?> chatMessageTypeClass = ReflectionUtils.getMCServerClassByName("ChatMessageType", "network.chat");
                 packet = ReflectionUtils.getMCServerClassByName("PacketPlayOutChat", "network.protocol.game").getConstructor(ReflectionUtils.getMCServerClassByName("IChatBaseComponent", "network.chat"), chatMessageTypeClass, UUID.class).newInstance(chat, ReflectionUtils.getEnumConstant(chatMessageTypeClass, "CHAT"), null);
             } else {

@@ -8,11 +8,11 @@ import de.likewhat.customheads.category.Category;
 import de.likewhat.customheads.category.CustomHead;
 import de.likewhat.customheads.category.SubCategory;
 import de.likewhat.customheads.headwriter.HeadFontType;
+import de.likewhat.customheads.utils.CHSearchQuery;
 import de.likewhat.customheads.utils.ItemEditor;
 import de.likewhat.customheads.utils.ScrollableInventory;
 import de.likewhat.customheads.utils.Utils;
 import de.likewhat.customheads.utils.reflection.TagEditor;
-import de.likewhat.customheads.utils.stuff.CHSearchQuery;
 import de.likewhat.customheads.utils.updaters.AsyncFileDownloader;
 import de.likewhat.customheads.utils.updaters.GitHubDownloader;
 import org.bukkit.Bukkit;
@@ -41,7 +41,6 @@ import static de.likewhat.customheads.utils.Utils.*;
 public class InventoryListener implements Listener {
 
     private static HashMap<UUID, String> lastActiveMenu = new HashMap<>();
-    //private static HashMap<Player, String> lastInventory = new HashMap<>();
 
     public static String getLastMenu(UUID uuid, boolean remove) {
         String last = lastActiveMenu.get(uuid);
@@ -50,22 +49,6 @@ public class InventoryListener implements Listener {
         }
         return last;
     }
-
-//    private void openLastInventory(Player player) {
-//        if(!lastInventory.containsKey(player)) {
-//            return;
-//        }
-//        String[] args = lastInventory.get(player).split(":");
-//        switch(args[0]) {
-//            case "menu":
-//                player.openInventory(CustomHeads.getLooks().getMenu(args[1]));
-//                break;
-//            case "category":
-//                // category:
-//                openCategory();
-//                break;
-//        }
-//    }
 
     @EventHandler
     public void onInvOpen(InventoryOpenEvent event) {
@@ -173,7 +156,7 @@ public class InventoryListener implements Listener {
         }
 
         // History Inventory
-        if (event.getView().getTitle().equalsIgnoreCase(CustomHeads.getLanguageManager().HISTORY_INV_TITLE.replace("{PLAYER}", player.getName()))) {
+        if (event.getView().getTitle().startsWith(CustomHeads.getLanguageManager().HISTORY_INV_TITLE.replace("{PLAYER}", ""))) {
             event.setCancelled(true);
             if (itemTags.contains("history")) {
                 String[] args = itemTags.get(itemTags.indexOf("history") + 1).split("#>");
@@ -181,6 +164,7 @@ public class InventoryListener implements Listener {
                     case "search":
                         List<Category> categories = CustomHeads.getCategoryManager().getCategoryList();
                         categories.removeAll(CustomHeads.getApi().wrapPlayer(player).getUnlockedCategories(false));
+                        event.setCurrentItem(null);
                         new CHSearchQuery(args[1]).setRecordHistory(false).excludeCategories(categories).viewTo(player, "willClose");
                         break;
                     case "get":

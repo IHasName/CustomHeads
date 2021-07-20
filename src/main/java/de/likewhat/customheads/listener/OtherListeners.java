@@ -2,8 +2,8 @@ package de.likewhat.customheads.listener;
 
 import de.likewhat.customheads.CustomHeads;
 import de.likewhat.customheads.category.CategorySetup;
+import de.likewhat.customheads.command.CustomHeadsCommand;
 import de.likewhat.customheads.utils.Utils;
-import de.likewhat.customheads.utils.stuff.CHCommand;
 import de.likewhat.customheads.utils.updaters.SpigetResourceFetcher;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -24,12 +24,11 @@ import static de.likewhat.customheads.utils.Utils.sendJSONMessage;
 
 public class OtherListeners implements Listener {
 
-//    public static final HashMap<Player, Location> CACHED_LOCATIONS = new HashMap<>();
     public static final HashMap<UUID, CategorySetup> CACHED_CATEGORYSETUPS = new HashMap<>();
 
     @EventHandler
     public void fireworkbreak(BlockBreakEvent event) {
-        if (CHCommand.CACHED_FIREWORKS.contains(event.getBlock().getLocation().add(.5, .5, .5))) {
+        if (CustomHeadsCommand.CACHED_FIREWORKS.contains(event.getBlock().getLocation().add(.5, .5, .5))) {
             event.setCancelled(true);
         }
     }
@@ -54,7 +53,7 @@ public class OtherListeners implements Listener {
         Player player = event.getPlayer();
         if(CACHED_CATEGORYSETUPS.containsKey(player.getUniqueId())) {
             CategorySetup setup = CACHED_CATEGORYSETUPS.get(player.getUniqueId());
-            // TODO Add Stuff later
+            // Not implemented yet
         }
     }
 

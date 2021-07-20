@@ -36,6 +36,7 @@ import java.util.logging.Level;
 
 import static de.likewhat.customheads.utils.Utils.hasPermission;
 
+// Not implemented yet
 public class CategoryEditorListener implements Listener {
 
     private HashMap<UUID, String> cachedPlayers = new HashMap<>();

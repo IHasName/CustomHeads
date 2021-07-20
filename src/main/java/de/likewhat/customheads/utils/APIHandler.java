@@ -166,21 +166,13 @@ public class APIHandler implements CustomHeadsAPI {
     public void createFireworkBattery(Location location, int shots, int delay, FireworksBatteryHandler handler) {
         Random random = new Random();
 
-//        if(placeBlock) {
-//            CustomHeads.getApi().setSkull(location.getBlock(), "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOGEzZDVkNWIyY2YzMzEyOTllNjNkNzYxOGExNDI2NmU4Y2NjNjE1OGU5ZTMxZmNiMGJkOTExZTEyZmY3NzM2In19fQ==", faces[random.nextInt(faces.length)]);
-//        }
         handler.onStart();
         new BukkitRunnable() {
             int counter = shots;
 
             public void run() {
                 if (counter == 0) {
-//                    if(placeBlock) {
-//                        location.getWorld().playEffect(location.getBlock().getLocation(), Effect.STEP_SOUND, 17);
-//                        location.getBlock().setType(Material.AIR);
-//                    }
                     handler.onEnd();
-//                    callback.call(location);
                     cancel();
                     return;
                 }
@@ -199,22 +191,7 @@ public class APIHandler implements CustomHeadsAPI {
                 fm.setPower(random.nextInt(2) + 1);
                 f.setFireworkMeta(fm);
                 f.setVelocity(new Vector(random.nextDouble() * (random.nextBoolean() ? .01 : -.01), .2, random.nextDouble() * (random.nextBoolean() ? .01 : -.01)));
-//                World world = location.getWorld();
                 handler.onNext();
-//                if(placeBlock) {
-//                    if (ReflectionUtils.MC_VERSION > 13) {
-//                        try {
-//                            Class<?> particleClass = ReflectionUtils.getClassByName("org.bukkit.Particle");
-//                            World.class.getMethod("spawnParticle", particleClass, Location.class, int.class).invoke(world, NMSUtils.getEnumFromClass(particleClass, "LAVA"), location, 6);
-//                        } catch (Exception e) {
-//                            e.printStackTrace();
-//                        }
-//                    } else {
-//                        for (int i = 0; i < 6; i++) {
-//                            world.playEffect(location, Effect.LAVA_POP, 0);
-//                        }
-//                    }
-//                }
                 counter--;
             }
         }.runTaskTimer(CustomHeads.getInstance(), 10, delay);

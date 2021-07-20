@@ -1,4 +1,4 @@
-package de.likewhat.customheads.utils.stuff;
+package de.likewhat.customheads.command;
 
 import de.likewhat.customheads.CustomHeads;
 import de.likewhat.customheads.category.Category;
@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
  *     by LikeWhat
  */
 
-public class CHTabCompleter implements TabCompleter {
+public class CustomHeadsTabCompleter implements TabCompleter {
 
     public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
         if (sender instanceof ConsoleCommandSender) {

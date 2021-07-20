@@ -49,26 +49,7 @@ public class NBTTagUtils {
             if(!Arrays.asList(ALLOWED_CLASSES).contains(className)) {
                 throw new IllegalArgumentException("Class " + className + " is not allowed!");
             }
-            Class<?> clazz = ReflectionUtils.getMCServerClassByName(className, "nbt");
-            /*switch (ReflectionUtils.MC_VERSION) {
-                case 8:
-                case 9:
-                case 10:
-                case 11:
-                case 12:
-                case 13:
-                case 14:
-                case 15:
-                case 16:
-                    clazz = ReflectionUtils.getMCServerClassByName(className);
-                    break;
-                default:
-                    Bukkit.getLogger().log(Level.WARNING, "Falling back to newest Method since the current Version isn't tested yet... (This may not work so here goes)");
-                case 17:
-                    clazz = ReflectionUtils.getMCServerClassByName(className, "nbt");
-                    break;
-            }*/
-            return clazz;
+            return ReflectionUtils.getMCServerClassByName(className, "nbt");
         } catch(Exception e) {
             e.printStackTrace();
         }

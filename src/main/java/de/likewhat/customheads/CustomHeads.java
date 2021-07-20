@@ -6,6 +6,8 @@ import de.likewhat.customheads.api.CustomHeadsAPI;
 import de.likewhat.customheads.api.CustomHeadsPlayer;
 import de.likewhat.customheads.category.Category;
 import de.likewhat.customheads.category.CategoryManager;
+import de.likewhat.customheads.command.CustomHeadsCommand;
+import de.likewhat.customheads.command.CustomHeadsTabCompleter;
 import de.likewhat.customheads.economy.EconomyManager;
 import de.likewhat.customheads.headwriter.HeadFontType;
 import de.likewhat.customheads.listener.CategoryEditorListener;
@@ -15,8 +17,6 @@ import de.likewhat.customheads.loader.Language;
 import de.likewhat.customheads.loader.Looks;
 import de.likewhat.customheads.utils.*;
 import de.likewhat.customheads.utils.reflection.TagEditor;
-import de.likewhat.customheads.utils.stuff.CHCommand;
-import de.likewhat.customheads.utils.stuff.CHTabCompleter;
 import de.likewhat.customheads.utils.updaters.FetchResult;
 import de.likewhat.customheads.utils.updaters.GitHubDownloader;
 import de.likewhat.customheads.utils.updaters.SpigetResourceFetcher;
@@ -193,7 +193,7 @@ public class CustomHeads extends JavaPlugin {
 
     public void onDisable() {
         if (isInit) {
-            CHCommand.CACHED_FIREWORKS.forEach(loc -> loc.getBlock().setType(Material.AIR));
+            CustomHeadsCommand.CACHED_FIREWORKS.forEach(loc -> loc.getBlock().setType(Material.AIR));
             PlayerWrapper.clearCache();
         }
     }
@@ -357,8 +357,8 @@ public class CustomHeads extends JavaPlugin {
         headsConfig.save();
 
         // Register Commands
-        getCommand("heads").setExecutor(new CHCommand());
-        getCommand("heads").setTabCompleter(new CHTabCompleter());
+        getCommand("heads").setExecutor(new CustomHeadsCommand());
+        getCommand("heads").setTabCompleter(new CustomHeadsTabCompleter());
 
         spigetFetcher = new SpigetResourceFetcher(29057);
         SpigetResourceFetcher.setUserAgent("UC-CustomHeads");

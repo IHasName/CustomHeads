@@ -1,4 +1,4 @@
-package de.likewhat.customheads.utils.stuff;
+package de.likewhat.customheads.command;
 
 import de.likewhat.customheads.CustomHeads;
 import de.likewhat.customheads.api.CustomHeadsPlayer;
@@ -34,7 +34,7 @@ import static de.likewhat.customheads.utils.Utils.*;
  *     by LikeWhat
  */
 
-public class CHCommand implements CommandExecutor {
+public class CustomHeadsCommand implements CommandExecutor {
 
     private static final Comparator<Category> categoryComparator = Comparator.comparing(category -> Integer.parseInt(category.getId()));
     public HashMap<Player, String[]> haltedCommands = new HashMap<>();
@@ -177,7 +177,7 @@ public class CHCommand implements CommandExecutor {
                 return true;
             }
 
-            ///* Test Command plez Ignore
+            /* Test Command plez Ignore
             if (args[0].equalsIgnoreCase("test")) {
                 try {
                     Configs tempcon = new Configs(CustomHeads.getInstance(), "test.yml", false, "testing");
@@ -198,7 +198,7 @@ public class CHCommand implements CommandExecutor {
                 }
                 return true;
             }
-            //*/
+            */
             if (args[0].equalsIgnoreCase("categories")) {
                 if (hasPermission(player, "heads.admin")) {
                     if (args.length < 2) {
@@ -490,7 +490,9 @@ public class CHCommand implements CommandExecutor {
                     }
                     CHSearchQuery query = new CHSearchQuery(args[1]);
                     List<Category> categories = CustomHeads.getCategoryManager().getCategoryList();
-                    categories.removeAll(CustomHeads.getApi().wrapPlayer(player).getUnlockedCategories(false));
+                    CustomHeadsPlayer wrappedPlayer = CustomHeads.getApi().wrapPlayer(player);
+                    wrappedPlayer.getSearchHistory().addEntry(args[1]);
+                    categories.removeAll(wrappedPlayer.getUnlockedCategories(false));
                     query.excludeCategories(categories);
                     if (query.resultsReturned() == 0) {
                         Inventory noRes = Bukkit.createInventory(player, 9 * 3, CustomHeads.getLanguageManager().NO_RESULTS);

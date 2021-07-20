@@ -1,12 +1,9 @@
-package de.likewhat.customheads.utils.stuff;
+package de.likewhat.customheads.utils;
 
 import de.likewhat.customheads.CustomHeads;
 import de.likewhat.customheads.api.CustomHeadsPlayer;
 import de.likewhat.customheads.category.Category;
 import de.likewhat.customheads.category.CustomHead;
-import de.likewhat.customheads.utils.ItemEditor;
-import de.likewhat.customheads.utils.ScrollableInventory;
-import de.likewhat.customheads.utils.Utils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
