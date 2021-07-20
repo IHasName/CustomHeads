@@ -460,7 +460,7 @@ public class CHCommand implements CommandExecutor {
                             if (ReflectionUtils.MC_VERSION > 13) {
                                 try {
                                     Class<?> particleClass = ReflectionUtils.getClassByName("org.bukkit.Particle");
-                                    World.class.getMethod("spawnParticle", particleClass, Location.class, int.class).invoke(world, NMSUtils.getEnumFromClass(particleClass, "LAVA"), location, 6);
+                                    World.class.getMethod("spawnParticle", particleClass, Location.class, int.class).invoke(world, ReflectionUtils.getEnumConstant(particleClass, "LAVA"), location, 6);
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }

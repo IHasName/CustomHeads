@@ -176,7 +176,7 @@ public class AnvilGUI {
                     Class<?> containerAccessClass = ReflectionUtils.getMCServerClassByName("ContainerAccess", "world.inventory");
                     container = containerAnvilClass.getConstructor(int.class, ReflectionUtils.getMCServerClassByName("PlayerInventory", "world.entity.player"), containerAccessClass).newInstance(nextContainerId, playerHandleClass.getMethod("getInventory").invoke(p), containerAccessClass.getMethod("at", ReflectionUtils.getMCServerClassByName("World", "world.level"), ReflectionUtils.getMCServerClassByName("BlockPosition", "core")).invoke(containerAccessClass, playerHandleClass.getField("t").get(p), ReflectionUtils.getMCServerClassByName("BlockPosition", "core").getConstructor(int.class, int.class, int.class).newInstance(location.getBlockX(), location.getBlockY(), location.getBlockZ())));
                     packet = packetPlayOutOpenWindowClass.getConstructor(int.class, containersClass, ReflectionUtils.getMCServerClassByName("IChatBaseComponent", "network.chat")).newInstance(nextContainerId, containersClass.getField("h").get(containersClass), chatMessageConstructor.newInstance(title, new Object[]{}));
-                    playerConnection = playerHandleClass.getField("b").get(p);
+                    //playerConnection = playerHandleClass.getField("b").get(p);
                     windowIdField = containerClass.getDeclaredField("j");
                     activeContainerField = playerHandleClass.getField("bV");
                     break;
@@ -190,7 +190,8 @@ public class AnvilGUI {
             }
 
             containerClass.getField("checkReachable").set(container, false);
-            playerConnection.getClass().getMethod("sendPacket", ReflectionUtils.getMCServerClassByName("Packet", "network.protocol")).invoke(playerConnection, packet);
+            ReflectionUtils.sendPacket(packet, player);
+            //playerConnection.getClass().getMethod("sendPacket", ReflectionUtils.getMCServerClassByName("Packet", "network.protocol")).invoke(playerConnection, packet);
             activeContainerField.setAccessible(true);
             activeContainerField.set(p, container);
             windowIdField.setAccessible(true);

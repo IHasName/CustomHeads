@@ -332,26 +332,6 @@ public class Utils {
         return builder.toString();
     }
 
-    /*public static boolean injectFieldValue(Class<?> sourceClass, Object instance, String fieldName, Object value) {
-        try {
-            Field field = sourceClass.getDeclaredField(fieldName);
-            if (!field.isAccessible()) {
-                field.setAccessible(true);
-            }
-            try {
-                field.set(instance, value);
-            } finally {
-                if (!field.isAccessible()) {
-                    field.setAccessible(false);
-                }
-            }
-            return true;
-        } catch (Exception e) {
-            Bukkit.getLogger().log(Level.WARNING, "Unable to inject Object Value into Field", e);
-        }
-        return false;
-    }*/
-
     public static boolean charArrayContains(char[] charArray, char containsChar) {
         for (char c : charArray) {
             if (c == containsChar) {
@@ -667,13 +647,18 @@ public class Utils {
         return string;
     }
 
-    public static void sendJSONMessage(String json, Player p) {
+    public static void sendJSONMessage(String json, Player player) {
         try {
             Object chat = ReflectionUtils.getMCServerClassByName("ChatSerializer", "network.chat").getMethod("a", String.class).invoke(null, json);
-            Object packet = ReflectionUtils.getMCServerClassByName("PacketPlayOutChat", "network.protocol.game").getConstructor(ReflectionUtils.getMCServerClassByName("IChatBaseComponent", "network.chat")).newInstance(chat);
-            Object player = p.getClass().getMethod("getHandle").invoke(p);
-            Object connection = player.getClass().getField("playerConnection").get(player);
-            connection.getClass().getMethod("sendPacket", ReflectionUtils.getMCServerClassByName("Packet", "network.protocol.game")).invoke(connection, packet);
+            Object packet;
+            if(ReflectionUtils.MC_VERSION >= 16) {
+
+                Class<?> chatMessageTypeClass = ReflectionUtils.getMCServerClassByName("ChatMessageType", "network.chat");
+                packet = ReflectionUtils.getMCServerClassByName("PacketPlayOutChat", "network.protocol.game").getConstructor(ReflectionUtils.getMCServerClassByName("IChatBaseComponent", "network.chat"), chatMessageTypeClass, UUID.class).newInstance(chat, ReflectionUtils.getEnumConstant(chatMessageTypeClass, "CHAT"), null);
+            } else {
+                packet = ReflectionUtils.getMCServerClassByName("PacketPlayOutChat", "network.protocol.game").getConstructor(ReflectionUtils.getMCServerClassByName("IChatBaseComponent", "network.chat")).newInstance(chat);
+            }
+            ReflectionUtils.sendPacket(packet, player);
         } catch (Exception e) {
             CustomHeads.getInstance().getLogger().log(Level.WARNING, "Could not send JSON-Message to Player", e);
         }

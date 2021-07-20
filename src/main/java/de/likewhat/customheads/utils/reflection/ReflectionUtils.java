@@ -2,6 +2,7 @@ package de.likewhat.customheads.utils.reflection;
 
 import de.likewhat.customheads.CustomHeads;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 
 import java.lang.reflect.Field;
 import java.util.HashMap;
@@ -39,6 +40,30 @@ public class ReflectionUtils {
                 fieldToModify.setAccessible(false);
             }
         }
+    }
+
+    public static Enum<?> getEnumConstant(Class<?> clazz, String enumName) {
+        try {
+            for (Object eenum : clazz.getEnumConstants()) {
+                if (eenum.getClass().getMethod("name").invoke(eenum).equals(enumName)) {
+                    return (Enum<?>) eenum;
+                }
+            }
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static void sendPacket(Object packet, Player player) throws Exception {
+        Object playerHandle = player.getClass().getMethod("getHandle").invoke(player);
+        Object connection;
+        if(MC_VERSION >= 17) {
+            connection = playerHandle.getClass().getField("b").get(playerHandle);
+        } else {
+            connection = playerHandle.getClass().getField("playerConnection").get(playerHandle);
+        }
+        connection.getClass().getMethod("sendPacket", ReflectionUtils.getMCServerClassByName("Packet", "network.protocol")).invoke(connection, packet);
     }
 
     public static Class<?> getMCServerClassByName(String className, String... alternativePrefix) {

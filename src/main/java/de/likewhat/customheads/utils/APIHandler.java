@@ -38,7 +38,6 @@ public class APIHandler implements CustomHeadsAPI {
     private static Constructor<?> blockPositionConstructor;
     private FireworkEffect.Type[] fxTypes = {FireworkEffect.Type.BALL, FireworkEffect.Type.BALL_LARGE, FireworkEffect.Type.BURST, FireworkEffect.Type.STAR};
 
-
     static {
         tileEntitySkullClass = ReflectionUtils.getMCServerClassByName("TileEntitySkull", "world.level.block.entity");
         blockPositionClass = ReflectionUtils.getMCServerClassByName("BlockPosition", "core");
@@ -109,7 +108,7 @@ public class APIHandler implements CustomHeadsAPI {
                 tileEntitySkullClass.getMethod("setLocation", ReflectionUtils.getMCServerClassByName("World", "world.level"), blockPositionClass).invoke(skullInstance, nmsWorld, positionInstance);
 
                 Class<?> craftBlockDataClass = ReflectionUtils.getCBClass("block.data.CraftBlockData");
-                Object blockDataState = craftBlockDataClass.getMethod("getState").invoke(craftBlockDataClass.cast(Material.class.getMethod("createBlockData").invoke(NMSUtils.getEnumFromClass(Material.class, "player_head"))));
+                Object blockDataState = craftBlockDataClass.getMethod("getState").invoke(craftBlockDataClass.cast(Material.class.getMethod("createBlockData").invoke(ReflectionUtils.getEnumConstant(Material.class, "player_head"))));
 
                 nmsWorld.getClass().getMethod("setTypeAndData", blockPositionClass, ReflectionUtils.getMCServerClassByName("IBlockData", "world.level.block.state"), int.class).invoke(nmsWorld, positionInstance, blockDataState, 3);
                 nmsWorld.getClass().getMethod("setTileEntity", blockPositionClass, ReflectionUtils.getMCServerClassByName("TileEntity", "world.level.block.entity")).invoke(nmsWorld, positionInstance, skullInstance);
