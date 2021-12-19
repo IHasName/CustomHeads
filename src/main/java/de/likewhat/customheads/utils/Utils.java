@@ -11,8 +11,8 @@ import de.likewhat.customheads.category.Category;
 import de.likewhat.customheads.category.CustomHead;
 import de.likewhat.customheads.category.SubCategory;
 import de.likewhat.customheads.utils.reflection.AnvilGUI;
-import de.likewhat.customheads.utils.reflection.ReflectionUtils;
-import de.likewhat.customheads.utils.reflection.TagEditor;
+import de.likewhat.customheads.utils.reflection.helpers.ItemNBTUtils;
+import de.likewhat.customheads.utils.reflection.helpers.ReflectionUtils;
 import de.likewhat.customheads.utils.updaters.AsyncFileDownloader;
 import de.likewhat.customheads.utils.updaters.FetchResult;
 import de.likewhat.customheads.utils.updaters.GitHubDownloader;
@@ -319,6 +319,33 @@ public class Utils {
         return inv;
     }
 
+    /**
+     * Scans the Inventory for a Free Slot with the given Item
+     * @param inventory The Inventory
+     * @param itemStack The ItemStack which could be added (Needed for Stacking Check)
+     * @return Integer with the next free Slot. -1 when no Space was found
+     */
+    public static int getNextFreeInventorySlot(Inventory inventory, ItemStack itemStack) {
+        if(inventory.getContents().length == inventory.getSize()) {
+            if(inventory.contains(itemStack)) {
+                ItemStack[] items = inventory.getContents();
+                for (int i = 0; i < items.length; i++) {
+                    ItemStack item = items[i];
+                    if(item.getAmount() < item.getType().getMaxStackSize() && item.isSimilar(itemStack)) {
+                        return i;
+                    }
+                }
+            }
+            return -1;
+        } else {
+            return inventory.firstEmpty();
+        }
+    }
+
+    public static boolean hasFreeInventorySlot(Inventory inventory) {
+        return inventory.firstEmpty() != -1;
+    }
+
     public static String randomAlphabetic(int length) {
         return randomString("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".toCharArray(), length);
     }
@@ -386,7 +413,7 @@ public class Utils {
     public static boolean hasCustomTexture(ItemStack itemStack) {
         if (itemStack == null) return false;
         try {
-            Object nmscopy = TagEditor.getAsMNSCopy(itemStack);
+            Object nmscopy = ItemNBTUtils.asNMSCopy(itemStack);
             Object tag = nmscopy.getClass().getMethod("getTag").invoke(nmscopy);
             Object so = tag.getClass().getMethod("getCompound", String.class).invoke(tag, "SkullOwner");
             Object prop = so.getClass().getMethod("getCompound", String.class).invoke(so, "Properties");
@@ -521,7 +548,7 @@ public class Utils {
             if (!outputDir.exists())
                 Files.createParentDirs(new File(outputDir, "a.temp"));
             ZipEntry zipEntry;
-            System.out.println("[FileZipper] Unzipping " + zipFile.getName());
+            Bukkit.getLogger().info("[FileZipper] Unzipping " + zipFile.getName());
             while ((zipEntry = inputStream.getNextEntry()) != null) {
                 File zipEntryFile = new File(outputDir, zipEntry.getName());
                 if (getExtension(zipEntry.getName()).length() > 0) {
@@ -536,7 +563,7 @@ public class Utils {
             }
             inputStream.closeEntry();
             inputStream.close();
-            System.out.println("[FileZipper] Unzip finished");
+            Bukkit.getLogger().info("[FileZipper] Unzip finished");
         } catch (Exception exception) {
             Bukkit.getLogger().log(Level.WARNING, "[FileZipper] Failed to unzip " + zipFile.getName(), exception);
         }
@@ -622,7 +649,7 @@ public class Utils {
     }
 
     public static String formatPrice(int price, boolean prefix) {
-        return (prefix ? CustomHeads.getLanguageManager().ECONOMY_PRICE : "{PRICE}").replace("{PRICE}", price == 0 ? CustomHeads.getLanguageManager().ECONOMY_FREE : CustomHeads.getLanguageManager().ECONOMY_PRICE_FORMAT.replace("{PRICE}", String.valueOf(price)).replace("{CURRENCY}", CustomHeads.hasEconomy() ? price == 1 ? CustomHeads.getEconomyManager().getEconomyPlugin().currencyNameSingular() : CustomHeads.getEconomyManager().getEconomyPlugin().currencyNamePlural() : ""));
+        return (prefix ? CustomHeads.getLanguageManager().ECONOMY_PRICE : "{PRICE}").replace("{PRICE}", price == 0 ? CustomHeads.getLanguageManager().ECONOMY_FREE : CustomHeads.getLanguageManager().ECONOMY_PRICE_FORMAT.replace("{PRICE}", String.valueOf(price)).replace("{CURRENCY}", CustomHeads.hasEconomy() ? price == 1 ? CustomHeads.getEconomyManager().getActiveEconomyHandler().currencyNameSingular() : CustomHeads.getEconomyManager().getActiveEconomyHandler().currencyNamePlural() : ""));
     }
 
     public static int getHeadPriceRaw(ItemStack itemStack) {
@@ -700,6 +727,15 @@ public class Utils {
         T[] newArray = Arrays.copyOf(array, array.length + 1);
         newArray[array.length] = with;
         return newArray;
+    }
+
+    private static final List<String> alreadyLogged = new ArrayList<>();
+
+    public static void logOnce(Level level, String string) {
+        if(!alreadyLogged.contains(string)) {
+            alreadyLogged.add(string);
+            Bukkit.getLogger().log(level, string);
+        }
     }
 
 }

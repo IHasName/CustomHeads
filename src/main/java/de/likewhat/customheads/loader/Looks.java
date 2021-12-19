@@ -124,7 +124,7 @@ public class Looks {
             for (JsonElement menuElement : menus) {
                 JsonObject menuJson = menuElement.getAsJsonObject();
                 if (createdMenus.containsKey(menuJson.get("id").getAsString())) {
-                    System.out.println(CustomHeads.chWarning + "Dublicate Menu ID: " + menuJson.get("id").getAsString() + ". Skipping...");
+                    Bukkit.getLogger().info(CustomHeads.chWarning + "Duplicate Menu ID: " + menuJson.get("id").getAsString() + ". Skipping...");
                     continue;
                 }
                 Inventory menu = Bukkit.createInventory(null, menuJson.get("size").getAsInt(), format(menuJson.get("title").getAsString()));

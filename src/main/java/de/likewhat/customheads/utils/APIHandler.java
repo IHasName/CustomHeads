@@ -15,8 +15,8 @@ import de.likewhat.customheads.category.Category;
 import de.likewhat.customheads.category.CustomHead;
 import de.likewhat.customheads.headwriter.HeadFontType;
 import de.likewhat.customheads.headwriter.HeadWriter;
-import de.likewhat.customheads.utils.reflection.ReflectionUtils;
-import de.likewhat.customheads.utils.reflection.TagEditor;
+import de.likewhat.customheads.utils.reflection.helpers.ItemNBTUtils;
+import de.likewhat.customheads.utils.reflection.helpers.ReflectionUtils;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -54,7 +54,7 @@ public class APIHandler implements CustomHeadsAPI {
             throw new NullPointerException("Item cannot be null");
         }
         try {
-            Object nMSCopy = TagEditor.getAsMNSCopy(itemStack);
+            Object nMSCopy = ItemNBTUtils.asNMSCopy(itemStack);
             Object tag = nMSCopy.getClass().getMethod("getTag").invoke(nMSCopy);
             Object skullOwner = tag.getClass().getMethod("getCompound", String.class).invoke(tag, "SkullOwner");
             Object properties = skullOwner.getClass().getMethod("getCompound", String.class).invoke(skullOwner, "Properties");
@@ -94,39 +94,62 @@ public class APIHandler implements CustomHeadsAPI {
         new HeadWriter(fontType, text).writeAt(location);
     }
 
-    public void setSkull(Block block, String texture, BlockFace blockFace) {
-        try {
-            block.setType(Material.AIR);
-            Skull skull;
-            Location location = block.getLocation();
-            Object nmsWorld = block.getWorld().getClass().getMethod("getHandle").invoke(block.getWorld());
-            if (ReflectionUtils.MC_VERSION > 12) {
-                // Dont
-                Object skullInstance = tileEntitySkullClass.getConstructor().newInstance();
-                Object positionInstance = blockPositionConstructor.newInstance(location.getBlockX(), location.getBlockY(), location.getBlockZ());
-
-                tileEntitySkullClass.getMethod("setLocation", ReflectionUtils.getMCServerClassByName("World", "world.level"), blockPositionClass).invoke(skullInstance, nmsWorld, positionInstance);
-
-                Class<?> craftBlockDataClass = ReflectionUtils.getCBClass("block.data.CraftBlockData");
-                Object blockDataState = craftBlockDataClass.getMethod("getState").invoke(craftBlockDataClass.cast(Material.class.getMethod("createBlockData").invoke(ReflectionUtils.getEnumConstant(Material.class, "player_head"))));
-
-                nmsWorld.getClass().getMethod("setTypeAndData", blockPositionClass, ReflectionUtils.getMCServerClassByName("IBlockData", "world.level.block.state"), int.class).invoke(nmsWorld, positionInstance, blockDataState, 3);
-                nmsWorld.getClass().getMethod("setTileEntity", blockPositionClass, ReflectionUtils.getMCServerClassByName("TileEntity", "world.level.block.entity")).invoke(nmsWorld, positionInstance, skullInstance);
-                skull = (Skull) block.getState();
-            } else {
+public void setSkull(Block block, String texture, BlockFace blockFace) {
+    try {
+        block.setType(Material.AIR);
+        Skull skull;
+        Location location = block.getLocation();
+        Object nmsWorld = block.getWorld().getClass().getMethod("getHandle").invoke(block.getWorld());
+        switch (ReflectionUtils.MC_VERSION) {
+            case 8:
+            case 9:
+            case 10:
+            case 11:
+            case 12:
                 block.setType(Material.SKULL);
                 skull = (Skull) block.getState();
                 skull.setSkullType(SkullType.PLAYER);
                 skull.setRawData((byte) 1);
-            }
-
-            skull.setRotation(blockFace);
-            skull.update();
-            setSkullTexture(block, texture);
-        } catch (Exception e) {
-            CustomHeads.getInstance().getLogger().log(Level.WARNING, "Error placing Skull", e);
+                break;
+            default:
+                Utils.logOnce(Level.WARNING, "Falling back to newest Method since the current Version hasn't been tested yet... (This may not work so here goes)");
+            case 13:
+            case 14:
+            case 15:
+            case 16:
+            case 17:
+                Class<?> craftBlockDataClass = ReflectionUtils.getCBClass("block.data.CraftBlockData");
+                Object blockDataInstance = craftBlockDataClass.cast(Material.class.getMethod("createBlockData").invoke(ReflectionUtils.getEnumConstant(Material.class, "PLAYER_HEAD")));
+                Object blockDataState = craftBlockDataClass.getMethod("getState").invoke(blockDataInstance);
+                Object positionInstance = blockPositionConstructor.newInstance(location.getBlockX(), location.getBlockY(), location.getBlockZ());
+                nmsWorld.getClass().getMethod("setTypeAndData", blockPositionClass, ReflectionUtils.getMCServerClassByName("IBlockData", "world.level.block.state"), int.class).invoke(nmsWorld, positionInstance, blockDataState, 3);
+                switch (ReflectionUtils.MC_VERSION) {
+                    case 13:
+                    case 14:
+                    case 15:
+                    case 16: {
+                        Object skullInstance = tileEntitySkullClass.getConstructor().newInstance();
+                        tileEntitySkullClass.getMethod("setLocation", ReflectionUtils.getMCServerClassByName("World", "world.level"), blockPositionClass).invoke(skullInstance, nmsWorld, positionInstance);
+                        nmsWorld.getClass().getMethod("setTileEntity", blockPositionClass, ReflectionUtils.getMCServerClassByName("TileEntity", "world.level.block.entity")).invoke(nmsWorld, positionInstance, skullInstance);
+                        break;
+                    }
+                    case 17:
+                    default: {
+                        Object skullInstance = tileEntitySkullClass.getConstructor(blockPositionClass, ReflectionUtils.getMCServerClassByName("IBlockData", "world.level.block.state")).newInstance(positionInstance, blockDataState);
+                        nmsWorld.getClass().getMethod("setTileEntity", ReflectionUtils.getMCServerClassByName("TileEntity", "world.level.block.entity")).invoke(nmsWorld, skullInstance);
+                        break;
+                    }
+                }
+                skull = (Skull) block.getState();
+                break;
         }
+        skull.setRotation(blockFace);
+        skull.update();
+        setSkullTexture(block, texture);
+    } catch (Exception e) {
+        CustomHeads.getInstance().getLogger().log(Level.WARNING, "Error placing Skull", e);
     }
+}
 
     private void setSkullTexture(Block block, String texture) {
         try {
@@ -156,26 +179,14 @@ public class APIHandler implements CustomHeadsAPI {
     }
 
     public void createFireworkBattery(Location location, int shots, int delay) {
-        createFireworkBattery(location, shots, delay, new FireworksBatteryHandler() {
-            public void onStart() {}
-            public void onNext() {}
-            public void onEnd() {}
-        });
+        createDefaultFireworkBattery(location, shots, delay);
     }
 
-    public void createFireworkBattery(Location location, int shots, int delay, FireworksBatteryHandler handler) {
+    public void createDefaultFireworkBattery(Location location, int shots, int delay) {
         Random random = new Random();
-
-        handler.onStart();
-        new BukkitRunnable() {
-            int counter = shots;
-
-            public void run() {
-                if (counter == 0) {
-                    handler.onEnd();
-                    cancel();
-                    return;
-                }
+        createFireworkBattery(location, shots, delay, new FireworksBatteryHandler() {
+            public void onStart() {}
+            public void onNext() {
                 Firework f = (Firework) location.getWorld().spawnEntity(location, EntityType.FIREWORK);
                 FireworkMeta fm = f.getFireworkMeta();
                 FireworkEffect.Builder fx = FireworkEffect.builder();
@@ -191,6 +202,21 @@ public class APIHandler implements CustomHeadsAPI {
                 fm.setPower(random.nextInt(2) + 1);
                 f.setFireworkMeta(fm);
                 f.setVelocity(new Vector(random.nextDouble() * (random.nextBoolean() ? .01 : -.01), .2, random.nextDouble() * (random.nextBoolean() ? .01 : -.01)));
+            }
+            public void onEnd() {}
+        });
+    }
+
+    public void createFireworkBattery(Location location, int shots, int delay, FireworksBatteryHandler handler) {
+        handler.onStart();
+        new BukkitRunnable() {
+            int counter = shots;
+            public void run() {
+                if (counter == 0) {
+                    handler.onEnd();
+                    cancel();
+                    return;
+                }
                 handler.onNext();
                 counter--;
             }

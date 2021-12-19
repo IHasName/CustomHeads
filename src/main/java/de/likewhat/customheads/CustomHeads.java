@@ -8,6 +8,7 @@ import de.likewhat.customheads.category.Category;
 import de.likewhat.customheads.category.CategoryManager;
 import de.likewhat.customheads.command.CustomHeadsCommand;
 import de.likewhat.customheads.command.CustomHeadsTabCompleter;
+import de.likewhat.customheads.economy.EconomyHandler;
 import de.likewhat.customheads.economy.EconomyManager;
 import de.likewhat.customheads.headwriter.HeadFontType;
 import de.likewhat.customheads.listener.CategoryEditorListener;
@@ -17,6 +18,7 @@ import de.likewhat.customheads.loader.Language;
 import de.likewhat.customheads.loader.Looks;
 import de.likewhat.customheads.utils.*;
 import de.likewhat.customheads.utils.reflection.TagEditor;
+import de.likewhat.customheads.utils.reflection.helpers.Version;
 import de.likewhat.customheads.utils.updaters.FetchResult;
 import de.likewhat.customheads.utils.updaters.GitHubDownloader;
 import de.likewhat.customheads.utils.updaters.SpigetResourceFetcher;
@@ -66,7 +68,7 @@ public class CustomHeads extends JavaPlugin {
     @Getter private static SpigetResourceFetcher spigetFetcher;
     @Getter private static EconomyManager economyManager;
     @Getter private static CategoryManager categoryManager;
-    private static List<String> versions = Arrays.asList("v1_8_R1", "v1_8_R2", "v1_8_R3", "v1_9_R1", "v1_9_R2", "v1_10_R1", "v1_11_R1", "v1_12_R1", "v1_13_R1", "v1_13_R2", "v1_14_R1", "v1_15_R1", "v1_16_R1", "v1_17_R1");
+    private static List<String> versions = Arrays.asList("v1_8_R1", "v1_8_R2", "v1_8_R3", "v1_9_R1", "v1_9_R2", "v1_10_R1", "v1_11_R1", "v1_12_R1", "v1_13_R1", "v1_13_R2", "v1_14_R1", "v1_15_R1", "v1_16_R1", "v1_17_R1","v1_18_R1");
     private static String packet = Bukkit.getServer().getClass().getPackage().getName();
     public static String version = packet.substring(packet.lastIndexOf('.') + 1);
     @Getter private static int getCommandPrice = 0;
@@ -81,41 +83,38 @@ public class CustomHeads extends JavaPlugin {
     private static boolean headsBuyable = false;
     private static boolean hasEconomy = false;
     private boolean isInit = false;
-    private String bukkitVersion = Bukkit.getVersion().substring(Bukkit.getVersion().lastIndexOf("("));
+    private String bukkitVersion;
 
     // Search/Get History Loader
     public static void reloadHistoryData() {
         historyEnabled = headsConfig.get().getBoolean("history.enabled");
         canSeeOwnHistory = headsConfig.get().getBoolean("history.seeown");
-        hisOverflow = (hisOverflow = headsConfig.get().getInt("history.overflow")) > 27 ? 27 : hisOverflow < 1 ? 1 : hisOverflow;
+        hisOverflow = (hisOverflow = headsConfig.get().getInt("history.overflow")) > 27 ? 27 : Math.max(hisOverflow, 1);
     }
 
     // Language/Looks Loader
     public static boolean reloadTranslations(String language) {
         CustomHeads.languageManager = new Language(language);
         categoryManager = new CategoryManager(language);
+        categoryManager.load();
         looks = new Looks(language);
         return Language.isLoaded() && CategoryManager.isLoaded() && Looks.isLoaded();
     }
 
-    // Vault Support (added in v2.9.2)
     public static void reloadEconomy() {
+        hasEconomy = false;
+        economyManager = null;
         if (headsConfig.get().getBoolean("economy.enable")) {
-            if (Bukkit.getPluginManager().isPluginEnabled("Vault")) {
-                Bukkit.getConsoleSender().sendMessage(chPrefix + "Trying to hook into Vault...");
-                economyManager = new EconomyManager();
-                if (economyManager.getEconomyPlugin() == null) {
-                    Bukkit.getConsoleSender().sendMessage(chError + "Error hooking into Vault. Continuing without it...");
-                } else {
-                    Bukkit.getConsoleSender().sendMessage(chPrefix + "§7Successfully  hooked into Vault");
-                    hasEconomy = true;
-                    return;
-                }
+            Bukkit.getLogger().info("Loading Economy Handler...");
+            economyManager = new EconomyManager();
+            EconomyHandler handler = economyManager.getActiveEconomyHandler();
+            hasEconomy = handler != null && handler.isValid();
+            if (hasEconomy) {
+                Bukkit.getLogger().info("Successfully loaded Economy Handler: " + handler.getName());
             } else {
-                Bukkit.getConsoleSender().sendMessage(chWarning + "I wasn't able to find Vault on your Server. Continuing without it...");
+                Bukkit.getLogger().warning("Failed to load Economy Handler");
             }
         }
-        hasEconomy = false;
     }
 
     public static boolean hasHistoryEnabled() {
@@ -232,6 +231,16 @@ public class CustomHeads extends JavaPlugin {
         if(DEV_BUILD) {
             getServer().getConsoleSender().sendMessage("[CustomHeads]\n§e=============================================================================================\nThis is a Dev Version of the Plugin! Please update update as soon as a new Version gets released\n=============================================================================================");
         }
+        try {
+        } catch(Exception e) {
+            bukkitVersion = Bukkit.getVersion().substring(Bukkit.getVersion().lastIndexOf("("));
+        }
+        Version current = Version.getCurrentVersion();
+        getLogger().info("Using " + current.name() + " as Version Handler");
+        if (current == Version.LATEST) {
+            getServer().getConsoleSender().sendMessage(chWarning + "Hrm. Seems like CustomHeads wasn't tested on this Minecraft Version (" + CustomHeads.version + ") yet...");
+            getServer().getConsoleSender().sendMessage(chWarning + "Feel free to join my Discord to know when it gets updated");
+        }
         File oldHeadFile;
         if ((oldHeadFile = new File("plugins/CustomHeads", "heads.yml")).exists()) {
             oldHeadFile.renameTo(new File("plugins/CustomHeads", "config.yml"));
@@ -271,8 +280,8 @@ public class CustomHeads extends JavaPlugin {
                 public void error(Exception exception) {
                     if(exception instanceof GitHubDownloader.RateLimitExceededException) {
                         GitHubDownloader.RateLimitExceededException rateLimitException = (GitHubDownloader.RateLimitExceededException)exception;
-                        getLogger().log(Level.SEVERE, "GitHub Rate-Limited the Plugins Requests. Please try again later. (Time until Reset: " + rateLimitException.getTimeUntilReset() + ")");
-                        getLogger().log(Level.SEVERE, "If this Error continues to occur try downloading it manually from Github (https://github.com/IHasName/CustomHeads/releases/download/" + instance.getDescription().getVersion() + "/en_EN.zip)");
+                        getLogger().log(Level.WARNING, "GitHub Rate-Limited the Plugins Requests. Please try again later. (Time until Reset: " + rateLimitException.getTimeUntilReset() + ")");
+                        getLogger().log(Level.WARNING, "If this Error continues to occur try downloading it manually from Github (https://github.com/IHasName/CustomHeads/releases/download/" + instance.getDescription().getVersion() + "/en_EN.zip)");
                         getLogger().log(Level.INFO, "A Tutorial on how to do that can be found on the Wiki");
                         Bukkit.getPluginManager().disablePlugin(instance);
                     } else {
@@ -376,11 +385,6 @@ public class CustomHeads extends JavaPlugin {
                 public void noUpdate() {
                 }
             });
-        }
-
-        if (!USE_TEXTURES) {
-            getServer().getConsoleSender().sendMessage(chWarning + "Hrm. Seems like CustomHeads wasn't tested on this Minecraft Version (" + CustomHeads.version + ") yet...");
-            getServer().getConsoleSender().sendMessage(chWarning + "Feel free to join my Discord to know when it gets updated");
         }
 
         // No need to report Metrics for Dev Builds

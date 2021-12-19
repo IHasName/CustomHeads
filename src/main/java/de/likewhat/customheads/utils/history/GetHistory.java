@@ -18,14 +18,18 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.Inventory;
 
 @Getter
-public class GetHistory extends OverflowableHistory{
+public class GetHistory extends OverflowableHistory {
 
     public GetHistory(OfflinePlayer player) {
         super(player);
     }
 
     public void loadEntries() {
-        JsonObject uuidObject = CustomHeads.getPlayerDataFile().getJson().getAsJsonObject().getAsJsonObject(super.offlinePlayer.getUniqueId().toString());
+        JsonObject jsonPlayerData = CustomHeads.getPlayerDataFile().getJson().getAsJsonObject();
+        if(!jsonPlayerData.has(super.offlinePlayer.getUniqueId().toString())) {
+            return;
+        }
+        JsonObject uuidObject = jsonPlayerData.getAsJsonObject(super.offlinePlayer.getUniqueId().toString());
         JsonObject historyObject;
         if (uuidObject.has("history") && (historyObject = uuidObject.getAsJsonObject("history")).has("getHistory")) {
             for (JsonElement element : historyObject.getAsJsonArray("getHistory")) {

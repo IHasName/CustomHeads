@@ -13,7 +13,6 @@ import de.likewhat.customheads.utils.ItemEditor;
 import de.likewhat.customheads.utils.ScrollableInventory;
 import de.likewhat.customheads.utils.Utils;
 import de.likewhat.customheads.utils.reflection.TagEditor;
-import de.likewhat.customheads.utils.updaters.AsyncFileDownloader;
 import de.likewhat.customheads.utils.updaters.GitHubDownloader;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -25,6 +24,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.*;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.SkullMeta;
 
 import java.io.File;
@@ -466,7 +466,7 @@ public class InventoryListener implements Listener {
             } else if (args[0].equalsIgnoreCase("downloadLanguage")) {
                 player.closeInventory();
                 GitHubDownloader downloader = new GitHubDownloader("IHasName", "CustomHeads").enableAutoUnzipping();
-                downloader.download(CustomHeads.getInstance().getDescription().getVersion(), args[1], new File(CustomHeads.getInstance().getDataFolder(), "language"), (AsyncFileDownloader.AfterTask) () -> player.sendMessage(CustomHeads.getLanguageManager().LANGUAGE_DOWNLOAD_SUCCESSFUL.replace("{LANGUAGE}", args[1])));
+                downloader.download(CustomHeads.getInstance().getDescription().getVersion(), args[1], new File(CustomHeads.getInstance().getDataFolder(), "language"), () -> player.sendMessage(CustomHeads.getLanguageManager().LANGUAGE_DOWNLOAD_SUCCESSFUL.replace("{LANGUAGE}", args[1])));
             }
         }
 
@@ -539,8 +539,17 @@ public class InventoryListener implements Listener {
         if (itemTags.contains("wearable")) {
             if (event.getClick() == ClickType.SHIFT_RIGHT && !itemTags.contains("buyHead")) {
                 event.setCancelled(true);
+                PlayerInventory playerInventory = player.getInventory();
+                if(playerInventory.getHelmet() != null) {
+                    ItemStack helmetItem = playerInventory.getHelmet().clone();
+                    if (Utils.getNextFreeInventorySlot(playerInventory, helmetItem) < 0) {
+                        return;
+                    }
+                    playerInventory.setHelmet(null);
+                    playerInventory.addItem(helmetItem);
+                }
                 player.sendMessage(CustomHeads.getLanguageManager().PUT_ON_HEAD.replace("{NAME}", event.getCurrentItem().getItemMeta().getDisplayName()));
-                player.getInventory().setHelmet(TagEditor.clearTags(event.getCurrentItem()));
+                playerInventory.setHelmet(TagEditor.clearTags(event.getCurrentItem()));
                 player.setItemOnCursor(null);
                 player.updateInventory();
                 return;

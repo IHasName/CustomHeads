@@ -149,7 +149,7 @@ public class Category extends BaseCategory {
                     categoryJson.get("id").getAsInt(),
                     Utils.format(categoryJson.get("name").getAsString()),
                     "heads.viewCategory." + categoryJson.get("permission").getAsString(),
-                    CustomHeads.hasEconomy() && categoryJson.has("price") ? categoryJson.get("price").getAsInt() : 0,
+                    CustomHeads.hasEconomy() && categoryJson.has("price") ? categoryJson.get("price").getAsInt() : CustomHeads.getCategoryManager().getDefaultCategoryPrice(),
                     categoryJson.has("sub_categories") ? null :
                             CustomHeads.getTagEditor().setTags(JsonToItem.convertFromJson(categoryJson.get("icon").toString()), "openCategory", "category#>" + categoryJson.get("id").getAsString(), "icon"));
             List<CustomHead> heads = new ArrayList<>();
@@ -196,7 +196,7 @@ public class Category extends BaseCategory {
                     ItemEditor head = new ItemEditor(Material.SKULL_ITEM,  3).setTexture(headObject.get("texture").getAsString()).setDisplayName(headObject.get("name").getAsString());
                     if (headObject.has("description"))
                         head.setLore(headObject.get("description").getAsString());
-                    int price = headObject.has("price") ? headObject.get("price").getAsInt() : 0;
+                    int price = headObject.has("price") ? headObject.get("price").getAsInt() : CustomHeads.getCategoryManager().getDefaultHeadPrice();
                     int id = headObject.has("id") ? category.checkID(headObject.get("id").getAsInt()) : category.nextID();
                     CustomHead customHead = new CustomHead(head.getItem(), category, id, price);
                     category.addID(id);
@@ -216,8 +216,9 @@ public class Category extends BaseCategory {
             categoryObject.addProperty("name", category.getName());
             categoryObject.addProperty("permission", category.getPermission().replaceFirst("heads.viewCategory.", ""));
             categoryObject.addProperty("fixed-icon", category.isFixedIcon());
-            if (category.hasCategoryIcon())
+            if (category.hasCategoryIcon()) {
                 categoryObject.add("icon", new JsonParser().parse(JsonToItem.convertToJson(category.getCategoryIcon())));
+            }
 
             // Gets Heads and puts them into an JsonArray
             if (category.hasHeads()) {
@@ -227,7 +228,6 @@ public class Category extends BaseCategory {
                     JsonObject headObject = new JsonObject();
                     headObject.addProperty("texture", itemEditor.getTexture());
                     headObject.addProperty("name", itemEditor.getDisplayName());
-                    headObject.addProperty("price", head.getPrice());
                     headObject.addProperty("id", head.getId());
                     if (itemEditor.hasLore()) {
                         headObject.addProperty("description", itemEditor.getLoreAsString());

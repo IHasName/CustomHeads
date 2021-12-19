@@ -34,47 +34,58 @@ public class CategoryManager {
 
     private String language;
 
+    private int defaultCategoryPrice;
+    private int defaultHeadPrice;
+
     public CategoryManager(String language) {
         loaded = false;
         this.language = language;
         langRootDir = new File("plugins/CustomHeads/language/" + language + "/categories");
 
-        loaded = false;
-        int loaded = 0;
-        int ignored = 0;
-        int invalid = 0;
+        defaultCategoryPrice = CustomHeads.getHeadsConfig().get().getInt("economy.category.default-price");
+        defaultHeadPrice = CustomHeads.getHeadsConfig().get().getInt("economy.heads.default-price");
 
-        File langRootDir = new File("plugins/CustomHeads/language/" + language + "/categories");
-        if (langRootDir.listFiles() == null) {
-            CustomHeads.getInstance().getServer().getConsoleSender().sendMessage(CustomHeads.chWarning + "No Categories found in language/" + language + "/categories");
-            CategoryManager.loaded = true;
+        loaded = false;
+    }
+
+    public void load() {
+        if(loaded) {
             return;
         }
+        int categoriesLoaded = 0;
+        int categoriesIgnored = 0;
+        int categoriesInvalid = 0;
 
-        List<File> fileList = Arrays.asList(langRootDir.listFiles((dir, name) -> name.endsWith(".json") && !CustomHeads.getHeadsConfig().get().getList("disabledCategories").contains(name.substring(0, name.lastIndexOf(".")))));
+        File[] files = langRootDir.listFiles((dir, name) -> name.endsWith(".json") && !CustomHeads.getHeadsConfig().get().getList("disabledCategories").contains(name.substring(0, name.lastIndexOf("."))));
+        if(files == null || Arrays.asList(files).isEmpty()) {
+            CustomHeads.getInstance().getServer().getConsoleSender().sendMessage(CustomHeads.chWarning + "No Categories found in language/" + language + "/categories");
+            loaded = true;
+            return;
+        }
+        List<File> fileList = Arrays.asList(files);
 
         if (!CustomHeads.hasReducedDebug())
-            CustomHeads.getInstance().getServer().getConsoleSender().sendMessage(CustomHeads.chPrefix + "Loading " + fileList.size() + " Categories from " + language + "/categories");
+            CustomHeads.getInstance().getServer().getConsoleSender().sendMessage(CustomHeads.chPrefix + "Loading " + fileList.size() + " Categories from " + language + "/categories...");
         long timestamp = System.currentTimeMillis();
         CustomHeads.getHeadsConfig().reload();
 
         for (File file : fileList) {
             JsonFile jsf = new JsonFile(file);
-            ignored = fileList.size() - CustomHeads.getHeadsConfig().get().getList("disabledCategories").size();
+            categoriesIgnored = CustomHeads.getHeadsConfig().get().getList("disabledCategories").size();
             try {
                 Category category = Category.getConverter().fromJson(jsf.getJson(), Category.class);
                 if (category == null) {
-                    invalid++;
+                    categoriesInvalid++;
                     Bukkit.getServer().getConsoleSender().sendMessage(CustomHeads.chWarning + " Invalid Category in " + file.getName());
                 } else {
                     if (categories.containsKey(category.getId())) {
                         CustomHeads.getInstance().getServer().getConsoleSender().sendMessage(CustomHeads.chWarning + file.getName() + ": §cAn Category with ID " + category.getId() + " (" + categories.get(category.getId()).getName() + ") already exists.");
-                        invalid++;
+                        categoriesInvalid++;
                         continue;
                     }
                     categories.put(category.getId(), category);
                     sourceFiles.put(category, file);
-                    loaded++;
+                    categoriesLoaded++;
                     if (category.hasSubCategories()) {
                         for (SubCategory subCategory : category.getSubCategories()) {
                             if (subCategories.containsKey(subCategory.getId())) {
@@ -92,8 +103,8 @@ public class CategoryManager {
         }
 
         if (!CustomHeads.hasReducedDebug())
-            CustomHeads.getInstance().getServer().getConsoleSender().sendMessage(CustomHeads.chPrefix + "Successfully loaded " + loaded + " Categories and " + getAllHeads().size() + " Heads from " + language + "/categories in " + (System.currentTimeMillis() - timestamp) + "ms (" + (ignored + invalid) + " " + ((ignored + invalid) == 1 ? "Category was" : "Categories were") + " ignored - " + ignored + " not loaded or not found, " + (invalid > 0 ? "§c" : "") + invalid + " Invalid§7)");
-        CategoryManager.loaded = true;
+            CustomHeads.getInstance().getServer().getConsoleSender().sendMessage(CustomHeads.chPrefix + "Successfully loaded " + categoriesLoaded + " Categories and " + getAllHeads().size() + " Heads from " + language + "/categories in " + (System.currentTimeMillis() - timestamp) + "ms (" + (categoriesIgnored + categoriesInvalid) + " " + ((categoriesIgnored + categoriesInvalid) == 1 ? "Category was" : "Categories were") + " ignored - " + categoriesIgnored + " not loaded or not found, " + (categoriesInvalid > 0 ? "§c" : "") + categoriesInvalid + " invalid§7)");
+        loaded = true;
     }
 
     public void updateCategory(Category category, String forLanguage) {

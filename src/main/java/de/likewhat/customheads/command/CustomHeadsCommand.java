@@ -9,18 +9,22 @@ import de.likewhat.customheads.category.SubCategory;
 import de.likewhat.customheads.headwriter.HeadFontType;
 import de.likewhat.customheads.headwriter.HeadWriter;
 import de.likewhat.customheads.utils.*;
-import de.likewhat.customheads.utils.reflection.ReflectionUtils;
+import de.likewhat.customheads.utils.reflection.helpers.ReflectionUtils;
 import de.likewhat.customheads.utils.updaters.FetchResult;
 import org.bukkit.*;
 import org.bukkit.block.BlockFace;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
+import org.bukkit.util.Vector;
 
 import java.io.File;
 import java.util.*;
@@ -131,12 +135,11 @@ public class CustomHeadsCommand implements CommandExecutor {
                             headsConfig.get().set("langFile", args[2]);
                             headsConfig.save();
                             player.sendMessage(CustomHeads.getLanguageManager().LANGUAGE_CHANGE_SUCCESSFUL.replace("{LANGUAGE}", CustomHeads.getLanguageManager().DEFINITION));
-                            return true;
                         } else {
                             CustomHeads.reloadTranslations(headsConfig.get().getString("langFile"));
                             player.sendMessage(CustomHeads.getLanguageManager().LANGUAGE_CHANGE_FAILED);
-                            return true;
                         }
+                        return true;
                     }
                     if (args[1].equalsIgnoreCase("redownload")) {
                         redownloadLanguageFiles(sender);
@@ -450,6 +453,7 @@ public class CustomHeadsCommand implements CommandExecutor {
                     CACHED_FIREWORKS.add(startLocation);
                     CustomHeads.getApi().createFireworkBattery(startLocation, 10, 20, new FireworksBatteryHandler() {
                         Location location = startLocation.clone();
+                        Random random = new Random();
 
                         public void onStart() {
                             CustomHeads.getApi().setSkull(location.getBlock(), "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOGEzZDVkNWIyY2YzMzEyOTllNjNkNzYxOGExNDI2NmU4Y2NjNjE1OGU5ZTMxZmNiMGJkOTExZTEyZmY3NzM2In19fQ==", faces[ran.nextInt(faces.length)]);
@@ -457,6 +461,21 @@ public class CustomHeadsCommand implements CommandExecutor {
 
                         public void onNext() {
                             World world = location.getWorld();
+                            Firework f = (Firework) location.getWorld().spawnEntity(location, EntityType.FIREWORK);
+                            FireworkMeta fm = f.getFireworkMeta();
+                            FireworkEffect.Builder fx = FireworkEffect.builder();
+                            fx.flicker(random.nextBoolean()).trail(random.nextBoolean()).with(fxTypes[random.nextInt(fxTypes.length)]);
+                            int c = random.nextInt(2) + 2;
+                            for (int i = 0; i < c; i++) {
+                                fx.withColor(Color.fromRGB(random.nextInt(200) + 50, random.nextInt(200) + 50, random.nextInt(200) + 50));
+                                if (random.nextBoolean()) {
+                                    fx.withFade(Color.fromRGB(random.nextInt(200) + 50, random.nextInt(200) + 50, random.nextInt(200) + 50));
+                                }
+                            }
+                            fm.addEffect(fx.build());
+                            fm.setPower(random.nextInt(2) + 1);
+                            f.setFireworkMeta(fm);
+                            f.setVelocity(new Vector(random.nextDouble() * (random.nextBoolean() ? .01 : -.01), .2, random.nextDouble() * (random.nextBoolean() ? .01 : -.01)));
                             if (ReflectionUtils.MC_VERSION > 13) {
                                 try {
                                     Class<?> particleClass = ReflectionUtils.getClassByName("org.bukkit.Particle");

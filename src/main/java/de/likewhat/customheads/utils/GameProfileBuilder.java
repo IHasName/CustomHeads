@@ -18,6 +18,7 @@ import java.net.URL;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 public class GameProfileBuilder {
 
@@ -54,9 +55,8 @@ public class GameProfileBuilder {
                             return;
                         }
                         if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-                            String json = new BufferedReader(new InputStreamReader(connection.getInputStream())).readLine();
-
-                            GameProfile result = gson.fromJson(json, GameProfile.class);
+                            BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                            GameProfile result = gson.fromJson(reader.lines().collect(Collectors.joining()), GameProfile.class);
                             cache.put(uuid, new CachedProfile(result));
                             consumer.accept(result);
                             return;

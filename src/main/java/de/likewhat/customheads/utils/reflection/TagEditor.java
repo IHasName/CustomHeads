@@ -1,6 +1,9 @@
 package de.likewhat.customheads.utils.reflection;
 
 import de.likewhat.customheads.CustomHeads;
+import de.likewhat.customheads.utils.reflection.helpers.ItemNBTUtils;
+import de.likewhat.customheads.utils.reflection.helpers.NBTTagUtils;
+import de.likewhat.customheads.utils.reflection.helpers.collections.ReflectionMethodCollection;
 import org.bukkit.inventory.ItemStack;
 
 import java.lang.reflect.InvocationTargetException;
@@ -25,50 +28,31 @@ public class TagEditor {
 
     public static ItemStack clearTags(ItemStack itemStack) {
         try {
-            Object copy = getAsMNSCopy(itemStack);
-            Object itemTagCompound = hasNBTTag(itemStack) ? copy.getClass().getMethod("getTag").invoke(copy) : NBTTagUtils.createInstance("NBTTagCompound");
-            Object nbtTagCompound = NBTTagUtils.createInstance("NBTTagCompound");
-            itemTagCompound.getClass().getMethod("set", String.class, NBTTagUtils.getNBTClass("NBTBase")).invoke(itemTagCompound, "tagEditor", nbtTagCompound);
-            copy.getClass().getMethod("setTag", NBTTagUtils.getNBTClass("NBTTagCompound")).invoke(copy, itemTagCompound);
-            return asBukkitCopy(copy);
-        } catch (Exception e) {
+            Object copy = ItemNBTUtils.asNMSCopy(itemStack);
+            Object itemTagCompound = ItemNBTUtils.getTagFromItem(itemStack);
+            Object nbtTagCompound = NBTTagUtils.createInstance(NBTTagUtils.NBTType.COMPOUND);
+            ReflectionMethodCollection.NBT_TAGCOMPOUND_SET.invokeOn(itemTagCompound, "tagEditor", nbtTagCompound);
+            ItemNBTUtils.setTagOnItem(copy, itemTagCompound);
+            return ItemNBTUtils.asBukkitCopy(copy);
+        } catch (IllegalAccessException | InvocationTargetException e) {
             CustomHeads.getInstance().getLogger().log(Level.WARNING, "Failed to reset Tags from Item", e);
             return null;
         }
     }
 
-    public static Object getAsMNSCopy(ItemStack item) {
-        try {
-            return ReflectionUtils.getCBClass("inventory.CraftItemStack").getMethod("asNMSCopy", ItemStack.class).invoke(ReflectionUtils.getCBClass("inventory.CraftItemStack"), item);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    public static boolean hasNBTTag(ItemStack item) {
-        try {
-            Object copy = getAsMNSCopy(item);
-            return copy != null && (boolean) copy.getClass().getMethod("hasTag").invoke(copy);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
-
     public ItemStack setTags(ItemStack itemStack, List<String> tags) {
         try {
-            Object copy = getAsMNSCopy(itemStack);
-            Object itemTagCompound = hasNBTTag(itemStack) ? copy.getClass().getMethod("getTag").invoke(copy) : NBTTagUtils.createInstance("NBTTagCompound");
-            Object nbtTagCompound = ((boolean) itemTagCompound.getClass().getMethod("hasKey", String.class).invoke(itemTagCompound, "tagEditor")) ? itemTagCompound.getClass().getMethod("get", String.class).invoke(itemTagCompound, "tagEditor") : NBTTagUtils.createInstance("NBTTagCompound");
-            Object nbtTagList = NBTTagUtils.createInstance("NBTTagList");
+            Object copy = ItemNBTUtils.asNMSCopy(itemStack);
+            Object itemTagCompound = ItemNBTUtils.getTagFromItem(itemStack);
+            Object nbtTagCompound = ReflectionMethodCollection.NBT_TAGCOMPOUND_HASKEY.invokeOn(itemTagCompound, "tagEditor") ? ReflectionMethodCollection.NBT_TAGCOMPOUND_GETCOMPOUND.invokeOn(itemTagCompound, "tagEditor") : NBTTagUtils.createInstance(NBTTagUtils.NBTType.COMPOUND);
+            Object nbtTagList = NBTTagUtils.createInstance(NBTTagUtils.NBTType.LIST);
             for (String tag : tags) {
-                NBTTagUtils.addObjectToNBTList(nbtTagList, NBTTagUtils.createInstance("NBTTagString", tag));
+                NBTTagUtils.addObjectToNBTList(nbtTagList, NBTTagUtils.createInstance(NBTTagUtils.NBTType.STRING, tag));
             }
-            nbtTagCompound.getClass().getMethod("set", String.class, NBTTagUtils.getNBTClass("NBTBase")).invoke(nbtTagCompound, tagname, nbtTagList);
-            itemTagCompound.getClass().getMethod("set", String.class, NBTTagUtils.getNBTClass("NBTBase")).invoke(itemTagCompound, "tagEditor", nbtTagCompound);
-            copy.getClass().getMethod("setTag", NBTTagUtils.getNBTClass("NBTTagCompound")).invoke(copy, itemTagCompound);
-            return asBukkitCopy(copy);
+            ReflectionMethodCollection.NBT_TAGCOMPOUND_SET.invokeOn(nbtTagCompound, tagname, nbtTagList);
+            ReflectionMethodCollection.NBT_TAGCOMPOUND_SET.invokeOn(itemTagCompound, "tagEditor", nbtTagCompound);
+            ItemNBTUtils.setTagOnItem(copy, itemTagCompound);
+            return ItemNBTUtils.asBukkitCopy(copy);
         } catch (Exception e) {
             CustomHeads.getInstance().getLogger().log(Level.WARNING, "Failed to save Tags to Item", e);
             return null;
@@ -104,18 +88,17 @@ public class TagEditor {
 
     public List<String> getTags(ItemStack itemStack) {
         try {
-            if (!(hasNBTTag(itemStack) && hasMyTags(itemStack))) {
+            if (!(ItemNBTUtils.hasNBTTag(itemStack) && hasMyTags(itemStack))) {
                 return new ArrayList<>();
             }
-            Object copy = getAsMNSCopy(itemStack);
-            Object tag = copy.getClass().getMethod("getTag").invoke(copy);
-            Object compound = tag.getClass().getMethod("getCompound", String.class).invoke(tag, "tagEditor");
-            Object list = compound.getClass().getMethod("getList", String.class, int.class).invoke(compound, tagname, 8);
-            List<String> res = new ArrayList<>();
-            for (int u = 0; u < (int) list.getClass().getMethod("size").invoke(list); u++) {
-                res.add(list.getClass().getMethod("getString", int.class).invoke(list, u).toString());
+            Object itemTag = ItemNBTUtils.getTagFromItem(itemStack);
+            Object itemTagCompound = ReflectionMethodCollection.NBT_TAGCOMPOUND_GETCOMPOUND.invokeOn(itemTag, "tagEditor");
+            Object nbtList = ReflectionMethodCollection.NBT_TAGCOMPOUND_GETLIST.invokeOn(itemTagCompound, tagname, NBTTagUtils.NBTType.STRING.id);
+            List<String> result = new ArrayList<>();
+            for (int i = 0; i < ReflectionMethodCollection.NBT_TAGLIST_SIZE.invokeOn(nbtList); i++) {
+                result.add(ReflectionMethodCollection.NBT_TAGLIST_GETSTRING.invokeOn(nbtList, i));
             }
-            return res;
+            return result;
         } catch (Exception e) {
             CustomHeads.getInstance().getLogger().log(Level.WARNING, "Failed to get Tags from Item", e);
         }
@@ -132,25 +115,17 @@ public class TagEditor {
 
     public boolean hasMyTags(ItemStack item) {
         try {
-            if (!hasNBTTag(item)) {
+            if (!ItemNBTUtils.hasNBTTag(item)) {
                 return false;
             }
-            Object copy = getAsMNSCopy(item);
-            Object itemCompound = copy.getClass().getMethod("getTag").invoke(copy);
-            Object tagCompound = itemCompound.getClass().getMethod("getCompound", String.class).invoke(itemCompound, "tagEditor");
-            return tagCompound != null && (boolean) tagCompound.getClass().getMethod("hasKey", String.class).invoke(tagCompound, tagname);
+            Object itemTag = ItemNBTUtils.getTagFromItem(item);
+            Object itemTagCompound = ReflectionMethodCollection.NBT_TAGCOMPOUND_GETCOMPOUND.invokeOn(itemTag, "tagEditor");
+            return ReflectionMethodCollection.NBT_TAGCOMPOUND_HASKEY.invokeOn(itemTagCompound, tagname);
         } catch (Exception e) {
             return false;
         }
     }
 
-    private static ItemStack asBukkitCopy(Object object) {
-        try {
-            return (ItemStack) ReflectionUtils.getCBClass("inventory.CraftItemStack").getMethod("asBukkitCopy", ReflectionUtils.getMCServerClassByName("ItemStack", "world.item")).invoke(ReflectionUtils.getCBClass("inventory.CraftItemStack"), object);
-        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
+
 
 }

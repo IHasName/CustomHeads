@@ -45,6 +45,9 @@ public class PlayerWrapper implements CustomHeadsPlayer {
         this.player = player;
         try {
             JsonObject dataRoot = CustomHeads.getPlayerDataFile().getJson().getAsJsonObject();
+            searchHistory = new SearchHistory(player);
+            getHistory = new GetHistory(player);
+
             if (dataRoot.has(player.getUniqueId().toString())) {
                 JsonObject uuidObject = dataRoot.getAsJsonObject(player.getUniqueId().toString());
                 uuidObject.getAsJsonObject("savedHeads").entrySet().forEach(entry -> {
@@ -57,9 +60,6 @@ public class PlayerWrapper implements CustomHeadsPlayer {
                     }
                     savedHeads.add(editor.getItem());
                 });
-
-                searchHistory = new SearchHistory(player);
-                getHistory = new GetHistory(player);
 
                 if (uuidObject.has("unlockedCategories")) {
                     List<Category> categories = new ArrayList<>();

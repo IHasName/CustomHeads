@@ -26,11 +26,17 @@
 # keePermissions: When set to true, Categories you    #
 # have the Permission for will be unlocked without    #
 # having to buy them                                  #
+#                                                     #
+# default-price: Used when the Config doesn't have    #
+# the "price" Attribute                               #
 #                  Economy: Heads                     #
 # buyable: Defines if Heads can be bought with Money  #
 # (only available when Economy is enabled)            #
 # permanentBuy: Unlocks the Heads permanently once    #
 # bought                                              #
+#                                                     #
+# default-price: Used when the Config doesn't have    #
+# the "price" Attribute                               #
 # --------------------------------------------------- #
 # update-notifications: Choose if you cant to receive #
 # Update Notifications Ingame and or via Console      #
@@ -61,9 +67,11 @@ economy:
   category:
     buyable: false
     keepPermissions: true
+    default-price: 0
   heads:
     buyable: false
     permanentBuy: true
+    default-price: 0
   get-command:
     price-per-head: 0
 update-notifications:

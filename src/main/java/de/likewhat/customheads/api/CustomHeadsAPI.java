@@ -106,12 +106,22 @@ public interface CustomHeadsAPI {
 
     /**
      * Starts a Firework in the world
+     * @deprecated Will be replaced with {@link CustomHeadsAPI#createDefaultFireworkBattery}
+     * @param location Location where to start the Firework
+     * @param shots Sets how many shots the Battery has
+     * @param delay Delay between the shots (Ticks)
+     */
+    @Deprecated
+    void createFireworkBattery(Location location, int shots, int delay);
+
+    /**
+     * Starts a Firework in the world with Default Settings
      *
      * @param location Location where to start the Firework
      * @param shots Sets how many shots the Battery has
      * @param delay Delay between the shots (Ticks)
      */
-    void createFireworkBattery(Location location, int shots, int delay);
+    void createDefaultFireworkBattery(Location location, int shots, int delay);
 
     /**
      * Starts a Firework in the world

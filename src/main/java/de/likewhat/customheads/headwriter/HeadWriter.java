@@ -2,7 +2,7 @@ package de.likewhat.customheads.headwriter;
 
 import de.likewhat.customheads.CustomHeads;
 import de.likewhat.customheads.utils.ItemEditor;
-import de.likewhat.customheads.utils.reflection.ReflectionUtils;
+import de.likewhat.customheads.utils.reflection.helpers.ReflectionUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.BlockFace;

@@ -1,7 +1,8 @@
 package de.likewhat.customheads.utils;
 
+import com.mojang.authlib.GameProfile;
 import de.likewhat.customheads.CustomHeads;
-import de.likewhat.customheads.utils.reflection.ReflectionUtils;
+import de.likewhat.customheads.utils.reflection.helpers.ReflectionUtils;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
@@ -142,8 +143,19 @@ public class ItemEditor {
     public ItemEditor setTexture(String texture) {
         if (itemStack.getType() != Material.SKULL_ITEM)
             throw new IllegalArgumentException("ItemStack is not an Player Head");
-        if(!ReflectionUtils.setField(meta, "profile", GameProfileBuilder.createProfileWithTexture(texture)))
-            throw new IllegalStateException("Unable to inject Gameprofile");
+        GameProfile profile = GameProfileBuilder.createProfileWithTexture(texture);
+        // Just setting the profile breaks everything sometimes
+        if(ReflectionUtils.methodExists(SkullMeta.class, "setProfile", GameProfile.class)) {
+            try {
+                ReflectionUtils.invokeMethod(ReflectionUtils.getMethod("setProfile", SkullMeta.class, GameProfile.class), meta, profile);
+            } catch (Exception e) {
+                throw new IllegalStateException("Unable to set Gameprofile");
+            }
+        } else {
+            if (!ReflectionUtils.setField(meta, "profile", profile)) {
+                throw new IllegalStateException("Unable to inject Gameprofile");
+            }
+        }
         return this;
     }
 

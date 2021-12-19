@@ -2,6 +2,7 @@ package de.likewhat.customheads.utils.updaters;
 
 import com.google.common.io.Files;
 import de.likewhat.customheads.utils.Utils;
+import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
@@ -35,7 +36,7 @@ public class AsyncFileDownloader {
     }
 
     public void startDownload(FileDownloaderCallback callback) {
-        System.out.println("Downloading " + fileName + "...");
+        Bukkit.getLogger().info("Downloading " + fileName + "...");
         Utils.runAsync(new BukkitRunnable() {
             public void run() {
                 try {
