@@ -13,7 +13,8 @@ import de.likewhat.customheads.category.SubCategory;
 import de.likewhat.customheads.utils.reflection.AnvilGUI;
 import de.likewhat.customheads.utils.reflection.helpers.ItemNBTUtils;
 import de.likewhat.customheads.utils.reflection.helpers.ReflectionUtils;
-import de.likewhat.customheads.utils.updaters.AsyncFileDownloader;
+import de.likewhat.customheads.utils.reflection.helpers.collections.ReflectionClassCollection;
+import de.likewhat.customheads.utils.reflection.helpers.collections.ReflectionConstructorCollection;
 import de.likewhat.customheads.utils.updaters.FetchResult;
 import de.likewhat.customheads.utils.updaters.GitHubDownloader;
 import org.bukkit.Bukkit;
@@ -56,7 +57,6 @@ public class Utils {
     private static HashMap<Character, ItemStack> alphabet;
     private static HashMap<String, String[]> subCommands;
     private static HashMap<String, String[]> perms;
-
     private static long lastRedownload = 0;
 
     private static final String TEXTURE_LINK = "http://textures.minecraft.net/texture/%s";
@@ -301,7 +301,7 @@ public class Utils {
      * @param noLore Lore of the No Button
      * @param middleItem Item in the Middle of the Dialog
      */
-    public static void showInteractiveDialog(Player player, String title, SimpleCallback<Boolean> callback, String[] yesLore, String[] noLore, ItemStack middleItem) {
+    public static void showInteractiveDialog(Player player, String title, Consumer<Boolean> callback, String[] yesLore, String[] noLore, ItemStack middleItem) {
         new InteractiveDialog(title, callback, yesLore, noLore, middleItem).showTo(player);
     }
 
@@ -420,7 +420,7 @@ public class Utils {
             Object tex = prop.getClass().getMethod("getList", String.class, int.class).invoke(prop, "textures", 10);
             Object list = tex.getClass().getMethod("get", int.class).invoke(tex, 0);
             return list.getClass().getMethod("getString", String.class).invoke(list, "Value").toString() != null;
-        } catch (Exception whoops) {
+        } catch (Exception ignored) {
         }
         return false;
     }
@@ -503,8 +503,8 @@ public class Utils {
     }
 
     public static void getUUID(String name, Consumer<String> consumer) {
-        if (CustomHeads.uuidCache.containsKey(name)) {
-            consumer.accept(CustomHeads.uuidCache.get(name));
+        if (CustomHeads.UUID_CACHE.containsKey(name)) {
+            consumer.accept(CustomHeads.UUID_CACHE.get(name));
             return;
         }
         Utils.runAsync(new BukkitRunnable() {
@@ -513,7 +513,7 @@ public class Utils {
                     HttpURLConnection connection = (HttpURLConnection) new URL(String.format("https://api.mojang.com/users/profiles/minecraft/%s", name)).openConnection();
                     connection.setReadTimeout(5000);
                     if (connection.getResponseCode() == HttpURLConnection.HTTP_UNAVAILABLE) {
-                        Bukkit.getLogger().warning("Service is unaviable a this moment: " + connection.getResponseMessage());
+                        CustomHeads.getPluginLogger().warning("Service is unaviable a this moment: " + connection.getResponseMessage());
                         consumer.accept(null);
                         return;
                     }
@@ -532,7 +532,7 @@ public class Utils {
                         });
                     }
                 } catch (Exception whoops) {
-                    Bukkit.getLogger().log(Level.WARNING, "Couldn't get UUID from " + name, whoops);
+                    CustomHeads.getPluginLogger().log(Level.WARNING, "Couldn't get UUID from " + name, whoops);
                     Utils.runSynced(new BukkitRunnable() {
                         public void run() {
                             consumer.accept(null);
@@ -548,7 +548,7 @@ public class Utils {
             if (!outputDir.exists())
                 Files.createParentDirs(new File(outputDir, "a.temp"));
             ZipEntry zipEntry;
-            Bukkit.getLogger().info("[FileZipper] Unzipping " + zipFile.getName());
+            CustomHeads.getPluginLogger().info("[FileZipper] Unzipping " + zipFile.getName());
             while ((zipEntry = inputStream.getNextEntry()) != null) {
                 File zipEntryFile = new File(outputDir, zipEntry.getName());
                 if (getExtension(zipEntry.getName()).length() > 0) {
@@ -563,9 +563,9 @@ public class Utils {
             }
             inputStream.closeEntry();
             inputStream.close();
-            Bukkit.getLogger().info("[FileZipper] Unzip finished");
+            CustomHeads.getPluginLogger().info("[FileZipper] Unzip finished");
         } catch (Exception exception) {
-            Bukkit.getLogger().log(Level.WARNING, "[FileZipper] Failed to unzip " + zipFile.getName(), exception);
+            CustomHeads.getPluginLogger().log(Level.WARNING, "[FileZipper] Failed to unzip " + zipFile.getName(), exception);
         }
     }
 
@@ -573,13 +573,13 @@ public class Utils {
         boolean console = sender instanceof ConsoleCommandSender;
 
         if (System.currentTimeMillis() - lastRedownload < TimeUnit.MINUTES.toMillis(2)) {
-            sender.sendMessage((console ? CustomHeads.chPrefix : "") + CustomHeads.getLanguageManager().LANGUAGE_REDOWNLOAD_FAILED_WAIT);
+            sender.sendMessage((console ? CustomHeads.PREFIX_GENERAL : "") + CustomHeads.getLanguageManager().LANGUAGE_REDOWNLOAD_FAILED_WAIT);
             return false;
         }
         lastRedownload = System.currentTimeMillis();
 
         // Backing up jic >_>
-        sender.sendMessage((console ? CustomHeads.chPrefix : "") + CustomHeads.getLanguageManager().LANGUAGE_REDOWNLOAD_BACKING_UP);
+        sender.sendMessage((console ? CustomHeads.PREFIX_GENERAL : "") + CustomHeads.getLanguageManager().LANGUAGE_REDOWNLOAD_BACKING_UP);
         try {
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
             Date date = new Date(System.currentTimeMillis());
@@ -594,22 +594,22 @@ public class Utils {
 
             for (File langDir : langRoot.listFiles()) {
                 if(!langDir.renameTo(new File(backUpRoot + "/" + langDir.getName()))) {
-                    Bukkit.getLogger().warning("Failed to move Directory");
+                    CustomHeads.getPluginLogger().warning("Failed to move Directory");
                 }
                 // FileUtils.moveDirectory(langDir, new File(backUpRoot + "/" + langDir.getName()));
             }
 
         } catch (Exception e) {
-            CustomHeads.getInstance().getLogger().log(Level.WARNING, "Failed to move Directory", e);
-            sender.sendMessage((console ? CustomHeads.chPrefix : "") + CustomHeads.getLanguageManager().LANGUAGE_REDOWNLOAD_BACKUP_FAILED);
+            CustomHeads.getPluginLogger().log(Level.WARNING, "Failed to move Directory", e);
+            sender.sendMessage((console ? CustomHeads.PREFIX_GENERAL : "") + CustomHeads.getLanguageManager().LANGUAGE_REDOWNLOAD_BACKUP_FAILED);
             return false;
         }
 
-        sender.sendMessage((console ? CustomHeads.chPrefix : "") + CustomHeads.getLanguageManager().LANGUAGE_REDOWNLOAD_DOWNLOADING);
+        sender.sendMessage((console ? CustomHeads.PREFIX_GENERAL : "") + CustomHeads.getLanguageManager().LANGUAGE_REDOWNLOAD_DOWNLOADING);
         GitHubDownloader gitGetter = new GitHubDownloader("IHasName", "CustomHeads").enableAutoUnzipping();
-        gitGetter.download(CustomHeads.getInstance().getDescription().getVersion(), "en_EN.zip", new File("plugins/CustomHeads/language"), (AsyncFileDownloader.AfterTask) () -> {
-            CustomHeads.silentReload();
-            sender.sendMessage((console ? CustomHeads.chPrefix : "") + CustomHeads.getLanguageManager().LANGUAGE_REDOWNLOAD_DONE);
+        gitGetter.download(CustomHeads.getInstance().getDescription().getVersion(), "en_EN.zip", new File("plugins/CustomHeads/language"), () -> {
+            CustomHeads.reload(null);
+            sender.sendMessage((console ? CustomHeads.PREFIX_GENERAL : "") + CustomHeads.getLanguageManager().LANGUAGE_REDOWNLOAD_DONE);
         });
         return true;
     }
@@ -623,12 +623,12 @@ public class Utils {
                 try (InputStream fileInputStream = CustomHeads.getInstance().getResource(filename); FileOutputStream fileOutputStream = new FileOutputStream(outFile)) {
                     fileOutputStream.getChannel().transferFrom(Channels.newChannel(fileInputStream), 0, Integer.MAX_VALUE);
                 } catch (FileNotFoundException e) {
-                    Bukkit.getLogger().log(Level.WARNING, "Failed to create File " + filename, e);
+                    CustomHeads.getPluginLogger().log(Level.WARNING, "Failed to create File " + filename, e);
                 }
             }
             return outFile;
         } catch (IOException e) {
-            Bukkit.getLogger().log(Level.WARNING, "Failed to create File " + filename, e);
+            CustomHeads.getPluginLogger().log(Level.WARNING, "Failed to create File " + filename, e);
         }
         return null;
     }
@@ -678,14 +678,17 @@ public class Utils {
             Object chat = ReflectionUtils.getMCServerClassByName("ChatSerializer", "network.chat").getMethod("a", String.class).invoke(null, json);
             Object packet;
             if(ReflectionUtils.MC_VERSION >= 16) {
-                Class<?> chatMessageTypeClass = ReflectionUtils.getMCServerClassByName("ChatMessageType", "network.chat");
-                packet = ReflectionUtils.getMCServerClassByName("PacketPlayOutChat", "network.protocol.game").getConstructor(ReflectionUtils.getMCServerClassByName("IChatBaseComponent", "network.chat"), chatMessageTypeClass, UUID.class).newInstance(chat, ReflectionUtils.getEnumConstant(chatMessageTypeClass, "CHAT"), null);
+                Enum<?> messageType = ReflectionUtils.getEnumConstant(ReflectionClassCollection.CHAT_MESSAGE_TYPE, "CHAT");
+                if(messageType == null) {
+                    messageType = ReflectionUtils.getEnumConstant(ReflectionClassCollection.CHAT_MESSAGE_TYPE, "a");
+                }
+                packet = ReflectionConstructorCollection.PACKET_PLAYOUT_CHAT.construct(chat, messageType, null);
             } else {
-                packet = ReflectionUtils.getMCServerClassByName("PacketPlayOutChat", "network.protocol.game").getConstructor(ReflectionUtils.getMCServerClassByName("IChatBaseComponent", "network.chat")).newInstance(chat);
+                packet = ReflectionConstructorCollection.PACKET_PLAYOUT_CHAT.construct(chat);
             }
             ReflectionUtils.sendPacket(packet, player);
         } catch (Exception e) {
-            CustomHeads.getInstance().getLogger().log(Level.WARNING, "Could not send JSON-Message to Player", e);
+            CustomHeads.getPluginLogger().log(Level.WARNING, "Could not send JSON-Message to Player", e);
         }
     }
 
@@ -727,15 +730,6 @@ public class Utils {
         T[] newArray = Arrays.copyOf(array, array.length + 1);
         newArray[array.length] = with;
         return newArray;
-    }
-
-    private static final List<String> alreadyLogged = new ArrayList<>();
-
-    public static void logOnce(Level level, String string) {
-        if(!alreadyLogged.contains(string)) {
-            alreadyLogged.add(string);
-            Bukkit.getLogger().log(level, string);
-        }
     }
 
 }

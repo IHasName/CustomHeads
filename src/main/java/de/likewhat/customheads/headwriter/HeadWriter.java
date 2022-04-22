@@ -20,14 +20,12 @@ public class HeadWriter {
 
     private static final BlockFace[] AXIS_SHIFTED = {BlockFace.EAST, BlockFace.NORTH, BlockFace.WEST, BlockFace.SOUTH};
     private static final BlockFace[] AXIS = {BlockFace.NORTH, BlockFace.WEST, BlockFace.SOUTH, BlockFace.EAST};
+    private static final HashMap<Player, String> UNDO_LIST = new HashMap<>();
 
-    private static HashMap<Player, String> undoList = new HashMap<>();
-
-    private HeadFontType fontType;
+    private final HeadFontType fontType;
+    private final String text;
 
     private Player player;
-
-    private String text;
 
     public HeadWriter(HeadFontType fontType, String text) {
         this.fontType = fontType;
@@ -43,18 +41,18 @@ public class HeadWriter {
     public static void undoWriting(Player player, int times, Player sendTo) {
         int timesSuccessful = 0;
         for (int i = 0; i < times; i++) {
-            if (undoList.containsKey(player)) {
-                if (undoList.containsKey(player)) {
-                    String[] history = undoList.get(player).split("/#/");
+            if (UNDO_LIST.containsKey(player)) {
+                if (UNDO_LIST.containsKey(player)) {
+                    String[] history = UNDO_LIST.get(player).split("/#/");
                     String[] h = history[history.length - 1].split(",");
                     for (String a : h) {
                         String[] data = a.split(":");
                         Bukkit.getWorld(data[2]).getBlockAt(Integer.parseInt(data[3]), Integer.parseInt(data[4]), Integer.parseInt(data[5])).setTypeIdAndData(Integer.parseInt(data[0]), Byte.parseByte(data[1]), false);
                     }
-                    if (undoList.get(player).lastIndexOf("/#/") < 0) {
-                        undoList.remove(player);
+                    if (UNDO_LIST.get(player).lastIndexOf("/#/") < 0) {
+                        UNDO_LIST.remove(player);
                     } else {
-                        undoList.put(player, undoList.get(player).substring(0, undoList.get(player).lastIndexOf("/#/")));
+                        UNDO_LIST.put(player, UNDO_LIST.get(player).substring(0, UNDO_LIST.get(player).lastIndexOf("/#/")));
                     }
                     timesSuccessful++;
                 }
@@ -83,7 +81,7 @@ public class HeadWriter {
         loc = loc.getBlock().getLocation().add(face.getModX(), face.getModY(), face.getModZ());
 
         if (recHis) {
-            repBlock.append(undoList.containsKey(player) ? undoList.get(player) + "/#/" : "");
+            repBlock.append(UNDO_LIST.containsKey(player) ? UNDO_LIST.get(player) + "/#/" : "");
         }
         for (int i = 0; i < text.length(); i++) {
             if (recHis) {
@@ -100,7 +98,7 @@ public class HeadWriter {
                 if (recHis) {
                     player.sendMessage("§cUnsupported Character at collum " + (i + 1) + ": " + text.charAt(i));
                 } else {
-                    CustomHeads.getInstance().getLogger().log(Level.WARNING, "Could not write Text: Unsupported Character '" + text.charAt(i) + "'");
+                    CustomHeads.getPluginLogger().log(Level.WARNING, "Could not write Text: Unsupported Character '" + text.charAt(i) + "'");
                 }
             }
 
@@ -108,14 +106,14 @@ public class HeadWriter {
             loc = loc.getBlock().getLocation().add(bFace.getModX(), bFace.getModY(), bFace.getModZ());
         }
         if (recHis) {
-            undoList.put(player, repBlock.toString());
-            if (undoList.get(player).split("/#/").length > (CustomHeads.getHeadsConfig().get().getInt("maxUndoHistory") == 0 ? 6 : CustomHeads.getHeadsConfig().get().getInt("maxUndoHistory"))) {
-                String[] str = undoList.get(player).split("/#/");
+            UNDO_LIST.put(player, repBlock.toString());
+            if (UNDO_LIST.get(player).split("/#/").length > (CustomHeads.getHeadsConfig().get().getInt("maxUndoHistory") == 0 ? 6 : CustomHeads.getHeadsConfig().get().getInt("maxUndoHistory"))) {
+                String[] str = UNDO_LIST.get(player).split("/#/");
                 StringBuilder undoString = new StringBuilder();
                 for (int i = 1; i < str.length; i++) {
                     undoString.append(i + 1 < str.length ? str[i] + "/#/" : str[i]);
                 }
-                undoList.put(player, undoString.toString());
+                UNDO_LIST.put(player, undoString.toString());
             }
         }
     }

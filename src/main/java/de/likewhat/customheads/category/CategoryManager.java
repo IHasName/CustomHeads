@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -27,15 +28,15 @@ public class CategoryManager {
 
     @Getter
     private static boolean loaded;
-    private HashMap<String, SubCategory> subCategories = new HashMap<>();
-    private HashMap<String, Category> categories = new HashMap<>();
-    private HashMap<Category, File> sourceFiles = new HashMap<>();
-    private File langRootDir;
+    private final HashMap<String, SubCategory> subCategories = new HashMap<>();
+    private final HashMap<String, Category> categories = new HashMap<>();
+    private final HashMap<Category, File> sourceFiles = new HashMap<>();
+    private final File langRootDir;
 
-    private String language;
+    private final String language;
 
-    private int defaultCategoryPrice;
-    private int defaultHeadPrice;
+    private final int defaultCategoryPrice;
+    private final int defaultHeadPrice;
 
     public CategoryManager(String language) {
         loaded = false;
@@ -44,8 +45,6 @@ public class CategoryManager {
 
         defaultCategoryPrice = CustomHeads.getHeadsConfig().get().getInt("economy.category.default-price");
         defaultHeadPrice = CustomHeads.getHeadsConfig().get().getInt("economy.heads.default-price");
-
-        loaded = false;
     }
 
     public void load() {
@@ -58,17 +57,16 @@ public class CategoryManager {
 
         File[] files = langRootDir.listFiles((dir, name) -> name.endsWith(".json") && !CustomHeads.getHeadsConfig().get().getList("disabledCategories").contains(name.substring(0, name.lastIndexOf("."))));
         if(files == null || Arrays.asList(files).isEmpty()) {
-            CustomHeads.getInstance().getServer().getConsoleSender().sendMessage(CustomHeads.chWarning + "No Categories found in language/" + language + "/categories");
+            CustomHeads.getInstance().getServer().getConsoleSender().sendMessage(CustomHeads.PREFIX_WARNING + "No Categories found in language/" + language + "/categories");
             loaded = true;
             return;
         }
         List<File> fileList = Arrays.asList(files);
 
         if (!CustomHeads.hasReducedDebug())
-            CustomHeads.getInstance().getServer().getConsoleSender().sendMessage(CustomHeads.chPrefix + "Loading " + fileList.size() + " Categories from " + language + "/categories...");
+            CustomHeads.getInstance().getServer().getConsoleSender().sendMessage(CustomHeads.PREFIX_GENERAL + "Loading " + fileList.size() + " Categories from " + language + "/categories...");
         long timestamp = System.currentTimeMillis();
         CustomHeads.getHeadsConfig().reload();
-
         for (File file : fileList) {
             JsonFile jsf = new JsonFile(file);
             categoriesIgnored = CustomHeads.getHeadsConfig().get().getList("disabledCategories").size();
@@ -76,10 +74,10 @@ public class CategoryManager {
                 Category category = Category.getConverter().fromJson(jsf.getJson(), Category.class);
                 if (category == null) {
                     categoriesInvalid++;
-                    Bukkit.getServer().getConsoleSender().sendMessage(CustomHeads.chWarning + " Invalid Category in " + file.getName());
+                    Bukkit.getServer().getConsoleSender().sendMessage(CustomHeads.PREFIX_WARNING + " Invalid Category in " + file.getName());
                 } else {
                     if (categories.containsKey(category.getId())) {
-                        CustomHeads.getInstance().getServer().getConsoleSender().sendMessage(CustomHeads.chWarning + file.getName() + ": §cAn Category with ID " + category.getId() + " (" + categories.get(category.getId()).getName() + ") already exists.");
+                        CustomHeads.getInstance().getServer().getConsoleSender().sendMessage(CustomHeads.PREFIX_WARNING + file.getName() + ": §cAn Category with ID " + category.getId() + " (" + categories.get(category.getId()).getName() + ") already exists.");
                         categoriesInvalid++;
                         continue;
                     }
@@ -89,7 +87,7 @@ public class CategoryManager {
                     if (category.hasSubCategories()) {
                         for (SubCategory subCategory : category.getSubCategories()) {
                             if (subCategories.containsKey(subCategory.getId())) {
-                                CustomHeads.getInstance().getServer().getConsoleSender().sendMessage(CustomHeads.chWarning + file.getName() + ": §cAn Subcategory with ID " + subCategory.getId() + " (" + subCategories.get(subCategory.getId()).getName() + ") already exists.");
+                                CustomHeads.getInstance().getServer().getConsoleSender().sendMessage(CustomHeads.PREFIX_WARNING + file.getName() + ": §cAn Subcategory with ID " + subCategory.getId() + " (" + subCategories.get(subCategory.getId()).getName() + ") already exists.");
                                 continue;
                             }
                             subCategories.put(subCategory.getId(), subCategory);
@@ -97,13 +95,13 @@ public class CategoryManager {
                     }
                 }
             } catch (Exception e) {
-                CustomHeads.getInstance().getLogger().log(Level.WARNING, "Something went wrong while loading Category File " + file.getName(), e);
+                CustomHeads.getPluginLogger().log(Level.WARNING, "Something went wrong while loading Category File " + file.getName(), e);
                 return;
             }
         }
 
         if (!CustomHeads.hasReducedDebug())
-            CustomHeads.getInstance().getServer().getConsoleSender().sendMessage(CustomHeads.chPrefix + "Successfully loaded " + categoriesLoaded + " Categories and " + getAllHeads().size() + " Heads from " + language + "/categories in " + (System.currentTimeMillis() - timestamp) + "ms (" + (categoriesIgnored + categoriesInvalid) + " " + ((categoriesIgnored + categoriesInvalid) == 1 ? "Category was" : "Categories were") + " ignored - " + categoriesIgnored + " not loaded or not found, " + (categoriesInvalid > 0 ? "§c" : "") + categoriesInvalid + " invalid§7)");
+            CustomHeads.getInstance().getServer().getConsoleSender().sendMessage(CustomHeads.PREFIX_GENERAL + "Successfully loaded " + categoriesLoaded + " Categories and " + getAllHeads().size() + " Heads from " + language + "/categories in " + (System.currentTimeMillis() - timestamp) + "ms (" + (categoriesIgnored + categoriesInvalid) + " " + ((categoriesIgnored + categoriesInvalid) == 1 ? "Category was" : "Categories were") + " ignored - " + categoriesIgnored + " not loaded or not found, " + (categoriesInvalid > 0 ? "§c" : "") + categoriesInvalid + " invalid§7)");
         loaded = true;
     }
 
@@ -111,7 +109,7 @@ public class CategoryManager {
         File categoryFile;
         if (!(categoryFile = new File(CustomHeads.getInstance().getDataFolder() + "/language/" + forLanguage)).exists())
             throw new IllegalArgumentException("Language " + forLanguage + " does not exist");
-        try (OutputStreamWriter outputStream = new OutputStreamWriter(new FileOutputStream(new File(categoryFile + "/categories", category.getName() + ".json")), StandardCharsets.UTF_8)) {
+        try (OutputStreamWriter outputStream = new OutputStreamWriter(Files.newOutputStream(new File(categoryFile + "/categories", category.getName() + ".json").toPath()), StandardCharsets.UTF_8)) {
             outputStream.write(category.toString());
             outputStream.flush();
         } catch (Exception e) {
@@ -145,7 +143,7 @@ public class CategoryManager {
                 CustomHeads.getHeadsConfig().save();
             }
         } catch (Exception e) {
-            CustomHeads.getInstance().getLogger().log(Level.WARNING, "Something went wrong while loading Category File " + file.getName(), e);
+            CustomHeads.getPluginLogger().log(Level.WARNING, "Something went wrong while loading Category File " + file.getName(), e);
             return 4;
         }
         return 0;

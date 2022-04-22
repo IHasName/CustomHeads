@@ -1,6 +1,7 @@
 package de.likewhat.customheads.utils.reflection.helpers;
 
-import de.likewhat.customheads.CustomHeads;
+import lombok.Getter;
+import org.bukkit.Bukkit;
 
 import java.util.Arrays;
 
@@ -15,10 +16,13 @@ public enum Version {
     V1_13_R1(1131), V1_13_R2(1132),
     V1_14_R1(1141),
     V1_15_R1(1151),
-    V1_16_R1(1161), V1_16_R3(1163),
+    V1_16_R1(1161), V1_16_R2(1162), V1_16_R3(1163),
     V1_17_R1(1171),
-    V1_18_R1(1181),
+    V1_18_R1(1181), V1_18_R2(1182),
     LATEST(99999999);
+
+    private static final String packet = Bukkit.getServer().getClass().getPackage().getName();
+    @Getter private static final String rawVersion = packet.substring(packet.lastIndexOf('.') + 1);
 
     public final int versionValue;
 
@@ -44,7 +48,7 @@ public enum Version {
         if(currentVersion != null) {
             return currentVersion;
         }
-        currentVersion = fromValue(Integer.parseInt(CustomHeads.version.replaceAll("[^0-9]+", "")));
+        currentVersion = fromValue(Integer.parseInt(rawVersion.replaceAll("\\D+", "")));
         return currentVersion;
     }
 }

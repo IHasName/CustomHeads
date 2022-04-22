@@ -2,7 +2,10 @@ package de.likewhat.customheads.utils;
 
 import com.mojang.authlib.GameProfile;
 import de.likewhat.customheads.CustomHeads;
+import de.likewhat.customheads.utils.reflection.helpers.NBTTagUtils;
 import de.likewhat.customheads.utils.reflection.helpers.ReflectionUtils;
+import de.likewhat.customheads.utils.reflection.helpers.Version;
+import de.likewhat.customheads.utils.reflection.helpers.collections.ReflectionMethodCollection;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
@@ -10,6 +13,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -24,9 +28,9 @@ import java.util.Map;
 
 public class ItemEditor {
 
-    private ItemStack itemStack;
+    private final ItemStack itemStack;
 
-    private ItemMeta meta;
+    private final ItemMeta meta;
 
     public ItemEditor(ItemStack itemStack) {
         this.itemStack = itemStack.clone();
@@ -144,16 +148,15 @@ public class ItemEditor {
         if (itemStack.getType() != Material.SKULL_ITEM)
             throw new IllegalArgumentException("ItemStack is not an Player Head");
         GameProfile profile = GameProfileBuilder.createProfileWithTexture(texture);
-        // Just setting the profile breaks everything sometimes
-        if(ReflectionUtils.methodExists(SkullMeta.class, "setProfile", GameProfile.class)) {
+        if (!ReflectionUtils.setField(meta, "profile", profile)) {
+            throw new IllegalStateException("Unable to inject GameProfile");
+        }
+        if(Version.getCurrentVersion().isNewerThan(Version.V1_17_R1)) {
             try {
-                ReflectionUtils.invokeMethod(ReflectionUtils.getMethod("setProfile", SkullMeta.class, GameProfile.class), meta, profile);
-            } catch (Exception e) {
-                throw new IllegalStateException("Unable to set Gameprofile");
-            }
-        } else {
-            if (!ReflectionUtils.setField(meta, "profile", profile)) {
-                throw new IllegalStateException("Unable to inject Gameprofile");
+                Object serializedProfile = ReflectionMethodCollection.GAMEPROFILE_SERIALIZE.invokeOn(null, NBTTagUtils.createInstance(NBTTagUtils.NBTType.COMPOUND), profile);
+                ReflectionUtils.setField(meta, "serializedProfile", serializedProfile);
+            } catch (InvocationTargetException | IllegalAccessException e) {
+                throw new IllegalStateException("Unable to update serialized GameProfile", e);
             }
         }
         return this;

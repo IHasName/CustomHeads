@@ -30,16 +30,16 @@ import java.util.stream.Collectors;
 
 public class PlayerWrapper implements CustomHeadsPlayer {
 
-    private static HashMap<UUID, CustomHeadsPlayer> wrappedPlayersCache = new HashMap<>();
+    private static final HashMap<UUID, CustomHeadsPlayer> WRAPPED_PLAYERS_CACHE = new HashMap<>();
 
     @Getter private List<CustomHead> unlockedHeads = new ArrayList<>();
     private List<Category> unlockedCategories = new ArrayList<>();
-    @Getter private List<ItemStack> savedHeads = new ArrayList<>();
+    @Getter private final List<ItemStack> savedHeads = new ArrayList<>();
 
     @Getter private SearchHistory searchHistory;
     @Getter private GetHistory getHistory;
 
-    private OfflinePlayer player;
+    private final OfflinePlayer player;
 
     private PlayerWrapper(OfflinePlayer player) {
         this.player = player;
@@ -79,21 +79,21 @@ public class PlayerWrapper implements CustomHeadsPlayer {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        wrappedPlayersCache.put(player.getUniqueId(), this);
+        WRAPPED_PLAYERS_CACHE.put(player.getUniqueId(), this);
     }
 
     static CustomHeadsPlayer wrapPlayer(OfflinePlayer player) {
-        return wrappedPlayersCache.containsKey(player.getUniqueId()) ? wrappedPlayersCache.get(player.getUniqueId()) : new PlayerWrapper(player);
+        return WRAPPED_PLAYERS_CACHE.containsKey(player.getUniqueId()) ? WRAPPED_PLAYERS_CACHE.get(player.getUniqueId()) : new PlayerWrapper(player);
     }
 
     public static void clearCache() {
-        if (wrappedPlayersCache.isEmpty())
+        if (WRAPPED_PLAYERS_CACHE.isEmpty())
             return;
 
         JsonFile jsonFile = CustomHeads.getPlayerDataFile();
         JsonObject rootObjects = jsonFile.getJson().getAsJsonObject();
-        for (UUID uuid : wrappedPlayersCache.keySet()) {
-            CustomHeadsPlayer customHeadsPlayer = wrappedPlayersCache.get(uuid);
+        for (UUID uuid : WRAPPED_PLAYERS_CACHE.keySet()) {
+            CustomHeadsPlayer customHeadsPlayer = WRAPPED_PLAYERS_CACHE.get(uuid);
             JsonObject uuidObject = rootObjects.has(uuid.toString()) ? rootObjects.getAsJsonObject(uuid.toString()) : new JsonObject();
             JsonObject savedHeads = new JsonObject();
             List<ItemStack> saved = customHeadsPlayer.getSavedHeads();
@@ -136,7 +136,7 @@ public class PlayerWrapper implements CustomHeadsPlayer {
         }
         jsonFile.setJson(rootObjects);
         jsonFile.saveJson();
-        wrappedPlayersCache.clear();
+        WRAPPED_PLAYERS_CACHE.clear();
     }
 
     public List<Category> getUnlockedCategories(boolean ignorePermission) {

@@ -1,9 +1,11 @@
 package de.likewhat.customheads.utils.reflection.helpers;
 
 import de.likewhat.customheads.CustomHeads;
-import org.bukkit.Bukkit;
+import de.likewhat.customheads.utils.LoggingUtils;
+import de.likewhat.customheads.utils.reflection.helpers.collections.ReflectionMethodCollection;
 import org.bukkit.entity.Player;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -14,10 +16,10 @@ import java.util.logging.Level;
 public class ReflectionUtils {
 
     public static final int MC_VERSION;
-    private static final HashMap<String, Class<?>> cachedClasses = new HashMap<>();
+    private static final HashMap<String, Class<?>> CACHED_CLASSES = new HashMap<>();
 
     static {
-        MC_VERSION = Integer.parseInt(CustomHeads.version.split("_")[1]);
+        MC_VERSION = Integer.parseInt(Version.getRawVersion().split("_")[1]);
     }
 
     /**
@@ -28,26 +30,35 @@ public class ReflectionUtils {
      * @return true when the Field was modified successfully, false if not
      */
     public static boolean setField(Object objectInstance, String fieldName, Object newValue) {
-        boolean wasAccessible = true;
-        Field fieldToModify = null;
         try {
             Class<?> sourceClass = objectInstance.getClass();
+            Field fieldToModify;
             try {
                 fieldToModify = sourceClass.getField(fieldName);
             } catch(NoSuchFieldException e) {
                 fieldToModify = sourceClass.getDeclaredField(fieldName);
             }
-            wasAccessible = fieldToModify.isAccessible();
+            return setField(objectInstance, fieldToModify, newValue);
+        } catch(NoSuchFieldException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public static boolean setField(Object objectInstance, Field field, Object newValue) {
+        boolean wasAccessible = field.isAccessible();
+        try {
             if(!wasAccessible) {
-                fieldToModify.setAccessible(true);
+                field.setAccessible(true);
             }
-            fieldToModify.set(objectInstance, newValue);
+            field.set(objectInstance, newValue);
             return true;
         } catch(Exception e) {
+            e.printStackTrace();
             return false;
         } finally {
-            if(fieldToModify != null && !wasAccessible) {
-                fieldToModify.setAccessible(false);
+            if(!wasAccessible) {
+                field.setAccessible(false);
             }
         }
     }
@@ -67,6 +78,26 @@ public class ReflectionUtils {
                 result = clazz.getDeclaredField(fieldName);
             } catch(NoSuchFieldException noDeclaredField) {
                 throw new NoSuchFieldException("Failed to find Field in " + clazz.getCanonicalName() + " named " + fieldName + " in either declared or non-declared State");
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Tries to get a Constructor by its Name (tries Normal Constructors first and then Declared Constructors)
+     * @param clazz The Class that has the Constructor
+     * @param paramTypes The Constructor Parameters
+     * @return Constructor from the given Class and Parameter Types
+     */
+    public static Constructor<?> getConstructorDynamic(Class<?> clazz, Class<?>... paramTypes) throws NoSuchMethodException {
+        Constructor<?> result;
+        try {
+            result = clazz.getConstructor(paramTypes);
+        } catch (NoSuchMethodException noConstructor) {
+            try {
+                result = clazz.getDeclaredConstructor(paramTypes);
+            } catch(NoSuchMethodException noDeclaredConstructor) {
+                throw new NoSuchMethodException("Failed to find Constructor for " + LoggingUtils.methodLikeString(clazz.getCanonicalName(), paramTypes) + " in either declared or non-declared State");
             }
         }
         return result;
@@ -103,7 +134,7 @@ public class ReflectionUtils {
         try {
             return clazz.getMethod(methodName, params);
         } catch(NoSuchMethodException e) {
-            throw new NoSuchMethodException("Failed to get Method from Class " + clazz.getCanonicalName() + ": " + e.getMessage());
+            throw new NoSuchMethodException("Failed to get Method from Class " + clazz.getCanonicalName());
         }
     }
 
@@ -116,7 +147,15 @@ public class ReflectionUtils {
     public static Object invokeMethod(Method method, Object object, Object... params) throws InvocationTargetException, IllegalAccessException {
         Objects.requireNonNull(method);
         Objects.requireNonNull(object);
-        return method.invoke(object, params);
+        boolean wasAccessible = method.isAccessible();
+        if(!wasAccessible) {
+            method.setAccessible(true);
+        }
+        try {
+            return method.invoke(object, params);
+        } finally {
+            method.setAccessible(wasAccessible);
+        }
     }
 
     /**
@@ -126,10 +165,10 @@ public class ReflectionUtils {
      * @return Enum Constant by given Name
      */
     public static Enum<?> getEnumConstant(Class<?> clazz, String enumName) {
-        enumName = enumName.toUpperCase();
+//        enumName = enumName.toUpperCase();
         try {
             for (Object eenum : clazz.getEnumConstants()) {
-                if (eenum.getClass().getMethod("name").invoke(eenum).equals(enumName)) {
+                if (clazz.getMethod("name").invoke(eenum).equals(enumName)) {
                     return (Enum<?>) eenum;
                 }
             }
@@ -147,57 +186,49 @@ public class ReflectionUtils {
         } else {
             connection = playerHandle.getClass().getField("playerConnection").get(playerHandle);
         }
-        connection.getClass().getMethod("sendPacket", ReflectionUtils.getMCServerClassByName("Packet", "network.protocol")).invoke(connection, packet);
+        ReflectionMethodCollection.PLAYER_SEND_PACKET.invokeOn(connection, packet);
+//        connection.getClass().getMethod("sendPacket", ReflectionUtils.getMCServerClassByName("Packet", "network.protocol")).invoke(connection, packet);
     }
 
-    public static Class<?> getMCServerClassByName(String className, boolean useVersionTag) {
-        if (className.equals("ChatSerializer") && Version.getCurrentVersion() == Version.V1_8_R1) {
-            className = "IChatBaseComponent$ChatSerializer";
-        }
-        String classPath;
-        if(useVersionTag) {
-            classPath = "net.minecraft.server." + CustomHeads.version + "." + className;
-        } else {
-            classPath = "net.minecraft." + className;
-        }
-        return checkCached(classPath);
+    public static Class<?> getMCServerClassByName(String className) {
+        return getMCServerClassByName(className, null);
     }
 
-    public static Class<?> getMCServerClassByName(String className, String... alternativePrefix) {
-        if (className.equals("ChatSerializer") && Version.getCurrentVersion() == Version.V1_8_R1) {
+    public static Class<?> getMCServerClassByName(String className, String alternativePrefix) {
+        if (className.equals("ChatSerializer") && (Version.getCurrentVersion() == Version.V1_8_R1 || Version.getCurrentVersion().isNewerThan(Version.V1_17_R1))) {
             className = "IChatBaseComponent$ChatSerializer";
         }
         String classPath;
         if(MC_VERSION >= 17) {
             String altPrefix = "";
-            if(alternativePrefix != null && alternativePrefix.length > 0) {
-                altPrefix = alternativePrefix[0] + ".";
+            if(alternativePrefix != null) {
+                altPrefix = alternativePrefix + ".";
             }
             classPath = "net.minecraft." + altPrefix + className;
         } else {
-            classPath = "net.minecraft.server." + CustomHeads.version + "." + className;
+            classPath = "net.minecraft.server." + Version.getRawVersion() + "." + className;
         }
-        return checkCached(classPath);
+        return checkCachedClassname(classPath);
     }
 
     public static Class<?> getClassByName(String className) {
-        return checkCached(className);
+        return checkCachedClassname(className);
     }
 
     public static Class<?> getCBClass(String className) {
-        return checkCached("org.bukkit.craftbukkit." + CustomHeads.version + "." + className);
+        return checkCachedClassname("org.bukkit.craftbukkit." + Version.getRawVersion() + "." + className);
     }
 
-    private static Class<?> checkCached(String className) {
-        if(cachedClasses.containsKey(className)) {
-            return cachedClasses.get(className);
+    private static Class<?> checkCachedClassname(String className) {
+        if(CACHED_CLASSES.containsKey(className)) {
+            return CACHED_CLASSES.get(className);
         } else {
             try {
                 Class<?> clazz = Class.forName(className);
-                cachedClasses.put(className, clazz);
+                CACHED_CLASSES.put(className, clazz);
                 return clazz;
             } catch(Exception e) {
-                Bukkit.getLogger().log(Level.SEVERE, "Failed to cache Class", e);
+                CustomHeads.getPluginLogger().log(Level.SEVERE, "Failed to cache Class", e);
             }
         }
         return null;

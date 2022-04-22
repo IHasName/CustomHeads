@@ -1,7 +1,6 @@
 package de.likewhat.customheads.listener;
 
 import de.likewhat.customheads.CustomHeads;
-import de.likewhat.customheads.category.CategorySetup;
 import de.likewhat.customheads.command.CustomHeadsCommand;
 import de.likewhat.customheads.utils.Utils;
 import de.likewhat.customheads.utils.updaters.SpigetResourceFetcher;
@@ -9,11 +8,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
-
-import java.util.HashMap;
-import java.util.UUID;
 
 import static de.likewhat.customheads.utils.Utils.sendJSONMessage;
 
@@ -24,10 +19,10 @@ import static de.likewhat.customheads.utils.Utils.sendJSONMessage;
 
 public class OtherListeners implements Listener {
 
-    public static final HashMap<UUID, CategorySetup> CACHED_CATEGORYSETUPS = new HashMap<>();
+//    public static final HashMap<UUID, CategorySetup> CACHED_CATEGORYSETUPS = new HashMap<>();
 
     @EventHandler
-    public void fireworkbreak(BlockBreakEvent event) {
+    public void onFireworkBreak(BlockBreakEvent event) {
         if (CustomHeadsCommand.CACHED_FIREWORKS.contains(event.getBlock().getLocation().add(.5, .5, .5))) {
             event.setCancelled(true);
         }
@@ -48,6 +43,7 @@ public class OtherListeners implements Listener {
         }
     }
 
+    /*
     @EventHandler
     public void onAsyncChat(AsyncPlayerChatEvent event) {
         Player player = event.getPlayer();
@@ -56,5 +52,5 @@ public class OtherListeners implements Listener {
             // Not implemented yet
         }
     }
-
+    */
 }

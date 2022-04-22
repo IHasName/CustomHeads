@@ -7,22 +7,16 @@ package de.likewhat.customheads.utils.reflection.helpers;
  *  created on 17.12.2019 at 23:29
  */
 
+import de.likewhat.customheads.CustomHeads;
 import de.likewhat.customheads.utils.reflection.helpers.collections.ReflectionMethodCollection;
-import org.bukkit.Bukkit;
+import lombok.Getter;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.logging.Level;
 
-
 public class NBTTagUtils {
-
-    public static final Class<?> NBTBASE_CLASS;
-
-    static {
-        NBTBASE_CLASS = ReflectionUtils.getMCServerClassByName("NBTBase", "nbt");
-    }
 
     public static void addObjectToNBTList(Object list, Object objectToAdd) {
         try {
@@ -32,28 +26,19 @@ public class NBTTagUtils {
                 ReflectionMethodCollection.NBT_TAGLIST_ADD.invokeOn(list, ReflectionMethodCollection.NBT_TAGLIST_SIZE.invokeOn(list), objectToAdd);
             }
         } catch(IllegalAccessException | InvocationTargetException e) {
-            Bukkit.getLogger().log(Level.WARNING, "Failed to add Object to NBT List", e);
+            CustomHeads.getPluginLogger().log(Level.WARNING, "Failed to add Object to NBT List", e);
         }
-    }
-
-    public static Class<?> getNBTClass(NBTType nbtType) {
-        try {
-            return ReflectionUtils.getMCServerClassByName(nbtType.className, "nbt");
-        } catch(Exception e) {
-            Bukkit.getLogger().log(Level.WARNING, "Failed to get NBT Class", e);
-        }
-        return null;
     }
 
     public static Object createInstance(NBTType nbtType) {
         try {
-            Class<?> clazz = getNBTClass(nbtType);
+            Class<?> clazz = nbtType.getNBTClass();
             if(clazz == null) {
                 return null;
             }
             return clazz.newInstance();
         } catch(Exception e) {
-            Bukkit.getLogger().log(Level.WARNING, "Failed to create Instance of " + nbtType.name() + " ("+ nbtType.className + ")", e);
+            CustomHeads.getPluginLogger().log(Level.WARNING, "Failed to create Instance of " + nbtType.name() + " ("+ nbtType.getClassName() + ")", e);
         }
         return null;
     }
@@ -61,12 +46,12 @@ public class NBTTagUtils {
     // Don't ask what I did here. It works for what I need it to do and it didn't break anything... yet
     public static <T> Object createInstance(NBTType nbtType, T newInstanceObject) {
         try {
-            Class<?> clazz = getNBTClass(nbtType);
+            Class<?> clazz = nbtType.getNBTClass();
             if(clazz == null) {
                 return null;
             }
             Object instance = null;
-            // Just return an new empty Instance if the Object is null
+            // Just return a new empty Instance if the Object is null
             if(newInstanceObject == null) {
                 return clazz.newInstance();
             }
@@ -78,16 +63,17 @@ public class NBTTagUtils {
                     // Newer Versions use the a Method to initialize an Instance
                     instance = clazz.getMethod("a", newInstanceObject.getClass()).invoke(null, newInstanceObject);
                 } catch(NoSuchMethodException e2) {
-                    Bukkit.getLogger().log(Level.WARNING, "Failed to initialize Instance of " + clazz.getCanonicalName());
+                    CustomHeads.getPluginLogger().log(Level.WARNING, "Failed to initialize Instance of " + clazz.getCanonicalName());
                 }
             }
             return instance;
         } catch(Exception e) {
-            Bukkit.getLogger().log(Level.WARNING, "Failed to create Instance of " + nbtType.name() + " ("+ nbtType.className + ")", e);
+            CustomHeads.getPluginLogger().log(Level.WARNING, "Failed to create Instance of " + nbtType.name() + " ("+ nbtType.getClassName() + ")", e);
         }
         return null;
     }
 
+    @Getter
     public enum NBTType {
         END(0, "NBTTagEnd"),
         BYTE(1, "NBTTagByte"),
@@ -102,12 +88,21 @@ public class NBTTagUtils {
         COMPOUND(10, "NBTTagCompound"),
         INTEGER_LIST(11, "NBTTagIntArray");
 
-        public final int id;
-        public final String className;
+        private final int id;
+        private final String className;
 
         NBTType(int id, String className) {
             this.id = id;
             this.className = className;
+        }
+
+        public Class<?> getNBTClass() {
+            try {
+                return ReflectionUtils.getMCServerClassByName(this.className, "nbt");
+            } catch(Exception e) {
+                CustomHeads.getPluginLogger().log(Level.WARNING, "Failed to get NBT Class", e);
+            }
+            return null;
         }
 
         public static NBTType getById(int id) {

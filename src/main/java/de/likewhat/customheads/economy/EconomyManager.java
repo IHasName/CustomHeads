@@ -6,12 +6,12 @@ import de.likewhat.customheads.category.Category;
 import de.likewhat.customheads.category.CustomHead;
 import de.likewhat.customheads.economy.errors.InvalidEconomyHandlerException;
 import de.likewhat.customheads.economy.handlers.Vault;
-import de.likewhat.customheads.utils.SimpleCallback;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
+import java.util.function.Consumer;
 
 import static de.likewhat.customheads.utils.Utils.openCategory;
 
@@ -26,13 +26,9 @@ public class EconomyManager {
     private final HashMap<String, EconomyHandler> registeredHandlers = new HashMap<>();
     private EconomyHandler activeEconomyHandler;
 
-    public EconomyManager() {
+    public EconomyManager() throws InvalidEconomyHandlerException {
         if (Bukkit.getPluginManager().isPluginEnabled("Vault")) {
-            try {
-                registerAndSetActiveHandler(new Vault());
-            } catch(InvalidEconomyHandlerException e) {
-                e.printStackTrace();
-            }
+            registerAndSetActiveHandler(new Vault());
         }
     }
 
@@ -48,7 +44,7 @@ public class EconomyManager {
 
     public boolean registerHandler(String handlerName, EconomyHandler handler) throws InvalidEconomyHandlerException {
         if(!handler.isValid()) {
-            throw new InvalidEconomyHandlerException("Invalid Handler passed as Argument");
+            throw new InvalidEconomyHandlerException("Cannot register invalid Economy Handler (" + handler.getName() + ")");
         }
         return registeredHandlers.putIfAbsent(handlerName, handler) == null;
     }
@@ -72,7 +68,6 @@ public class EconomyManager {
 
     public void buyCategory(CustomHeadsPlayer customHeadsPlayer, Category category, String prevMenu) {
         checkValidHandler();
-        //EconomyResponse economyResponse = economyPlugin.withdrawPlayer(customHeadsPlayer.unwrap(), category.getPrice());
         EconomyCallback callback = activeEconomyHandler.handleWithdraw(customHeadsPlayer.unwrap(), category.getPrice());
         if (callback.wasSuccess()) {
             customHeadsPlayer.unlockCategory(category);
@@ -87,11 +82,10 @@ public class EconomyManager {
         checkValidHandler();
         CustomHead customHead = CustomHeads.getApi().getHead(category, id);
         if (customHead == null) {
-            CustomHeads.getInstance().getLogger().warning("Received invalid Head ID while buying (" + category.getId() + ":" + id + ")");
+            CustomHeads.getPluginLogger().warning("Received invalid Head ID while buying (" + category.getId() + ":" + id + ")");
             return;
         }
         EconomyCallback callback = activeEconomyHandler.handleWithdraw(customHeadsPlayer.unwrap(), customHead.getPrice());
-        //EconomyResponse economyResponse = economyPlugin.withdrawPlayer(customHeadsPlayer.unwrap(), customHead.getPrice());
         if (callback.wasSuccess()) {
             if (permanent) {
                 customHeadsPlayer.unlockHead(category, id);
@@ -104,16 +98,15 @@ public class EconomyManager {
         }
     }
 
-    public void buyItem(Player player, int price, String itemName, SimpleCallback<Boolean> successCallback) {
+    public void buyItem(Player player, int price, String itemName, Consumer<Boolean> successCallback) {
         checkValidHandler();
-//        EconomyResponse economyResponse = economyPlugin.withdrawPlayer(player, price);
         EconomyCallback callback = activeEconomyHandler.handleWithdraw(player, price);
         if (callback.wasSuccess()) {
             player.sendMessage(CustomHeads.getLanguageManager().ECONOMY_BUY_SUCCESSFUL.replace("{ITEM}", itemName));
-            successCallback.call(true);
+            successCallback.accept(true);
         } else {
             player.sendMessage(CustomHeads.getLanguageManager().ECONOMY_BUY_FAILED.replace("{REASON}", callback.getResponseMessage()).replace("{ITEM}", itemName));
-            successCallback.call(false);
+            successCallback.accept(false);
         }
     }
 

@@ -36,19 +36,19 @@ public class Looks {
     private static boolean loaded = false;
 
     public HashMap<Integer, Inventory> subCategoryLooks = new HashMap<>();
-    private HashMap<String, Inventory> createdMenus = new HashMap<>();
-    private HashMap<String, String> createdMenuTitles = new HashMap<>();
-    private HashMap<String, String[]> menuInfo = new HashMap<>();
-    private HashMap<String, ItemStack> items = new HashMap<>();
+    private final HashMap<String, Inventory> createdMenus = new HashMap<>();
+    private final HashMap<String, String> createdMenuTitles = new HashMap<>();
+    private final HashMap<String, String[]> menuInfo = new HashMap<>();
+    private final HashMap<String, ItemStack> items = new HashMap<>();
 
-    private List<SubCategory> usedSubCategories = new ArrayList<>();
-    private List<Category> usedCategories = new ArrayList<>();
+    private final List<SubCategory> usedSubCategories = new ArrayList<>();
+    private final List<Category> usedCategories = new ArrayList<>();
 
     public Looks(String language) {
         loaded = false;
 
         if (!CustomHeads.hasReducedDebug())
-            CustomHeads.getInstance().getServer().getConsoleSender().sendMessage(CustomHeads.chPrefix + "Loading Looks from language/" + language + "/settings.json");
+            CustomHeads.getInstance().getServer().getConsoleSender().sendMessage(CustomHeads.PREFIX_GENERAL + "Loading Looks from language/" + language + "/settings.json");
         long timestamp = System.currentTimeMillis();
 
         JsonFile jsf = new JsonFile("language/" + language + "/settings.json");
@@ -124,7 +124,7 @@ public class Looks {
             for (JsonElement menuElement : menus) {
                 JsonObject menuJson = menuElement.getAsJsonObject();
                 if (createdMenus.containsKey(menuJson.get("id").getAsString())) {
-                    Bukkit.getLogger().info(CustomHeads.chWarning + "Duplicate Menu ID: " + menuJson.get("id").getAsString() + ". Skipping...");
+                    CustomHeads.getPluginLogger().info(CustomHeads.PREFIX_WARNING + "Duplicate Menu ID: " + menuJson.get("id").getAsString() + ". Skipping...");
                     continue;
                 }
                 Inventory menu = Bukkit.createInventory(null, menuJson.get("size").getAsInt(), format(menuJson.get("title").getAsString()));
@@ -185,10 +185,10 @@ public class Looks {
             }
 
             if (!CustomHeads.hasReducedDebug())
-                CustomHeads.getInstance().getServer().getConsoleSender().sendMessage(CustomHeads.chPrefix + "Successfully loaded Looks from language/" + language + "/settings.json in " + (System.currentTimeMillis() - timestamp) + "ms");
+                CustomHeads.getInstance().getServer().getConsoleSender().sendMessage(CustomHeads.PREFIX_GENERAL + "Successfully loaded Looks from language/" + language + "/settings.json in " + (System.currentTimeMillis() - timestamp) + "ms");
             loaded = true;
         } catch (Exception e) {
-            CustomHeads.getInstance().getLogger().log(Level.WARNING, "Something went wrong while loading Looks from Settings File " + language + "/settings.json", e);
+            CustomHeads.getPluginLogger().log(Level.WARNING, "Something went wrong while loading Looks from Settings File " + language + "/settings.json", e);
         }
     }
 

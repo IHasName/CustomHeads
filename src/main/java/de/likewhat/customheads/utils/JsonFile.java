@@ -2,13 +2,17 @@ package de.likewhat.customheads.utils;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
+import de.likewhat.customheads.CustomHeads;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
-import org.bukkit.Bukkit;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.logging.Level;
 
 /*
@@ -27,7 +31,7 @@ public class JsonFile {
 
     private JsonElement json;
 
-    private File file;
+    private final File file;
 
     public JsonFile(String filename) {
         this(filename, defaultSubfolder);
@@ -44,21 +48,18 @@ public class JsonFile {
     }
 
     public void saveJson() {
-        try (OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8)) {
-            String[] jsonSplitted = Utils.GSON_PRETTY.toJson(json).split("\n");
-            for (String line : jsonSplitted) {
-                writer.write(line + "\n");
-            }
+        try (OutputStreamWriter writer = new OutputStreamWriter(Files.newOutputStream(file.toPath()), StandardCharsets.UTF_8)) {
+            writer.write(Utils.GSON_PRETTY.toJson(json));
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     public void reload() {
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8))) {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(Files.newInputStream(file.toPath()), StandardCharsets.UTF_8))) {
             json = PARSER.parse(reader);
         } catch (Exception e) {
-            Bukkit.getLogger().log(Level.WARNING, "Failed to read Json from " + file.getName(), e);
+            CustomHeads.getPluginLogger().log(Level.WARNING, "Failed to read Json from " + file.getName(), e);
         }
     }
 

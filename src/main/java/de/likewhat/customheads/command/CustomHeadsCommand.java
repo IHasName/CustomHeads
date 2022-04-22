@@ -40,14 +40,16 @@ import static de.likewhat.customheads.utils.Utils.*;
 
 public class CustomHeadsCommand implements CommandExecutor {
 
-    private static final Comparator<Category> categoryComparator = Comparator.comparing(category -> Integer.parseInt(category.getId()));
-    public HashMap<Player, String[]> haltedCommands = new HashMap<>();
-    private String[] rdmAns = {"CustomHeads says: Hmm", "CustomHeads says: Does the Console have an Inventory?", "CustomHeads says: That tickels!", "CustomHeads says: No", "CustomHeads says: Im lost", "CustomHeads says: I don't think this is what you are searching for", "CustomHeads says: Hold on... Nevermind", "CustomHeads says: Sorry", "CustomHeads says: Spoilers... There will be a new Command soon =]"};
-    private FireworkEffect.Type[] fxTypes = {FireworkEffect.Type.BALL, FireworkEffect.Type.BALL_LARGE, FireworkEffect.Type.BURST, FireworkEffect.Type.STAR};
-    private BlockFace[] faces = {BlockFace.NORTH, BlockFace.NORTH_EAST, BlockFace.NORTH_NORTH_EAST};
-    private Random ran = new Random();
-    private List<Player> active_fireworks = new ArrayList<>();
     public static final List<Location> CACHED_FIREWORKS = new ArrayList<>();
+
+    private static final Comparator<Category> CATEGORY_COMPARER = Comparator.comparing(category -> Integer.parseInt(category.getId()));
+    private static final List<Player> ACTIVE_FIREWORKS = new ArrayList<>();
+    private static final String[] RANDOM_ANSWERS = {"CustomHeads says: Hmm", "CustomHeads says: Does the Console have an Inventory?", "CustomHeads says: That tickels!", "CustomHeads says: No", "CustomHeads says: Im lost", "CustomHeads says: I don't think this is what you are searching for", "CustomHeads says: Hold on... Nevermind", "CustomHeads says: Sorry", "CustomHeads says: Spoilers... There will be a new Command soon =]"};
+    private static final Random RANDOM = new Random();
+
+    private final HashMap<Player, String[]> haltedCommands = new HashMap<>();
+    private final FireworkEffect.Type[] fxTypes = {FireworkEffect.Type.BALL, FireworkEffect.Type.BALL_LARGE, FireworkEffect.Type.BURST, FireworkEffect.Type.STAR};
+    private final BlockFace[] faces = {BlockFace.NORTH, BlockFace.NORTH_EAST, BlockFace.NORTH_NORTH_EAST};
 
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if (!(sender instanceof Player)) {
@@ -74,7 +76,7 @@ public class CustomHeadsCommand implements CommandExecutor {
 //                }
             }
             Random rdm = new Random();
-            sender.sendMessage(rdmAns[rdm.nextInt(rdmAns.length)]);
+            sender.sendMessage(RANDOM_ANSWERS[rdm.nextInt(RANDOM_ANSWERS.length)]);
             return true;
         }
         Player player = (Player) sender;
@@ -129,7 +131,7 @@ public class CustomHeadsCommand implements CommandExecutor {
                         try {
                             success = CustomHeads.reloadTranslations(args[2]);
                         } catch(NullPointerException e) {
-                            Bukkit.getLogger().log(Level.WARNING, "Failed to load Language", e);
+                            CustomHeads.getPluginLogger().log(Level.WARNING, "Failed to load Language", e);
                         }
                         if (success) {
                             headsConfig.get().set("langFile", args[2]);
@@ -184,6 +186,10 @@ public class CustomHeadsCommand implements CommandExecutor {
             if (args[0].equalsIgnoreCase("test")) {
                 try {
                     Configs tempcon = new Configs(CustomHeads.getInstance(), "test.yml", false, "testing");
+                    if(args[1].equalsIgnoreCase("nbt")) {
+                        Object result = ItemNBTUtils.getTagFromItem(player.getItemInHand(), true);
+                        player.sendMessage(result == null ? "null" : result.toString());
+                    }
                     if (args[1].equalsIgnoreCase("gettags")) {
                         player.sendMessage("[Tags] " + CustomHeads.getTagEditor().getTags(player.getItemInHand()));
                     }
@@ -208,7 +214,7 @@ public class CustomHeadsCommand implements CommandExecutor {
                         player.sendMessage(CustomHeads.getLanguageManager().CATEGORIES_BASECOMMAND_HEADER);
 
                         List<Category> categories = CustomHeads.getCategoryManager().getCategoryList();
-                        categories.sort(categoryComparator);
+                        categories.sort(CATEGORY_COMPARER);
 
                         for (int i = 0; i < categories.size(); i++) {
                             Category cCategory = categories.get(i);
@@ -225,13 +231,13 @@ public class CustomHeadsCommand implements CommandExecutor {
                                 for (int j = 0; j < cCategory.getSubCategories().size(); j++) {
                                     SubCategory cSubCategory = cCategory.getSubCategories().get(j);
 
-                                    String hoverInfoSubCategoryBuilder = "{\"text\":\"";
+                                    StringBuilder hoverInfoSubCategoryBuilder = new StringBuilder("{\"text\":\"");
                                     for (String hoverInfoSubCategory : CustomHeads.getLanguageManager().CATEGORIES_BASECOMMAND_HOVERINFO_SUBCATEGORY) {
-                                        hoverInfoSubCategoryBuilder += hoverInfoSubCategory + "\n";
+                                        hoverInfoSubCategoryBuilder.append(hoverInfoSubCategory).append("\n");
                                     }
-                                    hoverInfoSubCategoryBuilder = hoverInfoSubCategoryBuilder.replace("{ID}", "" + cCategory.getId()).replace("{CATEGORY}", cCategory.getName()).replace("{USED}", cSubCategory.isUsed() ? CustomHeads.getLanguageManager().YES : CustomHeads.getLanguageManager().NO);
-                                    hoverInfoSubCategoryBuilder = hoverInfoSubCategoryBuilder.substring(0, hoverInfoSubCategoryBuilder.length() - 1);
-                                    hoverInfoSubCategoryBuilder += "\"}";
+                                    hoverInfoSubCategoryBuilder = new StringBuilder(hoverInfoSubCategoryBuilder.toString().replace("{ID}", "" + cCategory.getId()).replace("{CATEGORY}", cCategory.getName()).replace("{USED}", cSubCategory.isUsed() ? CustomHeads.getLanguageManager().YES : CustomHeads.getLanguageManager().NO));
+                                    hoverInfoSubCategoryBuilder = new StringBuilder(hoverInfoSubCategoryBuilder.substring(0, hoverInfoSubCategoryBuilder.length() - 1));
+                                    hoverInfoSubCategoryBuilder.append("\"}");
 
                                     Utils.sendJSONMessage("[\"\",{\"text\":\" §e" + (i == (categories.size() - 1) ? " " : "┃ ") + "  " + (j == (cCategory.getSubCategories().size() - 1) ? "┗╸" : "┣╸") + " \"},{\"text\":\"" + (cCategory.isUsed() ? "§a" : "§7") + ChatColor.stripColor(cSubCategory.getName()) + "\"" +/*(CustomHeads.hasCategoryEditor() ? ",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/cedit " + cSubCategory.getId() + "\"}" : "") +*/",\"hoverEvent\":{\"action\":\"show_text\",\"value\":{\"text\":\"\",\"extra\":[" + hoverInfoSubCategoryBuilder +/*",{\"text\":\"\n" + (CustomHeads.hasCategoryEditor() ? "§eClick to open in Editor" : "§eGet CategoryCreator to\n§eopen an Editor") + "\"}" +*/"]}}}]", player);
                                 }
@@ -443,20 +449,20 @@ public class CustomHeadsCommand implements CommandExecutor {
                         player.sendMessage(CustomHeads.getLanguageManager().CANNOT_PLACE_IN_AIR);
                         return true;
                     }
-                    if (active_fireworks.contains(player)) {
+                    if (ACTIVE_FIREWORKS.contains(player)) {
                         player.sendMessage(CustomHeads.getLanguageManager().ALREADY_IN_USE);
                         return true;
                     }
                     player.sendMessage(CustomHeads.getLanguageManager().STARTING);
-                    active_fireworks.add(player);
+                    ACTIVE_FIREWORKS.add(player);
                     Location startLocation = player.getLocation().getBlock().getLocation().add(.5, .5, .5);
                     CACHED_FIREWORKS.add(startLocation);
                     CustomHeads.getApi().createFireworkBattery(startLocation, 10, 20, new FireworksBatteryHandler() {
-                        Location location = startLocation.clone();
-                        Random random = new Random();
+                        final Location location = startLocation.clone();
+                        final Random random = new Random();
 
                         public void onStart() {
-                            CustomHeads.getApi().setSkull(location.getBlock(), "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOGEzZDVkNWIyY2YzMzEyOTllNjNkNzYxOGExNDI2NmU4Y2NjNjE1OGU5ZTMxZmNiMGJkOTExZTEyZmY3NzM2In19fQ==", faces[ran.nextInt(faces.length)]);
+                            CustomHeads.getApi().setSkull(location.getBlock(), "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOGEzZDVkNWIyY2YzMzEyOTllNjNkNzYxOGExNDI2NmU4Y2NjNjE1OGU5ZTMxZmNiMGJkOTExZTEyZmY3NzM2In19fQ==", faces[RANDOM.nextInt(faces.length)]);
                         }
 
                         public void onNext() {
@@ -648,10 +654,10 @@ public class CustomHeadsCommand implements CommandExecutor {
                             return true;
                         }
                         // Edit {FONTNAME}
-                        HashMap<Character, ItemStack> characters = font.getCharacters();
+                        HashMap<Character, ItemStack> characters = font.getCharacterItems();
                         List<ItemStack> characterList = new ArrayList<>();
-                        characterList.sort(Comparator.comparing(itemStack -> itemStack.getItemMeta().getDisplayName()));
                         characters.forEach((character, customHead) -> characterList.add(CustomHeads.getTagEditor().addTags(new ItemEditor(customHead).setDisplayName("§b" + (character.equals(' ') ? "BLANK" : character)).getItem(), "fontName", font.getFontName(), "character", "" + character, "editFont", "select")));
+                        characterList.sort(Comparator.comparing(itemStack -> itemStack.getItemMeta().getDisplayName()));
                         ScrollableInventory editFont = new ScrollableInventory(CustomHeads.getLanguageManager().FONTS_EDIT_TITLE.replace("{FONT}", font.getFontName()), characterList);
                         editFont.setExtraTags("fontName", font.getFontName());
                         /* |-|-|0|1|2|3|4|-|-|
@@ -673,22 +679,17 @@ public class CustomHeadsCommand implements CommandExecutor {
             }
             if(args[0].equalsIgnoreCase("random")) {
                 List<CustomHead> heads = CustomHeads.getCategoryManager().getAllHeads();
-                CustomHead randomHead = heads.get(RANDOM.nextInt(heads.size()));
+                CustomHead randomHead = heads.get(Utils.RANDOM.nextInt(heads.size()));
                 if(randomHead.isFree()) {
                     player.getInventory().addItem(randomHead);
                 } else {
-//                    Category category = randomHead.getOriginCategory();
-                    Utils.showInteractiveDialog(player, CustomHeads.getLanguageManager().ECONOMY_BUY_CONFIRM.replace("{ITEM}", ChatColor.stripColor(randomHead.getItemMeta().getDisplayName())).replace("{PRICE}", getHeadPriceFormatted(randomHead, false)), new SimpleCallback<Boolean>() {
-                        CustomHead head = randomHead;
-                        CustomHeadsPlayer p = CustomHeads.getApi().wrapPlayer(player);
-                        public void call(Boolean buySuccessful) {
-                            if(buySuccessful) {
-                                CustomHeads.getEconomyManager().buyHead(p, head.getOriginCategory(), head.getId(), CustomHeads.headsPermanentBuy());
-                                p.unwrap().getInventory().addItem(head.getPlainItem());
-                            } else {
-                                p.unwrap().closeInventory();
-                            }
-
+                    Utils.showInteractiveDialog(player, CustomHeads.getLanguageManager().ECONOMY_BUY_CONFIRM.replace("{ITEM}", ChatColor.stripColor(randomHead.getItemMeta().getDisplayName())).replace("{PRICE}", getHeadPriceFormatted(randomHead, false)), success ->  {
+                        CustomHeadsPlayer customHeadsPlayer = CustomHeads.getApi().wrapPlayer(player);
+                        if(success) {
+                            CustomHeads.getEconomyManager().buyHead(customHeadsPlayer, randomHead.getOriginCategory(), randomHead.getId(), CustomHeads.headsPermanentBuy());
+                            customHeadsPlayer.unwrap().getInventory().addItem(randomHead.getPlainItem());
+                        } else {
+                            customHeadsPlayer.unwrap().closeInventory();
                         }
                     }, null, null, randomHead.getPlainItem());
                 }
@@ -709,7 +710,7 @@ public class CustomHeadsCommand implements CommandExecutor {
                                                 player.sendMessage(CustomHeads.getLanguageManager().SAVE_OWN_SUCCESSFUL.replace("{NAME}", format(args[1])));
                                             } catch (Exception e) {
                                                 sender.sendMessage(CustomHeads.getLanguageManager().SAVE_OWN_FAILED);
-                                                Bukkit.getLogger().log(Level.WARNING, "Failed to get Playertexture", e);
+                                                CustomHeads.getPluginLogger().log(Level.WARNING, "Failed to get Playertexture", e);
                                             }
                                         });
                                         return true;
@@ -796,7 +797,7 @@ public class CustomHeadsCommand implements CommandExecutor {
                 }
                 if (builder.length() != 0)
                     builder.setLength(builder.length() - 2);
-                player.sendMessage(CustomHeads.getLanguageManager().COMMAND_USAGE.replace("{COMMAND}", "/heads " + (builder.length() == 0 ? "" : "<" + builder.toString() + ">")));
+                player.sendMessage(CustomHeads.getLanguageManager().COMMAND_USAGE.replace("{COMMAND}", "/heads " + (builder.length() == 0 ? "" : "<" + builder + ">")));
                 return true;
             }
             StringBuilder builder = new StringBuilder();
@@ -807,7 +808,7 @@ public class CustomHeadsCommand implements CommandExecutor {
             }
             if (builder.length() != 0)
                 builder.setLength(builder.length() - 2);
-            player.sendMessage(CustomHeads.getLanguageManager().COMMAND_USAGE.replace("{COMMAND}", "/heads " + (builder.length() == 0 ? "" : "<" + builder.toString() + ">")));
+            player.sendMessage(CustomHeads.getLanguageManager().COMMAND_USAGE.replace("{COMMAND}", "/heads " + (builder.length() == 0 ? "" : "<" + builder + ">")));
             return true;
         }
         player.sendMessage(CustomHeads.getLanguageManager().NO_PERMISSION);

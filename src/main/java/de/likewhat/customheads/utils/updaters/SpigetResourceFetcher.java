@@ -7,7 +7,6 @@ import de.likewhat.customheads.utils.Utils;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.InputStreamReader;
@@ -41,10 +40,10 @@ public class SpigetResourceFetcher {
     private static final String DESCRIPTION_URL = "https://api.spiget.org/v2/resources/%s/updates?size=2147483647&sort=-date";
     @Setter
     private static String userAgent = "SpigetResourceFetcher/1.2";
-    private String descriptionUrlFormatted;
-    private String versionUrlFormatted;
+    private final String descriptionUrlFormatted;
+    private final String versionUrlFormatted;
 
-    private static JsonParser jsonParser = new JsonParser();
+    private static final JsonParser JSON_PARSER = new JsonParser();
 
     public SpigetResourceFetcher(int resourceId) {
         descriptionUrlFormatted = String.format(DESCRIPTION_URL, resourceId);
@@ -61,13 +60,13 @@ public class SpigetResourceFetcher {
                         JsonArray versionArray;
                         boolean fromCache = false;
                         if (updateFile.get().isSet("lastVersionFetch") && TimeUnit.MILLISECONDS.toDays(System.currentTimeMillis() - lastFetch) <= 0) {
-                            versionArray = jsonParser.parse(new String(Base64.getDecoder().decode(updateFile.get().getString("lastVersionFetch").getBytes()))).getAsJsonArray();
+                            versionArray = JSON_PARSER.parse(new String(Base64.getDecoder().decode(updateFile.get().getString("lastVersionFetch").getBytes()))).getAsJsonArray();
                             fromCache = true;
                         } else {
                             HttpURLConnection connection = (HttpURLConnection) new URL(versionUrlFormatted).openConnection();
                             connection.addRequestProperty("User-Agent", userAgent);
                             connection.setReadTimeout(5000);
-                            versionArray = jsonParser.parse(new InputStreamReader(connection.getInputStream())).getAsJsonArray();
+                            versionArray = JSON_PARSER.parse(new InputStreamReader(connection.getInputStream())).getAsJsonArray();
                         }
 
                         List<ResourceRelease> releaseList = new ArrayList<>();
@@ -94,7 +93,7 @@ public class SpigetResourceFetcher {
                             }
                         }
                     } catch (Exception e) {
-                        Bukkit.getLogger().log(Level.WARNING, "Failed to fetch Version List", e);
+                        CustomHeads.getPluginLogger().log(Level.WARNING, "Failed to fetch Version List", e);
                     }
                 }
         });
@@ -114,13 +113,13 @@ public class SpigetResourceFetcher {
                         JsonArray descriptionArray;
                         boolean fromCache = false;
                         if (updateFile.get().isSet("lastDescriptionFetch") && TimeUnit.MILLISECONDS.toDays(System.currentTimeMillis() - lastFetch) == 0) {
-                            descriptionArray = jsonParser.parse(new String(Base64.getDecoder().decode(updateFile.get().getString("lastDescriptionFetch")))).getAsJsonArray();
+                            descriptionArray = JSON_PARSER.parse(new String(Base64.getDecoder().decode(updateFile.get().getString("lastDescriptionFetch")))).getAsJsonArray();
                             fromCache = true;
                         } else {
                             HttpURLConnection descriptionConnection = (HttpURLConnection) new URL(descriptionUrlFormatted).openConnection();
                             descriptionConnection.addRequestProperty("User-Agent", userAgent);
                             descriptionConnection.setReadTimeout(5000);
-                            descriptionArray = jsonParser.parse(new InputStreamReader(descriptionConnection.getInputStream())).getAsJsonArray();
+                            descriptionArray = JSON_PARSER.parse(new InputStreamReader(descriptionConnection.getInputStream())).getAsJsonArray();
                         }
 
                         List<ResourceUpdate> updateList = new ArrayList<>();
@@ -134,7 +133,7 @@ public class SpigetResourceFetcher {
                         consumer.accept(updateList);
                         return;
                     } catch (Exception e) {
-                        Bukkit.getLogger().log(Level.WARNING, "Failed to fetch Update List", e);
+                        CustomHeads.getPluginLogger().log(Level.WARNING, "Failed to fetch Update List", e);
                     }
                     consumer.accept(null);
                 }

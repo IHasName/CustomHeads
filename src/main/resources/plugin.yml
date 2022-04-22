@@ -2,7 +2,7 @@ main: ${project.groupId}.${project.artifactId}
 name: ${project.artifactId}
 version: ${project.version}
 author: LikeWhat
-softdepend: [Vault]
+softdepend: [Vault, Essentials]
 
 commands: 
   heads: 

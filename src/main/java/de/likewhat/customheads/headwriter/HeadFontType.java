@@ -23,17 +23,17 @@ import java.util.List;
 @Getter
 public class HeadFontType {
 
-    private char[] availableCharacters = "abcdefghijklmnopqrstuvwxyz0123456789!?#$%&@_'\"()[]{}<>+-/=:,;\\ ".toCharArray();
+    private static final char[] AVAILABLE_CHARACTERS = "abcdefghijklmnopqrstuvwxyz0123456789!?#$%&@_'\"()[]{}<>+-/=:,;\\ ".toCharArray();
 
-    private static HashMap<String, HeadFontType> cache = new HashMap<>();
-    private HashMap<Character, ItemStack> characters = new HashMap<>();
+    private static final HashMap<String, HeadFontType> FONT_CACHE = new HashMap<>();
+    private final HashMap<Character, ItemStack> characterItems = new HashMap<>();
 
     @Getter(AccessLevel.NONE)
-    private Configs fontFile;
+    private final Configs fontFile;
 
     private boolean cached = false;
 
-    private String fontName;
+    private final String fontName;
     private String cacheID;
 
     private long cacheTime;
@@ -44,34 +44,34 @@ public class HeadFontType {
         if (exists()) {
             if (fontFile.get().isConfigurationSection("characters")) {
                 for (String key : fontFile.get().getConfigurationSection("characters").getKeys(false)) {
-                    if (!Utils.charArrayContains(availableCharacters, key.charAt(0))) {
+                    if (!Utils.charArrayContains(AVAILABLE_CHARACTERS, key.charAt(0))) {
                         throw new UnsupportedOperationException("Unsupported Character: '" + key.charAt(0) + "'");
                     }
-                    characters.put(key.charAt(0), new ItemEditor(Material.SKULL_ITEM,  3).setTexture(fontFile.get().getString("characters." + key)).getItem());
+                    characterItems.put(key.charAt(0), new ItemEditor(Material.SKULL_ITEM,  3).setTexture(fontFile.get().getString("characters." + key)).getItem());
                 }
             }
         }
     }
 
     public static HeadFontType getCachedFont(String cacheID) {
-        return cache.get(cacheID);
+        return FONT_CACHE.get(cacheID);
     }
 
     public static void clearCache() {
-        cache.values().removeIf(font -> System.currentTimeMillis() - font.cacheTime > 600000);
+        FONT_CACHE.values().removeIf(font -> System.currentTimeMillis() - font.cacheTime > 600000);
     }
 
     public boolean addCharacter(char character, String texture, boolean forceReplace) {
-        if (Utils.charArrayContains(availableCharacters, character) && (!characters.containsKey(character) || forceReplace)) {
-            characters.put(character, new ItemEditor(Material.SKULL_ITEM,  3).setTexture(texture).getItem());
+        if (Utils.charArrayContains(AVAILABLE_CHARACTERS, character) && (!characterItems.containsKey(character) || forceReplace)) {
+            characterItems.put(character, new ItemEditor(Material.SKULL_ITEM,  3).setTexture(texture).getItem());
             return true;
         }
         return false;
     }
 
     public boolean removeCharacter(char character) {
-        if (characters.containsKey(character)) {
-            characters.remove(character);
+        if (characterItems.containsKey(character)) {
+            characterItems.remove(character);
             return true;
         }
         return false;
@@ -81,25 +81,25 @@ public class HeadFontType {
         cached = true;
         cacheTime = System.currentTimeMillis();
         cacheID = Utils.randomAlphabetic(6);
-        cache.put(cacheID, this);
+        FONT_CACHE.put(cacheID, this);
         return this;
     }
 
-    public HashMap<Character, ItemStack> getCharacters() {
-        return characters;
+    public HashMap<Character, ItemStack> getCharacterItems() {
+        return characterItems;
     }
 
     public ItemStack getCharacter(char character) {
-        return characters.get(character);
+        return characterItems.get(character);
     }
 
     public void save() {
         fontFile.get().set("characters", null);
-        if (!this.characters.isEmpty()) {
-            List<Character> characters = new ArrayList<>(this.characters.keySet());
+        if (!this.characterItems.isEmpty()) {
+            List<Character> characters = new ArrayList<>(this.characterItems.keySet());
             Collections.sort(characters);
             for (char key : characters) {
-                fontFile.get().set("characters." + key, new ItemEditor(this.characters.get(key)).getTexture());
+                fontFile.get().set("characters." + key, new ItemEditor(this.characterItems.get(key)).getTexture());
             }
         }
         fontFile.save();

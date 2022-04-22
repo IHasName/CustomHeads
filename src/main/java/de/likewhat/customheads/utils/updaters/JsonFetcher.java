@@ -25,7 +25,7 @@ public class JsonFetcher {
     private static final String DEFAULT_USER_AGENT = "Mozilla/5.0 (Windows NT 6.3; Trident/7.0; rv:11.0) like Gecko";
     private static final JsonParser PARSER = new JsonParser();
 
-    private String url;
+    private final String url;
     private Proxy proxy;
     private String userAgent;
 

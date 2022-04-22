@@ -55,7 +55,7 @@ public class JsonToItem {
                     itemEditor.setTexture(itemObj.get("texture").getAsString());
             }
         } catch (Exception e) {
-            CustomHeads.getInstance().getLogger().log(Level.WARNING, "Failed to create Item", e);
+            CustomHeads.getPluginLogger().log(Level.WARNING, "Failed to create Item", e);
         }
         return itemEditor == null ? null : itemEditor.getItem();
     }

@@ -28,12 +28,12 @@ public class GitHubDownloader {
     private static final File downloadDir = new File(CustomHeads.getInstance().getDataFolder(), "downloads");
 
     private static final String GITHUB_REPO_URL = "https://api.github.com/repos/%s/%s";
-    private static HashMap<String, CachedResponse<JsonElement>> responseCache = new HashMap<>();
-    private String apiURLFormatted;
+    private static final HashMap<String, CachedResponse<JsonElement>> RESPONSE_CACHE = new HashMap<>();
+    private final String apiURLFormatted;
     private boolean unzip = false;
 
-    private String author;
-    private String projectName;
+    private final String author;
+    private final String projectName;
 
     public GitHubDownloader(String author, String projectName) {
         this.author = author;
@@ -42,7 +42,7 @@ public class GitHubDownloader {
     }
 
     public static void clearCache() {
-        responseCache.values().removeIf(cachedResponse -> cachedResponse.getCacheTime() - System.currentTimeMillis() > 600000);
+        RESPONSE_CACHE.values().removeIf(cachedResponse -> cachedResponse.getCacheTime() - System.currentTimeMillis() > 600000);
     }
 
     public GitHubDownloader enableAutoUnzipping() {
@@ -51,8 +51,8 @@ public class GitHubDownloader {
     }
 
     private static void getResponseAsJson(String url, FetchResult<JsonElement> fetchResult, boolean force) {
-        if (responseCache.containsKey(url) && !force) {
-            fetchResult.success(responseCache.get(url).getData());
+        if (RESPONSE_CACHE.containsKey(url) && !force) {
+            fetchResult.success(RESPONSE_CACHE.get(url).getData());
             return;
         }
 
@@ -69,7 +69,7 @@ public class GitHubDownloader {
                 fetchResult.error(new NullPointerException("Release API resopnded with: " + response.getAsJsonObject().get("message").getAsString()));
                 return;
             }
-            responseCache.put(url, new CachedResponse<>(System.currentTimeMillis(), response));
+            RESPONSE_CACHE.put(url, new CachedResponse<>(System.currentTimeMillis(), response));
             fetchResult.success(response);
         } catch (Exception e) {
             fetchResult.error(e);
@@ -80,7 +80,7 @@ public class GitHubDownloader {
         getRateLimit(new FetchResult<JsonObject>() {
             public void success(JsonObject rateLimit) {
                 if(rateLimit.get("remaining").getAsInt() == 0) {
-                    Bukkit.getLogger().info(Utils.GSON_PRETTY.toJson(rateLimit));
+                    CustomHeads.getPluginLogger().info(Utils.GSON_PRETTY.toJson(rateLimit));
                     fetchResult.error(new RateLimitExceededException(rateLimit.get("reset").getAsLong()));
                     return;
                 }
@@ -96,14 +96,14 @@ public class GitHubDownloader {
                         }
 
                         if (release == null) {
-                            fetchResult.error(new NullPointerException("Unkown Tag: " + tag));
+                            fetchResult.error(new NullPointerException("Unknown Tag: " + tag));
                             return;
                         }
                         fetchResult.success(release);
                     }
 
                     public void error(Exception exception) {
-                        Bukkit.getLogger().log(Level.WARNING, "Failed to get Release", exception);
+                        CustomHeads.getPluginLogger().log(Level.WARNING, "Failed to get Release", exception);
                     }
                 }, false);
             }
@@ -124,7 +124,7 @@ public class GitHubDownloader {
                         AsyncFileDownloader downloader = new AsyncFileDownloader(jsonObject.get("browser_download_url").getAsString(), assetName, downloadDir.getPath());
                         downloader.startDownload(new AsyncFileDownloader.FileDownloaderCallback() {
                             public void complete() {
-                                Bukkit.getServer().getConsoleSender().sendMessage(CustomHeads.chPrefix + "Download of " + assetName + " complete.");
+                                Bukkit.getServer().getConsoleSender().sendMessage(CustomHeads.PREFIX_GENERAL + "Download of " + assetName + " complete.");
                                 if (unzip && assetName.endsWith(".zip")) {
                                     Utils.unzipFile(new File(downloadDir, assetName), downloadTo);
                                     if (afterTask.length > 0)
@@ -138,15 +138,15 @@ public class GitHubDownloader {
                                     if (afterTask.length > 0)
                                         afterTask[0].call();
                                 } catch (Exception e) {
-                                    CustomHeads.getInstance().getLogger().log(Level.WARNING, "Failed to copy downloaded File", e);
+                                    CustomHeads.getPluginLogger().log(Level.WARNING, "Failed to copy downloaded File", e);
                                 }
                             }
 
                             public void failed(AsyncFileDownloader.DownloaderStatus status) {
                                 if (status == AsyncFileDownloader.DownloaderStatus.ERROR) {
-                                    Bukkit.getLogger().log(Level.WARNING, "Something went wrong while downloading " + assetName, status.getException());
+                                    CustomHeads.getPluginLogger().log(Level.WARNING, "Something went wrong while downloading " + assetName, status.getException());
                                 } else {
-                                    Bukkit.getServer().getConsoleSender().sendMessage(CustomHeads.chError + "Failed to download " + assetName + ". " + status);
+                                    Bukkit.getServer().getConsoleSender().sendMessage(CustomHeads.PREFIX_ERROR + "Failed to download " + assetName + ". " + status);
                                 }
                             }
                         });
@@ -156,7 +156,7 @@ public class GitHubDownloader {
             }
 
             public void error(Exception exception) {
-                Bukkit.getLogger().log(Level.WARNING, "Failed to download Files", exception);
+                CustomHeads.getPluginLogger().log(Level.WARNING, "Failed to download Files", exception);
             }
         });
     }
@@ -168,7 +168,7 @@ public class GitHubDownloader {
             }
 
             public void error(Exception exception) {
-                Bukkit.getLogger().log(Level.WARNING, "Failed to fetch latest Data", exception);
+                CustomHeads.getPluginLogger().log(Level.WARNING, "Failed to fetch latest Data", exception);
             }
         }, false);
     }

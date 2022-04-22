@@ -10,8 +10,8 @@ import de.likewhat.customheads.command.CustomHeadsCommand;
 import de.likewhat.customheads.command.CustomHeadsTabCompleter;
 import de.likewhat.customheads.economy.EconomyHandler;
 import de.likewhat.customheads.economy.EconomyManager;
+import de.likewhat.customheads.economy.errors.InvalidEconomyHandlerException;
 import de.likewhat.customheads.headwriter.HeadFontType;
-import de.likewhat.customheads.listener.CategoryEditorListener;
 import de.likewhat.customheads.listener.InventoryListener;
 import de.likewhat.customheads.listener.OtherListeners;
 import de.likewhat.customheads.loader.Language;
@@ -37,7 +37,9 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
 import java.util.*;
+import java.util.concurrent.Callable;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import static de.likewhat.customheads.utils.Utils.hasPermission;
@@ -50,12 +52,12 @@ import static de.likewhat.customheads.utils.Utils.hasPermission;
 @Getter
 public class CustomHeads extends JavaPlugin {
 
-    private static final boolean DEV_BUILD = false;
+    private static final boolean DEV_BUILD = true;
 
-    public static final HashMap<String, String> uuidCache = new HashMap<>();
-    public static final String chPrefix = "§7[§eCustomHeads§7] ";
-    public static final String chError = chPrefix + "§cError §7: §c";
-    public static final String chWarning = chPrefix + "§eWarning §7: §e";
+    public static final HashMap<String, String> UUID_CACHE = new HashMap<>();
+    public static final String PREFIX_GENERAL = "§7[§eCustomHeads§7] ";
+    public static final String PREFIX_ERROR = PREFIX_GENERAL + "§cError §7: §c";
+    public static final String PREFIX_WARNING = PREFIX_GENERAL + "§eWarning §7: §e";
     public static int hisOverflow = 18;
     @Getter private static Configs updateFile;
     @Getter private static Configs headsConfig;
@@ -68,12 +70,8 @@ public class CustomHeads extends JavaPlugin {
     @Getter private static SpigetResourceFetcher spigetFetcher;
     @Getter private static EconomyManager economyManager;
     @Getter private static CategoryManager categoryManager;
-    private static List<String> versions = Arrays.asList("v1_8_R1", "v1_8_R2", "v1_8_R3", "v1_9_R1", "v1_9_R2", "v1_10_R1", "v1_11_R1", "v1_12_R1", "v1_13_R1", "v1_13_R2", "v1_14_R1", "v1_15_R1", "v1_16_R1", "v1_17_R1","v1_18_R1");
-    private static String packet = Bukkit.getServer().getClass().getPackage().getName();
-    public static String version = packet.substring(packet.lastIndexOf('.') + 1);
     @Getter private static int getCommandPrice = 0;
 
-    public static final boolean USE_TEXTURES = versions.contains(version);
     private static boolean keepCategoryPermissions = false;
     private static boolean categoriesBuyable = false;
     private static boolean headsPermanentBuy = false;
@@ -84,6 +82,11 @@ public class CustomHeads extends JavaPlugin {
     private static boolean hasEconomy = false;
     private boolean isInit = false;
     private String bukkitVersion;
+
+    @Getter private static Logger pluginLogger;
+
+    // List of Callables that gets processed after the Server finishes loading
+    private final List<Callable<Void>> delayedTasks = new ArrayList<>();
 
     // Search/Get History Loader
     public static void reloadHistoryData() {
@@ -104,15 +107,32 @@ public class CustomHeads extends JavaPlugin {
     public static void reloadEconomy() {
         hasEconomy = false;
         economyManager = null;
+        boolean skipMessages = false;
         if (headsConfig.get().getBoolean("economy.enable")) {
-            Bukkit.getLogger().info("Loading Economy Handler...");
-            economyManager = new EconomyManager();
-            EconomyHandler handler = economyManager.getActiveEconomyHandler();
-            hasEconomy = handler != null && handler.isValid();
-            if (hasEconomy) {
-                Bukkit.getLogger().info("Successfully loaded Economy Handler: " + handler.getName());
-            } else {
-                Bukkit.getLogger().warning("Failed to load Economy Handler");
+            CustomHeads.getPluginLogger().info("Loading Economy Handler...");
+            try {
+                economyManager = new EconomyManager();
+            } catch(InvalidEconomyHandlerException e) {
+                if(CustomHeads.getInstance().isInit()) {
+                    CustomHeads.getPluginLogger().log(Level.WARNING, "Failed to load Economy Handler.", e);
+                } else {
+                    CustomHeads.getInstance().delayedTasks.add(() -> {
+                        reloadEconomy();
+                        return null;
+                    });
+                    CustomHeads.getPluginLogger().warning("Failed to load Economy Handler. Trying again after Server finishes loading.");
+                    skipMessages = true;
+                }
+            }
+            // Skip Messages when the Handler gets reloaded after Server init to avoid confusion
+            if(!skipMessages) {
+                EconomyHandler handler = economyManager.getActiveEconomyHandler();
+                hasEconomy = handler != null && handler.isValid();
+                if (hasEconomy) {
+                    CustomHeads.getPluginLogger().info("Successfully loaded Economy Handler: " + handler.getName());
+                } else {
+                    CustomHeads.getPluginLogger().info("Failed to load Economy. If present see Error above");
+                }
             }
         }
     }
@@ -150,8 +170,13 @@ public class CustomHeads extends JavaPlugin {
     }
 
     public static boolean reload(CommandSender sender) {
-        boolean console = sender instanceof ConsoleCommandSender;
-        sender.sendMessage((console ? chPrefix : "") + languageManager.RELOAD_CONFIG);
+        boolean useSender = sender != null;
+        boolean console = false;
+
+        if(useSender) {
+            console = sender instanceof ConsoleCommandSender;
+            sender.sendMessage((console ? PREFIX_GENERAL : "") + languageManager.RELOAD_CONFIG);
+        }
         headsConfig.reload();
         reducedDebug = headsConfig.get().getBoolean("reducedDebug");
         categoriesBuyable = headsConfig.get().getBoolean("economy.category.buyable");
@@ -159,34 +184,20 @@ public class CustomHeads extends JavaPlugin {
         headsPermanentBuy = headsConfig.get().getBoolean("economy.heads.permanentBuy");
         keepCategoryPermissions = headsConfig.get().getBoolean("economy.category.keepPermissions");
         reloadEconomy();
-        sender.sendMessage((console ? chPrefix : "") + languageManager.RELOAD_HISTORY);
+        if(useSender)
+            sender.sendMessage((console ? PREFIX_GENERAL : "") + languageManager.RELOAD_HISTORY);
         reloadHistoryData();
-        sender.sendMessage((console ? chPrefix : "") + languageManager.RELOAD_LANGUAGE);
+        if(useSender)
+            sender.sendMessage((console ? PREFIX_GENERAL : "") + languageManager.RELOAD_LANGUAGE);
         PlayerWrapper.clearCache();
         if (!reloadTranslations(headsConfig.get().getString("langFile"))) {
-            sender.sendMessage((console ? chPrefix : "") + languageManager.RELOAD_FAILED);
+            if(useSender)
+                sender.sendMessage((console ? PREFIX_GENERAL : "") + languageManager.RELOAD_FAILED);
             return false;
         }
         ScrollableInventory.sortName = new ArrayList<>(Arrays.asList("invalid", languageManager.CYCLE_ARRANGEMENT_DEFAULT, languageManager.CYCLE_ARRANGEMENT_ALPHABETICAL, languageManager.CYCLE_ARRANGEMENT_COLOR));
-        sender.sendMessage((console ? chPrefix : "") + languageManager.RELOAD_SUCCESSFUL);
-        return true;
-    }
-
-    public static boolean silentReload() {
-        headsConfig.reload();
-        reducedDebug = headsConfig.get().getBoolean("reducedDebug");
-        categoriesBuyable = headsConfig.get().getBoolean("economy.category.buyable");
-        headsBuyable = headsConfig.get().getBoolean("economy.heads.buyable");
-        headsPermanentBuy = headsConfig.get().getBoolean("economy.heads.permanentBuy");
-        keepCategoryPermissions = headsConfig.get().getBoolean("economy.category.keepPermissions");
-
-        reloadHistoryData();
-        reloadEconomy();
-        PlayerWrapper.clearCache();
-        if (!reloadTranslations(headsConfig.get().getString("langFile"))) {
-            return false;
-        }
-        ScrollableInventory.sortName = new ArrayList<>(Arrays.asList("invalid", languageManager.CYCLE_ARRANGEMENT_DEFAULT, languageManager.CYCLE_ARRANGEMENT_ALPHABETICAL, languageManager.CYCLE_ARRANGEMENT_COLOR));
+        if(useSender)
+            sender.sendMessage((console ? PREFIX_GENERAL : "") + languageManager.RELOAD_SUCCESSFUL);
         return true;
     }
 
@@ -215,9 +226,9 @@ public class CustomHeads extends JavaPlugin {
             playerDataFile.saveJson();
             headsConfig.get().set("heads", null);
             headsConfig.save();
-            getServer().getConsoleSender().sendMessage(chPrefix + "Successfully converted old Head Data");
+            getServer().getConsoleSender().sendMessage(PREFIX_GENERAL + "Successfully converted old Head Data");
         } catch (Exception e) {
-            getLogger().log(Level.WARNING, "Failed to convert old Head Data...", e);
+            getPluginLogger().log(Level.WARNING, "Failed to convert old Head Data...", e);
         }
     }
 
@@ -228,18 +239,16 @@ public class CustomHeads extends JavaPlugin {
 
     public void onEnable() {
         instance = this;
+        pluginLogger = instance.getLogger();
         if(DEV_BUILD) {
             getServer().getConsoleSender().sendMessage("[CustomHeads]\n§e=============================================================================================\nThis is a Dev Version of the Plugin! Please update update as soon as a new Version gets released\n=============================================================================================");
         }
-        try {
-        } catch(Exception e) {
-            bukkitVersion = Bukkit.getVersion().substring(Bukkit.getVersion().lastIndexOf("("));
-        }
+        bukkitVersion = Bukkit.getVersion().substring(Bukkit.getVersion().lastIndexOf("("));
         Version current = Version.getCurrentVersion();
-        getLogger().info("Using " + current.name() + " as Version Handler");
+        getPluginLogger().info("Using " + current.name() + " as Version Handler");
         if (current == Version.LATEST) {
-            getServer().getConsoleSender().sendMessage(chWarning + "Hrm. Seems like CustomHeads wasn't tested on this Minecraft Version (" + CustomHeads.version + ") yet...");
-            getServer().getConsoleSender().sendMessage(chWarning + "Feel free to join my Discord to know when it gets updated");
+            getServer().getConsoleSender().sendMessage(PREFIX_WARNING + "Hrm. Seems like CustomHeads wasn't tested on this Minecraft Version (" + Version.getRawVersion() + ") yet...");
+            getServer().getConsoleSender().sendMessage(PREFIX_WARNING + "Feel free to join my Discord to know when it gets updated");
         }
         File oldHeadFile;
         if ((oldHeadFile = new File("plugins/CustomHeads", "heads.yml")).exists()) {
@@ -257,14 +266,14 @@ public class CustomHeads extends JavaPlugin {
         // Check if Language File exists
         String selectedLanguage = headsConfig.get().getString("langFile");
         if (!new File("plugins/CustomHeads/language/" + selectedLanguage).exists()) {
-            getServer().getConsoleSender().sendMessage(chWarning + "Could not find language/" + selectedLanguage + ". Looking up available Languages...");
+            getServer().getConsoleSender().sendMessage(PREFIX_WARNING + "Could not find language/" + selectedLanguage + ". Looking up available Languages...");
             Utils.getAvailableLanguages(new FetchResult<List<String>>() {
                 public void success(List<String> strings) {
                     if(strings.contains(selectedLanguage + ".zip")) {
-                        getServer().getConsoleSender().sendMessage(chPrefix + "§7Downloading " + selectedLanguage + "...");
+                        getServer().getConsoleSender().sendMessage(PREFIX_GENERAL + "§7Downloading " + selectedLanguage + "...");
                         GitHubDownloader gitHubDownloader = new GitHubDownloader("IHasName", "CustomHeads").enableAutoUnzipping();
                         gitHubDownloader.download(getDescription().getVersion(), selectedLanguage + ".zip", new File(getDataFolder(), "language"), () -> {
-                            getServer().getConsoleSender().sendMessage(chPrefix + "§7Done downloading! Have fun with the Plugin =D");
+                            getServer().getConsoleSender().sendMessage(PREFIX_GENERAL + "§7Done downloading! Have fun with the Plugin =D");
                             Utils.runSynced(new BukkitRunnable() {
                                 public void run() {
                                     loadRest();
@@ -272,7 +281,7 @@ public class CustomHeads extends JavaPlugin {
                             });
                         });
                     } else {
-                        getLogger().log(Level.WARNING, "Couldn't find selected Language. Using default instead");
+                        getPluginLogger().log(Level.WARNING, "Couldn't find selected Language. Using default instead");
                         downloadDefaultLanguage();
                     }
                 }
@@ -280,12 +289,12 @@ public class CustomHeads extends JavaPlugin {
                 public void error(Exception exception) {
                     if(exception instanceof GitHubDownloader.RateLimitExceededException) {
                         GitHubDownloader.RateLimitExceededException rateLimitException = (GitHubDownloader.RateLimitExceededException)exception;
-                        getLogger().log(Level.WARNING, "GitHub Rate-Limited the Plugins Requests. Please try again later. (Time until Reset: " + rateLimitException.getTimeUntilReset() + ")");
-                        getLogger().log(Level.WARNING, "If this Error continues to occur try downloading it manually from Github (https://github.com/IHasName/CustomHeads/releases/download/" + instance.getDescription().getVersion() + "/en_EN.zip)");
-                        getLogger().log(Level.INFO, "A Tutorial on how to do that can be found on the Wiki");
+                        getPluginLogger().log(Level.WARNING, "GitHub Rate-Limited the Plugins Requests. Please try again later. (Time until Reset: " + rateLimitException.getTimeUntilReset() + ")");
+                        getPluginLogger().log(Level.WARNING, "If this Error continues to occur try downloading it manually from Github (https://github.com/IHasName/CustomHeads/releases/download/" + instance.getDescription().getVersion() + "/en_EN.zip)");
+                        getPluginLogger().log(Level.INFO, "A Tutorial on how to do that can be found on the Wiki");
                         Bukkit.getPluginManager().disablePlugin(instance);
                     } else {
-                        getLogger().log(Level.WARNING, "Failed to lookup Languages trying to use default instead");
+                        getPluginLogger().log(Level.WARNING, "Failed to lookup Languages trying to use default instead");
                         downloadDefaultLanguage();
                     }
                 }
@@ -307,11 +316,11 @@ public class CustomHeads extends JavaPlugin {
                     file.delete();
                 }
             }
-            getServer().getConsoleSender().sendMessage(chWarning + "I wasn't able to find the Default Language File on your Server...");
-            getServer().getConsoleSender().sendMessage(chPrefix + "§7Downloading necessary Files...");
+            getServer().getConsoleSender().sendMessage(PREFIX_WARNING + "I wasn't able to find the Default Language File on your Server...");
+            getServer().getConsoleSender().sendMessage(PREFIX_GENERAL + "§7Downloading necessary Files...");
             GitHubDownloader gitHubDownloader = new GitHubDownloader("IHasName", "CustomHeads").enableAutoUnzipping();
             gitHubDownloader.download(getDescription().getVersion(), "en_EN.zip", new File(getDataFolder(), "language"), () -> {
-                getServer().getConsoleSender().sendMessage(chPrefix + "§7Done downloading! Have fun with the Plugin =D");
+                getServer().getConsoleSender().sendMessage(PREFIX_GENERAL + "§7Done downloading! Have fun with the Plugin =D");
                 Utils.runSynced(new BukkitRunnable() {
                     public void run() {
                         loadRest();
@@ -341,7 +350,7 @@ public class CustomHeads extends JavaPlugin {
         // Convert old Head-Data if present
         playerDataFile = new JsonFile("playerData.json");
         if (headsConfig.get().contains("heads")) {
-            Bukkit.getConsoleSender().sendMessage(chPrefix + "Found old Head Data! Trying to convert...");
+            Bukkit.getConsoleSender().sendMessage(PREFIX_GENERAL + "Found old Head Data! Trying to convert...");
             convertOldHeadData();
         }
 
@@ -349,7 +358,7 @@ public class CustomHeads extends JavaPlugin {
 
         // Load Language
         if (!reloadTranslations(headsConfig.get().getString("langFile"))) {
-            getServer().getConsoleSender().sendMessage(chError + "Unable to load Language from language/" + headsConfig.get().getString("langFile"));
+            getServer().getConsoleSender().sendMessage(PREFIX_ERROR + "Unable to load Language from language/" + headsConfig.get().getString("langFile"));
             Bukkit.getServer().getPluginManager().disablePlugin(instance);
             return;
         }
@@ -359,7 +368,7 @@ public class CustomHeads extends JavaPlugin {
         // Register Listeners
         manager.registerEvents(new InventoryListener(), instance);
         manager.registerEvents(new OtherListeners(), instance);
-        manager.registerEvents(new CategoryEditorListener(), instance);
+//        manager.registerEvents(new CategoryEditorListener(), instance);
 
         // Reload Configs
         reloadHistoryData();
@@ -378,7 +387,7 @@ public class CustomHeads extends JavaPlugin {
             spigetFetcher.fetchUpdates(new SpigetResourceFetcher.FetchResult() {
                 public void updateAvailable(SpigetResourceFetcher.ResourceRelease release, SpigetResourceFetcher.ResourceUpdate update) {
                     if (headsConfig.get().getBoolean("update-notifications.console")) {
-                        getServer().getConsoleSender().sendMessage(chPrefix + "§bNew Update for CustomHeads found! v" + release.getReleaseName() + " (Running on v" + getDescription().getVersion() + ") - You can Download it here https://www.spigotmc.org/resources/29057");
+                        getServer().getConsoleSender().sendMessage(PREFIX_GENERAL + "§bNew Update for CustomHeads found! v" + release.getReleaseName() + " (Running on v" + getDescription().getVersion() + ") - You can Download it here https://www.spigotmc.org/resources/29057");
                     }
                 }
 
@@ -392,11 +401,34 @@ public class CustomHeads extends JavaPlugin {
             initMetrics();
         }
 
-        // -- Timers
+        Utils.runAsync(new BukkitRunnable() {
+            public void run() {
+                doDelayedTasks();
+            }
+        });
+        initAsyncTimers();
+
+        isInit = true;
+    }
+
+    private void doDelayedTasks() {
+        if(!delayedTasks.isEmpty()) {
+            CustomHeads.getPluginLogger().info("Running delayed Tasks...");
+            delayedTasks.forEach(task -> {
+                try {
+                    task.call();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
+        }
+    }
+
+    private void initAsyncTimers() {
         // Clear Cache every 30 Minutes
         Utils.runAsyncTimer(new BukkitRunnable() {
             public void run() {
-                uuidCache.clear();
+                UUID_CACHE.clear();
                 HeadFontType.clearCache();
                 GitHubDownloader.clearCache();
                 GameProfileBuilder.cache.clear();
@@ -406,48 +438,44 @@ public class CustomHeads extends JavaPlugin {
         }, 36000, 36000);
 
         // Animation Timer
-        Utils.runAsyncTimer(
-            new BukkitRunnable() {
-                public void run() {
-                    getServer().getOnlinePlayers().stream().filter(player -> player.getOpenInventory() != null && player.getOpenInventory().getType() == InventoryType.CHEST && CustomHeads.getLooks().getMenuTitles().contains(player.getOpenInventory().getTitle())).collect(Collectors.toList()).forEach(player -> {
-                        Inventory targetInventory = player.getOpenInventory().getTopInventory();
-                        ItemStack[] inventoryContent = targetInventory.getContents();
-                        for (int i = 0; i < inventoryContent.length; i++) {
-                            if (inventoryContent[i] == null) continue;
-                            ItemStack contentItem = inventoryContent[i];
-                            if (CustomHeads.getTagEditor().getTags(contentItem).contains("openCategory") && CustomHeads.getTagEditor().getTags(contentItem).contains("icon-loop")) {
-                                String[] categoryArgs = CustomHeads.getTagEditor().getTags(contentItem).get(CustomHeads.getTagEditor().indexOf(contentItem, "openCategory") + 1).split("#>");
-                                if (categoryArgs[0].equals("category")) {
-                                    CustomHeadsPlayer customHeadsPlayer = api.wrapPlayer(player);
-                                    Category category = CustomHeads.getCategoryManager().getCategory(categoryArgs[1]);
-                                    ItemStack nextIcon = category.nextIcon();
-                                    boolean bought = customHeadsPlayer.getUnlockedCategories(true).contains(category);
-                                    nextIcon = new ItemEditor(nextIcon)
-                                            .setDisplayName(customHeadsPlayer.getUnlockedCategories(CustomHeads.hasEconomy() && !CustomHeads.keepCategoryPermissions()).contains(category) ? "§a" + nextIcon.getItemMeta().getDisplayName() : "§7" + ChatColor.stripColor(nextIcon.getItemMeta().getDisplayName()) + " " + CustomHeads.getLanguageManager().LOCKED)
-                                            .addLoreLine(CustomHeads.hasEconomy() && CustomHeads.categoriesBuyable() ? bought ? CustomHeads.getLanguageManager().ECONOMY_BOUGHT : Utils.getCategoryPriceFormatted(category, true) + "\n" + CustomHeads.getLanguageManager().ECONOMY_BUY_PROMPT : null)
-                                            .addLoreLines(hasPermission(player, "heads.view.permissions") ? Arrays.asList(" ", "§7§oPermission: " + category.getPermission()) : null)
-                                            .getItem();
-                                    if (CustomHeads.hasEconomy() && !CustomHeads.keepCategoryPermissions()) {
-                                        if (!bought) {
-                                            nextIcon = CustomHeads.getTagEditor().addTags(nextIcon, "buyCategory", category.getId());
-                                        }
+        Utils.runAsyncTimer(new BukkitRunnable() {
+            public void run() {
+                getServer().getOnlinePlayers().stream().filter(player -> player.getOpenInventory() != null && player.getOpenInventory().getType() == InventoryType.CHEST && CustomHeads.getLooks().getMenuTitles().contains(player.getOpenInventory().getTitle())).collect(Collectors.toList()).forEach(player -> {
+                    Inventory targetInventory = player.getOpenInventory().getTopInventory();
+                    ItemStack[] inventoryContent = targetInventory.getContents();
+                    for (int i = 0; i < inventoryContent.length; i++) {
+                        if (inventoryContent[i] == null) continue;
+                        ItemStack contentItem = inventoryContent[i];
+                        if (CustomHeads.getTagEditor().getTags(contentItem).contains("openCategory") && CustomHeads.getTagEditor().getTags(contentItem).contains("icon-loop")) {
+                            String[] categoryArgs = CustomHeads.getTagEditor().getTags(contentItem).get(CustomHeads.getTagEditor().indexOf(contentItem, "openCategory") + 1).split("#>");
+                            if (categoryArgs[0].equals("category")) {
+                                CustomHeadsPlayer customHeadsPlayer = api.wrapPlayer(player);
+                                Category category = CustomHeads.getCategoryManager().getCategory(categoryArgs[1]);
+                                ItemStack nextIcon = category.nextIcon();
+                                boolean bought = customHeadsPlayer.getUnlockedCategories(true).contains(category);
+                                nextIcon = new ItemEditor(nextIcon)
+                                        .setDisplayName(customHeadsPlayer.getUnlockedCategories(CustomHeads.hasEconomy() && !CustomHeads.keepCategoryPermissions()).contains(category) ? "§a" + nextIcon.getItemMeta().getDisplayName() : "§7" + ChatColor.stripColor(nextIcon.getItemMeta().getDisplayName()) + " " + CustomHeads.getLanguageManager().LOCKED)
+                                        .addLoreLine(CustomHeads.hasEconomy() && CustomHeads.categoriesBuyable() ? bought ? CustomHeads.getLanguageManager().ECONOMY_BOUGHT : Utils.getCategoryPriceFormatted(category, true) + "\n" + CustomHeads.getLanguageManager().ECONOMY_BUY_PROMPT : null)
+                                        .addLoreLines(hasPermission(player, "heads.view.permissions") ? Arrays.asList(" ", "§7§oPermission: " + category.getPermission()) : null)
+                                        .getItem();
+                                if (CustomHeads.hasEconomy() && !CustomHeads.keepCategoryPermissions()) {
+                                    if (!bought) {
+                                        nextIcon = CustomHeads.getTagEditor().addTags(nextIcon, "buyCategory", category.getId());
                                     }
-                                    contentItem = nextIcon;
                                 }
-                            }
-                            if (tagEditor.hasMyTags(contentItem)) {
-                                contentItem = CustomHeads.getTagEditor().addTags(contentItem, "menuID", CustomHeads.getLooks().getIDbyTitle(player.getOpenInventory().getTitle()));
-                            }
-                            if(!contentItem.equals(inventoryContent[i])) {
-                                targetInventory.setItem(i, contentItem);
+                                contentItem = nextIcon;
                             }
                         }
-                    });
-                }
+                        if (tagEditor.hasMyTags(contentItem)) {
+                            contentItem = CustomHeads.getTagEditor().addTags(contentItem, "menuID", CustomHeads.getLooks().getIDbyTitle(player.getOpenInventory().getTitle()));
+                        }
+                        if(!contentItem.equals(inventoryContent[i])) {
+                            targetInventory.setItem(i, contentItem);
+                        }
+                    }
+                });
+            }
         }, 0, 20);
-
-        isInit = true;
     }
-
 
 }

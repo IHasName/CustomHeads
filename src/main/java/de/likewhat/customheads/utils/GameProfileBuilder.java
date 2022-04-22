@@ -7,7 +7,6 @@ import com.mojang.authlib.properties.Property;
 import com.mojang.authlib.properties.PropertyMap;
 import com.mojang.util.UUIDTypeAdapter;
 import de.likewhat.customheads.CustomHeads;
-import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.BufferedReader;
@@ -25,17 +24,17 @@ public class GameProfileBuilder {
     private static final String JSON_CAPE = "{\"timestamp\":%d,\"profileId\":\"%s\",\"profileName\":\"%s\",\"isPublic\":true,\"textures\":{\"SKIN\":{\"url\":\"%s\"},\"CAPE\":{\"url\":\"%s\"}}}";
     private static final String JSON_SKIN = "{\"timestamp\":%d,\"profileId\":\"%s\",\"profileName\":\"%s\",\"isPublic\":true,\"textures\":{\"SKIN\":{\"url\":\"%s\"}}}";
     private static final String SERVICE_URL = "https://sessionserver.mojang.com/session/minecraft/profile/%s";
-    private static Gson gson = new GsonBuilder().disableHtmlEscaping().registerTypeAdapter(UUID.class, new UUIDTypeAdapter()).registerTypeAdapter(GameProfile.class, new GameProfileSerializer()).registerTypeAdapter(PropertyMap.class, new PropertyMap.Serializer()).create();
+    private static final Gson GSON = new GsonBuilder().disableHtmlEscaping().registerTypeAdapter(UUID.class, new UUIDTypeAdapter()).registerTypeAdapter(GameProfile.class, new GameProfileSerializer()).registerTypeAdapter(PropertyMap.class, new PropertyMap.Serializer()).create();
 
     public static final HashMap<UUID, CachedProfile> cache = new HashMap<>();
-    private static long cacheTime = 6000;
+    private static final long CACHE_TIME = 6000;
 
     public static String gameProfileToString(GameProfile profile) {
-        return gson.toJson(profile);
+        return GSON.toJson(profile);
     }
 
     public static GameProfile gameProfileFromString(String string) {
-        return gson.fromJson(string, GameProfile.class);
+        return GSON.fromJson(string, GameProfile.class);
     }
 
     public static void fetch(UUID uuid, Consumer<GameProfile> consumer) {
@@ -50,20 +49,20 @@ public class GameProfileBuilder {
                         connection.setReadTimeout(5000);
 
                         if (connection.getResponseCode() == HttpURLConnection.HTTP_UNAVAILABLE) {
-                            Bukkit.getLogger().warning("Service is unavailable at this moment");
+                            CustomHeads.getPluginLogger().warning("Service is unavailable at this moment");
                             consumer.accept(null);
                             return;
                         }
                         if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
                             BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-                            GameProfile result = gson.fromJson(reader.lines().collect(Collectors.joining()), GameProfile.class);
+                            GameProfile result = GSON.fromJson(reader.lines().collect(Collectors.joining()), GameProfile.class);
                             cache.put(uuid, new CachedProfile(result));
                             consumer.accept(result);
                             return;
                         }
                     }
                 } catch (Exception e) {
-                    Bukkit.getLogger().log(Level.WARNING, "Failed to get Profile of " + uuid.toString(), e);
+                    CustomHeads.getPluginLogger().log(Level.WARNING, "Failed to get Profile of " + uuid.toString(), e);
                 }
                 consumer.accept(null);
             }
@@ -80,7 +79,7 @@ public class GameProfileBuilder {
         args.add(skinUrl);
         if (cape)
             args.add(capeUrl);
-        profile.getProperties().put("textures", new Property("textures", new String(Base64.getEncoder().encode(String.format(cape ? JSON_CAPE : JSON_SKIN, args.toArray(new Object[args.size()])).getBytes()), Charsets.UTF_8)));
+        profile.getProperties().put("textures", new Property("textures", new String(Base64.getEncoder().encode(String.format(cape ? JSON_CAPE : JSON_SKIN, args.toArray(new Object[0])).getBytes()), Charsets.UTF_8)));
         return profile;
     }
 
@@ -130,7 +129,7 @@ public class GameProfileBuilder {
         }
 
         public boolean isValid() {
-            return cacheTime < 0 || (System.currentTimeMillis() - timestamp) < cacheTime;
+            return System.currentTimeMillis() - timestamp < CACHE_TIME;
         }
     }
 

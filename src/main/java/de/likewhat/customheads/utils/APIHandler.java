@@ -34,9 +34,9 @@ import java.util.logging.Level;
 
 public class APIHandler implements CustomHeadsAPI {
 
-    private static Class<?> tileEntitySkullClass, blockPositionClass;
+    private static final Class<?> tileEntitySkullClass, blockPositionClass;
     private static Constructor<?> blockPositionConstructor;
-    private FireworkEffect.Type[] fxTypes = {FireworkEffect.Type.BALL, FireworkEffect.Type.BALL_LARGE, FireworkEffect.Type.BURST, FireworkEffect.Type.STAR};
+    private static final FireworkEffect.Type[] FX_TYPES = {FireworkEffect.Type.BALL, FireworkEffect.Type.BALL_LARGE, FireworkEffect.Type.BURST, FireworkEffect.Type.STAR};
 
     static {
         tileEntitySkullClass = ReflectionUtils.getMCServerClassByName("TileEntitySkull", "world.level.block.entity");
@@ -62,7 +62,7 @@ public class APIHandler implements CustomHeadsAPI {
             Object list = textures.getClass().getMethod("get", int.class).invoke(textures, 0);
             return list.getClass().getMethod("getString", String.class).invoke(list, "Value").toString();
         } catch (Exception e) {
-            Bukkit.getLogger().log(Level.WARNING, "Something went wrong while getting the Texture of an Skull", e);
+            CustomHeads.getPluginLogger().log(Level.WARNING, "Something went wrong while getting the Texture of an Skull", e);
         }
         return null;
     }
@@ -79,13 +79,13 @@ public class APIHandler implements CustomHeadsAPI {
             Object nmsWorld = block.getWorld().getClass().getMethod("getHandle").invoke(block.getWorld());
             return Utils.getTextureFromProfile((GameProfile) tileEntitySkullClass.getMethod("getGameProfile").invoke(tileEntitySkullClass.cast(nmsWorld.getClass().getMethod("getTileEntity", blockPositionClass).invoke(nmsWorld, blockPositionClass.getConstructor(int.class, int.class, int.class).newInstance(block.getX(), block.getY(), block.getZ())))));
         } catch (Exception e) {
-            CustomHeads.getInstance().getLogger().log(Level.WARNING, "Error getting Texture from Skull", e);
+            CustomHeads.getPluginLogger().log(Level.WARNING, "Error getting Texture from Skull", e);
         }
         return null;
     }
 
     public ItemStack getAlphabetHead(String character, HeadFontType font) {
-        if (!font.getCharacters().containsKey(character.charAt(0)))
+        if (!font.getCharacterItems().containsKey(character.charAt(0)))
             throw new UnsupportedOperationException("Unsupported Character: '" + character.charAt(0) + "'");
         return font.getCharacter(character.charAt(0));
     }
@@ -112,7 +112,7 @@ public void setSkull(Block block, String texture, BlockFace blockFace) {
                 skull.setRawData((byte) 1);
                 break;
             default:
-                Utils.logOnce(Level.WARNING, "Falling back to newest Method since the current Version hasn't been tested yet... (This may not work so here goes)");
+                LoggingUtils.logOnce(Level.WARNING, "Falling back to newest Method since the current Version hasn't been tested yet... (This may not work so here goes)");
             case 13:
             case 14:
             case 15:
@@ -147,7 +147,7 @@ public void setSkull(Block block, String texture, BlockFace blockFace) {
         skull.update();
         setSkullTexture(block, texture);
     } catch (Exception e) {
-        CustomHeads.getInstance().getLogger().log(Level.WARNING, "Error placing Skull", e);
+        CustomHeads.getPluginLogger().log(Level.WARNING, "Error placing Skull", e);
     }
 }
 
@@ -157,7 +157,7 @@ public void setSkull(Block block, String texture, BlockFace blockFace) {
             Object craftSkull = tileEntitySkullClass.cast(nmsWorld.getClass().getMethod("getTileEntity", blockPositionClass).invoke(nmsWorld, blockPositionConstructor.newInstance(block.getX(), block.getY(), block.getZ())));
             tileEntitySkullClass.getMethod("setGameProfile", GameProfile.class).invoke(craftSkull, GameProfileBuilder.createProfileWithTexture(texture));
         } catch (Exception e) {
-            CustomHeads.getInstance().getLogger().log(Level.WARNING, "Failed to set Skull Texture", e);
+            CustomHeads.getPluginLogger().log(Level.WARNING, "Failed to set Skull Texture", e);
         }
     }
 
@@ -190,7 +190,7 @@ public void setSkull(Block block, String texture, BlockFace blockFace) {
                 Firework f = (Firework) location.getWorld().spawnEntity(location, EntityType.FIREWORK);
                 FireworkMeta fm = f.getFireworkMeta();
                 FireworkEffect.Builder fx = FireworkEffect.builder();
-                fx.flicker(random.nextBoolean()).trail(random.nextBoolean()).with(fxTypes[random.nextInt(fxTypes.length)]);
+                fx.flicker(random.nextBoolean()).trail(random.nextBoolean()).with(FX_TYPES[random.nextInt(FX_TYPES.length)]);
                 int c = random.nextInt(2) + 2;
                 for (int i = 0; i < c; i++) {
                     fx.withColor(Color.fromRGB(random.nextInt(200) + 50, random.nextInt(200) + 50, random.nextInt(200) + 50));

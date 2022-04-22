@@ -17,9 +17,9 @@ import org.bukkit.inventory.ItemStack;
 @Getter
 public class CustomHead extends ItemStack {
 
-    private Category originCategory;
-    private int price;
-    private int id;
+    private final Category originCategory;
+    private final int price;
+    private final int id;
 
     public CustomHead(ItemStack itemStack, Category originCategory, int id, int price) {
         super(CustomHeads.getTagEditor().addTags(itemStack, "headID", originCategory.getId() + ":" + id, "price", String.valueOf(price)));

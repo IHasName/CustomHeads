@@ -19,57 +19,57 @@ import java.util.*;
 
 public class ScrollableInventory {
 
-    private static List<Comparator<ItemStack>> sorting = new ArrayList<>(Arrays.asList((o1, o2) -> 0, Comparator.comparing(item -> ChatColor.stripColor(Utils.format(item.getItemMeta().getDisplayName()))), Comparator.comparing(item -> item.getItemMeta().getDisplayName().substring(1, 2))));
+    private static final List<Comparator<ItemStack>> SORTING = new ArrayList<>(Arrays.asList((o1, o2) -> 0, Comparator.comparing(item -> ChatColor.stripColor(Utils.format(item.getItemMeta().getDisplayName()))), Comparator.comparing(item -> item.getItemMeta().getDisplayName().substring(1, 2))));
     public static List<String> sortName = new ArrayList<>(Arrays.asList("invalid", CustomHeads.getLanguageManager().CYCLE_ARRANGEMENT_DEFAULT, CustomHeads.getLanguageManager().CYCLE_ARRANGEMENT_ALPHABETICAL, CustomHeads.getLanguageManager().CYCLE_ARRANGEMENT_COLOR));
     private final long cacheTime;
 
-    private static HashMap<String, ScrollableInventory> cachedInventories = new HashMap<>();
-    private HashMap<Integer, ItemStack> buttons = new HashMap<>();
+    private static final HashMap<String, ScrollableInventory> CACHED_INVENTORIES = new HashMap<>();
+    private final HashMap<Integer, ItemStack> buttons = new HashMap<>();
 
-    private Language language = CustomHeads.getLanguageManager();
+    private final Language language = CustomHeads.getLanguageManager();
     private List<ItemStack> content;
     private LinkedList<ItemStack> defContent;
-    private boolean clonable = false;
+    private boolean contentClonable = false;
     private boolean contentMovable = true;
     private int currentArrangement;
     private int currentPage = 1;
 
-    private Inventory inventory;
+    private final Inventory inventory;
     private String[] extraTags;
-    private String uid;
+    private final String uid;
 
     public ScrollableInventory(String title) {
         this(title, new ArrayList<>());
     }
 
     public ScrollableInventory(String title, List<ItemStack> content) {
-        inventory = Bukkit.createInventory(null, 54, title);
-        uid = Utils.randomAlphabetic(6);
+        this.inventory = Bukkit.createInventory(null, 54, title);
+        this.uid = Utils.randomAlphabetic(6);
         setContent(content);
-        cachedInventories.put(uid, this);
-        cacheTime = System.currentTimeMillis();
+        CACHED_INVENTORIES.put(this.uid, this);
+        this.cacheTime = System.currentTimeMillis();
     }
 
     public static HashMap<String, ScrollableInventory> getInventories() {
-        return cachedInventories;
+        return CACHED_INVENTORIES;
     }
 
     public static ScrollableInventory getInventoryByID(String uid) {
-        return cachedInventories.get(uid);
+        return CACHED_INVENTORIES.get(uid);
     }
 
     public static void clearCache() {
-        if (cachedInventories.isEmpty()) return;
-        cachedInventories.keySet().removeIf(uid -> System.currentTimeMillis() - cachedInventories.get(uid).cacheTime > 6000);
+        if (CACHED_INVENTORIES.isEmpty()) return;
+        CACHED_INVENTORIES.keySet().removeIf(uid -> System.currentTimeMillis() - CACHED_INVENTORIES.get(uid).cacheTime > 6000);
     }
 
     public ScrollableInventory setBarItem(int index, ItemStack itemStack) {
-        buttons.put(index, itemStack);
+        this.buttons.put(index, itemStack);
         return this;
     }
 
     public ScrollableInventory setContentsClonable(boolean clonable) {
-        this.clonable = clonable;
+        this.contentClonable = clonable;
         return this;
     }
 
@@ -86,7 +86,7 @@ public class ScrollableInventory {
     public void refreshContent() {
         for (int i = 0; i < content.size(); i++) {
             ItemStack item = content.get(i);
-            if (clonable)
+            if (contentClonable)
                 item = CustomHeads.getTagEditor().addTags(item, "clonable");
             if (!contentMovable)
                 item = CustomHeads.getTagEditor().addTags(item, "blockMoving");
@@ -95,11 +95,11 @@ public class ScrollableInventory {
     }
 
     public void refreshCurrentPage() {
-        setPage(currentPage);
+        setPage(this.currentPage);
     }
 
     public void setPage(int page) {
-        currentPage = page;
+        this.currentPage = page;
 
         for (int i = 0; i <= 45; i++)
             inventory.setItem(i, null);
@@ -126,12 +126,12 @@ public class ScrollableInventory {
     }
 
     public int reArrangeContents(int method) {
-        if ((currentArrangement = method < 1 ? 1 : Math.min(method, (sorting.size() + 1))) == 1) {
-            content = new ArrayList<>(defContent);
+        if ((currentArrangement = method < 1 ? 1 : Math.min(method, (SORTING.size() + 1))) == 1) {
+            this.content = new ArrayList<>(defContent);
         } else {
-            content.sort(sorting.get(currentArrangement - 1));
+            this.content.sort(SORTING.get(currentArrangement - 1));
         }
-        setPage(currentPage);
+        setPage(this.currentPage);
         return currentArrangement;
     }
 
@@ -143,25 +143,25 @@ public class ScrollableInventory {
     }
 
     public int nextArrangement() {
-        return reArrangeContents(++currentArrangement > sorting.size() ? currentArrangement = 1 : currentArrangement);
+        return reArrangeContents(++currentArrangement > SORTING.size() ? currentArrangement = 1 : currentArrangement);
     }
 
     public void nextPage() {
-        if (hasPage(currentPage + 1))
-            setPage(++currentPage);
+        if (hasPage(this.currentPage + 1))
+            setPage(++this.currentPage);
     }
 
     public void previousPage() {
-        if (hasPage(currentPage - 1))
-            setPage(--currentPage);
+        if (hasPage(this.currentPage - 1))
+            setPage(--this.currentPage);
     }
 
     public String[] getExtraTags() {
-        return extraTags;
+        return this.extraTags;
     }
 
     public ScrollableInventory setExtraTags(String... tags) {
-        extraTags = tags;
+        this.extraTags = tags;
         return this;
     }
 
@@ -178,7 +178,7 @@ public class ScrollableInventory {
 
     public int getPages() {
         int p;
-        return (p = (int) Math.ceil(content.size() / 45.0)) < 1 ? 1 : p;
+        return (p = (int) Math.ceil(this.content.size() / 45.0)) < 1 ? 1 : p;
     }
 
     public List<ItemStack> getContentFromPage(int page, boolean tags) {
@@ -188,11 +188,11 @@ public class ScrollableInventory {
             throw new IllegalArgumentException("Unknown Page " + page);
         int start = (page - 1) * 45;
         int end = page * 45;
-        return contentCopy.subList(start, content.size() > end ? end : content.size());
+        return contentCopy.subList(start, Math.min(this.content.size(), end));
     }
 
     public void setItemOnCurrentPage(int index, ItemStack to) {
-        setItem(currentPage, index, to);
+        setItem(this.currentPage, index, to);
     }
 
     public void setItem(int page, int index, ItemStack to) {
@@ -207,6 +207,6 @@ public class ScrollableInventory {
     }
 
     public int getCurrentPage() {
-        return currentPage;
+        return this.currentPage;
     }
 }

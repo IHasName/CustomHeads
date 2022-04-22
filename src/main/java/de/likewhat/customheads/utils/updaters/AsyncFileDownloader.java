@@ -1,8 +1,8 @@
 package de.likewhat.customheads.utils.updaters;
 
 import com.google.common.io.Files;
+import de.likewhat.customheads.CustomHeads;
 import de.likewhat.customheads.utils.Utils;
-import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
@@ -21,9 +21,9 @@ import java.nio.channels.ReadableByteChannel;
 public class AsyncFileDownloader {
 
     private String userAgent = "Mozilla/5.0 (Windows NT 6.3; Trident/7.0; rv:11.0) like Gecko";
-    private String fileName;
-    private String path;
-    private String url;
+    private final String fileName;
+    private final String path;
+    private final String url;
 
     public AsyncFileDownloader(String url, String fileName, String toPath) {
         this.url = url;
@@ -36,7 +36,7 @@ public class AsyncFileDownloader {
     }
 
     public void startDownload(FileDownloaderCallback callback) {
-        Bukkit.getLogger().info("Downloading " + fileName + "...");
+        CustomHeads.getPluginLogger().info("Downloading " + fileName + "...");
         Utils.runAsync(new BukkitRunnable() {
             public void run() {
                 try {

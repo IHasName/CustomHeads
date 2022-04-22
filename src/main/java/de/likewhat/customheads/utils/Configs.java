@@ -20,18 +20,19 @@ public class Configs {
 
     private File file = null;
 
-    private boolean inPlugin;
+    private final boolean internalFile;
 
-    private String subfolder;
-    private String filename;
+    private final String subfolder;
+    private final String filename;
 
-    private Plugin plugin;
+    private final Plugin plugin;
 
     public Configs(Plugin plugin, String filename, boolean internalFile, String... subfolder) {
         this.plugin = plugin;
         this.filename = filename;
         this.subfolder = subfolder.length > 0 ? "plugins/" + plugin.getName() + "/" + subfolder[0] : "plugins/" + plugin.getName();
-        if (inPlugin = internalFile) {
+        this.internalFile = internalFile;
+        if (this.internalFile) {
             Utils.saveInternalFile(filename, this.subfolder);
         }
         get().options().copyDefaults(true);
@@ -53,21 +54,21 @@ public class Configs {
     }
 
     public void reload() {
-        file = new File(subfolder, filename);
-        config = YamlConfiguration.loadConfiguration(file);
-        if (inPlugin) {
-            InputStream dataStream = plugin.getResource(filename);
+        this.file = new File(this.subfolder, this.filename);
+        this.config = YamlConfiguration.loadConfiguration(this.file);
+        if (this.internalFile) {
+            InputStream dataStream = this.plugin.getResource(this.filename);
             if (dataStream != null) {
-                config.setDefaults(YamlConfiguration.loadConfiguration(new InputStreamReader(dataStream)));
+                this.config.setDefaults(YamlConfiguration.loadConfiguration(new InputStreamReader(dataStream)));
             }
         }
     }
 
     public File getFile() {
-        if (file == null) {
+        if (this.file == null) {
             reload();
         }
-        return file;
+        return this.file;
     }
 
 }

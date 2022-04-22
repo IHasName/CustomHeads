@@ -142,7 +142,7 @@ public class CategorySetup {
                     category.setPrice(price);
                     category.setIcons(Arrays.asList(new ItemEditor(icon).setDisplayName(name).setLore(description).getItem()));
                     CustomHeads.getCategoryManager().updateCategory(category, CustomHeads.getLanguageManager().getCurrentLanguage());
-                    CustomHeads.silentReload();
+                    CustomHeads.reload(null);
                     player.closeInventory();
                     player.sendMessage("Successfully created Category");
                 }

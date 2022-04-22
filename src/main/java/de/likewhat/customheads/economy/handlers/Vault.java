@@ -29,7 +29,7 @@ public class Vault implements EconomyHandler {
     }
 
     public String getName() {
-        return "Vault";
+        return "Vault" + (economyPlugin == null ? "" : (" using " + economyPlugin.getName()));
     }
 
     public String currencyNameSingular() {

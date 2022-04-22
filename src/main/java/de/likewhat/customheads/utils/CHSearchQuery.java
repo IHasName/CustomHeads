@@ -4,6 +4,8 @@ import de.likewhat.customheads.CustomHeads;
 import de.likewhat.customheads.api.CustomHeadsPlayer;
 import de.likewhat.customheads.category.Category;
 import de.likewhat.customheads.category.CustomHead;
+import de.likewhat.customheads.utils.reflection.helpers.Version;
+import lombok.Getter;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -22,12 +24,13 @@ import java.util.stream.Collectors;
 
 public class CHSearchQuery {
 
-    private List<String> badVersions = Arrays.asList("v1_8_R1", "v1_8_R2", "v1_8_R3");
-    private List<CustomHead> results;
+    private static final List<String> badVersions = Arrays.asList("v1_8_R1", "v1_8_R2", "v1_8_R3");
+    private final List<CustomHead> results;
 
     private boolean recordHistory = true;
 
-    private String search;
+    @Getter
+    private final String search;
 
     public CHSearchQuery(String search) {
         this.search = search;
@@ -58,7 +61,7 @@ public class CHSearchQuery {
             customHeadsPlayer.getSearchHistory().addEntry(search);
 
         String title = CustomHeads.getLanguageManager().SEARCH_TITLE.replace("{RESULTS}", "" + results.size());
-        title = badVersions.contains(CustomHeads.version) ? title.contains("{short}") ? title.substring(0, title.lastIndexOf("{short}") >= 32 ? 29 : title.lastIndexOf("{short}")) + "..." : title.substring(0, title.length() >= 32 ? 29 : title.length()) + "..." : title.replace("{short}", "");
+        title = badVersions.contains(Version.getRawVersion()) ? title.contains("{short}") ? title.substring(0, title.lastIndexOf("{short}") >= 32 ? 29 : title.lastIndexOf("{short}")) + "..." : title.substring(0, title.length() >= 32 ? 29 : title.length()) + "..." : title.replace("{short}", "");
         List<ItemStack> heads = new ArrayList<>();
         results.forEach(customHead -> {
             ItemEditor itemEditor = new ItemEditor(customHead);

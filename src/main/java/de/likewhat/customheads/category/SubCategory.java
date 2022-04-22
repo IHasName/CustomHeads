@@ -18,11 +18,9 @@ import java.util.List;
 @Getter
 public class SubCategory extends BaseCategory {
 
-    private Category originCategory;
-
-    private ItemStack categoryIcon;
-
-    private List<CustomHead> heads;
+    private final Category originCategory;
+    private final ItemStack categoryIcon;
+    private final List<CustomHead> heads;
 
     SubCategory(String id, String name, ItemStack categoryIcon, Category originCategory, List<CustomHead> heads) {
         super(id, name, "");

@@ -13,7 +13,7 @@ public interface EconomyHandler {
     EconomyCallback handleWithdraw(Player player, double amount);
 
     /**
-     * Whether or not the Plugin/Handler is currently able to handle incoming Economy Requests
+     * Whether the Plugin/Handler is currently able to handle incoming Economy Requests
      * Example: {@link de.likewhat.customheads.economy.handlers.Vault}
      * @return true/false
      */

@@ -40,12 +40,12 @@ import static de.likewhat.customheads.utils.Utils.*;
 
 public class InventoryListener implements Listener {
 
-    private static HashMap<UUID, String> lastActiveMenu = new HashMap<>();
+    private static final HashMap<UUID, String> LAST_ACTIVE_MENU = new HashMap<>();
 
     public static String getLastMenu(UUID uuid, boolean remove) {
-        String last = lastActiveMenu.get(uuid);
+        String last = LAST_ACTIVE_MENU.get(uuid);
         if (remove) {
-            lastActiveMenu.remove(uuid);
+            LAST_ACTIVE_MENU.remove(uuid);
         }
         return last;
     }
@@ -193,7 +193,7 @@ public class InventoryListener implements Listener {
         if (itemTags.contains("menuID")) {
             menuID = itemTags.get(itemTags.indexOf("menuID") + 1).toLowerCase();
             //player.sendMessage("menuID present: " + menuID);
-            lastActiveMenu.put(player.getUniqueId(), menuID);
+            LAST_ACTIVE_MENU.put(player.getUniqueId(), menuID);
         }
 
         if (itemTags.contains("blockMoving")) {
@@ -298,7 +298,7 @@ public class InventoryListener implements Listener {
                     if (itemTags.contains("openScInv")) {
                         ScrollableInventory inv = ScrollableInventory.getInventoryByID(itemTags.get(itemTags.indexOf("openScInv") + 1));
                         List<ItemStack> characterList = new ArrayList<>();
-                        font.getCharacters().forEach((character, customHead) -> characterList.add(CustomHeads.getTagEditor().addTags(new ItemEditor(customHead).setDisplayName("§b" + (character.equals(' ') ? "BLANK" : character)).getItem(), "fontName", font.getFontName(), "character", "" + character, "editFont", "select")));
+                        font.getCharacterItems().forEach((character, customHead) -> characterList.add(CustomHeads.getTagEditor().addTags(new ItemEditor(customHead).setDisplayName("§b" + (character.equals(' ') ? "BLANK" : character)).getItem(), "fontName", font.getFontName(), "character", "" + character, "editFont", "select")));
                         characterList.sort(Comparator.comparing(itemStack -> itemStack.getItemMeta().getDisplayName()));
                         inv.setContent(characterList);
                         inv.refreshCurrentPage();
@@ -337,8 +337,8 @@ public class InventoryListener implements Listener {
                         } else {
                             if (category.hasSubCategories()) {
                                 openCategory(category, player, new String[] {"openCategory", "subCategory#>" + category.getId()});
-                            } else if (lastActiveMenu.containsKey(player.getUniqueId())){
-                                openCategory(category, player, new String[]{"openMenu", lastActiveMenu.get(player.getUniqueId())});
+                            } else if (LAST_ACTIVE_MENU.containsKey(player.getUniqueId())){
+                                openCategory(category, player, new String[]{"openMenu", LAST_ACTIVE_MENU.get(player.getUniqueId())});
                             } else {
                                 player.closeInventory();
                             }
@@ -417,7 +417,7 @@ public class InventoryListener implements Listener {
             }
             String mId = itemTags.get(itemTags.indexOf("openMenu") + 1).toLowerCase();
             Inventory menu = CustomHeads.getLooks().getMenu(mId);
-            lastActiveMenu.put(player.getUniqueId(), mId);
+            LAST_ACTIVE_MENU.put(player.getUniqueId(), mId);
             if (menu != null)
                 player.openInventory(menu);
         }
@@ -475,7 +475,7 @@ public class InventoryListener implements Listener {
                 event.setCancelled(true);
                 if (!hasPermission(player, "heads.use") || !hasPermission(player, "heads.use.more")) return;
                 ScrollableInventory savedHeads = new ScrollableInventory(CustomHeads.getLanguageManager().SAVED_HEADS_TITLE.replace("{PLAYER}", player.getName()), customHeadsPlayer.getSavedHeads()).setContentsClonable(true);
-                lastActiveMenu.put(player.getUniqueId(), menuID);
+                LAST_ACTIVE_MENU.put(player.getUniqueId(), menuID);
                 savedHeads.setBarItem(1, getBackButton("openMenu", menuID));
                 savedHeads.setBarItem(3, CustomHeads.getTagEditor().setTags(new ItemEditor(Material.PAPER).setDisplayName(CustomHeads.getLanguageManager().ITEMS_INFO).setLore(CustomHeads.getLanguageManager().ITEMS_INFO_LORE).getItem(), "dec", "info-item", "blockMoving"));
                 player.openInventory(savedHeads.getAsInventory());
@@ -626,9 +626,9 @@ public class InventoryListener implements Listener {
     @EventHandler
     public void onEvent(InventoryCloseEvent event) {
         Player player = (Player) event.getPlayer();
-        if(lastActiveMenu.containsKey(player)) {
+        if(LAST_ACTIVE_MENU.containsKey(player)) {
 //            player.sendMessage("Clearing Last Menu");
-            lastActiveMenu.remove(player);
+            LAST_ACTIVE_MENU.remove(player);
         }
     }
 

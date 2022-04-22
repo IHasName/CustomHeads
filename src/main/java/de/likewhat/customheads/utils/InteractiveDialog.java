@@ -19,6 +19,8 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.function.Consumer;
+
 public class InteractiveDialog {
 
     private Inventory dialog;
@@ -27,7 +29,7 @@ public class InteractiveDialog {
 
     private Listener listener;
 
-    InteractiveDialog(String title, SimpleCallback<Boolean> callback, String[] yesLore, String[] noLore, ItemStack middleItem) {
+    InteractiveDialog(String title, Consumer<Boolean> callback, String[] yesLore, String[] noLore, ItemStack middleItem) {
         dialog = Bukkit.createInventory(null, 9 * 3, title);
         yesItem = new ItemEditor(Material.SKULL_ITEM,  3).setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzYxZTViMzMzYzJhMzg2OGJiNmE1OGI2Njc0YTI2MzkzMjM4MTU3MzhlNzdlMDUzOTc3NDE5YWYzZjc3In19fQ==").setDisplayName("§a" + CustomHeads.getLanguageManager().YES).setLore(yesLore).getItem();
         noItem = new ItemEditor(Material.SKULL_ITEM,  3).setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNGJhYzc3NTIwYjllZWU2NTA2OGVmMWNkOGFiZWFkYjAxM2I0ZGUzOTUzZmQyOWFjNjhlOTBlNDg2NjIyNyJ9fX0=").setDisplayName("§c" + CustomHeads.getLanguageManager().NO).setLore(noLore).getItem();
@@ -41,9 +43,9 @@ public class InteractiveDialog {
                 if(event.getView().getTopInventory() == dialog) {
                     ItemStack currentItem = event.getCurrentItem();
                     if (yesItem.equals(currentItem)) {
-                        callback.call(true);
+                        callback.accept(true);
                     } else if (noItem.equals(currentItem)) {
-                        callback.call(false);
+                        callback.accept(false);
                     }
                 }
             }
@@ -63,6 +65,7 @@ public class InteractiveDialog {
         yesItem = null;
         noItem = null;
         HandlerList.unregisterAll(listener);
+        listener = null;
     }
 
     public void showTo(Player player) {

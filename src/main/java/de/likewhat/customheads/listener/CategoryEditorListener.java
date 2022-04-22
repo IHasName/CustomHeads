@@ -16,7 +16,6 @@ import de.likewhat.customheads.utils.CategoryEditor;
 import de.likewhat.customheads.utils.ItemEditor;
 import de.likewhat.customheads.utils.Utils;
 import de.likewhat.customheads.utils.reflection.AnvilGUI;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -220,7 +219,7 @@ public class CategoryEditorListener implements Listener {
                                             writer.write(category.toString());
                                             writer.flush();
                                         } catch (Exception e) {
-                                            Bukkit.getLogger().log(Level.SEVERE, "Failed to rewrite " + category.getName(), e);
+                                            CustomHeads.getPluginLogger().log(Level.SEVERE, "Failed to rewrite " + category.getName(), e);
                                         }
                                         player.sendMessage("§eCEdit: §7Successfully renamed Category to §a" + newCategoryName);
                                     }
@@ -256,7 +255,7 @@ public class CategoryEditorListener implements Listener {
                                         subCategory.setName(newCategoryName);
                                         subCategory.setPermission(anvilClickEvent.getName().toLowerCase().replace(" ", "_"));
                                         subCategories.set(index, subCategory);
-                                        originCategory.setSubCategories(subCategories);
+//                                        originCategory.setSubCategories(subCategories);
 
                                         // Rewrite Category File
                                         File categoryFile = CustomHeads.getCategoryManager().getSourceFile(originCategory);
@@ -264,7 +263,7 @@ public class CategoryEditorListener implements Listener {
                                             writer.write(originCategory.toString());
                                             writer.flush();
                                         } catch (Exception e) {
-                                            Bukkit.getLogger().log(Level.SEVERE, "Failed to rewrite " + originCategory.getName(), e);
+                                            CustomHeads.getPluginLogger().log(Level.SEVERE, "Failed to rewrite " + originCategory.getName(), e);
                                         }
                                         player.sendMessage("§eCedit: §7Successfully renamed Subcategory to §a" + newCategoryName);
                                     }

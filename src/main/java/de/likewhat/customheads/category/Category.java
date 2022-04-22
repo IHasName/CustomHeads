@@ -7,16 +7,12 @@ import de.likewhat.customheads.utils.JsonToItem;
 import de.likewhat.customheads.utils.Utils;
 import lombok.Getter;
 import lombok.Setter;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /*
@@ -45,7 +41,7 @@ public class Category extends BaseCategory {
         super(String.valueOf(id), name, permission);
         this.price = price;
         categoryIcon = icon;
-        this.icons = Arrays.asList(icon);
+        this.icons = Collections.singletonList(icon);
         iterator = icons.iterator();
     }
 
@@ -81,9 +77,13 @@ public class Category extends BaseCategory {
         return !heads.isEmpty();
     }
 
-    public Category setSubCategories(List<SubCategory> subCategories) {
+    Category setSubCategories(List<SubCategory> subCategories) {
         this.subCategories = subCategories;
         return this;
+    }
+
+    public boolean removeSubCategory(SubCategory subCategory) {
+        return this.subCategories.remove(subCategory);
     }
 
     public boolean isUsed() {
@@ -126,7 +126,7 @@ public class Category extends BaseCategory {
         if (heads.stream().map(CustomHead::getId).collect(Collectors.toList()).contains(id)) {
             int newID = nextID();
             if(!CustomHeads.hasReducedDebug())
-                Bukkit.getLogger().warning("Duplicate or duplicate ID: " + id + ". Replacing with " + newID);
+                CustomHeads.getPluginLogger().warning("Duplicate or duplicate ID: " + id + ". Replacing with " + newID);
             return newID;
         }
         return id;
