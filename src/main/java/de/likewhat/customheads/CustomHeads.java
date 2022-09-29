@@ -52,7 +52,7 @@ import static de.likewhat.customheads.utils.Utils.hasPermission;
 @Getter
 public class CustomHeads extends JavaPlugin {
 
-    private static final boolean DEV_BUILD = true;
+    private static final boolean DEV_BUILD = false;
 
     public static final HashMap<String, String> UUID_CACHE = new HashMap<>();
     public static final String PREFIX_GENERAL = "§7[§eCustomHeads§7] ";
@@ -92,7 +92,7 @@ public class CustomHeads extends JavaPlugin {
     public static void reloadHistoryData() {
         historyEnabled = headsConfig.get().getBoolean("history.enabled");
         canSeeOwnHistory = headsConfig.get().getBoolean("history.seeown");
-        hisOverflow = (hisOverflow = headsConfig.get().getInt("history.overflow")) > 27 ? 27 : Math.max(hisOverflow, 1);
+        hisOverflow = Utils.clamp(1, headsConfig.get().getInt("history.overflow"), 27);
     }
 
     // Language/Looks Loader
@@ -243,6 +243,7 @@ public class CustomHeads extends JavaPlugin {
         if(DEV_BUILD) {
             getServer().getConsoleSender().sendMessage("[CustomHeads]\n§e=============================================================================================\nThis is a Dev Version of the Plugin! Please update update as soon as a new Version gets released\n=============================================================================================");
         }
+
         bukkitVersion = Bukkit.getVersion().substring(Bukkit.getVersion().lastIndexOf("("));
         Version current = Version.getCurrentVersion();
         getPluginLogger().info("Using " + current.name() + " as Version Handler");

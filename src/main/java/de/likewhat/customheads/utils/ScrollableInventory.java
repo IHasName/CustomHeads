@@ -29,7 +29,7 @@ public class ScrollableInventory {
     private final Language language = CustomHeads.getLanguageManager();
     private List<ItemStack> content;
     private LinkedList<ItemStack> defContent;
-    private boolean contentClonable = false;
+    private boolean contentCloneable = false;
     private boolean contentMovable = true;
     private int currentArrangement;
     private int currentPage = 1;
@@ -69,7 +69,7 @@ public class ScrollableInventory {
     }
 
     public ScrollableInventory setContentsClonable(boolean clonable) {
-        this.contentClonable = clonable;
+        this.contentCloneable = clonable;
         return this;
     }
 
@@ -86,7 +86,7 @@ public class ScrollableInventory {
     public void refreshContent() {
         for (int i = 0; i < content.size(); i++) {
             ItemStack item = content.get(i);
-            if (contentClonable)
+            if (contentCloneable)
                 item = CustomHeads.getTagEditor().addTags(item, "clonable");
             if (!contentMovable)
                 item = CustomHeads.getTagEditor().addTags(item, "blockMoving");
@@ -177,8 +177,7 @@ public class ScrollableInventory {
     }
 
     public int getPages() {
-        int p;
-        return (p = (int) Math.ceil(this.content.size() / 45.0)) < 1 ? 1 : p;
+        return Math.max((int) Math.ceil(this.content.size() / 45.0), 1);
     }
 
     public List<ItemStack> getContentFromPage(int page, boolean tags) {

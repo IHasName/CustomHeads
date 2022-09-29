@@ -5,13 +5,14 @@ import de.likewhat.customheads.utils.LoggingUtils;
 import de.likewhat.customheads.utils.reflection.helpers.collections.ReflectionMethodCollection;
 import org.bukkit.entity.Player;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import java.lang.reflect.*;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Objects;
+import java.util.function.Supplier;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class ReflectionUtils {
 
@@ -165,7 +166,6 @@ public class ReflectionUtils {
      * @return Enum Constant by given Name
      */
     public static Enum<?> getEnumConstant(Class<?> clazz, String enumName) {
-//        enumName = enumName.toUpperCase();
         try {
             for (Object eenum : clazz.getEnumConstants()) {
                 if (clazz.getMethod("name").invoke(eenum).equals(enumName)) {
@@ -179,7 +179,7 @@ public class ReflectionUtils {
     }
 
     public static void sendPacket(Object packet, Player player) throws Exception {
-        Object playerHandle = player.getClass().getMethod("getHandle").invoke(player);
+        Object playerHandle = ReflectionUtils.getPlayerHandle(player);
         Object connection;
         if(MC_VERSION >= 17) {
             connection = playerHandle.getClass().getField("b").get(playerHandle);
@@ -187,7 +187,28 @@ public class ReflectionUtils {
             connection = playerHandle.getClass().getField("playerConnection").get(playerHandle);
         }
         ReflectionMethodCollection.PLAYER_SEND_PACKET.invokeOn(connection, packet);
-//        connection.getClass().getMethod("sendPacket", ReflectionUtils.getMCServerClassByName("Packet", "network.protocol")).invoke(connection, packet);
+    }
+
+    public static Method findMethodByBody(Class<?> targetClass, Class<?> returnType, int modifiers, Class<?>... paramTypes) throws Throwable {
+        if(modifiers != -1 && (modifiers | Modifier.classModifiers()) != 0) {
+            throw new IllegalArgumentException("Illegal Method Modifier. Given Modifiers: " + Modifier.toString(modifiers));
+        }
+        Stream<Method> filtered = Arrays.stream(targetClass.getMethods()).filter(method ->
+                method.getReturnType().equals(returnType) &&
+                Arrays.equals(method.getParameterTypes(), paramTypes)
+        );
+
+        if(modifiers != -1) {
+            filtered = filtered.filter(method ->
+                    (method.getModifiers() & modifiers) != 0
+            );
+        }
+
+        if(filtered.count() > 1) {
+            throw new IllegalStateException("Refusing to return any Method since the Filter returned more than one Method " + filtered.map(Method::toGenericString).collect(Collectors.joining(", ")));
+        }
+
+        return filtered.findFirst().orElseThrow((Supplier<Throwable>) () -> new NullPointerException("Failed to find any Method with the given Parameters"));
     }
 
     public static Class<?> getMCServerClassByName(String className) {
@@ -228,8 +249,17 @@ public class ReflectionUtils {
                 CACHED_CLASSES.put(className, clazz);
                 return clazz;
             } catch(Exception e) {
-                CustomHeads.getPluginLogger().log(Level.SEVERE, "Failed to cache Class", e);
+                CustomHeads.getPluginLogger().log(Level.SEVERE, "Failed to get Class for Cache", e);
             }
+        }
+        return null;
+    }
+
+    public static Object getPlayerHandle(Player player) {
+        try {
+            return getCBClass("entity.CraftPlayer").cast(player).getClass().getMethod("getHandle").invoke(player);
+        } catch (Exception e) {
+            CustomHeads.getPluginLogger().log(Level.SEVERE, "Failed to get Player Handle", e);
         }
         return null;
     }

@@ -13,6 +13,7 @@ import de.likewhat.customheads.category.SubCategory;
 import de.likewhat.customheads.utils.reflection.AnvilGUI;
 import de.likewhat.customheads.utils.reflection.helpers.ItemNBTUtils;
 import de.likewhat.customheads.utils.reflection.helpers.ReflectionUtils;
+import de.likewhat.customheads.utils.reflection.helpers.Version;
 import de.likewhat.customheads.utils.reflection.helpers.collections.ReflectionClassCollection;
 import de.likewhat.customheads.utils.reflection.helpers.collections.ReflectionConstructorCollection;
 import de.likewhat.customheads.utils.updaters.FetchResult;
@@ -28,6 +29,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.*;
+import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.channels.Channels;
@@ -513,7 +515,7 @@ public class Utils {
                     HttpURLConnection connection = (HttpURLConnection) new URL(String.format("https://api.mojang.com/users/profiles/minecraft/%s", name)).openConnection();
                     connection.setReadTimeout(5000);
                     if (connection.getResponseCode() == HttpURLConnection.HTTP_UNAVAILABLE) {
-                        CustomHeads.getPluginLogger().warning("Service is unaviable a this moment: " + connection.getResponseMessage());
+                        CustomHeads.getPluginLogger().warning("The Mojang Service is currently unavailable: " + connection.getResponseMessage());
                         consumer.accept(null);
                         return;
                     }
@@ -675,18 +677,48 @@ public class Utils {
 
     public static void sendJSONMessage(String json, Player player) {
         try {
-            Object chat = ReflectionUtils.getMCServerClassByName("ChatSerializer", "network.chat").getMethod("a", String.class).invoke(null, json);
-            Object packet;
-            if(ReflectionUtils.MC_VERSION >= 16) {
-                Enum<?> messageType = ReflectionUtils.getEnumConstant(ReflectionClassCollection.CHAT_MESSAGE_TYPE, "CHAT");
-                if(messageType == null) {
-                    messageType = ReflectionUtils.getEnumConstant(ReflectionClassCollection.CHAT_MESSAGE_TYPE, "a");
+            Object serializedMessage = ReflectionUtils.getMCServerClassByName("ChatSerializer", "network.chat").getMethod("a", String.class).invoke(null, json);
+            switch(Version.getCurrentVersion()) {
+                case V1_8_R1:
+                case V1_8_R2:
+                case V1_8_R3:
+                case V1_9_R1:
+                case V1_9_R2:
+                case V1_10_R1:
+                case V1_11_R1:
+                case V1_12_R1:
+                case V1_13_R1:
+                case V1_13_R2:
+                case V1_14_R1:
+                case V1_15_R1: {
+                    Object packet = ReflectionConstructorCollection.PACKET_PLAYOUT_CHAT.construct(serializedMessage);
+                    ReflectionUtils.sendPacket(packet, player);
                 }
-                packet = ReflectionConstructorCollection.PACKET_PLAYOUT_CHAT.construct(chat, messageType, null);
-            } else {
-                packet = ReflectionConstructorCollection.PACKET_PLAYOUT_CHAT.construct(chat);
+                case V1_16_R1:
+                case V1_16_R2:
+                case V1_16_R3:
+                case V1_17_R1:
+                case V1_18_R1:
+                case V1_18_R2: {
+                    Enum<?> messageType = ReflectionUtils.getEnumConstant(ReflectionClassCollection.CHAT_MESSAGE_TYPE.resolve(), "CHAT");
+                    if (messageType == null) {
+                        messageType = ReflectionUtils.getEnumConstant(ReflectionClassCollection.CHAT_MESSAGE_TYPE.resolve(), "a");
+                    }
+                    Object packet = ReflectionConstructorCollection.PACKET_PLAYOUT_CHAT.construct(serializedMessage, messageType, null);
+                    ReflectionUtils.sendPacket(packet, player);
+                }
+                default:
+                case V1_19_R1: {
+                    Class<?> chatMessageTypeClass = ReflectionClassCollection.CHAT_MESSAGE_TYPE.resolve();
+                    Object messageType = ReflectionUtils.getFieldDynamic(chatMessageTypeClass, "i"); // Field i should be tellraw_command
+                    Object playerHandle = ReflectionUtils.getPlayerHandle(player);
+                    //Method sendMessageMethod = ReflectionClassCollection.ENTITY_PLAYER.resolve().getMethod("a", ReflectionClassCollection.ICHAT_BASE_COMPONENT.resolve(), ReflectionClassCollection.RESOURCE_KEY.resolve());
+                    //sendMessageMethod.invoke(playerHandle, serializedMessage, messageType);
+
+                    Method sendMessageMethod = ReflectionClassCollection.ENTITY_PLAYER.resolve().getMethod("a", ReflectionClassCollection.ICHAT_BASE_COMPONENT.resolve());
+                    sendMessageMethod.invoke(playerHandle, serializedMessage);
+                }
             }
-            ReflectionUtils.sendPacket(packet, player);
         } catch (Exception e) {
             CustomHeads.getPluginLogger().log(Level.WARNING, "Could not send JSON-Message to Player", e);
         }
@@ -706,6 +738,10 @@ public class Utils {
             return filename.substring(filename.lastIndexOf(".") + 1);
         }
         return "";
+    }
+
+    public static int clamp(int min, int value, int max) {
+        return Math.max(Math.min(value, min), max);
     }
 
     public static String format(String uwat) {

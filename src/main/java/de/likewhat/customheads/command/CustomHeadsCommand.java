@@ -42,7 +42,7 @@ public class CustomHeadsCommand implements CommandExecutor {
 
     public static final List<Location> CACHED_FIREWORKS = new ArrayList<>();
 
-    private static final Comparator<Category> CATEGORY_COMPARER = Comparator.comparing(category -> Integer.parseInt(category.getId()));
+    private static final Comparator<Category> CATEGORY_COMPARATOR = Comparator.comparing(category -> Integer.parseInt(category.getId()));
     private static final List<Player> ACTIVE_FIREWORKS = new ArrayList<>();
     private static final String[] RANDOM_ANSWERS = {"CustomHeads says: Hmm", "CustomHeads says: Does the Console have an Inventory?", "CustomHeads says: That tickels!", "CustomHeads says: No", "CustomHeads says: Im lost", "CustomHeads says: I don't think this is what you are searching for", "CustomHeads says: Hold on... Nevermind", "CustomHeads says: Sorry", "CustomHeads says: Spoilers... There will be a new Command soon =]"};
     private static final Random RANDOM = new Random();
@@ -214,7 +214,7 @@ public class CustomHeadsCommand implements CommandExecutor {
                         player.sendMessage(CustomHeads.getLanguageManager().CATEGORIES_BASECOMMAND_HEADER);
 
                         List<Category> categories = CustomHeads.getCategoryManager().getCategoryList();
-                        categories.sort(CATEGORY_COMPARER);
+                        categories.sort(CATEGORY_COMPARATOR);
 
                         for (int i = 0; i < categories.size(); i++) {
                             Category cCategory = categories.get(i);

@@ -5,6 +5,7 @@ import de.likewhat.customheads.utils.LoggingUtils;
 import de.likewhat.customheads.utils.reflection.helpers.ReflectionUtils;
 import de.likewhat.customheads.utils.reflection.helpers.Version;
 import de.likewhat.customheads.utils.reflection.helpers.collections.ReflectionClassCollection;
+import de.likewhat.customheads.utils.reflection.helpers.collections.ReflectionMethodCollection;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Bukkit;
@@ -122,8 +123,8 @@ public class AnvilGUI {
             player.setLevel(player.getLevel() + 1);
         }
         try {
-
-            Object playerHandle = player.getClass().getMethod("getHandle").invoke(player);
+            Version currentVersion = Version.getCurrentVersion();
+            Object playerHandle = ReflectionUtils.getPlayerHandle(player);
             Class<?> playerHandleClass = playerHandle.getClass();
             int nextContainerId = (int) playerHandleClass.getMethod("nextContainerCounter").invoke(playerHandle);
 
@@ -134,38 +135,56 @@ public class AnvilGUI {
             Field windowIdField;
             Field activeContainerField;
             Class<?> containersClass;
-            switch (ReflectionUtils.MC_VERSION) {
-                case 8:
-                case 9:
-                case 10:
-                case 11:
-                case 12:
-                case 13:
-                    container = ReflectionClassCollection.CONTAINER_ANVIL.getConstructor(ReflectionUtils.getMCServerClassByName("PlayerInventory"), ReflectionUtils.getMCServerClassByName("World"), ReflectionUtils.getMCServerClassByName("BlockPosition"), ReflectionUtils.getMCServerClassByName("EntityHuman")).newInstance(playerHandleClass.getField("inventory").get(playerHandle), playerHandleClass.getField("world").get(playerHandle), ReflectionUtils.getMCServerClassByName("BlockPosition").getConstructor(int.class, int.class, int.class).newInstance(location.getBlockX(), location.getBlockY(), location.getBlockZ()), playerHandle);
-                    packet = ReflectionClassCollection.PACKET_PLAY_OUT_OPEN_WINDOW.getConstructor(int.class, String.class, ReflectionUtils.getMCServerClassByName("IChatBaseComponent"), int.class).newInstance(nextContainerId, "minecraft:anvil", chatMessageConstructor.newInstance(title, new Object[]{}), 0);
-                    windowIdField = ReflectionClassCollection.CONTAINER.getField("windowId");
+            switch (currentVersion) {
+                case V1_8_R1:
+                case V1_8_R2:
+                case V1_8_R3:
+                case V1_9_R1:
+                case V1_9_R2:
+                case V1_10_R1:
+                case V1_11_R1:
+                case V1_12_R1:
+                case V1_13_R1:
+                case V1_13_R2:
+                    container = ReflectionClassCollection.CONTAINER_ANVIL.resolve().getConstructor(ReflectionUtils.getMCServerClassByName("PlayerInventory"), ReflectionUtils.getMCServerClassByName("World"), ReflectionUtils.getMCServerClassByName("BlockPosition"), ReflectionUtils.getMCServerClassByName("EntityHuman")).newInstance(playerHandleClass.getField("inventory").get(playerHandle), playerHandleClass.getField("world").get(playerHandle), ReflectionUtils.getMCServerClassByName("BlockPosition").getConstructor(int.class, int.class, int.class).newInstance(location.getBlockX(), location.getBlockY(), location.getBlockZ()), playerHandle);
+                    packet = ReflectionClassCollection.PACKET_PLAY_OUT_OPEN_WINDOW.resolve().getConstructor(int.class, String.class, ReflectionUtils.getMCServerClassByName("IChatBaseComponent"), int.class).newInstance(nextContainerId, "minecraft:anvil", chatMessageConstructor.newInstance(title, new Object[]{}), 0);
+                    windowIdField = ReflectionClassCollection.CONTAINER.resolve().getField("windowId");
                     activeContainerField = ReflectionUtils.getFieldDynamic(playerHandleClass, "activeContainer");
                     break;
-                case 14:
-                case 15:
-                case 16:
+                case V1_14_R1:
+                case V1_15_R1:
+                case V1_16_R1:
+                case V1_16_R2:
+                case V1_16_R3:
                     containersClass = ReflectionUtils.getMCServerClassByName("Containers", "world.inventory");
-                    container = ReflectionClassCollection.CONTAINER_ANVIL.getConstructor(int.class, ReflectionUtils.getMCServerClassByName("PlayerInventory", "world.entity.player"), ReflectionUtils.getMCServerClassByName("ContainerAccess", "world.inventory")).newInstance(nextContainerId, playerHandleClass.getField("inventory").get(playerHandle), ReflectionUtils.getMCServerClassByName("ContainerAccess", "world.inventory").getMethod("at", ReflectionUtils.getMCServerClassByName("World", "world.level"), ReflectionUtils.getMCServerClassByName("BlockPosition", "core")).invoke(ReflectionUtils.getMCServerClassByName("ContainerAccess", "world.inventory"), playerHandleClass.getField("world").get(playerHandle), ReflectionUtils.getMCServerClassByName("BlockPosition", "core").getConstructor(int.class, int.class, int.class).newInstance(location.getBlockX(), location.getBlockY(), location.getBlockZ())));
-                    packet = ReflectionClassCollection.PACKET_PLAY_OUT_OPEN_WINDOW.getConstructor(int.class, containersClass, ReflectionUtils.getMCServerClassByName("IChatBaseComponent", "network.chat")).newInstance(nextContainerId, containersClass.getField("ANVIL").get(containersClass), chatMessageConstructor.newInstance(title, new Object[]{}));
-                    windowIdField = ReflectionClassCollection.CONTAINER.getField("windowId");
+                    container = ReflectionClassCollection.CONTAINER_ANVIL.resolve().getConstructor(int.class, ReflectionUtils.getMCServerClassByName("PlayerInventory", "world.entity.player"), ReflectionUtils.getMCServerClassByName("ContainerAccess", "world.inventory")).newInstance(nextContainerId, playerHandleClass.getField("inventory").get(playerHandle), ReflectionUtils.getMCServerClassByName("ContainerAccess", "world.inventory").getMethod("at", ReflectionUtils.getMCServerClassByName("World", "world.level"), ReflectionUtils.getMCServerClassByName("BlockPosition", "core")).invoke(ReflectionUtils.getMCServerClassByName("ContainerAccess", "world.inventory"), playerHandleClass.getField("world").get(playerHandle), ReflectionUtils.getMCServerClassByName("BlockPosition", "core").getConstructor(int.class, int.class, int.class).newInstance(location.getBlockX(), location.getBlockY(), location.getBlockZ())));
+                    packet = ReflectionClassCollection.PACKET_PLAY_OUT_OPEN_WINDOW.resolve().getConstructor(int.class, containersClass, ReflectionUtils.getMCServerClassByName("IChatBaseComponent", "network.chat")).newInstance(nextContainerId, containersClass.getField("ANVIL").get(containersClass), chatMessageConstructor.newInstance(title, new Object[]{}));
+                    windowIdField = ReflectionClassCollection.CONTAINER.resolve().getField("windowId");
                     activeContainerField = ReflectionUtils.getFieldDynamic(playerHandleClass, "activeContainer");
                     break;
-                default:
-                    LoggingUtils.logOnce(Level.WARNING, "Current MC Version (" + Version.getRawVersion() + ") may not work with AnvilGUI");
-                case 17:
-                //case 18:
+                case V1_17_R1:
+                case V1_18_R1: {
                     containersClass = ReflectionUtils.getMCServerClassByName("Containers", "world.inventory");
                     Class<?> containerAccessClass = ReflectionUtils.getMCServerClassByName("ContainerAccess", "world.inventory");
-                    container = ReflectionClassCollection.CONTAINER_ANVIL.getConstructor(int.class, ReflectionUtils.getMCServerClassByName("PlayerInventory", "world.entity.player"), containerAccessClass).newInstance(nextContainerId, playerHandleClass.getMethod("getInventory").invoke(playerHandle), containerAccessClass.getMethod("at", ReflectionUtils.getMCServerClassByName("World", "world.level"), ReflectionUtils.getMCServerClassByName("BlockPosition", "core")).invoke(containerAccessClass, playerHandleClass.getField("t").get(playerHandle), ReflectionUtils.getMCServerClassByName("BlockPosition", "core").getConstructor(int.class, int.class, int.class).newInstance(location.getBlockX(), location.getBlockY(), location.getBlockZ())));
-                    packet = ReflectionClassCollection.PACKET_PLAY_OUT_OPEN_WINDOW.getConstructor(int.class, containersClass, ReflectionUtils.getMCServerClassByName("IChatBaseComponent", "network.chat")).newInstance(nextContainerId, containersClass.getField("h").get(containersClass), chatMessageConstructor.newInstance(title, new Object[]{}));
-                    windowIdField = ReflectionClassCollection.CONTAINER.getDeclaredField("j");
+                    container = ReflectionClassCollection.CONTAINER_ANVIL.resolve().getConstructor(int.class, ReflectionUtils.getMCServerClassByName("PlayerInventory", "world.entity.player"), containerAccessClass).newInstance(nextContainerId, playerHandle.getClass().getMethod("getInventory").invoke(playerHandle), ReflectionMethodCollection.CONTAINER_ACCESS_AT.invokeOn(containerAccessClass, playerHandleClass.getField("t").get(playerHandle), ReflectionUtils.getMCServerClassByName("BlockPosition", "core").getConstructor(int.class, int.class, int.class).newInstance(location.getBlockX(), location.getBlockY(), location.getBlockZ())));
+                    packet = ReflectionClassCollection.PACKET_PLAY_OUT_OPEN_WINDOW.resolve().getConstructor(int.class, containersClass, ReflectionUtils.getMCServerClassByName("IChatBaseComponent", "network.chat")).newInstance(nextContainerId, containersClass.getField("h").get(containersClass), chatMessageConstructor.newInstance(title, new Object[]{}));
+                    windowIdField = ReflectionClassCollection.CONTAINER.resolve().getDeclaredField("j");
                     activeContainerField = playerHandleClass.getField("bV");
                     break;
+                }
+                default:
+                case LATEST:
+                    LoggingUtils.logOnce(Level.WARNING, "Current MC Version (" + Version.getRawVersion() + ") may not work with AnvilGUI");
+                case V1_18_R2: {
+                    containersClass = ReflectionUtils.getMCServerClassByName("Containers", "world.inventory");
+                    Class<?> containerAccessClass = ReflectionUtils.getMCServerClassByName("ContainerAccess", "world.inventory");
+                    container = ReflectionClassCollection.CONTAINER_ANVIL.resolve().getConstructor(int.class, ReflectionUtils.getMCServerClassByName("PlayerInventory", "world.entity.player"), containerAccessClass).newInstance(nextContainerId, playerHandle.getClass().getMethod("fr").invoke(playerHandle), ReflectionMethodCollection.CONTAINER_ACCESS_AT.invokeOn(containerAccessClass, playerHandleClass.getField("s").get(playerHandle), ReflectionUtils.getMCServerClassByName("BlockPosition", "core").getConstructor(int.class, int.class, int.class).newInstance(location.getBlockX(), location.getBlockY(), location.getBlockZ())));
+                    packet = ReflectionClassCollection.PACKET_PLAY_OUT_OPEN_WINDOW.resolve().getConstructor(int.class, containersClass, ReflectionUtils.getMCServerClassByName("IChatBaseComponent", "network.chat")).newInstance(nextContainerId, containersClass.getField("h").get(containersClass), chatMessageConstructor.newInstance(title, new Object[]{}));
+                    windowIdField = ReflectionClassCollection.CONTAINER.resolve().getDeclaredField("j");
+                    activeContainerField = playerHandleClass.getField("bV");
+                    break;
+                }
+
             }
             Object bukkitView = container.getClass().getMethod("getBukkitView").invoke(container);
             inventory = (Inventory) bukkitView.getClass().getMethod("getTopInventory").invoke(bukkitView);
@@ -179,10 +198,12 @@ public class AnvilGUI {
             ReflectionUtils.setField(activeContainerField.get(playerHandle), windowIdField, nextContainerId);
 
             // Thanks to JordanPlayz for helping me find this Issue with the GUI
-            if(ReflectionUtils.MC_VERSION >= 17) {
-                playerHandle.getClass().getMethod("initMenu", ReflectionClassCollection.CONTAINER).invoke(playerHandle, container);
+            if(currentVersion.isOlderThan(Version.V1_17_R1)) {
+                ReflectionClassCollection.CONTAINER.resolve().getMethod("addSlotListener", ReflectionUtils.getMCServerClassByName("ICrafting")).invoke(container, playerHandle);
+            } else if (currentVersion.isOlderThan(Version.V1_18_R1)) {
+                playerHandle.getClass().getMethod("initMenu", ReflectionClassCollection.CONTAINER.resolve()).invoke(playerHandle, container);
             } else {
-                ReflectionClassCollection.CONTAINER.getMethod("addSlotListener", ReflectionUtils.getMCServerClassByName("ICrafting")).invoke(container, playerHandle);
+                playerHandle.getClass().getMethod("a", ReflectionClassCollection.CONTAINER.resolve()).invoke(playerHandle, container);
             }
         } catch (Exception exception) {
             CustomHeads.getPluginLogger().log(Level.WARNING, "Failed to open AnvilGUI", exception);

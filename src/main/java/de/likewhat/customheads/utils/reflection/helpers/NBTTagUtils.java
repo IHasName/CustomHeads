@@ -60,7 +60,7 @@ public class NBTTagUtils {
                 instance = constructor.newInstance(newInstanceObject);
             } catch(NoSuchMethodException e) {
                 try {
-                    // Newer Versions use the a Method to initialize an Instance
+                    // Newer Versions use a Method to initialize an Instance
                     instance = clazz.getMethod("a", newInstanceObject.getClass()).invoke(null, newInstanceObject);
                 } catch(NoSuchMethodException e2) {
                     CustomHeads.getPluginLogger().log(Level.WARNING, "Failed to initialize Instance of " + clazz.getCanonicalName());

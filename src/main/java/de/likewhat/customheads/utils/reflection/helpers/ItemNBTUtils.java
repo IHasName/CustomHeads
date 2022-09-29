@@ -21,7 +21,7 @@ public class ItemNBTUtils {
 
     public static ItemStack asBukkitCopy(Object itemInstance) {
         try {
-            return (ItemStack) ReflectionUtils.getCBClass("inventory.CraftItemStack").getMethod("asBukkitCopy", ReflectionClassCollection.MINECRAFT_ITEMSTACK_CLASS).invoke(null, itemInstance);
+            return (ItemStack) ReflectionUtils.getCBClass("inventory.CraftItemStack").getMethod("asBukkitCopy", ReflectionClassCollection.MINECRAFT_ITEMSTACK_CLASS.resolve()).invoke(null, itemInstance);
         } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             e.printStackTrace();
         }
@@ -57,11 +57,15 @@ public class ItemNBTUtils {
         return null;
     }
 
-
-
     public static void setTagOnItem(Object item, Object nbt) {
         try {
             ReflectionMethodCollection.ITEMSTACK_SETTAG.invokeOn(item, nbt);
+
+            // Verify NBT Set
+            Object tagToVerify = ReflectionMethodCollection.ITEMSTACK_GETTAG.invokeOn(item);
+            if(!tagToVerify.equals(nbt)) {
+                throw new InvocationTargetException(new Exception("[TagEditor] Verify: Set Tag does not match"));
+            }
         } catch(Exception e) {
             CustomHeads.getPluginLogger().log(Level.WARNING, "Failed to update NBT of Item", e);
         }

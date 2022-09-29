@@ -19,6 +19,7 @@ public enum Version {
     V1_16_R1(1161), V1_16_R2(1162), V1_16_R3(1163),
     V1_17_R1(1171),
     V1_18_R1(1181), V1_18_R2(1182),
+    V1_19_R1(1191),
     LATEST(99999999);
 
     private static final String packet = Bukkit.getServer().getClass().getPackage().getName();
