@@ -10,7 +10,7 @@ public class ClassWrapper extends WrapperBase<ClassWrapper, Class<?>> {
     protected String className;
 
     public ClassWrapper(Version from, Version to, WrapperBase<ClassWrapper, Class<?>> replacedBy, String className) {
-        super(from, to, replacedBy);
+        super(WrapperType.CLASS, from, to, replacedBy);
         this.className = className;
     }
 

@@ -10,6 +10,7 @@ import de.likewhat.customheads.headwriter.HeadFontType;
 import de.likewhat.customheads.headwriter.HeadWriter;
 import de.likewhat.customheads.utils.*;
 import de.likewhat.customheads.utils.reflection.helpers.ReflectionUtils;
+import de.likewhat.customheads.utils.reflection.helpers.Version;
 import de.likewhat.customheads.utils.updaters.FetchResult;
 import org.bukkit.*;
 import org.bukkit.block.BlockFace;
@@ -44,7 +45,7 @@ public class CustomHeadsCommand implements CommandExecutor {
 
     private static final Comparator<Category> CATEGORY_COMPARATOR = Comparator.comparing(category -> Integer.parseInt(category.getId()));
     private static final List<Player> ACTIVE_FIREWORKS = new ArrayList<>();
-    private static final String[] RANDOM_ANSWERS = {"CustomHeads says: Hmm", "CustomHeads says: Does the Console have an Inventory?", "CustomHeads says: That tickels!", "CustomHeads says: No", "CustomHeads says: Im lost", "CustomHeads says: I don't think this is what you are searching for", "CustomHeads says: Hold on... Nevermind", "CustomHeads says: Sorry", "CustomHeads says: Spoilers... There will be a new Command soon =]"};
+    private static final String[] RANDOM_ANSWERS = {"CustomHeads says: Hmm", "CustomHeads says: Does the Console have an Inventory?", "CustomHeads says: That tickels!", "CustomHeads says: No", "CustomHeads says: Im lost", "CustomHeads says: I don't think this is what you are searching for", "CustomHeads says: Hold on... Nevermind", "CustomHeads says: Sorry"};
     private static final Random RANDOM = new Random();
 
     private final HashMap<Player, String[]> haltedCommands = new HashMap<>();
@@ -201,6 +202,10 @@ public class CustomHeadsCommand implements CommandExecutor {
                                 .getDisplayName() + "§f Category: " + customHead
                                 .getOriginCategory()
                                 .getPlainName());
+                    }
+                    if(args[1].equalsIgnoreCase("gettexture")) {
+                        ItemEditor item = new ItemEditor(player.getItemInHand());
+                        CustomHeads.getPluginLogger().info(item.getTexture());
                     }
                 } catch(Throwable into_the_trash) {
                     into_the_trash.printStackTrace();
@@ -482,7 +487,7 @@ public class CustomHeadsCommand implements CommandExecutor {
                             fm.setPower(random.nextInt(2) + 1);
                             f.setFireworkMeta(fm);
                             f.setVelocity(new Vector(random.nextDouble() * (random.nextBoolean() ? .01 : -.01), .2, random.nextDouble() * (random.nextBoolean() ? .01 : -.01)));
-                            if (ReflectionUtils.MC_VERSION > 13) {
+                            if(Version.getCurrentVersion().isNewerThan(Version.V1_13_R1)) {
                                 try {
                                     Class<?> particleClass = ReflectionUtils.getClassByName("org.bukkit.Particle");
                                     World.class.getMethod("spawnParticle", particleClass, Location.class, int.class).invoke(world, ReflectionUtils.getEnumConstant(particleClass, "LAVA"), location, 6);
@@ -768,7 +773,7 @@ public class CustomHeadsCommand implements CommandExecutor {
                 if (args[0].equalsIgnoreCase("write")) {
                     if (hasPermission(player, "heads.use.more.write")) {
                         if (args.length < 3) {
-                            player.sendMessage("§cPlease Note that this Comamnd is still an Beta-Command and may cause Issues!");
+                            player.sendMessage("§cPlease Note that this Command is still an Beta-Command and may cause Issues!");
                             player.sendMessage(CustomHeads.getLanguageManager().COMMAND_USAGE.replace("{COMMAND}", "§c/heads write <fontName> <text>"));
                             return true;
                         }

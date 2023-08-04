@@ -76,7 +76,7 @@ public interface CustomHeadsAPI {
     void writeText(String text, Location location, HeadFontType fontType);
 
     /**
-     * Sets an Skull with Custom Texture
+     * Sets a Skull with Custom Texture
      *
      * @param block     Block Location
      * @param texture   Base64 Texture Value
@@ -85,8 +85,8 @@ public interface CustomHeadsAPI {
     void setSkull(Block block, String texture, BlockFace blockFace);
 
     /**
-     * Will return an Head from the given ID.
-     * Might be null if the Head doesnt exists
+     * Will return a Head from the given ID.
+     * Might be null if the Head doesn't exist
      *
      * @param categoryId from Which Category to pull from
      * @param headId     Head ID
@@ -95,8 +95,8 @@ public interface CustomHeadsAPI {
     CustomHead getHead(Category categoryId, int headId);
 
     /**
-     * Will return an Head from the given ID.
-     * Might be null if the Head doesnt exists
+     * Will return a Head from the given ID.
+     * Might be null if the Head doesn't exist
      *
      * @param categoryId from Which Category to pull from
      * @param headId     Head ID

@@ -572,7 +572,7 @@ public class InventoryListener implements Listener {
             }
             if (getHeadFromItem(event.getCurrentItem()) == null || (category != null && hasPermission(player, "heads.viewCategory." + category.getPermission().replaceFirst("heads.viewCategory.", "") + ".allheads")) || customHeadsPlayer.getUnlockedHeads().contains(getHeadFromItem(event.getCurrentItem())) || getHeadFromItem(event.getCurrentItem()).isFree()) {
                 ItemEditor itemEditor = new ItemEditor(event.getCurrentItem());
-                if (event.getClick() == ClickType.SHIFT_LEFT) {
+                if (!CustomHeads.shouldGrabHeadToCursor() || event.getClick() == ClickType.SHIFT_LEFT) {
                     player.getInventory().addItem(TagEditor.clearTags(itemEditor.removeLoreLine(itemEditor.hasLore() ? itemEditor.getLore().size() - 1 : 0).getItem()));
                 } else {
                     player.setItemOnCursor(TagEditor.clearTags(itemEditor.removeLoreLine(itemEditor.hasLore() ? itemEditor.getLore().size() - 1 : 0).getItem()));

@@ -2,10 +2,10 @@ package de.likewhat.customheads.utils;
 
 import com.mojang.authlib.GameProfile;
 import de.likewhat.customheads.CustomHeads;
-import de.likewhat.customheads.utils.reflection.helpers.NBTTagUtils;
 import de.likewhat.customheads.utils.reflection.helpers.ReflectionUtils;
 import de.likewhat.customheads.utils.reflection.helpers.Version;
-import de.likewhat.customheads.utils.reflection.helpers.collections.ReflectionMethodCollection;
+import de.likewhat.customheads.utils.reflection.helpers.collections.MethodReflectionCollection;
+import de.likewhat.customheads.utils.reflection.nbt.NBTTagUtils;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
@@ -148,16 +148,16 @@ public class ItemEditor {
         if (itemStack.getType() != Material.SKULL_ITEM)
             throw new IllegalArgumentException("ItemStack is not an Player Head");
         GameProfile profile = GameProfileBuilder.createProfileWithTexture(texture);
-        if (!ReflectionUtils.setField(meta, "profile", profile)) {
-            throw new IllegalStateException("Unable to inject GameProfile");
-        }
-        if(Version.getCurrentVersion().isNewerThan(Version.V1_17_R1)) {
-            try {
-                Object serializedProfile = ReflectionMethodCollection.GAMEPROFILE_SERIALIZE.invokeOn(null, NBTTagUtils.createInstance(NBTTagUtils.NBTType.COMPOUND), profile);
-                ReflectionUtils.setField(meta, "serializedProfile", serializedProfile);
-            } catch (InvocationTargetException | IllegalAccessException e) {
-                throw new IllegalStateException("Unable to update serialized GameProfile", e);
+        try {
+            if (!ReflectionUtils.setField(meta, "profile", profile)) {
+                throw new IllegalStateException("Unable to inject GameProfile");
             }
+            if (Version.getCurrentVersion().isNewerThan(Version.V1_17_R1)) {
+                Object serializedProfile = MethodReflectionCollection.GAMEPROFILE_SERIALIZE.invokeOn(null, NBTTagUtils.createInstance(NBTTagUtils.NBTType.COMPOUND), profile);
+                ReflectionUtils.setField(meta, "serializedProfile", serializedProfile);
+            }
+        } catch(NoSuchFieldException | InvocationTargetException | IllegalAccessException e) {
+            throw new IllegalStateException("Unable to update Texture for Item", e);
         }
         return this;
     }
@@ -168,7 +168,7 @@ public class ItemEditor {
 
     public ItemEditor setOwner(String owner) {
         if (itemStack.getType() != Material.SKULL_ITEM)
-            throw new IllegalArgumentException("Itemstack is not an Player Head");
+            throw new IllegalArgumentException("ItemStack is not an Player Head");
         SkullMeta skullMeta = ((SkullMeta) meta);
         skullMeta.setOwner(owner);
         itemStack.setItemMeta(skullMeta);

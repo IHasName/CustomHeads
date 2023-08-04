@@ -22,8 +22,6 @@ public class SearchHistory extends OverflowableHistory {
 
     public SearchHistory(OfflinePlayer player) {
         super(player);
-        loadEntries();
-        handleOverflow();
     }
 
     public void loadEntries() {

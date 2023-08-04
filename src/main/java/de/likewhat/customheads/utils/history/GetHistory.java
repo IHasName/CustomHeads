@@ -36,7 +36,6 @@ public class GetHistory extends OverflowableHistory {
                 super.entries.add(element.getAsString());
             }
         }
-        super.handleOverflow();
     }
 
     public Inventory getInventory() {

@@ -15,8 +15,11 @@ import de.likewhat.customheads.category.Category;
 import de.likewhat.customheads.category.CustomHead;
 import de.likewhat.customheads.headwriter.HeadFontType;
 import de.likewhat.customheads.headwriter.HeadWriter;
-import de.likewhat.customheads.utils.reflection.helpers.ItemNBTUtils;
 import de.likewhat.customheads.utils.reflection.helpers.ReflectionUtils;
+import de.likewhat.customheads.utils.reflection.helpers.Version;
+import de.likewhat.customheads.utils.reflection.helpers.collections.MethodReflectionCollection;
+import de.likewhat.customheads.utils.reflection.nbt.ItemNBTUtils;
+import de.likewhat.customheads.utils.reflection.nbt.NBTTagUtils;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -54,13 +57,12 @@ public class APIHandler implements CustomHeadsAPI {
             throw new NullPointerException("Item cannot be null");
         }
         try {
-            Object nMSCopy = ItemNBTUtils.asNMSCopy(itemStack);
-            Object tag = nMSCopy.getClass().getMethod("getTag").invoke(nMSCopy);
-            Object skullOwner = tag.getClass().getMethod("getCompound", String.class).invoke(tag, "SkullOwner");
-            Object properties = skullOwner.getClass().getMethod("getCompound", String.class).invoke(skullOwner, "Properties");
-            Object textures = properties.getClass().getMethod("getList", String.class, int.class).invoke(properties, "textures", 10);
-            Object list = textures.getClass().getMethod("get", int.class).invoke(textures, 0);
-            return list.getClass().getMethod("getString", String.class).invoke(list, "Value").toString();
+            Object tag = ItemNBTUtils.getTagFromItem(itemStack);
+            Object skullOwner = MethodReflectionCollection.NBT_TAGCOMPOUND_GETCOMPOUND.invokeOn(tag, "SkullOwner");
+            Object properties = MethodReflectionCollection.NBT_TAGCOMPOUND_GETCOMPOUND.invokeOn(skullOwner, "Properties");
+            Object textures = MethodReflectionCollection.NBT_TAGCOMPOUND_GETLIST.invokeOn(properties, "textures", NBTTagUtils.NBTType.COMPOUND.getId());
+            Object list = MethodReflectionCollection.NBT_TAGLIST_GET.invokeOn(textures, 0);
+            return MethodReflectionCollection.NBT_TAGCOMPOUND_GETSTRING.invokeOn(list, "Value");
         } catch (Exception e) {
             CustomHeads.getPluginLogger().log(Level.WARNING, "Something went wrong while getting the Texture of an Skull", e);
         }
@@ -76,7 +78,7 @@ public class APIHandler implements CustomHeadsAPI {
             throw new IllegalArgumentException("Block must be a Player Skull");
         }
         try {
-            Object nmsWorld = block.getWorld().getClass().getMethod("getHandle").invoke(block.getWorld());
+            Object nmsWorld = ReflectionUtils.getWorldHandle(block.getWorld());
             return Utils.getTextureFromProfile((GameProfile) tileEntitySkullClass.getMethod("getGameProfile").invoke(tileEntitySkullClass.cast(nmsWorld.getClass().getMethod("getTileEntity", blockPositionClass).invoke(nmsWorld, blockPositionClass.getConstructor(int.class, int.class, int.class).newInstance(block.getX(), block.getY(), block.getZ())))));
         } catch (Exception e) {
             CustomHeads.getPluginLogger().log(Level.WARNING, "Error getting Texture from Skull", e);
@@ -99,13 +101,16 @@ public void setSkull(Block block, String texture, BlockFace blockFace) {
         block.setType(Material.AIR);
         Skull skull;
         Location location = block.getLocation();
-        Object nmsWorld = block.getWorld().getClass().getMethod("getHandle").invoke(block.getWorld());
-        switch (ReflectionUtils.MC_VERSION) {
-            case 8:
-            case 9:
-            case 10:
-            case 11:
-            case 12:
+        Object nmsWorld = ReflectionUtils.getWorldHandle(block.getWorld());
+        switch (Version.getCurrentVersion()) {
+            case V1_8_R1:
+            case V1_8_R2:
+            case V1_8_R3:
+            case V1_9_R1:
+            case V1_9_R2:
+            case V1_10_R1:
+            case V1_11_R1:
+            case V1_12_R1:
                 block.setType(Material.SKULL);
                 skull = (Skull) block.getState();
                 skull.setSkullType(SkullType.PLAYER);
@@ -113,30 +118,49 @@ public void setSkull(Block block, String texture, BlockFace blockFace) {
                 break;
             default:
                 LoggingUtils.logOnce(Level.WARNING, "Falling back to newest Method since the current Version hasn't been tested yet... (This may not work so here goes)");
-            case 13:
-            case 14:
-            case 15:
-            case 16:
-            case 17:
-                Class<?> craftBlockDataClass = ReflectionUtils.getCBClass("block.data.CraftBlockData");
+            case V1_13_R1:
+            case V1_13_R2:
+            case V1_14_R1:
+            case V1_15_R1:
+            case V1_16_R1:
+            case V1_16_R2:
+            case V1_16_R3:
+            case V1_17_R1:
+            case V1_18_R1:
+            case V1_18_R2:
+            case V1_19_R1:
+            case V1_19_R2:
+            case V1_19_R3:
+            case V1_20_R1:
+                Class<?> craftBlockDataClass = ReflectionUtils.getCraftBukkitClass("block.data.CraftBlockData");
                 Object blockDataInstance = craftBlockDataClass.cast(Material.class.getMethod("createBlockData").invoke(ReflectionUtils.getEnumConstant(Material.class, "PLAYER_HEAD")));
                 Object blockDataState = craftBlockDataClass.getMethod("getState").invoke(blockDataInstance);
                 Object positionInstance = blockPositionConstructor.newInstance(location.getBlockX(), location.getBlockY(), location.getBlockZ());
-                nmsWorld.getClass().getMethod("setTypeAndData", blockPositionClass, ReflectionUtils.getMCServerClassByName("IBlockData", "world.level.block.state"), int.class).invoke(nmsWorld, positionInstance, blockDataState, 3);
-                switch (ReflectionUtils.MC_VERSION) {
-                    case 13:
-                    case 14:
-                    case 15:
-                    case 16: {
+                MethodReflectionCollection.WORLD_SET_TYPE_AND_DATA.invokeOn(nmsWorld, positionInstance, blockDataState, 3);
+                //nmsWorld.getClass().getMethod("setTypeAndData", blockPositionClass, ReflectionUtils.getMCServerClassByName("IBlockData", "world.level.block.state"), int.class).invoke(nmsWorld, positionInstance, blockDataState, 3);
+                switch(Version.getCurrentVersion()) {
+                    case V1_13_R1:
+                    case V1_13_R2:
+                    case V1_14_R1:
+                    case V1_15_R1:
+                    case V1_16_R1:
+                    case V1_16_R2:
+                    case V1_16_R3: {
                         Object skullInstance = tileEntitySkullClass.getConstructor().newInstance();
                         tileEntitySkullClass.getMethod("setLocation", ReflectionUtils.getMCServerClassByName("World", "world.level"), blockPositionClass).invoke(skullInstance, nmsWorld, positionInstance);
                         nmsWorld.getClass().getMethod("setTileEntity", blockPositionClass, ReflectionUtils.getMCServerClassByName("TileEntity", "world.level.block.entity")).invoke(nmsWorld, positionInstance, skullInstance);
                         break;
                     }
-                    case 17:
-                    default: {
+                    case V1_17_R1:
+                    case V1_18_R1:
+                    case V1_18_R2:
+                    case V1_19_R1:
+                    case V1_19_R2:
+                    case V1_19_R3:
+                    case V1_20_R1: {
                         Object skullInstance = tileEntitySkullClass.getConstructor(blockPositionClass, ReflectionUtils.getMCServerClassByName("IBlockData", "world.level.block.state")).newInstance(positionInstance, blockDataState);
-                        nmsWorld.getClass().getMethod("setTileEntity", ReflectionUtils.getMCServerClassByName("TileEntity", "world.level.block.entity")).invoke(nmsWorld, skullInstance);
+                        MethodReflectionCollection.WORLD_SET_TILE_ENTITY.invokeOn(nmsWorld, skullInstance);
+                        //nmsWorld.getClass().getMethod("setTileEntity", ReflectionUtils.getMCServerClassByName("TileEntity", "world.level.block.entity")).invoke(nmsWorld, skullInstance);
                         break;
                     }
                 }
@@ -153,9 +177,10 @@ public void setSkull(Block block, String texture, BlockFace blockFace) {
 
     private void setSkullTexture(Block block, String texture) {
         try {
-            Object nmsWorld = block.getWorld().getClass().getMethod("getHandle").invoke(block.getWorld());
-            Object craftSkull = tileEntitySkullClass.cast(nmsWorld.getClass().getMethod("getTileEntity", blockPositionClass).invoke(nmsWorld, blockPositionConstructor.newInstance(block.getX(), block.getY(), block.getZ())));
-            tileEntitySkullClass.getMethod("setGameProfile", GameProfile.class).invoke(craftSkull, GameProfileBuilder.createProfileWithTexture(texture));
+            Object nmsWorld = ReflectionUtils.getWorldHandle(block.getWorld());
+            Object craftSkull = tileEntitySkullClass.cast(MethodReflectionCollection.WORLD_GET_TILE_ENTITY.invokeOn(nmsWorld, blockPositionConstructor.newInstance(block.getX(), block.getY(), block.getZ())));
+            MethodReflectionCollection.TILE_ENTITY_SET_GAME_PROFILE.invokeOn(craftSkull, GameProfileBuilder.createProfileWithTexture(texture));
+            //tileEntitySkullClass.getMethod("setGameProfile", GameProfile.class).invoke(craftSkull, GameProfileBuilder.createProfileWithTexture(texture));
         } catch (Exception e) {
             CustomHeads.getPluginLogger().log(Level.WARNING, "Failed to set Skull Texture", e);
         }

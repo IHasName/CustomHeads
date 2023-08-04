@@ -1,12 +1,11 @@
 package de.likewhat.customheads.utils.reflection;
 
 import de.likewhat.customheads.CustomHeads;
-import de.likewhat.customheads.utils.reflection.helpers.ItemNBTUtils;
-import de.likewhat.customheads.utils.reflection.helpers.NBTTagUtils;
-import de.likewhat.customheads.utils.reflection.helpers.collections.ReflectionMethodCollection;
+import de.likewhat.customheads.utils.reflection.helpers.collections.MethodReflectionCollection;
+import de.likewhat.customheads.utils.reflection.nbt.ItemNBTUtils;
+import de.likewhat.customheads.utils.reflection.nbt.NBTTagUtils;
 import org.bukkit.inventory.ItemStack;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -31,13 +30,13 @@ public class TagEditor {
             Object copy = ItemNBTUtils.asNMSCopy(itemStack);
             Object itemTagCompound = ItemNBTUtils.getTagFromItem(itemStack);
             Object nbtTagCompound = NBTTagUtils.createInstance(NBTTagUtils.NBTType.COMPOUND);
-            ReflectionMethodCollection.NBT_TAGCOMPOUND_SET.invokeOn(itemTagCompound, "tagEditor", nbtTagCompound);
+            MethodReflectionCollection.NBT_TAGCOMPOUND_SET.invokeOn(itemTagCompound, "tagEditor", nbtTagCompound);
             ItemNBTUtils.setTagOnItem(copy, itemTagCompound);
             return ItemNBTUtils.asBukkitCopy(copy);
-        } catch (IllegalAccessException | InvocationTargetException e) {
+        } catch (Exception e) {
             CustomHeads.getPluginLogger().log(Level.WARNING, "Failed to reset Tags from Item", e);
-            return null;
         }
+        return null;
     }
 
     public ItemStack setTags(ItemStack itemStack, String... tags) {
@@ -48,19 +47,19 @@ public class TagEditor {
         try {
             Object copy = ItemNBTUtils.asNMSCopy(itemStack);
             Object itemTagCompound = ItemNBTUtils.getTagFromItem(itemStack);
-            Object nbtTagCompound = ReflectionMethodCollection.NBT_TAGCOMPOUND_GETCOMPOUND.invokeOn(itemTagCompound, "tagEditor");
+            Object nbtTagCompound = MethodReflectionCollection.NBT_TAGCOMPOUND_GETCOMPOUND.invokeOn(itemTagCompound, "tagEditor");
             Object nbtTagList = NBTTagUtils.createInstance(NBTTagUtils.NBTType.LIST);
             for (String tag : tags) {
                 NBTTagUtils.addObjectToNBTList(nbtTagList, NBTTagUtils.createInstance(NBTTagUtils.NBTType.STRING, tag));
             }
-            ReflectionMethodCollection.NBT_TAGCOMPOUND_SET.invokeOn(nbtTagCompound, tagName, nbtTagList);
-            ReflectionMethodCollection.NBT_TAGCOMPOUND_SET.invokeOn(itemTagCompound, "tagEditor", nbtTagCompound);
+            MethodReflectionCollection.NBT_TAGCOMPOUND_SET.invokeOn(nbtTagCompound, tagName, nbtTagList);
+            MethodReflectionCollection.NBT_TAGCOMPOUND_SET.invokeOn(itemTagCompound, "tagEditor", nbtTagCompound);
             ItemNBTUtils.setTagOnItem(copy, itemTagCompound);
             return ItemNBTUtils.asBukkitCopy(copy);
         } catch (Exception e) {
             CustomHeads.getPluginLogger().log(Level.WARNING, "Failed to save Tags to Item", e);
-            return null;
         }
+        return null;
     }
 
     public ItemStack addTags(ItemStack itemStack, String... tags) {
@@ -92,11 +91,11 @@ public class TagEditor {
                 return new ArrayList<>();
             }
             Object itemTag = ItemNBTUtils.getTagFromItem(itemStack);
-            Object itemTagCompound = ReflectionMethodCollection.NBT_TAGCOMPOUND_GETCOMPOUND.invokeOn(itemTag, "tagEditor");
-            Object nbtList = ReflectionMethodCollection.NBT_TAGCOMPOUND_GETLIST.invokeOn(itemTagCompound, tagName, NBTTagUtils.NBTType.STRING.getId());
+            Object itemTagCompound = MethodReflectionCollection.NBT_TAGCOMPOUND_GETCOMPOUND.invokeOn(itemTag, "tagEditor");
+            Object nbtList = MethodReflectionCollection.NBT_TAGCOMPOUND_GETLIST.invokeOn(itemTagCompound, tagName, NBTTagUtils.NBTType.STRING.getId());
             List<String> result = new ArrayList<>();
-            for (int i = 0; i < ReflectionMethodCollection.NBT_TAGLIST_SIZE.invokeOn(nbtList); i++) {
-                result.add(ReflectionMethodCollection.NBT_TAGLIST_GETSTRING.invokeOn(nbtList, i));
+            for (int i = 0; i < MethodReflectionCollection.NBT_TAGLIST_SIZE.invokeOn(nbtList); i++) {
+                result.add(MethodReflectionCollection.NBT_TAGLIST_GETSTRING.invokeOn(nbtList, i));
             }
             return result;
         } catch (Exception e) {
@@ -119,8 +118,8 @@ public class TagEditor {
                 return false;
             }
             Object itemTag = ItemNBTUtils.getTagFromItem(item);
-            Object itemTagCompound = ReflectionMethodCollection.NBT_TAGCOMPOUND_GETCOMPOUND.invokeOn(itemTag, "tagEditor");
-            return ReflectionMethodCollection.NBT_TAGCOMPOUND_HASKEY.invokeOn(itemTagCompound, tagName);
+            Object itemTagCompound = MethodReflectionCollection.NBT_TAGCOMPOUND_GETCOMPOUND.invokeOn(itemTag, "tagEditor");
+            return MethodReflectionCollection.NBT_TAGCOMPOUND_HASKEY.invokeOn(itemTagCompound, tagName);
         } catch (Exception e) {
             return false;
         }

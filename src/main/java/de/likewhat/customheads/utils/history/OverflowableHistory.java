@@ -17,6 +17,9 @@ public abstract class OverflowableHistory {
     public OverflowableHistory(OfflinePlayer offlinePlayer) {
         this.offlinePlayer = offlinePlayer;
         this.entries = new ArrayList<>();
+
+        loadEntries();
+        handleOverflow();
     }
 
     public abstract void loadEntries();
@@ -33,7 +36,7 @@ public abstract class OverflowableHistory {
     }
 
     protected void handleOverflow() {
-        while (entries.size() > CustomHeads.hisOverflow) {
+        while (entries.size() > CustomHeads.historyOverflow) {
             entries.remove(0);
         }
     }

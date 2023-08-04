@@ -41,6 +41,10 @@
 # update-notifications: Choose if you cant to receive #
 # Update Notifications Ingame and or via Console      #
 # --------------------------------------------------- #
+# grabHeadToCursor: When true grabs the Heads in      #
+# Categories to the Cursor otherwise it will be added #
+# to your Inventory like /give                        #
+# --------------------------------------------------- #
 # disabledCategories: A List of Categories which will #
 # be ignored by the Plugin                            #
 # --------------------------------------------------- #
@@ -77,6 +81,7 @@ economy:
 update-notifications:
   onJoin: true
   console: true
+grabHeadToCursor: true
 disabledCategories: []
 langFile: none
 reducedDebug: true

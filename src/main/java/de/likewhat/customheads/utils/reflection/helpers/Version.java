@@ -1,6 +1,5 @@
 package de.likewhat.customheads.utils.reflection.helpers;
 
-import lombok.Getter;
 import org.bukkit.Bukkit;
 
 import java.util.Arrays;
@@ -19,11 +18,26 @@ public enum Version {
     V1_16_R1(1161), V1_16_R2(1162), V1_16_R3(1163),
     V1_17_R1(1171),
     V1_18_R1(1181), V1_18_R2(1182),
-    V1_19_R1(1191),
-    LATEST(99999999);
+    V1_19_R1(1191), V1_19_R2(1192), V1_19_R3(1193),
+    V1_20_R1(1201),
+    LATEST(Integer.MAX_VALUE),
 
-    private static final String packet = Bukkit.getServer().getClass().getPackage().getName();
-    @Getter private static final String rawVersion = packet.substring(packet.lastIndexOf('.') + 1);
+    LATEST_UPDATE(1201);
+
+    private static final String PACKET_NAME = Bukkit.getServer().getClass().getPackage().getName();
+    private static final String RAW_VERSION = PACKET_NAME.substring(PACKET_NAME.lastIndexOf('.') + 1);
+
+    public static Version getCurrentVersion() {
+        if(currentVersion != null) {
+            return currentVersion;
+        }
+        currentVersion = fromValue(Integer.parseInt(RAW_VERSION.replaceAll("\\D+", "")));
+        return currentVersion;
+    }
+
+    public static String getCurrentVersionRaw() {
+        return RAW_VERSION;
+    }
 
     public final int versionValue;
 
@@ -45,11 +59,4 @@ public enum Version {
         return this.versionValue > version.versionValue;
     }
 
-    public static Version getCurrentVersion() {
-        if(currentVersion != null) {
-            return currentVersion;
-        }
-        currentVersion = fromValue(Integer.parseInt(rawVersion.replaceAll("\\D+", "")));
-        return currentVersion;
-    }
 }

@@ -11,11 +11,12 @@ import de.likewhat.customheads.category.Category;
 import de.likewhat.customheads.category.CustomHead;
 import de.likewhat.customheads.category.SubCategory;
 import de.likewhat.customheads.utils.reflection.AnvilGUI;
-import de.likewhat.customheads.utils.reflection.helpers.ItemNBTUtils;
 import de.likewhat.customheads.utils.reflection.helpers.ReflectionUtils;
 import de.likewhat.customheads.utils.reflection.helpers.Version;
-import de.likewhat.customheads.utils.reflection.helpers.collections.ReflectionClassCollection;
-import de.likewhat.customheads.utils.reflection.helpers.collections.ReflectionConstructorCollection;
+import de.likewhat.customheads.utils.reflection.helpers.collections.ClassReflectionCollection;
+import de.likewhat.customheads.utils.reflection.helpers.collections.ConstructorReflectionCollection;
+import de.likewhat.customheads.utils.reflection.helpers.collections.MethodReflectionCollection;
+import de.likewhat.customheads.utils.reflection.nbt.ItemNBTUtils;
 import de.likewhat.customheads.utils.updaters.FetchResult;
 import de.likewhat.customheads.utils.updaters.GitHubDownloader;
 import org.bukkit.Bukkit;
@@ -64,6 +65,8 @@ public class Utils {
     private static final String TEXTURE_LINK = "http://textures.minecraft.net/texture/%s";
     private static final Pattern KEY_PATTERN = Pattern.compile("[a-z0-9]\\w{63}");
     private static final String JSON_SKIN = "{\"textures\":{\"SKIN\":{\"url\":\"%s\"}}}";
+
+    public static final String TEXT_JSON_FORMAT = "{\"text\":\"%s\"}";
 
     public static String getTextureFromProfile(GameProfile profile) {
         String value = "";
@@ -677,7 +680,7 @@ public class Utils {
 
     public static void sendJSONMessage(String json, Player player) {
         try {
-            Object serializedMessage = ReflectionUtils.getMCServerClassByName("ChatSerializer", "network.chat").getMethod("a", String.class).invoke(null, json);
+            Object serializedMessage = MethodReflectionCollection.CHAT_COMPONENT_SERIALIZE.invokeOn(null, json);
             switch(Version.getCurrentVersion()) {
                 case V1_8_R1:
                 case V1_8_R2:
@@ -691,7 +694,7 @@ public class Utils {
                 case V1_13_R2:
                 case V1_14_R1:
                 case V1_15_R1: {
-                    Object packet = ReflectionConstructorCollection.PACKET_PLAYOUT_CHAT.construct(serializedMessage);
+                    Object packet = ConstructorReflectionCollection.PACKET_PLAYOUT_CHAT.construct(serializedMessage);
                     ReflectionUtils.sendPacket(packet, player);
                 }
                 case V1_16_R1:
@@ -700,22 +703,22 @@ public class Utils {
                 case V1_17_R1:
                 case V1_18_R1:
                 case V1_18_R2: {
-                    Enum<?> messageType = ReflectionUtils.getEnumConstant(ReflectionClassCollection.CHAT_MESSAGE_TYPE.resolve(), "CHAT");
+                    Enum<?> messageType = ReflectionUtils.getEnumConstant(ClassReflectionCollection.CHAT_MESSAGE_TYPE.resolve(), "CHAT");
                     if (messageType == null) {
-                        messageType = ReflectionUtils.getEnumConstant(ReflectionClassCollection.CHAT_MESSAGE_TYPE.resolve(), "a");
+                        messageType = ReflectionUtils.getEnumConstant(ClassReflectionCollection.CHAT_MESSAGE_TYPE.resolve(), "a");
                     }
-                    Object packet = ReflectionConstructorCollection.PACKET_PLAYOUT_CHAT.construct(serializedMessage, messageType, null);
+                    Object packet = ConstructorReflectionCollection.PACKET_PLAYOUT_CHAT.construct(serializedMessage, messageType, null);
                     ReflectionUtils.sendPacket(packet, player);
                 }
                 default:
                 case V1_19_R1: {
-                    Class<?> chatMessageTypeClass = ReflectionClassCollection.CHAT_MESSAGE_TYPE.resolve();
-                    Object messageType = ReflectionUtils.getFieldDynamic(chatMessageTypeClass, "i"); // Field i should be tellraw_command
-                    Object playerHandle = ReflectionUtils.getPlayerHandle(player);
+                    Class<?> chatMessageTypeClass = ClassReflectionCollection.CHAT_MESSAGE_TYPE.resolve();
+                    Object messageType = ReflectionUtils.getField(chatMessageTypeClass, "i"); // Field i should be tellraw_command
                     //Method sendMessageMethod = ReflectionClassCollection.ENTITY_PLAYER.resolve().getMethod("a", ReflectionClassCollection.ICHAT_BASE_COMPONENT.resolve(), ReflectionClassCollection.RESOURCE_KEY.resolve());
                     //sendMessageMethod.invoke(playerHandle, serializedMessage, messageType);
+                    Method sendMessageMethod = ClassReflectionCollection.ENTITY_PLAYER.resolve().getMethod("a", ClassReflectionCollection.ICHAT_BASE_COMPONENT.resolve());
 
-                    Method sendMessageMethod = ReflectionClassCollection.ENTITY_PLAYER.resolve().getMethod("a", ReflectionClassCollection.ICHAT_BASE_COMPONENT.resolve());
+                    Object playerHandle = ReflectionUtils.getPlayerHandle(player);
                     sendMessageMethod.invoke(playerHandle, serializedMessage);
                 }
             }
@@ -734,7 +737,7 @@ public class Utils {
         if(filename.contains("/")) {
             filename = filename.substring(filename.lastIndexOf("/")+1);
         }
-        if(filename.lastIndexOf(".") > 0 && filename.lastIndexOf(".") < filename.length()) {
+        if(filename.lastIndexOf(".") > 0) {
             return filename.substring(filename.lastIndexOf(".") + 1);
         }
         return "";

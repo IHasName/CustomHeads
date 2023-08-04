@@ -66,7 +66,7 @@ public class GitHubDownloader {
             }
             response = new JsonParser().parse(new InputStreamReader(apiConnection.getInputStream()));
             if (response.isJsonObject() && response.getAsJsonObject().has("message")) {
-                fetchResult.error(new NullPointerException("Release API resopnded with: " + response.getAsJsonObject().get("message").getAsString()));
+                fetchResult.error(new NullPointerException("Release API responded with: " + response.getAsJsonObject().get("message").getAsString()));
                 return;
             }
             RESPONSE_CACHE.put(url, new CachedResponse<>(System.currentTimeMillis(), response));

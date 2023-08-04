@@ -38,6 +38,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.io.File;
 import java.util.*;
 import java.util.concurrent.Callable;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -58,7 +59,7 @@ public class CustomHeads extends JavaPlugin {
     public static final String PREFIX_GENERAL = "§7[§eCustomHeads§7] ";
     public static final String PREFIX_ERROR = PREFIX_GENERAL + "§cError §7: §c";
     public static final String PREFIX_WARNING = PREFIX_GENERAL + "§eWarning §7: §e";
-    public static int hisOverflow = 18;
+    public static int historyOverflow = 18;
     @Getter private static Configs updateFile;
     @Getter private static Configs headsConfig;
     @Getter private static JsonFile playerDataFile;
@@ -80,6 +81,8 @@ public class CustomHeads extends JavaPlugin {
     private static boolean reducedDebug = false;
     private static boolean headsBuyable = false;
     private static boolean hasEconomy = false;
+    private static boolean grabHeadToCursor = false;
+
     private boolean isInit = false;
     private String bukkitVersion;
 
@@ -92,7 +95,7 @@ public class CustomHeads extends JavaPlugin {
     public static void reloadHistoryData() {
         historyEnabled = headsConfig.get().getBoolean("history.enabled");
         canSeeOwnHistory = headsConfig.get().getBoolean("history.seeown");
-        hisOverflow = Utils.clamp(1, headsConfig.get().getInt("history.overflow"), 27);
+        historyOverflow = Utils.clamp(1, headsConfig.get().getInt("history.overflow"), 27);
     }
 
     // Language/Looks Loader
@@ -157,6 +160,10 @@ public class CustomHeads extends JavaPlugin {
         return keepCategoryPermissions;
     }
 
+    public static boolean shouldGrabHeadToCursor() {
+        return grabHeadToCursor;
+    }
+
     public static boolean headsBuyable() {
         return headsBuyable;
     }
@@ -183,6 +190,7 @@ public class CustomHeads extends JavaPlugin {
         headsBuyable = headsConfig.get().getBoolean("economy.heads.buyable");
         headsPermanentBuy = headsConfig.get().getBoolean("economy.heads.permanentBuy");
         keepCategoryPermissions = headsConfig.get().getBoolean("economy.category.keepPermissions");
+        grabHeadToCursor = headsConfig.get().getBoolean("grabHeadToCursor");
         reloadEconomy();
         if(useSender)
             sender.sendMessage((console ? PREFIX_GENERAL : "") + languageManager.RELOAD_HISTORY);
@@ -228,7 +236,7 @@ public class CustomHeads extends JavaPlugin {
             headsConfig.save();
             getServer().getConsoleSender().sendMessage(PREFIX_GENERAL + "Successfully converted old Head Data");
         } catch (Exception e) {
-            getPluginLogger().log(Level.WARNING, "Failed to convert old Head Data...", e);
+            getPluginLogger().log(Level.WARNING, "Failed to convert old Head Data", e);
         }
     }
 
@@ -248,7 +256,7 @@ public class CustomHeads extends JavaPlugin {
         Version current = Version.getCurrentVersion();
         getPluginLogger().info("Using " + current.name() + " as Version Handler");
         if (current == Version.LATEST) {
-            getServer().getConsoleSender().sendMessage(PREFIX_WARNING + "Hrm. Seems like CustomHeads wasn't tested on this Minecraft Version (" + Version.getRawVersion() + ") yet...");
+            getServer().getConsoleSender().sendMessage(PREFIX_WARNING + "Hrm. Seems like CustomHeads wasn't tested on this Minecraft Version (" + Version.getCurrentVersionRaw() + ") yet...");
             getServer().getConsoleSender().sendMessage(PREFIX_WARNING + "Feel free to join my Discord to know when it gets updated");
         }
         File oldHeadFile;
@@ -338,6 +346,7 @@ public class CustomHeads extends JavaPlugin {
         categoriesBuyable = headsConfig.get().getBoolean("economy.category.buyable");
         headsBuyable = headsConfig.get().getBoolean("economy.heads.buyable");
         headsPermanentBuy = headsConfig.get().getBoolean("economy.heads.permanentBuy");
+        grabHeadToCursor = headsConfig.get().getBoolean("grabHeadToCursor");
 
         getCommandPrice = headsConfig.get().getInt("economy.get-command.price-per-head");
 
@@ -426,7 +435,6 @@ public class CustomHeads extends JavaPlugin {
     }
 
     private void initAsyncTimers() {
-        // Clear Cache every 30 Minutes
         Utils.runAsyncTimer(new BukkitRunnable() {
             public void run() {
                 UUID_CACHE.clear();
@@ -436,7 +444,7 @@ public class CustomHeads extends JavaPlugin {
                 ScrollableInventory.clearCache();
                 PlayerWrapper.clearCache();
             }
-        }, 36000, 36000);
+        }, TimeUnit.DAYS.toSeconds(1) * 20, TimeUnit.DAYS.toSeconds(1) * 20);
 
         // Animation Timer
         Utils.runAsyncTimer(new BukkitRunnable() {

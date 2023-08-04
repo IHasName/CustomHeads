@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 
 public class CHSearchQuery {
 
-    private static final List<String> badVersions = Arrays.asList("v1_8_R1", "v1_8_R2", "v1_8_R3");
+    private static final List<Version> badVersions = Arrays.asList(Version.V1_8_R1, Version.V1_8_R2, Version.V1_8_R3);
     private final List<CustomHead> results;
 
     private boolean recordHistory = true;
@@ -39,10 +39,7 @@ public class CHSearchQuery {
             results = new ArrayList<>();
             return;
         }
-        results = CustomHeads.getCategoryManager().getAllHeads().stream().filter(head -> ChatColor.stripColor(head.getItemMeta().getDisplayName().toLowerCase()).contains(search.toLowerCase())
-            //String nameStripped = ChatColor.stripColor(head.getItemMeta().getDisplayName().toLowerCase());
-            //return Arrays.stream(search.split(" ")).anyMatch(s -> s.contains(nameStripped));
-        ).collect(Collectors.toList());
+        results = CustomHeads.getCategoryManager().getAllHeads().stream().filter(head -> ChatColor.stripColor(head.getItemMeta().getDisplayName().toLowerCase()).contains(search.toLowerCase())).collect(Collectors.toList());
         Collections.reverse(results);
     }
 
@@ -61,7 +58,7 @@ public class CHSearchQuery {
             customHeadsPlayer.getSearchHistory().addEntry(search);
 
         String title = CustomHeads.getLanguageManager().SEARCH_TITLE.replace("{RESULTS}", "" + results.size());
-        title = badVersions.contains(Version.getRawVersion()) ? title.contains("{short}") ? title.substring(0, title.lastIndexOf("{short}") >= 32 ? 29 : title.lastIndexOf("{short}")) + "..." : title.substring(0, title.length() >= 32 ? 29 : title.length()) + "..." : title.replace("{short}", "");
+        title = badVersions.contains(Version.getCurrentVersion()) ? title.contains("{short}") ? title.substring(0, title.lastIndexOf("{short}") >= 32 ? 29 : title.lastIndexOf("{short}")) + "..." : title.substring(0, title.length() >= 32 ? 29 : title.length()) + "..." : title.replace("{short}", "");
         List<ItemStack> heads = new ArrayList<>();
         results.forEach(customHead -> {
             ItemEditor itemEditor = new ItemEditor(customHead);

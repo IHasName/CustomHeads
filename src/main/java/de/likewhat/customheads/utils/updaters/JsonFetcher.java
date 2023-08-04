@@ -22,7 +22,7 @@ import java.net.URL;
 @Getter
 public class JsonFetcher {
 
-    private static final String DEFAULT_USER_AGENT = "Mozilla/5.0 (Windows NT 6.3; Trident/7.0; rv:11.0) like Gecko";
+    private static final String DEFAULT_USER_AGENT = "JsonFetcher/1.0";
     private static final JsonParser PARSER = new JsonParser();
 
     private final String url;

@@ -1,8 +1,11 @@
-package de.likewhat.customheads.utils.reflection.helpers;
+package de.likewhat.customheads.utils.reflection.nbt;
 
 import de.likewhat.customheads.CustomHeads;
-import de.likewhat.customheads.utils.reflection.helpers.collections.ReflectionClassCollection;
-import de.likewhat.customheads.utils.reflection.helpers.collections.ReflectionMethodCollection;
+import de.likewhat.customheads.utils.reflection.helpers.ReflectionUtils;
+import de.likewhat.customheads.utils.reflection.helpers.collections.ClassReflectionCollection;
+import de.likewhat.customheads.utils.reflection.helpers.collections.MethodReflectionCollection;
+import de.likewhat.customheads.utils.reflection.nbt.errors.NBTException;
+import de.likewhat.customheads.utils.reflection.nbt.errors.NBTVerifyException;
 import org.bukkit.inventory.ItemStack;
 
 import java.lang.reflect.InvocationTargetException;
@@ -12,7 +15,7 @@ public class ItemNBTUtils {
 
     public static Object asNMSCopy(ItemStack item) {
         try {
-            return ReflectionUtils.getCBClass("inventory.CraftItemStack").getMethod("asNMSCopy", ItemStack.class).invoke(null, item);
+            return ReflectionUtils.getCraftBukkitClass("inventory.CraftItemStack").getMethod("asNMSCopy", ItemStack.class).invoke(null, item);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -21,7 +24,7 @@ public class ItemNBTUtils {
 
     public static ItemStack asBukkitCopy(Object itemInstance) {
         try {
-            return (ItemStack) ReflectionUtils.getCBClass("inventory.CraftItemStack").getMethod("asBukkitCopy", ReflectionClassCollection.MINECRAFT_ITEMSTACK_CLASS.resolve()).invoke(null, itemInstance);
+            return (ItemStack) ReflectionUtils.getCraftBukkitClass("inventory.CraftItemStack").getMethod("asBukkitCopy", ClassReflectionCollection.MINECRAFT_ITEMSTACK_CLASS.resolve()).invoke(null, itemInstance);
         } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             e.printStackTrace();
         }
@@ -32,7 +35,7 @@ public class ItemNBTUtils {
         try {
             Object nmsCopy = ItemNBTUtils.asNMSCopy(item);
             if(nmsCopy != null) {
-                return ReflectionMethodCollection.ITEMSTACK_HASTAG.invokeOn(nmsCopy);
+                return MethodReflectionCollection.ITEMSTACK_HASTAG.invokeOn(nmsCopy);
             }
         } catch (Exception e) {
             CustomHeads.getPluginLogger().log(Level.WARNING, "Failed to check NBT from Item", e);
@@ -50,24 +53,24 @@ public class ItemNBTUtils {
         }
         try {
             Object nmsCopy = ItemNBTUtils.asNMSCopy(itemStack);
-            return ReflectionMethodCollection.ITEMSTACK_GETTAG.invokeOn(nmsCopy);
+            return MethodReflectionCollection.ITEMSTACK_GETTAG.invokeOn(nmsCopy);
         } catch(Exception e) {
             CustomHeads.getPluginLogger().log(Level.WARNING, "Failed to get NBT from Item", e);
         }
         return null;
     }
 
-    public static void setTagOnItem(Object item, Object nbt) {
+    public static void setTagOnItem(Object item, Object nbt) throws NBTVerifyException, NBTException {
         try {
-            ReflectionMethodCollection.ITEMSTACK_SETTAG.invokeOn(item, nbt);
+            MethodReflectionCollection.ITEMSTACK_SETTAG.invokeOn(item, nbt);
 
             // Verify NBT Set
-            Object tagToVerify = ReflectionMethodCollection.ITEMSTACK_GETTAG.invokeOn(item);
-            if(!tagToVerify.equals(nbt)) {
-                throw new InvocationTargetException(new Exception("[TagEditor] Verify: Set Tag does not match"));
+            Object tagToVerify = MethodReflectionCollection.ITEMSTACK_GETTAG.invokeOn(item);
+            if (!tagToVerify.equals(nbt)) {
+                throw new NBTVerifyException("Failed to verify NBT");
             }
-        } catch(Exception e) {
-            CustomHeads.getPluginLogger().log(Level.WARNING, "Failed to update NBT of Item", e);
+        } catch(InvocationTargetException | IllegalAccessException e) {
+            throw new NBTException(e);
         }
     }
 }

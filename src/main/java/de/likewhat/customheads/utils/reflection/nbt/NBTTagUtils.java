@@ -1,4 +1,4 @@
-package de.likewhat.customheads.utils.reflection.helpers;
+package de.likewhat.customheads.utils.reflection.nbt;
 
 /*
  *  Project: CustomHeads in NBTTagCreator
@@ -8,7 +8,9 @@ package de.likewhat.customheads.utils.reflection.helpers;
  */
 
 import de.likewhat.customheads.CustomHeads;
-import de.likewhat.customheads.utils.reflection.helpers.collections.ReflectionMethodCollection;
+import de.likewhat.customheads.utils.reflection.helpers.ReflectionUtils;
+import de.likewhat.customheads.utils.reflection.helpers.Version;
+import de.likewhat.customheads.utils.reflection.helpers.collections.MethodReflectionCollection;
 import lombok.Getter;
 
 import java.lang.reflect.Constructor;
@@ -20,10 +22,10 @@ public class NBTTagUtils {
 
     public static void addObjectToNBTList(Object list, Object objectToAdd) {
         try {
-            if(Version.getCurrentVersion().isOlderThan(ReflectionMethodCollection.NBT_TAGLIST_ADD_V1141.getFrom())) {
-                ReflectionMethodCollection.NBT_TAGLIST_ADD.invokeOn(list, objectToAdd);
+            if(Version.getCurrentVersion().isOlderThan(Version.V1_14_R1)) {
+                MethodReflectionCollection.NBT_TAGLIST_ADD.invokeOn(list, objectToAdd);
             } else {
-                ReflectionMethodCollection.NBT_TAGLIST_ADD.invokeOn(list, ReflectionMethodCollection.NBT_TAGLIST_SIZE.invokeOn(list), objectToAdd);
+                MethodReflectionCollection.NBT_TAGLIST_ADD.invokeOn(list, MethodReflectionCollection.NBT_TAGLIST_SIZE.invokeOn(list), objectToAdd);
             }
         } catch(IllegalAccessException | InvocationTargetException e) {
             CustomHeads.getPluginLogger().log(Level.WARNING, "Failed to add Object to NBT List", e);

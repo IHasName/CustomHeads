@@ -19,9 +19,11 @@ public abstract class WrapperBase<M extends WrapperBase<M, T>, T> {
     protected Version to;
     protected WrapperBase<M, T> replacedBy;
 
+    private final WrapperType wrapperType;
+
     protected T resolvedValue;
 
-    public WrapperBase(Version from, Version to, WrapperBase<M, T> replacedBy) {
+    public WrapperBase(WrapperType wrapperType, Version from, Version to, WrapperBase<M, T> replacedBy) {
         this.from = from == null ? Version.OLDEST : from;
         this.to = to == null ? Version.LATEST : to;
         if(this.from.isNewerThan(this.to)) {
@@ -31,6 +33,7 @@ public abstract class WrapperBase<M extends WrapperBase<M, T>, T> {
             throw new IllegalArgumentException("To-Version should be newer than From-Version");
         }
         this.replacedBy = replacedBy;
+        this.wrapperType = wrapperType;
     }
 
     /**
@@ -44,12 +47,13 @@ public abstract class WrapperBase<M extends WrapperBase<M, T>, T> {
         }
         Version current = Version.getCurrentVersion();
         if(current.isOlderThan(from)) {
-            throw new UnsupportedOperationException("Version " + current.name() + " doesn't Support this Method yet (from " + from.name() + ")");
+            throw new UnsupportedOperationException("Version " + current.name() + " isn't supported yet (from " + from.name() + ")");
         } else if(current.isNewerThan(to)) {
             if(replacedBy == null) {
-                throw new UnsupportedOperationException("This Method hasn't been implemented yet for " + current.name());
+                throw new UnsupportedOperationException("This " + wrapperType.getTypeClass().getName() + " hasn't been implemented yet for " + current.name());
             } else {
-                return replacedBy.getResolver().resolve();
+                resolvedValue = replacedBy.getResolver().resolve();
+                return resolvedValue;
             }
         } else {
             try {
@@ -72,10 +76,10 @@ public abstract class WrapperBase<M extends WrapperBase<M, T>, T> {
     protected <M extends WrapperBase<M, T>> M getResolver() {
         Version current = Version.getCurrentVersion();
         if(current.isOlderThan(from)) {
-            throw new UnsupportedOperationException("Version " + current.name() + " doesn't Support this Method yet (from " + from.name() + ")");
+            throw new UnsupportedOperationException("Version " + current.name() + " isn't supported yet (from " + from.name() + ")");
         } else if(current.isNewerThan(to)) {
             if(replacedBy == null) {
-                throw new UnsupportedOperationException("This Method hasn't been implemented yet for " + current.name());
+                throw new UnsupportedOperationException("This " + wrapperType.getTypeClass().getSimpleName() + " hasn't been implemented yet for " + current.name());
             } else {
                 return replacedBy.getResolver();
             }
@@ -84,10 +88,22 @@ public abstract class WrapperBase<M extends WrapperBase<M, T>, T> {
         }
     }
 
+    public boolean supports(Version version) {
+        return from.isOlderThan(version) && to.isNewerThan(version);
+    }
+
     protected abstract T resolveValue() throws Throwable;
+
+    public WrapperType getWrapperType() {
+        return wrapperType;
+    }
 
     protected void errorHandler(Throwable throwable) {
         CustomHeads.getPluginLogger().log(Level.WARNING, "Failed to resolve Value", throwable);
+    }
+
+    public void test() {
+        resolve();
     }
 
 }

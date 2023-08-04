@@ -24,7 +24,7 @@ import java.util.List;
 public interface CustomHeadsPlayer {
 
     /**
-     * Gets an List of the Categories the Player has unlocked
+     * Returns a List of the Categories the Player has unlocked
      *
      * @return List of Categories
      * @throws NullPointerException when Player is Offline and <code>ignorePermission</code> is true
@@ -32,7 +32,7 @@ public interface CustomHeadsPlayer {
     List<Category> getUnlockedCategories(boolean ignorePermission);
 
     /**
-     * Unlocks an Category for the Player
+     * Unlocks a Category for the Player
      *
      * @param category Category that should be unlocked
      * @return Whether the Category could be unlocked
@@ -40,7 +40,7 @@ public interface CustomHeadsPlayer {
     boolean unlockCategory(Category category);
 
     /**
-     * Locks an Category for an Player (does not apply when the Player has an bypass Permission)
+     * Locks a Category for a Player (does not apply when the Player has an bypass Permission)
      *
      * @param category Category that should be locked
      * @return Whether the Category could be locked or not
@@ -55,32 +55,32 @@ public interface CustomHeadsPlayer {
     List<CustomHead> getUnlockedHeads();
 
     /**
-     * Unlocks an Head from the Given ID
+     * Unlocks a Head from the Given ID
      *
      * @param category Which Category to pull from
      * @param id ID of the Head
-     * @return false when the ID doesnt exists
+     * @return false when the ID doesn't exist
      */
     boolean unlockHead(Category category, int id);
 
     /**
-     * Locks an Head from the Given ID
+     * Locks a Head from the Given ID
      *
      * @param category Which Category to pull from
      * @param id ID of the Head
-     * @return false when the ID doesnt exists
+     * @return false when the ID doesn't exist
      */
     boolean lockHead(Category category, int id);
 
     /**
-     * Gets an List of the Heads a Player saved
+     * Returns a List of the Heads a Player saved
      *
-     * @return List of Itemstacks
+     * @return List of ItemStacks
      */
     List<ItemStack> getSavedHeads();
 
     /**
-     * Save an Head to the Players Collection
+     * Save a Head to the Players Collection
      *
      * @param name    Name as what the Head should be saved as
      * @param texture Texture of the Head to save (can be Playername or Texture)
@@ -89,7 +89,7 @@ public interface CustomHeadsPlayer {
     boolean saveHead(String name, String texture);
 
     /**
-     * Gets specified Head from the Players Colletion
+     * Returns the specified Head from the Players Collection
      *
      * @param name Name of the saved Head
      * @return ItemStack of the saved Head
@@ -97,7 +97,7 @@ public interface CustomHeadsPlayer {
     ItemStack getHead(String name);
 
     /**
-     * Remove an Head from the Players Collection
+     * Remove a Head from the Players Collection
      *
      * @param name Name of the saved Head
      * @return Whether the Head was removed
@@ -105,15 +105,15 @@ public interface CustomHeadsPlayer {
     boolean deleteHead(String name);
 
     /**
-     * Check if an Head is saved by the Player
+     * Check if a given Head was saved by the Player
      *
      * @param name Name of the saved Head
-     * @return Whether or not the Player has saved the given Head
+     * @return Whether the Player has saved the given Head
      */
     boolean hasHead(String name);
 
     /**
-     * Uwraps the Player
+     * Unwraps the Player
      *
      * @return Player Instance that got wrapped or <code>null</code> when the Player is offline
      */

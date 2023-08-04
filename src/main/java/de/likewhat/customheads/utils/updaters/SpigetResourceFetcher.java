@@ -176,7 +176,7 @@ public class SpigetResourceFetcher {
     @Getter
     public static class ResourceUpdate {
         private String title;
-        private String desciption;
+        private String description;
         private long releaseDate;
         private int likes;
         private int releaseId;
@@ -195,7 +195,7 @@ public class SpigetResourceFetcher {
             public JsonElement serialize(ResourceUpdate resource, Type type, JsonSerializationContext jsonSerializationContext) {
                 JsonObject resourceObject = new JsonObject();
                 resourceObject.addProperty("title", resource.getTitle());
-                resourceObject.addProperty("description", resource.getDesciption());
+                resourceObject.addProperty("description", resource.getDescription());
                 resourceObject.addProperty("date", resource.getReleaseDate());
                 resourceObject.addProperty("likes", resource.getLikes());
                 resourceObject.addProperty("id", resource.getReleaseId());

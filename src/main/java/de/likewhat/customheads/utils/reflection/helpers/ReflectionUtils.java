@@ -2,57 +2,49 @@ package de.likewhat.customheads.utils.reflection.helpers;
 
 import de.likewhat.customheads.CustomHeads;
 import de.likewhat.customheads.utils.LoggingUtils;
-import de.likewhat.customheads.utils.reflection.helpers.collections.ReflectionMethodCollection;
+import de.likewhat.customheads.utils.reflection.helpers.collections.FieldReflectionCollection;
+import de.likewhat.customheads.utils.reflection.helpers.collections.MethodReflectionCollection;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 
-import java.lang.reflect.*;
-import java.util.Arrays;
-import java.util.HashMap;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.Map;
 import java.util.Objects;
-import java.util.function.Supplier;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class ReflectionUtils {
 
-    public static final int MC_VERSION;
-    private static final HashMap<String, Class<?>> CACHED_CLASSES = new HashMap<>();
-
-    static {
-        MC_VERSION = Integer.parseInt(Version.getRawVersion().split("_")[1]);
-    }
+    private static final Map<String, Class<?>> CACHED_CLASSES = new ConcurrentHashMap<>();
 
     /**
-     * Sets a given Field to <b>newValue</b>
+     * Sets the given Field Name to <b>newValue</b>
      * @param objectInstance The Object Instance
      * @param fieldName The Field Name to modify
      * @param newValue The changed Value
-     * @return true when the Field was modified successfully, false if not
+     * @return whether the Action was successful or not
      */
-    public static boolean setField(Object objectInstance, String fieldName, Object newValue) {
-        try {
-            Class<?> sourceClass = objectInstance.getClass();
-            Field fieldToModify;
-            try {
-                fieldToModify = sourceClass.getField(fieldName);
-            } catch(NoSuchFieldException e) {
-                fieldToModify = sourceClass.getDeclaredField(fieldName);
-            }
-            return setField(objectInstance, fieldToModify, newValue);
-        } catch(NoSuchFieldException e) {
-            e.printStackTrace();
-        }
-        return false;
+    public static boolean setField(Object objectInstance, String fieldName, Object newValue) throws NoSuchFieldException {
+        return setField(objectInstance, getField(objectInstance.getClass(), fieldName), newValue);
     }
 
-    public static boolean setField(Object objectInstance, Field field, Object newValue) {
+    /**
+     * Sets a known Field to <b>newValue</b>
+     * @param instance The Object Instance
+     * @param field The Field to modify
+     * @param newValue The Value to set
+     * @return whether the Action was successful or not
+     */
+    public static boolean setField(Object instance, Field field, Object newValue) {
         boolean wasAccessible = field.isAccessible();
         try {
             if(!wasAccessible) {
                 field.setAccessible(true);
             }
-            field.set(objectInstance, newValue);
+            field.set(instance, newValue);
             return true;
         } catch(Exception e) {
             e.printStackTrace();
@@ -70,18 +62,98 @@ public class ReflectionUtils {
      * @param fieldName The Field Name to get
      * @return Field from the given Class
      */
-    public static Field getFieldDynamic(Class<?> clazz, String fieldName) throws NoSuchFieldException {
-        Field result;
+    public static Field getField(Class<?> clazz, String fieldName) throws NoSuchFieldException {
+        Field result = null;
         try {
-            result = clazz.getField(fieldName);
-        } catch(NoSuchFieldException noField) {
-            try {
-                result = clazz.getDeclaredField(fieldName);
-            } catch(NoSuchFieldException noDeclaredField) {
-                throw new NoSuchFieldException("Failed to find Field in " + clazz.getCanonicalName() + " named " + fieldName + " in either declared or non-declared State");
+            result = clazz.getDeclaredField(fieldName);
+        } catch (NoSuchFieldException e) {
+            Class<?> superClass = clazz.getSuperclass();
+            if(superClass != null) {
+                result = getField(superClass, fieldName);
             }
         }
+        if(result == null) {
+            throw new NoSuchFieldException("Couldn't find any Field for " + fieldName);
+        }
         return result;
+    }
+
+    /**
+     * Gets the Field Value by the given Field Name and Object Instance
+     * @param fieldName The Field Name
+     * @param objectInstance The Object Instance
+     * @return The Field Value from the given Object
+     */
+    public static Object getFieldValue(String fieldName, Object objectInstance) {
+        try {
+            return getFieldValue(getField(objectInstance.getClass(), fieldName), objectInstance);
+        } catch(NoSuchFieldException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * Gets the Field Value by the given Field and Object Instance
+     * @param field The Field
+     * @param objectInstance The Object Instance
+     * @return The Field Value from the given Object
+     */
+    public static Object getFieldValue(Field field, Object objectInstance) {
+        boolean accessible = field.isAccessible();
+        try {
+            if(!accessible) {
+                field.setAccessible(true);
+            }
+            return field.get(objectInstance);
+        } catch(Exception e) {
+            e.printStackTrace();
+            return null;
+        } finally {
+            if(!accessible) {
+                field.setAccessible(false);
+            }
+        }
+    }
+
+    private static final Map<String, Field> FIELD_BY_VALUE_CACHE = new ConcurrentHashMap<>();
+
+    // Yeah, this seems like a bad Idea...
+    // But since the Fields always get changed in each Update it's kinda my last resort... sort of?
+    /**
+     * <p>Gets a Field by the Field Type Class</p>
+     * <b>WARNING!</b> This Method should only be used when you're 100% sure the Field Type Class only appears once in
+     * the Field Class
+     * @param fieldClass The Class where the Field is located
+     * @param typeClass The Field Type
+     * @return The Field
+     *
+     * @throws java.lang.NoSuchFieldException When Field couldn't be found
+     * @throws java.lang.IllegalStateException When the Field Type exists more than once
+     */
+    public static Field getFieldByValueType(Class<?> fieldClass, Class<?> typeClass) throws NoSuchFieldException {
+        String cacheName = fieldClass.getCanonicalName() + ":" + typeClass.getCanonicalName();
+        if(FIELD_BY_VALUE_CACHE.containsKey(cacheName)) {
+            return FIELD_BY_VALUE_CACHE.get(cacheName);
+        }
+
+        Field resultField = null;
+        for(Field field : fieldClass.getDeclaredFields()) {
+            if(field.getType().equals(typeClass)) {
+                // Throw an Error if the Field is already set since we can't be sure we got the right one
+                if(resultField != null) {
+                    throw new IllegalStateException("Refusing to return any Field for Class " + fieldClass.getCanonicalName() + " and Field Type " + typeClass.getCanonicalName() + " since there is more than one Result");
+                }
+                resultField = field;
+            }
+        }
+
+        if(resultField == null) {
+            throw new NoSuchFieldException("Couldn't find any Fields in " + fieldClass.getCanonicalName() + " with Field Type " + typeClass.getCanonicalName());
+        }
+
+        FIELD_BY_VALUE_CACHE.put(cacheName, resultField);
+        return resultField;
     }
 
     /**
@@ -89,6 +161,8 @@ public class ReflectionUtils {
      * @param clazz The Class that has the Constructor
      * @param paramTypes The Constructor Parameters
      * @return Constructor from the given Class and Parameter Types
+     *
+     * @throws java.lang.NoSuchMethodException When the Constructor couldn't be found
      */
     public static Constructor<?> getConstructorDynamic(Class<?> clazz, Class<?>... paramTypes) throws NoSuchMethodException {
         Constructor<?> result;
@@ -115,7 +189,7 @@ public class ReflectionUtils {
         Objects.requireNonNull(clazz);
         Objects.requireNonNull(methodName);
         try {
-            clazz.getMethod(methodName, params);
+            getMethod(methodName, clazz, params);
             return true;
         } catch(NoSuchMethodException e) {
             // ignored since it will still return false
@@ -180,35 +254,8 @@ public class ReflectionUtils {
 
     public static void sendPacket(Object packet, Player player) throws Exception {
         Object playerHandle = ReflectionUtils.getPlayerHandle(player);
-        Object connection;
-        if(MC_VERSION >= 17) {
-            connection = playerHandle.getClass().getField("b").get(playerHandle);
-        } else {
-            connection = playerHandle.getClass().getField("playerConnection").get(playerHandle);
-        }
-        ReflectionMethodCollection.PLAYER_SEND_PACKET.invokeOn(connection, packet);
-    }
-
-    public static Method findMethodByBody(Class<?> targetClass, Class<?> returnType, int modifiers, Class<?>... paramTypes) throws Throwable {
-        if(modifiers != -1 && (modifiers | Modifier.classModifiers()) != 0) {
-            throw new IllegalArgumentException("Illegal Method Modifier. Given Modifiers: " + Modifier.toString(modifiers));
-        }
-        Stream<Method> filtered = Arrays.stream(targetClass.getMethods()).filter(method ->
-                method.getReturnType().equals(returnType) &&
-                Arrays.equals(method.getParameterTypes(), paramTypes)
-        );
-
-        if(modifiers != -1) {
-            filtered = filtered.filter(method ->
-                    (method.getModifiers() & modifiers) != 0
-            );
-        }
-
-        if(filtered.count() > 1) {
-            throw new IllegalStateException("Refusing to return any Method since the Filter returned more than one Method " + filtered.map(Method::toGenericString).collect(Collectors.joining(", ")));
-        }
-
-        return filtered.findFirst().orElseThrow((Supplier<Throwable>) () -> new NullPointerException("Failed to find any Method with the given Parameters"));
+        Object connection = FieldReflectionCollection.PLAYER_CONNECTION.getInstance(playerHandle);
+        MethodReflectionCollection.PLAYER_SEND_PACKET.invokeOn(connection, packet);
     }
 
     public static Class<?> getMCServerClassByName(String className) {
@@ -220,14 +267,14 @@ public class ReflectionUtils {
             className = "IChatBaseComponent$ChatSerializer";
         }
         String classPath;
-        if(MC_VERSION >= 17) {
+        if(Version.getCurrentVersion().isNewerThan(Version.V1_17_R1)) {
             String altPrefix = "";
             if(alternativePrefix != null) {
                 altPrefix = alternativePrefix + ".";
             }
             classPath = "net.minecraft." + altPrefix + className;
         } else {
-            classPath = "net.minecraft.server." + Version.getRawVersion() + "." + className;
+            classPath = "net.minecraft.server." + Version.getCurrentVersionRaw() + "." + className;
         }
         return checkCachedClassname(classPath);
     }
@@ -236,8 +283,8 @@ public class ReflectionUtils {
         return checkCachedClassname(className);
     }
 
-    public static Class<?> getCBClass(String className) {
-        return checkCachedClassname("org.bukkit.craftbukkit." + Version.getRawVersion() + "." + className);
+    public static Class<?> getCraftBukkitClass(String className) {
+        return checkCachedClassname("org.bukkit.craftbukkit." + Version.getCurrentVersionRaw() + "." + className);
     }
 
     private static Class<?> checkCachedClassname(String className) {
@@ -257,11 +304,21 @@ public class ReflectionUtils {
 
     public static Object getPlayerHandle(Player player) {
         try {
-            return getCBClass("entity.CraftPlayer").cast(player).getClass().getMethod("getHandle").invoke(player);
+            return getCraftBukkitClass("entity.CraftPlayer").getMethod("getHandle").invoke(player);
         } catch (Exception e) {
             CustomHeads.getPluginLogger().log(Level.SEVERE, "Failed to get Player Handle", e);
         }
         return null;
     }
+
+    public static Object getWorldHandle(World world) {
+        try {
+            return getCraftBukkitClass("CraftWorld").getMethod("getHandle").invoke(world);
+        } catch (Exception e) {
+            CustomHeads.getPluginLogger().log(Level.SEVERE, "Failed to get World Handle", e);
+        }
+        return null;
+    }
+
 
 }

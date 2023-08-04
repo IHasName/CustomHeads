@@ -7,8 +7,12 @@ public class MinecraftServerClassWrapper extends ClassWrapper {
 
     private final String altPrefix;
 
-    public MinecraftServerClassWrapper(Version from, Version to, String className) {
-        this(from, to, className, null);
+    public MinecraftServerClassWrapper(String className, String altPrefix) {
+        this(null, null, className, altPrefix, null);
+    }
+
+    public MinecraftServerClassWrapper(Version from, Version to, String className, String altPrefix) {
+        this(from, to, className, altPrefix, null);
     }
 
     public MinecraftServerClassWrapper(Version from, Version to, String className, MinecraftServerClassWrapper replacedBy) {

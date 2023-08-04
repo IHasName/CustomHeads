@@ -21,7 +21,7 @@ public class ConstructorWrapper<T> extends WrapperBase<ConstructorWrapper<T>, Co
     private final Class<?>[] paramTypes;
 
     public ConstructorWrapper(Version from, Version to, ClassWrapper targetClass, ClassWrapper... paramTypes) {
-        this(from, to, targetClass.resolve(), null, (Class<?>[]) Arrays.stream(paramTypes).map(WrapperBase::resolve).toArray());
+        this(from, to, targetClass.resolve(), null, Arrays.stream(paramTypes).map(WrapperBase::resolve).toArray(Class[]::new));
     }
 
     public ConstructorWrapper(Version from, Version to, ClassWrapper targetClass, Class<?>... paramTypes) {
@@ -29,7 +29,7 @@ public class ConstructorWrapper<T> extends WrapperBase<ConstructorWrapper<T>, Co
     }
 
     public ConstructorWrapper(Version from, Version to, Class<?> targetClass, ClassWrapper... paramTypes) {
-        this(from, to, targetClass, null, (Class<?>[]) Arrays.stream(paramTypes).map(WrapperBase::resolve).toArray());
+        this(from, to, targetClass, null, Arrays.stream(paramTypes).map(WrapperBase::resolve).toArray(Class[]::new));
     }
 
     public ConstructorWrapper(Version from, Version to, Class<?> targetClass, Class<?>... paramTypes) {
@@ -37,11 +37,11 @@ public class ConstructorWrapper<T> extends WrapperBase<ConstructorWrapper<T>, Co
     }
 
     public ConstructorWrapper(Version from, Version to, ClassWrapper targetClass, ConstructorWrapper<T> replacedBy, ClassWrapper... paramTypes) {
-        this(from, to, targetClass.resolve(), replacedBy, (Class<?>[]) Arrays.stream(paramTypes).map(WrapperBase::resolve).toArray());
+        this(from, to, targetClass.resolve(), replacedBy, Arrays.stream(paramTypes).map(WrapperBase::resolve).toArray(Class[]::new));
     }
 
     public ConstructorWrapper(Version from, Version to, Class<?> targetClass, ConstructorWrapper<T> replacedBy, Class<?>... paramTypes) {
-        super(from, to, replacedBy);
+        super(WrapperType.CONSTRUCTOR, from, to, replacedBy);
         this.targetClass = targetClass;
         this.paramTypes = paramTypes;
     }
