@@ -61,6 +61,7 @@ public class InventoryListener implements Listener {
                 return;
             }
             CustomHeadsPlayer customHeadsPlayer = CustomHeads.getApi().wrapPlayer(player);
+            List<Category> unlockedCategories = customHeadsPlayer.getUnlockedCategories(CustomHeads.hasEconomy() && !CustomHeads.keepCategoryPermissions());
             ItemStack[] inventoryContent = event.getInventory().getContents();
             for (int i = 0; i < inventoryContent.length; i++) {
                 if (inventoryContent[i] == null) continue;
@@ -70,15 +71,18 @@ public class InventoryListener implements Listener {
                     if (categoryArgs[0].equals("category")) {
                         Category category = CustomHeads.getCategoryManager().getCategory(categoryArgs[1]);
                         ItemStack nextIcon = category.nextIcon();
-                        boolean bought = customHeadsPlayer.getUnlockedCategories(true).contains(category);
+                        boolean bought = false;
+                        if(CustomHeads.hasEconomy() && CustomHeads.categoriesBuyable()) {
+                            bought = customHeadsPlayer.getUnlockedCategories(true).contains(category);
+                        }
                         nextIcon = new ItemEditor(nextIcon)
-                                .setDisplayName(customHeadsPlayer.getUnlockedCategories(CustomHeads.hasEconomy() && !CustomHeads.keepCategoryPermissions()).contains(category) ? "§a" + nextIcon.getItemMeta().getDisplayName() : "§7" + ChatColor.stripColor(nextIcon.getItemMeta().getDisplayName()) + " " + CustomHeads.getLanguageManager().LOCKED)
+                                .setDisplayName(unlockedCategories.contains(category) ? ("§a" + nextIcon.getItemMeta().getDisplayName()) : ("§7" + ChatColor.stripColor(nextIcon.getItemMeta().getDisplayName()) + " " + CustomHeads.getLanguageManager().LOCKED))
                                 .addLoreLine(CustomHeads.hasEconomy() && CustomHeads.categoriesBuyable() ? bought || hasPermission(player, category.getPermission()) ? CustomHeads.getLanguageManager().ECONOMY_BOUGHT : Utils.getCategoryPriceFormatted(category, true) + "\n" + CustomHeads.getLanguageManager().ECONOMY_BUY_PROMPT : null)
                                 .addLoreLines(hasPermission(player, "heads.view.permissions") ? Arrays.asList(" ", "§7§oPermission: " + category.getPermission()) : null)
                                 .getItem();
-                        if (CustomHeads.hasEconomy()) {
+                        if (CustomHeads.hasEconomy() && CustomHeads.categoriesBuyable()) {
                             if(!(CustomHeads.keepCategoryPermissions() && hasPermission(player, category.getPermission()))) {
-                                if (!bought && CustomHeads.categoriesBuyable()) {
+                                if (!bought) {
                                     nextIcon = CustomHeads.getTagEditor().addTags(nextIcon, "buyCategory", category.getId());
                                 }
                             }
@@ -570,7 +574,7 @@ public class InventoryListener implements Listener {
                 String[] id = itemTags.get(itemTags.indexOf("headID")+1).split(":");
                 category = CustomHeads.getCategoryManager().getCategory(id[0]);
             }
-            if (getHeadFromItem(event.getCurrentItem()) == null || (category != null && hasPermission(player, "heads.viewCategory." + category.getPermission().replaceFirst("heads.viewCategory.", "") + ".allheads")) || customHeadsPlayer.getUnlockedHeads().contains(getHeadFromItem(event.getCurrentItem())) || getHeadFromItem(event.getCurrentItem()).isFree()) {
+            if (getHeadFromItem(event.getCurrentItem()) == null || (category != null && hasPermission(player, category.getPermission() + ".allheads")) || customHeadsPlayer.getUnlockedHeads().contains(getHeadFromItem(event.getCurrentItem())) || getHeadFromItem(event.getCurrentItem()).isFree()) {
                 ItemEditor itemEditor = new ItemEditor(event.getCurrentItem());
                 if (!CustomHeads.shouldGrabHeadToCursor() || event.getClick() == ClickType.SHIFT_LEFT) {
                     player.getInventory().addItem(TagEditor.clearTags(itemEditor.removeLoreLine(itemEditor.hasLore() ? itemEditor.getLore().size() - 1 : 0).getItem()));

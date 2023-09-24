@@ -9,6 +9,7 @@ import de.likewhat.customheads.category.SubCategory;
 import de.likewhat.customheads.headwriter.HeadFontType;
 import de.likewhat.customheads.headwriter.HeadWriter;
 import de.likewhat.customheads.utils.*;
+import de.likewhat.customheads.utils.history.SearchHistory;
 import de.likewhat.customheads.utils.reflection.helpers.ReflectionUtils;
 import de.likewhat.customheads.utils.reflection.helpers.Version;
 import de.likewhat.customheads.utils.updaters.FetchResult;
@@ -424,7 +425,7 @@ public class CustomHeadsCommand implements CommandExecutor {
                                     OfflinePlayer phis = Bukkit.getOfflinePlayer(Utils.parseUUID(uuid));
                                     if (phis.hasPlayedBefore() || phis.isOnline()) {
                                         if (hasPermission(player, "heads.view.history." + phis.getName()) || hasPermission(player, "heads.view.history.*") || (phis == player && CustomHeads.canSeeOwnHistory())) {
-                                            player.openInventory(CustomHeads.getApi().wrapPlayer(phis).getSearchHistory().getInventory());
+                                            player.openInventory(new SearchHistory(player).getInventory());
                                             return;
                                         }
                                         player.sendMessage(CustomHeads.getLanguageManager().HISTORY_NO_VIEW_PERMISSION);

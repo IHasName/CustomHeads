@@ -68,6 +68,8 @@ public class Utils {
 
     public static final String TEXT_JSON_FORMAT = "{\"text\":\"%s\"}";
 
+    private static final HashMap<String, List<String>> PERMISSION_CACHE = new HashMap<>();
+
     public static String getTextureFromProfile(GameProfile profile) {
         String value = "";
         for (Property prop : profile.getProperties().get("textures")) {
@@ -311,7 +313,7 @@ public class Utils {
     }
 
     public static boolean hasPermission(Player player, String permission) {
-        return player.hasPermission(permission) || player.hasPermission("heads.admin") || player.hasPermission("heads.*") || player.isOp();
+        return player.isOp() || player.hasPermission("heads.admin") || player.hasPermission(permission);
     }
 
     public static UUID parseUUID(String uuidStr) {
@@ -402,7 +404,7 @@ public class Utils {
                 inventory.setContent(categoryHeads.stream().map(customHead -> {
                     boolean bought = customHeadsPlayer.getUnlockedHeads().contains(customHead);
                     ItemEditor itemEditor = new ItemEditor(customHead);
-                    return CustomHeads.hasEconomy() && CustomHeads.headsBuyable() ? (bought || hasPermission(player, "heads.unlockAllHeads." + baseCategory.getPermission().replaceFirst("heads.viewCategory.", ""))) ? CustomHeads.getTagEditor().addTags(itemEditor.addLoreLine(CustomHeads.getLanguageManager().ECONOMY_BOUGHT).getItem(), "wearable", "clonable") : CustomHeads.getTagEditor().addTags(itemEditor.addLoreLine(formatPrice(customHead.getPrice(), true)).getItem(), "buyHead", "buyHead#>" + customHead.getOriginCategory().getId() + ":" + customHead.getId()) : CustomHeads.getTagEditor().addTags(itemEditor.getItem(), "wearable", "clonable");
+                    return CustomHeads.hasEconomy() && CustomHeads.headsBuyable() ? (bought || hasPermission(player, "heads.unlock-all-heads." + baseCategory.getPermission().replaceFirst("heads.viewCategory.", ""))) ? CustomHeads.getTagEditor().addTags(itemEditor.addLoreLine(CustomHeads.getLanguageManager().ECONOMY_BOUGHT).getItem(), "wearable", "clonable") : CustomHeads.getTagEditor().addTags(itemEditor.addLoreLine(formatPrice(customHead.getPrice(), true)).getItem(), "buyHead", "buyHead#>" + customHead.getOriginCategory().getId() + ":" + customHead.getId()) : CustomHeads.getTagEditor().addTags(itemEditor.getItem(), "wearable", "clonable");
                 }).collect(Collectors.toList()));
                 inventory.setBarItem(1, Utils.getBackButton(backAction));
                 inventory.setBarItem(3, CustomHeads.getTagEditor().setTags(new ItemEditor(Material.PAPER).setDisplayName(CustomHeads.getLanguageManager().ITEMS_INFO).setLore(CustomHeads.getLanguageManager().ITEMS_INFO_LORE).getItem(), "dec", "info-item", "blockMoving"));

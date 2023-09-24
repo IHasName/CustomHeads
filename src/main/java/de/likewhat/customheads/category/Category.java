@@ -148,7 +148,7 @@ public class Category extends BaseCategory {
             category = new Category(
                     categoryJson.get("id").getAsInt(),
                     Utils.format(categoryJson.get("name").getAsString()),
-                    "heads.viewCategory." + categoryJson.get("permission").getAsString(),
+                    CategoryManager.VIEW_CATEGORY_PERMISSION_PREFIX + categoryJson.get("permission").getAsString(),
                     CustomHeads.hasEconomy() && categoryJson.has("price") ? categoryJson.get("price").getAsInt() : CustomHeads.getCategoryManager().getDefaultCategoryPrice(),
                     categoryJson.has("sub_categories") ? null :
                             CustomHeads.getTagEditor().setTags(JsonToItem.convertFromJson(categoryJson.get("icon").toString()), "openCategory", "category#>" + categoryJson.get("id").getAsString(), "icon"));
@@ -214,7 +214,7 @@ public class Category extends BaseCategory {
             //Sub Category Info Header
             categoryObject.addProperty("id", Integer.parseInt(category.getId().contains(":") ? category.getId().split(":")[0] : category.getId()));
             categoryObject.addProperty("name", category.getName());
-            categoryObject.addProperty("permission", category.getPermission().replaceFirst("heads.viewCategory.", ""));
+            categoryObject.addProperty("permission", category.getPermission().replaceFirst(CategoryManager.VIEW_CATEGORY_PERMISSION_PREFIX, ""));
             categoryObject.addProperty("fixed-icon", category.isFixedIcon());
             if (category.hasCategoryIcon()) {
                 categoryObject.add("icon", new JsonParser().parse(JsonToItem.convertToJson(category.getCategoryIcon())));

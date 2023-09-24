@@ -12,9 +12,9 @@ import de.likewhat.customheads.category.CustomHead;
 import de.likewhat.customheads.headwriter.HeadFontType;
 import de.likewhat.customheads.utils.FireworksBatteryHandler;
 import org.bukkit.Location;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 /**
@@ -31,7 +31,7 @@ public interface CustomHeadsAPI {
      * @param player Player to wrap (whether online or offline)
      * @return Wrapped Player Instance
      */
-    CustomHeadsPlayer wrapPlayer(OfflinePlayer player);
+    CustomHeadsPlayer wrapPlayer(Player player);
 
     /**
      * Will get the Texture from a Skull

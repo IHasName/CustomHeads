@@ -18,7 +18,6 @@ import de.likewhat.customheads.utils.history.GetHistory;
 import de.likewhat.customheads.utils.history.SearchHistory;
 import lombok.Getter;
 import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -39,9 +38,9 @@ public class PlayerWrapper implements CustomHeadsPlayer {
     @Getter private SearchHistory searchHistory;
     @Getter private GetHistory getHistory;
 
-    private final OfflinePlayer player;
+    private final Player player;
 
-    private PlayerWrapper(OfflinePlayer player) {
+    private PlayerWrapper(Player player) {
         this.player = player;
         try {
             JsonObject dataRoot = CustomHeads.getPlayerDataFile().getJson().getAsJsonObject();
@@ -82,8 +81,8 @@ public class PlayerWrapper implements CustomHeadsPlayer {
         WRAPPED_PLAYERS_CACHE.put(player.getUniqueId(), this);
     }
 
-    static CustomHeadsPlayer wrapPlayer(OfflinePlayer player) {
-        return WRAPPED_PLAYERS_CACHE.containsKey(player.getUniqueId()) ? WRAPPED_PLAYERS_CACHE.get(player.getUniqueId()) : new PlayerWrapper(player);
+    static CustomHeadsPlayer wrapPlayer(Player player) {
+        return WRAPPED_PLAYERS_CACHE.getOrDefault(player.getUniqueId(), new PlayerWrapper(player));
     }
 
     public static void clearCache() {
@@ -140,11 +139,11 @@ public class PlayerWrapper implements CustomHeadsPlayer {
     }
 
     public List<Category> getUnlockedCategories(boolean ignorePermission) {
-        return CustomHeads.getCategoryManager().getCategoryList().stream().filter(category -> (!ignorePermission && (Utils.hasPermission(player.getPlayer(), category.getPermission()) || Utils.hasPermission(player.getPlayer(), category.getPermission() + ".allheads"))) || unlockedCategories.contains(category)).collect(Collectors.toList());
+        return CustomHeads.getCategoryManager().getCategoryList().stream().filter(category -> (!ignorePermission && (Utils.hasPermission(player, category.getPermission()) || Utils.hasPermission(player, category.getPermission() + ".allheads"))) || unlockedCategories.contains(category)).collect(Collectors.toList());
     }
 
     public Player unwrap() {
-        return player.getPlayer();
+        return this.player;
     }
 
     public boolean unlockCategory(Category category) {

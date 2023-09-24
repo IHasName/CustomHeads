@@ -6,6 +6,8 @@ import de.likewhat.customheads.utils.JsonFile;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.permissions.Permission;
+import org.bukkit.plugin.PluginManager;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -25,6 +27,8 @@ import java.util.logging.Level;
 
 @Getter
 public class CategoryManager {
+
+    public static final String VIEW_CATEGORY_PERMISSION_PREFIX = "heads.viewcategory.";
 
     @Getter
     private static boolean loaded;
@@ -67,6 +71,9 @@ public class CategoryManager {
             CustomHeads.getInstance().getServer().getConsoleSender().sendMessage(CustomHeads.PREFIX_GENERAL + "Loading " + fileList.size() + " Categories from " + language + "/categories...");
         long timestamp = System.currentTimeMillis();
         CustomHeads.getHeadsConfig().reload();
+
+        Permission viewCategoryWildcard = Bukkit.getPluginManager().getPermission(VIEW_CATEGORY_PERMISSION_PREFIX + "*");
+        PluginManager pluginManager = Bukkit.getPluginManager();
         for (File file : fileList) {
             JsonFile jsf = new JsonFile(file);
             categoriesIgnored = CustomHeads.getHeadsConfig().get().getList("disabledCategories").size();
@@ -83,11 +90,24 @@ public class CategoryManager {
                     }
                     categories.put(category.getId(), category);
                     sourceFiles.put(category, file);
+
+                    Permission categoryBasePermission = new Permission(category.getPermission()); // heads.view_category.<category-name>
+                    Permission categoryAllHeadsPermission = new Permission(category.getPermission() + ".all_heads");
+
+                    // Add Permissions from the Categories dynamically
+                    pluginManager.addPermission(categoryBasePermission);
+                    pluginManager.addPermission(categoryAllHeadsPermission);
+
+                    // Add the Category Permissions as Parent from the View Category Permission
+                    categoryBasePermission.addParent(viewCategoryWildcard, true);
+                    categoryBasePermission.addParent(categoryAllHeadsPermission, true);
+                    categoryAllHeadsPermission.addParent(viewCategoryWildcard, true);
+
                     categoriesLoaded++;
                     if (category.hasSubCategories()) {
                         for (SubCategory subCategory : category.getSubCategories()) {
                             if (subCategories.containsKey(subCategory.getId())) {
-                                CustomHeads.getInstance().getServer().getConsoleSender().sendMessage(CustomHeads.PREFIX_WARNING + file.getName() + ": §cAn Subcategory with ID " + subCategory.getId() + " (" + subCategories.get(subCategory.getId()).getName() + ") already exists.");
+                                CustomHeads.getInstance().getServer().getConsoleSender().sendMessage(CustomHeads.PREFIX_WARNING + file.getName() + ": §cA Subcategory with ID " + subCategory.getId() + " (" + subCategories.get(subCategory.getId()).getName() + ") already exists.");
                                 continue;
                             }
                             subCategories.put(subCategory.getId(), subCategory);

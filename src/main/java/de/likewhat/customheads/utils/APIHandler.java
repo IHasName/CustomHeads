@@ -26,6 +26,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.block.Skull;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Firework;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -199,7 +200,7 @@ public void setSkull(Block block, String texture, BlockFace blockFace) {
     }
 
     // API Impl
-    public CustomHeadsPlayer wrapPlayer(OfflinePlayer player) {
+    public CustomHeadsPlayer wrapPlayer(Player player) {
         return PlayerWrapper.wrapPlayer(player);
     }
 

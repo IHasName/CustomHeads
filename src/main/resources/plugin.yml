@@ -12,16 +12,19 @@ permissions:
   heads.*:
     description: Gives all Permission for the Plugin
     children:
+      heads.use: true
       heads.use.*: true
       heads.view.*: true
-      heads.viewCategory.*: true
+      heads.viewcategory.*: true
       heads.view.history.*: true
     default: op
   heads.use:
     default: op
   heads.view.history:
     default: op
-  heads.viewCategory:
+  heads.viewcategory:
+    default: op
+  heads.viewcategory.*:
     default: op
   heads.use.more:
     default: op
