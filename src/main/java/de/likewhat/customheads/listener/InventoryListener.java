@@ -547,7 +547,7 @@ public class InventoryListener implements Listener {
                 if(playerInventory.getHelmet() != null) {
                     ItemStack helmetItem = playerInventory.getHelmet().clone();
                     if (Utils.getNextFreeInventorySlot(playerInventory, helmetItem) < 0) {
-                        return;
+                        return; // We can't add the Helmet to the Inventory. So we don't do anything
                     }
                     playerInventory.setHelmet(null);
                     playerInventory.addItem(helmetItem);

@@ -45,11 +45,6 @@
 # Categories to the Cursor otherwise it will be added #
 # to your Inventory like /give                        #
 # --------------------------------------------------- #
-# replaceHelmet: Whether or not to replace the Helmet #
-# When Shift-Right clicking a Head                    #
-# When false the Helmet will be returned into the     #
-# Inventory                                           #
-# --------------------------------------------------- #
 # disabledCategories: A List of Categories which will #
 # be ignored by the Plugin                            #
 # --------------------------------------------------- #
@@ -87,7 +82,6 @@ update-notifications:
   onJoin: true
   console: true
 grabHeadToCursor: true
-replaceHelmet: false
 disabledCategories: []
 langFile: none
 reducedDebug: true
