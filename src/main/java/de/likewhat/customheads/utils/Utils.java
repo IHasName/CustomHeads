@@ -380,12 +380,14 @@ public class Utils {
         if (baseCategory.isSubCategory()) {
             SubCategory subCategory = baseCategory.getAsSubCategory();
             if (!customHeadsPlayer.getUnlockedCategories(CustomHeads.hasEconomy() && !CustomHeads.keepCategoryPermissions()).contains(subCategory.getOriginCategory())) {
+                CustomHeads.getPluginLogger().info("Player doesn't have this Sub-Category unlocked ("+subCategory.getName()+") Permissions ignored? " + (CustomHeads.hasEconomy() && !CustomHeads.keepCategoryPermissions()));
                 return;
             }
             categoryHeads = subCategory.getHeads();
         } else {
             Category category = baseCategory.getAsCategory();
             if (!customHeadsPlayer.getUnlockedCategories(CustomHeads.hasEconomy() && !CustomHeads.keepCategoryPermissions()).contains(category)) {
+                CustomHeads.getPluginLogger().info("Player doesn't have this Category unlocked ("+category.getName()+") Permissions ignored? " + (CustomHeads.hasEconomy() && !CustomHeads.keepCategoryPermissions()));
                 return;
             }
             if (category.hasSubCategories()) {
@@ -743,6 +745,14 @@ public class Utils {
             return filename.substring(filename.lastIndexOf(".") + 1);
         }
         return "";
+    }
+
+    public static String repeatString(String string, int n) {
+        StringBuilder result = new StringBuilder();
+        for (int i = 0; i < n; i++) {
+            result.append(string);
+        }
+        return result.toString();
     }
 
     public static int clamp(int min, int value, int max) {

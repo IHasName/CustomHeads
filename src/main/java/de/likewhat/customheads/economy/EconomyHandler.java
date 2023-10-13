@@ -14,7 +14,7 @@ public interface EconomyHandler {
 
     /**
      * Whether the Plugin/Handler is currently able to handle incoming Economy Requests
-     * Example: {@link de.likewhat.customheads.economy.handlers.Vault}
+     * Example: {@link de.likewhat.customheads.economy.handlers.VaultHandler}
      * @return true/false
      */
     boolean isValid();

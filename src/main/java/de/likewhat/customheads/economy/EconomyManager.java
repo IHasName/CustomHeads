@@ -5,7 +5,7 @@ import de.likewhat.customheads.api.CustomHeadsPlayer;
 import de.likewhat.customheads.category.Category;
 import de.likewhat.customheads.category.CustomHead;
 import de.likewhat.customheads.economy.errors.InvalidEconomyHandlerException;
-import de.likewhat.customheads.economy.handlers.Vault;
+import de.likewhat.customheads.economy.handlers.VaultHandler;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -28,7 +28,7 @@ public class EconomyManager {
 
     public EconomyManager() throws InvalidEconomyHandlerException {
         if (Bukkit.getPluginManager().isPluginEnabled("Vault")) {
-            registerAndSetActiveHandler(new Vault());
+            registerAndSetActiveHandler(new VaultHandler());
         }
     }
 

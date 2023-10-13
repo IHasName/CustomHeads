@@ -44,8 +44,8 @@ public class PlayerWrapper implements CustomHeadsPlayer {
         this.player = player;
         try {
             JsonObject dataRoot = CustomHeads.getPlayerDataFile().getJson().getAsJsonObject();
-            searchHistory = new SearchHistory(player);
-            getHistory = new GetHistory(player);
+            this.searchHistory = new SearchHistory(player);
+            this.getHistory = new GetHistory(player);
 
             if (dataRoot.has(player.getUniqueId().toString())) {
                 JsonObject uuidObject = dataRoot.getAsJsonObject(player.getUniqueId().toString());
@@ -57,13 +57,13 @@ public class PlayerWrapper implements CustomHeadsPlayer {
                     } else {
                         editor.setOwner(textureValue);
                     }
-                    savedHeads.add(editor.getItem());
+                    this.savedHeads.add(editor.getItem());
                 });
 
                 if (uuidObject.has("unlockedCategories")) {
                     List<Category> categories = new ArrayList<>();
                     uuidObject.getAsJsonArray("unlockedCategories").forEach(categoryId -> categories.add(CustomHeads.getCategoryManager().getCategory(categoryId.getAsString())));
-                    unlockedCategories = categories;
+                    this.unlockedCategories = categories;
                 }
 
                 if (uuidObject.has("unlockedHeads")) {
@@ -72,7 +72,7 @@ public class PlayerWrapper implements CustomHeadsPlayer {
                         String[] idParts = headId.getAsString().split(":");
                         heads.add(CustomHeads.getApi().getHead(CustomHeads.getCategoryManager().getCategory(idParts[0]), Integer.parseInt(idParts[1])));
                     });
-                    unlockedHeads = heads;
+                    this.unlockedHeads = heads;
                 }
             }
         } catch (Exception e) {
@@ -82,7 +82,11 @@ public class PlayerWrapper implements CustomHeadsPlayer {
     }
 
     static CustomHeadsPlayer wrapPlayer(Player player) {
-        return WRAPPED_PLAYERS_CACHE.getOrDefault(player.getUniqueId(), new PlayerWrapper(player));
+        if (WRAPPED_PLAYERS_CACHE.containsKey(player.getUniqueId())) {
+            return WRAPPED_PLAYERS_CACHE.get(player.getUniqueId());
+        } else {
+            return new PlayerWrapper(player);
+        }
     }
 
     public static void clearCache() {
@@ -139,7 +143,7 @@ public class PlayerWrapper implements CustomHeadsPlayer {
     }
 
     public List<Category> getUnlockedCategories(boolean ignorePermission) {
-        return CustomHeads.getCategoryManager().getCategoryList().stream().filter(category -> (!ignorePermission && (Utils.hasPermission(player, category.getPermission()) || Utils.hasPermission(player, category.getPermission() + ".allheads"))) || unlockedCategories.contains(category)).collect(Collectors.toList());
+        return CustomHeads.getCategoryManager().getCategoryList().stream().filter(category -> (!ignorePermission && (Utils.hasPermission(this.player, category.getPermission()) || Utils.hasPermission(this.player, category.getPermission() + ".allheads"))) || this.unlockedCategories.contains(category)).collect(Collectors.toList());
     }
 
     public Player unwrap() {
@@ -147,39 +151,29 @@ public class PlayerWrapper implements CustomHeadsPlayer {
     }
 
     public boolean unlockCategory(Category category) {
-        if (unlockedCategories.contains(category)) {
+        if (this.unlockedCategories.contains(category)) {
             return false;
         } else {
-            unlockedCategories.add(category);
+            this.unlockedCategories.add(category);
             return true;
         }
     }
 
     public boolean lockCategory(Category category) {
-        if (unlockedCategories.contains(category)) {
-            unlockedCategories.remove(category);
-            return true;
-        } else {
-            return false;
-        }
+        return unlockedCategories.remove(category);
     }
 
     public boolean unlockHead(Category category, int id) {
-        if (unlockedHeads.contains(CustomHeads.getApi().getHead(category, id))) {
+        if (this.unlockedHeads.contains(CustomHeads.getApi().getHead(category, id))) {
             return false;
         } else {
-            unlockedHeads.add(CustomHeads.getApi().getHead(category, id));
+            this.unlockedHeads.add(CustomHeads.getApi().getHead(category, id));
             return true;
         }
     }
 
     public boolean lockHead(Category category, int id) {
-        if (unlockedHeads.contains(CustomHeads.getApi().getHead(category, id))) {
-            unlockedHeads.remove(CustomHeads.getApi().getHead(category, id));
-            return true;
-        } else {
-            return false;
-        }
+        return this.unlockedHeads.remove(CustomHeads.getApi().getHead(category, id));
     }
 
     public boolean saveHead(String name, String texture) {
@@ -192,7 +186,7 @@ public class PlayerWrapper implements CustomHeadsPlayer {
             } else {
                 editor.setOwner(texture);
             }
-            savedHeads.add(editor.getItem());
+            this.savedHeads.add(editor.getItem());
             return true;
         }
     }
@@ -201,17 +195,17 @@ public class PlayerWrapper implements CustomHeadsPlayer {
         if (!hasHead(name)) {
             return false;
         } else {
-            savedHeads.remove(getHead(name));
+            this.savedHeads.remove(getHead(name));
             return true;
         }
     }
 
     public ItemStack getHead(String name) {
-        return savedHeads.stream().filter(itemStack -> Utils.toConfigString(itemStack.getItemMeta().getDisplayName()).equals(name)).iterator().next();
+        return this.savedHeads.stream().filter(itemStack -> Utils.toConfigString(itemStack.getItemMeta().getDisplayName()).equals(name)).iterator().next();
     }
 
     public boolean hasHead(String name) {
-        return savedHeads.stream().filter(itemStack -> Utils.toConfigString(itemStack.getItemMeta().getDisplayName()).equals(name)).iterator().hasNext();
+        return this.savedHeads.stream().filter(itemStack -> Utils.toConfigString(itemStack.getItemMeta().getDisplayName()).equals(name)).iterator().hasNext();
     }
 
 }

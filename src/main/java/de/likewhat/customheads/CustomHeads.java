@@ -249,7 +249,9 @@ public class CustomHeads extends JavaPlugin {
         instance = this;
         pluginLogger = instance.getLogger();
         if(DEV_BUILD) {
-            getServer().getConsoleSender().sendMessage("[CustomHeads]\n§e=============================================================================================\nThis is a Dev Version of the Plugin! Please update update as soon as a new Version gets released\n=============================================================================================");
+            String txt = "  This is a Dev Version of the Plugin! Please update update as soon as a public Version gets released  ";
+            String line = Utils.repeatString("=", txt.length());
+            getServer().getConsoleSender().sendMessage("[CustomHeads]\n§e"+ line + "\n" + txt + "\n" + line);
         }
 
         bukkitVersion = Bukkit.getVersion().substring(Bukkit.getVersion().lastIndexOf("("));

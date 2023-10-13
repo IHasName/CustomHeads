@@ -95,13 +95,15 @@ public class CategoryManager {
                     Permission categoryAllHeadsPermission = new Permission(category.getPermission() + ".all_heads");
 
                     // Add Permissions from the Categories dynamically
-                    pluginManager.addPermission(categoryBasePermission);
-                    pluginManager.addPermission(categoryAllHeadsPermission);
-
-                    // Add the Category Permissions as Parent from the View Category Permission
-                    categoryBasePermission.addParent(viewCategoryWildcard, true);
-                    categoryBasePermission.addParent(categoryAllHeadsPermission, true);
-                    categoryAllHeadsPermission.addParent(viewCategoryWildcard, true);
+                    if (pluginManager.getPermission(categoryBasePermission.getName()) == null) {
+                        pluginManager.addPermission(categoryBasePermission);
+                        categoryBasePermission.addParent(viewCategoryWildcard, true);
+                        categoryBasePermission.addParent(categoryAllHeadsPermission, true);
+                    }
+                    if (pluginManager.getPermission(categoryAllHeadsPermission.getName()) == null) {
+                        pluginManager.addPermission(categoryAllHeadsPermission);
+                        categoryAllHeadsPermission.addParent(viewCategoryWildcard, true);
+                    }
 
                     categoriesLoaded++;
                     if (category.hasSubCategories()) {
