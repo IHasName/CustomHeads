@@ -127,7 +127,7 @@ public class InventoryListener implements Listener {
             return;
         }
 
-        //player.sendMessage("§7[CHTags Tags] §r" + CustomHeads.getTagEditor().getTags(event.getCurrentItem()) + " lastActiveMenu: " + lastActiveMenu.getOrDefault(player.getUniqueId(), "none")); // Yeah debug at its finest
+//        player.sendMessage("§7[CHTags Tags] §r" + CustomHeads.getTagEditor().getTags(event.getCurrentItem()) + " lastActiveMenu: " + lastActiveMenu.getOrDefault(player.getUniqueId(), "none")); // Yeah debug at its finest
 
         if (event.getView().getTitle().equals(CustomHeads.getLanguageManager().LOADING)) {
             event.setCancelled(true);

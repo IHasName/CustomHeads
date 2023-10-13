@@ -201,8 +201,6 @@ ITEM_NAMES:
   - '&7Shift + Right Click'
   - '&7to apply Skull to Helmet'
   - '&7Slot'
-  - '&cWarning! Replaces current'
-  - '&cHelmet Item!'
   SEARCH: Search
   SEARCH_LORE:
   - '&7Search for an Head'

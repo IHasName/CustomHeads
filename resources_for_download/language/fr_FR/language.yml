@@ -1,0 +1,210 @@
+# - Language File : fr_FR -
+DEFINITION: "Français"
+NO_PERMISSION: "&cTu n'as pas la permission d'utiliser cette commande"
+# General Messages
+LANG_YES: 'Oui'
+LANG_NO: 'Non'
+CONFIRM_NOTHINGFOUND: "&eConfirmer: &7Il n'y a aucune confirmation a faire actuellement"
+COMMAND_USAGE: '&cUtilisation: &7{COMMAND}'
+LINK: '&7Lien'
+LANGUAGE:
+  CHANGE_CHANGING: "&eLangage: &7Chargement du langage depuis &a{LANGUAGE}.yml"
+  CHANGE_SUCCESSFUL: '&eLangage: &7Le langage a été chargé : &a{Langage}'
+  CHANGE_ALREADY_USED: '&eLangage: &7Langage déjà utilisé. Essaiyez /heads pour recharger le langage'
+  CHANGE_FAILED: '&eLangage: &7Le changement de langage a échoué... Chargement du langage précédent'
+  REDOWNLOAD_FAILED_WAIT: '&eLangage: &7Veuillez patientez avec de retelecharger le langage'
+  REDOWNLOAD_BACKING_UP: "&eLangage: &7Sauvegarde d'anciens fichiers..."
+  REDOWNLOAD_BACKUP_FAILED: '&eLangage: &7Erreur de sauvegarde des anciens fichiers'
+  REDOWNLOAD_DOWNLOADING: '&eLangage: &7Telechargement de fichiers de langage'
+  REDOWNLOAD_DONE: '&eLangage: &7Fini'
+  DOWNLOAD_FETCHING: '&7Recherche des données'
+  DOWNLOAD_FETCHFAILED: '&cErreur dans la recherche des données'
+  DOWNLOAD_SUCCESSFUL: '&eLangage: Le langage suivant a été téléchargé avec succès : &e{LANGUAGE}'
+  DOWNLOAD_TITLE: '&aLangages telechargeables'
+RELOAD:
+  CONFIG: '&eReload: &7Chargement de la configuration'
+  HISTORY: "&eReload: &7Chargement de l'historique"
+  LANGUAGE: '&eReload: &7Chargement du langage'
+  FAILED: "&eReload: &cIl y a eu un problème lors du chargement... Regardez vos logs pour plus d'infos"
+  SUCCESSFUL: '&eReload: &aConfigurations chargées !'
+HELP_GET_COMMAND: '&7Clique pour avoir la commande'
+SAVED_HEADS_TITLE: "{PLAYER}'s a sauvegarder les têtes"
+PUT_ON_HEAD: '&7Ta tête est maintenant : &r{NAME}'
+NO_PERMISSION_TO_VIEW:
+- "&Tu n'as pas la permission"
+- "&cde voir ça"
+ECONOMY:
+  PRICE: '&7Prix: &e{PRICE}'
+  PRICE_FORMAT: '{PRICE}{CURRENCY}'
+  FREE: Gratuit
+  BOUGHT: '&7Débloqué'
+  BUY_PROMPT: '&eClic droit pour Acheter'
+  BUY_CONFIRM: '&7Acheter &9{ITEM} &7pour &9{PRICE}?'
+  BUY_SUCCESSFUL: '&eHeadShop: &7Achat fait de : {ITEM} !'
+  BUY_FAILED: '&eHeadShop: &7Erreur dans la transaction: {REASON}'
+# History Messages
+HISTORY_DISABLED: '&eHistorique: &cHistorique est désactiver par la Configuration'
+HISTORY_INVALID_PLAYER: "&eHistorique: &cJoueur Invalide '{PLAYER}'"
+HISTORY_NO_VIEW_PERMISSION: "&eHistorique: &cTu ne peux pas voir l'historique de ce joueur"
+# Firework Messages
+CANNOT_PLACE_IN_BLOCK: "&eFeux d'Artifices: &cTu ne peux pas placer de Feux d'Artifices dans un bloc"
+CANNOT_PLACE_IN_AIR: "&eFeux d'Artifices: &cTu ne peux pas placer de Feux d'Artifices dans l'Air"
+ALREADY_IN_USE: "&eFeux d'Artifices: &cTu as déjà activer un Feux d'Artifice. Patiente avant d'en réutiliser"
+STARTING: "&eFeux d'Artifices: &aAllumage de Feux d'Artifices"
+# Search
+INVALID_INPUT: "&eRecherche: &cRecherche Invalide: '{SEARCH}'"
+CHANGE_SEARCH_STRING: Change moi pour chercher
+SEARCH_LORE:
+- '&7Change le texte pour cherche mettre ce que tu veux et'
+- "&7clic sur l'objet en"
+- '&7sortie pour rechercher'
+TO_LONG_INPUT: '&eRecherche: &cLe texte doit être plus petit que 16'
+SEARCHING: "&eRecherche: &7Recherche de : '&r{SEARCH}&7'"
+LOCKED: '(Verrouillé)'
+CYCLE_ARRANGEMENT:
+  PREFIX: '&7Arrangement: &e'
+  DEFAULT: 'Defaut'
+  ALPHABETICAL: 'Ordre Alphabetique'
+  COLOR: 'Couleur'
+# Title will be shorted to 32 Characters in 1.8
+# Also can be shorted by Putting {short} between
+SEARCH_TITLE: '&aRecherche &8: &a{RESULTS} Resultat(s)'
+LOADING: Chargement
+NO_RESULTS: '&cAucun résultat trouvé !'
+NO_RESULTS_TRY_AGAIN: '&cRéessayer'
+PAGE_GENERAL_PREFIX: '&cPage'
+# Categories Command
+CATEGORIES:
+  BASE_COMMAND:
+    HEADER: '&eCatégories chargées'
+    HOVERINFO_CATEGORY:
+    - '&7ID: &e{ID}'
+    - '&7Permission: &e{PERMISSION}'
+    - '&7Utilisé: &e{USED}'
+    HOVERINFO_SUBCATEGORY:
+    - '&7ID: &e{ID}'
+    - '&7Utilisé: &e{USED}'
+  REMOVE:
+    NOTFOUND: "&eRetirer: &7Il n'y a pas de catégories avec cet ID: &c{ID}"
+    INUSE: '&eRetirer: &7On ne peut pas retirer : &c{CATEGORY} &7en pleine utilisation'
+    FAILED: "&eRetirer: &cla catégorie n'a pas pu être retirée"
+    SUCCESSFUL: '&eRetirer: &a{CATEGORY} &7(&e{ID}&7) a été retirée!'
+  DELETE:
+    CATEGORY:
+      NOTFOUND: "&eDelete: &7Il n'y a pas de catégories avec cet ID: &c{ID}"
+      INUSE: '&eRemove: &7On ne peut pas supprimer : &c{CATEGORY} &7en pleine utilisation'
+      CONFIRM: "&eDelete: &7Entrez /heads pour confirmer la §csuppréssion &7{CATEGORY} (15 secondes de delai) {nl}&cC'est irréversible!"
+      FAILED: "&eDelete: &eRetirer: &cla catégorie n'a pas pu être supprimée"
+      SUCCESSFUL: '&eDelete: &a{CATEGORY} &7(&e{ID}&7) a été supprimée!'
+    SUBCATEGORY:
+      NOTFOUND: "&eDelete: &7Il n'y a pas de sous-catégories avec cet ID: &c{ID}"
+      INUSE: '&eRemove: &7On ne peut pas supprimer : &c{CATEGORY} &7en pleine utilisation'
+      CONFIRM: "&eDelete: &7Entrez /heads pour confirmer la §csuppréssion &7{CATEGORY} (15 secondes de delai) {nl}&cC'est irréversible!"
+      FAILED: "&eDelete: &eRetirer: &cla sous-catégorie n'a pas pu être supprimée"
+      SUCCESSFUL: '&eDelete: &a{CATEGORY} &7(&e{ID}&7) a été supprimée!'
+  IMPORT:
+    NOCATEGORYFOLDER: "&eImportation: &7Le dossier de la catégorie n'as pas été trouvé"
+    BASE_COMMAND:
+      NOFILES: '&eImportation: &7Aucun fichier a Importer trouvé'
+      LIST: "&bFichiers disponibles a l'importation"
+      LIST_FORMAT: ' &e{FILE}'
+      CLICKTOIMPORT: '&7Clic ici pour importer le fichier'
+    SUCCESSFUL: '&eImportation: &7La catégorie a été importée avec succès depuis : &b{FILE}'
+    DUBLICATE_CATEGORY: '&eImportation: &7Il y a déjà une catégorie avec cet ID {ID}'
+    DUBLICATE_SUBCATEGORY: '&eImportation: &7Il y a un duplicat de sous catégorie dans : {FILE}'
+    ERROR: '&eImportation: &7An Il y a une une erreur pendant la lecture de : {FILE}'
+    INVALID_FILE: '&eImportation: &7Catégorie &cInvalide File'
+    FILENOTFOUND: '&eImportation: &7Impossible de trouver &c{FILE}'
+FONTS:
+  GENERAL_NOTFOUND: "&ePolice d'écriture: &c{FONT} &7n'a pas pus être trouvé"
+  CREATE_ALREADYEXISTS: "&ePolice d'écriture: &c{FONT} &7éxiste déjà"
+  CREATE_SUCCESSFUL: "&ePolice d'écriture: &a{FONT} &7a été créé"
+  REMOVE_SUCCESSFUL: "&ePolice d'écriture: &b{FONT} &7a été retiré"
+  REMOVE_FAILED: "&ePolice d'écriture: &7Erreur, &c{FONT} &7 n'a pas pu être retiré"
+  NOFONTS: "&ePolice d'écriture: &7Aucune police d'écriture n'a été trouvée"
+  LIST_HEADER: "&ePolice d'écriture disponibles"
+  LIST: '&e{FILE} - A {CHARACTERS} Charactères'
+  EDIT_TITLE: '&bModification de : {FONT}'
+  EDIT_ADDCHARACTER: '&aAjouter charactère'
+  EDIT_REMOVECHARACTER: '&cRetirer charactère'
+  EDIT_REMOVECHARACTER_INFO:
+  - '&7Clic pour activer'
+  - '&7Shift + Clic Gauche pour retirer'
+  - '&7les charactères séléctionnés'
+  EDIT_ADDCHARACTER_SUCCESSFUL: "&ePolice d'écriture: &7Ajout de &b{CHARACTER}"
+  EDIT_ADDCHARACTER_FAILED: "&ePolice d'écriture: &7Erreur dans l'ajout de &c{CHARACTER}"
+  EDIT_SELECTED: "&bSéléctionné &7- &b{CHARACTER}"
+  EDIT_REMOVECHARCATER_CONFIRM: '&cSupprimer ces charactères ?'
+  EDIT_REMOVECHARCATER_FAILED: "&ePolice d'écriture: &7Impossible de retirer &c{CHARACTER}"
+  EDIT_REMOVECHARCATER_SUCCESSFUL: "&ePolice d'écriture: &7Ont été retiré : &b{CHARACTERS} &7charactères"
+  EDIT_REMOVECHARCATER_PREINFO: '&cLes charactères suivant vont être retirés'
+  EDIT_ADDCHARACTER_TITLE: '&eAjouteur de charactères Drag&Drop &7: &e{FONT}'
+  EDIT_ADD_DROPPER_TOGGLE: '&bAjout forcé de charactères: &b{MODE}'
+  EDIT_ADD_DROPPER_NAME: '&bLâche le charactère ici!'
+  EDIT_ADD_DROPPER_LORE:
+  - '&7TPour ajouter quelque chose prend la Tête'
+  - '&7avec ta texture et nomme la'
+  - '&7après le charactère que tu veux ajouter.'
+  - '&7Ensuite échange le avec cet objet'
+  - '&eTu peux utiliser BLANK pour un charactère espace'
+  EDIT_SAVENEXIT: '&aSauvegarder et Quitter'
+  EDIT_SAVE_SUCCESSFUL: "&ePolice d'écriture: &a{FONT} &7a été sauvegardé et mis a jour"
+# More
+UNDO_INVALID_INPUT: "&eAnnuler: &7Entrée Invalide &c'{TIMES}'"
+UNDO_SUCCESSFUL: '&eAnnuler: &7Annulé avec succès &7{TIMES}'
+UNDO_NOTHING_LEFT: "&eAnnuler: &7Il n'y a plus rien à annuler"
+GET_HEAD_NAME: '&rTête de : {PLAYER}'
+GET_INVALID: "&eGet: &7Nom de joueur Invalide: &c'{PLAYER}'"
+SAVE_GET_TEXTURE: '&eSauvegarde: &7Recherche texture...'
+SAVE_OWN_SUCCESSFUL: '&eSauvegarde: &7Votre tête à été ajouté comme : &b{NAME}.'
+SAVE_OWN_FAILED: '&eSauvegarde: &cImpossible de sauvergarder la tête !'
+SAVE_UNAVIABLE: "&eSauvegarde: &cL'ajout de textures personalisées sur les têtes est actuellement désactivé !"
+SAVE_NOT_CUSTOM_TEXTURE: "&eSauvegarder &cCe n'est pas une tête avec une texture personalisée !"
+SAVE_SUCCESSFUL: '&eSauvegarde: &b{NAME} &7a été ajouté !'
+SAVE_ALREADY_EXIST: '&eSauvegarde: &c{NAME} éxiste déjà !'
+SAVE_NOT_SKULL: "&eSauvegarde: &cCe n'est pas la tête d'un joueur !"
+REMOVE_SUCCESSFUL: '&eSauvegarde: &7La tête &r{NAME} &7a été retirée'
+REMOVE_FAILED: "&eSauvegarde: &7Cette tête n'existe pas !"
+REMOVE_CONFIRMATION: '&cSupprimer {HEAD} ?'
+WRITE_NOFONT: "&eÉcrire: &cCette police d'écriture n'éxiste pas"
+WRITE_TO_LONG: '&eÉcrire: &cTon texte ne peut pas être plus long que 40 charactères'
+WRITE_WRITING: '&eÉcrire: &7Écriture de : &b{TEXT}'
+# Buttons
+BACK_GENERAL: '&cRetour'
+BACK_TO_PREVIOUS: '&7Retour au menu précédant'
+NEXT_PAGE: '&cPage suivante'
+PREVIOUS_PAGE: '&cPage précédante'
+# History
+HISTORY_INV_TITLE: '&aHistorique de {PLAYER}'
+HISTORY_SEARCHHISTORY_ACTIVE: "&aRecheche d'historique"
+HISTORY_SEARCHHISTORY: "&7Recheche d'historique"
+HISTORY_GETHISTORY_ACTIVE: "&aTrouver l'historique"
+HISTORY_GETHISTORY: "&7Trouver l'historique"
+HISTORY_NO_HISTORY_LORE:
+- "&cCe joueur ne"
+- "&possède pas d'historique"
+HISTORY_SEARCHHISTORY_LORE:
+- '&7Clic droit pour rechercher'
+- '&7pour ça'
+HISTORY_GET_LORE:
+- '&7Clic droit pour copier'
+- "&7la tête dans l'inventaire"
+# Extra
+ITEM_NAMES:
+  YOUR_HEAD: '&eTa Tête'
+  COLLECTION: '&aTa Collection &7{SIZE}'
+  HELP: '&aAide'
+  HELP_LORE:
+  - '&7Montre toutes les commandes'
+  INFO: '&aInfo'
+  INFO_LORE:
+  - '&7Shift + Clic Droit'
+  - "&7pour appliquer le crâne dans l'emplacement"
+  - '&7Casque'
+  SEARCH: Recherche
+  SEARCH_LORE:
+  - '&7Recherche une tête'
+  - '&7dans la base de données'
+  FIND_MORE: '&3En trouver plus'
+  FIND_MORE_LORE:
+  - '&7Clic moi pour accéder au lien'

@@ -199,8 +199,6 @@ ITEM_NAMES:
   INFO_LORE:
   - '&7Shift + Rechts Klick'
   - '&7um den Kopf anzuziehen'
-  - '&cWarnung! Ersetzt deinen'
-  - '&cHelm Slot!'
   SEARCH: Suche
   SEARCH_LORE:
   - '&7Suche nach einem Kopf'

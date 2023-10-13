@@ -333,7 +333,7 @@ public class Utils {
      * @return Integer with the next free Slot. -1 when no Space was found
      */
     public static int getNextFreeInventorySlot(Inventory inventory, ItemStack itemStack) {
-        if(inventory.getContents().length == inventory.getSize()) {
+        if(Arrays.stream(inventory.getContents()).filter(item -> item != null && item.getType() != Material.AIR).count() == inventory.getSize()) {
             if(inventory.contains(itemStack)) {
                 ItemStack[] items = inventory.getContents();
                 for (int i = 0; i < items.length; i++) {
