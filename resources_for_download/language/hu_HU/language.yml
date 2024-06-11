@@ -1,0 +1,211 @@
+# - Language File : en_EN -
+DEFINITION: 'Magyar'
+NO_PERMISSION: "&cNincs engedélyed ennek a parancsnak a használatára!"
+# Általános üzenetek
+LANG_YES: 'Igen'
+LANG_NO: 'Nem'
+CONFIRM_NOTHINGFOUND: '&eMegerősítés: &7Jelenleg nincs semmi megerősíteni való'
+COMMAND_USAGE: '&cHasználat: &7{COMMAND}'
+LINK: '&7Link'
+LANGUAGE:
+  CHANGE_CHANGING: '&eNyelv: &7Nyelv betöltése innen: &a{LANGUAGE}.yml'
+  CHANGE_SUCCESSFUL: '&eNyelv: &7A nyelv beállítva erre: &a{LANGUAGE}'
+  CHANGE_ALREADY_USED: '&eNyelv: &7A nyelv már használatban van. Próbáld ki a /heads reload parancsot a nyelv újratöltéséhez'
+  CHANGE_FAILED: '&eNyelv: &7A nyelv beállítása nem sikerült... Visszaállítjuk az előzőleg használt nyelvet'
+  REDOWNLOAD_FAILED_WAIT: '&eNyelv: &7Kérjük várj, mielőtt újra letöltöd a nyelvet'
+  REDOWNLOAD_BACKING_UP: '&eNyelv: &7Régi fájlok biztonsági mentése...'
+  REDOWNLOAD_BACKUP_FAILED: '&eNyelv: &7A fájlok biztonsági mentése nem sikerült'
+  REDOWNLOAD_DOWNLOADING: '&eNyelv: &7Nyelvi fájlok letöltése...'
+  REDOWNLOAD_DONE: '&eNyelv: &7Kész'
+  DOWNLOAD_FETCHING: '&7Adatok letöltése'
+  DOWNLOAD_FETCHFAILED: '&cAz adatok letöltése nem sikerült'
+  DOWNLOAD_SUCCESSFUL: '&eNyelv: Sikeresen letöltöttük a &e{LANGUAGE}'
+  DOWNLOAD_TITLE: '&aLetölthető nyelvek'
+RELOAD:
+  CONFIG: '&eÚjratöltés: &7Konfigurációk újratöltése...'
+  HISTORY: '&eÚjratöltés: &7Előzmények újratöltése...'
+  LANGUAGE: '&eÚjratöltés: &7Nyelv újratöltése...'
+  FAILED: '&eÚjratöltés: &cValami hiba történt az újratöltés során... Nézd meg a naplót további információkért'
+  SUCCESSFUL: '&eÚjratöltés: &aKonfigurációk újratöltve'
+HELP_GET_COMMAND: '&7Kattints ide a parancs megkapásához'
+SAVED_HEADS_TITLE: "{PLAYER} elmentett fejei"
+PUT_ON_HEAD: '&7A fejed most &r{NAME}'
+NO_PERMISSION_TO_VIEW:
+- "&cNincs jogosultságod"
+- "&chogy megnézd ezt"
+ECONOMY:
+  PRICE: '&7Ár: &e{PRICE}'
+  PRICE_FORMAT: '{PRICE}{CURRENCY}'
+  FREE: Ingyenes
+  BOUGHT: '&7Feloldva'
+  BUY_PROMPT: '&eKattints jobb gombbal a vásárláshoz'
+  BUY_CONFIRM: '&7Vásárolni &9{ITEM} &7ért &9{PRICE}?'
+  BUY_SUCCESSFUL: '&eHeadShop: &7Sikeresen megvásároltad a {ITEM}'
+  BUY_FAILED: '&eHeadShop: &7A tranzakció sikertelen: {REASON}'
+# Előzmények üzenetek
+HISTORY_DISABLED: '&eElőzmények: &cAz előzményeket letiltotta a konfiguráció'
+HISTORY_INVALID_PLAYER: "&eElőzmények: &cÉrvénytelen játékos '{PLAYER}'"
+HISTORY_NO_VIEW_PERMISSION: '&eElőzmények: &cNem nézheted meg ennek a játékosnak az előzményeit'
+# Tűzijáték üzenetek
+CANNOT_PLACE_IN_BLOCK: '&eTűzijáték: &cNem lehet tűzijátékot elhelyezni egy blokkban'
+CANNOT_PLACE_IN_AIR: '&eTűzijáték: &cNem lehet tűzijátékot elhelyezni a levegőben'
+ALREADY_IN_USE: '&eTűzijáték: &cMár aktiváltál egy tűzijátékot. Várj, mielőtt újra használnád'
+STARTING: '&eTűzijáték: &aTűzijáték indítása'
+# Keresés
+INVALID_INPUT: "&eKeresés: &cÉrvénytelen bemenet: '{SEARCH}'"
+CHANGE_SEARCH_STRING: Módosítsd, hogy keresni tudj
+SEARCH_LORE:
+- '&7Módosítsd a szöveget valamire, amit'
+- '&7szeretnél keresni, majd kattints a'
+- '&7kimenetre a kereséshez'
+TO_LONG_INPUT: '&eKeresés: &cKérjük használj egy szöveget, ami rövidebb mint 16 karakter'
+SEARCHING: "&eKeresés: &7Keresés a(z) '&r{SEARCH}&7' szóra"
+LOCKED: '(Zárolva)'
+CYCLE_ARRANGEMENT:
+  PREFIX: '&7Elrendezés: &e'
+  DEFAULT: 'Alapértelmezett'
+  ALPHABETICAL: 'Ábécé sorrend'
+  COLOR: 'Szín'
+# A cím 1.8-ban 32 karakterre lesz rövidítve
+# Továbbá rövidíthető a {short} elhelyezésével
+SEARCH_TITLE: '&aKeresés &8: &a{RESULTS} eredmény'
+LOADING: Betöltés
+NO_RESULTS: '&cNincs találat!'
+NO_RESULTS_TRY_AGAIN: '&cPróbáld újra'
+PAGE_GENERAL_PREFIX: '&cOldal'
+# Kategóriák parancs
+CATEGORIES:
+  BASE_COMMAND:
+    HEADER: '&eJelenleg betöltött kategóriák'
+    HOVERINFO_CATEGORY:
+    - '&7ID: &e{ID}'
+    - '&7Jogosultság: &e{PERMISSION}'
+    - '&7Használt: &e{USED}'
+    HOVERINFO_SUBCATEGORY:
+    - '&7ID: &e{ID}'
+    - '&7Használt: &e{USED}'
+  REMOVE:
+    NOTFOUND: '&eEltávolítás: &7Nincs ilyen ID-val rendelkező kategória: &c{ID}'
+    INUSE: '&eEltávolítás: &7Nem lehet eltávolítani &c{CATEGORY} &7amíg használatban van'
+    FAILED: '&eEltávolítás: &cA kategória eltávolítása nem sikerült'
+    SUCCESSFUL: '&eEltávolítás: &a{CATEGORY} &7(&e{ID}&7) eltávolítva!'
+  DELETE:
+    CATEGORY:
+      NOTFOUND: '&eTörlés: &7Nincs ilyen ID-val rendelkező kategória: &c{ID}'
+      INUSE: '&eEltávolítás: &7Nem lehet eltávolítani &c{CATEGORY} &7amíg használatban van'
+      CONFIRM: '&eTörlés: &7Írd be a /heads confirm parancsot, ha biztos vagy benne, hogy törölni szeretnéd a(z) &c{CATEGORY} &7kategóriát (A parancs 15 másodpercig lesz elérhető){nl}&cA törlés nem visszavonható!'
+      FAILED: '&eTörlés: &cA kategória törlése nem sikerült'
+      SUCCESSFUL: '&eTörlés: &a{CATEGORY} &7(&e{ID}&7) törölve!'
+    SUBCATEGORY:
+      NOTFOUND: '&eTörlés: &7Nincs ilyen ID-val rendelkező alkategória: &c{ID}'
+      INUSE: '&eEltávolítás: &7Nem lehet eltávolítani &c{CATEGORY} &7amíg használatban van'
+      CONFIRM: '&eTörlés: &7Írd be a /heads confirm parancsot, ha biztos vagy benne, hogy törölni szeretnéd a(z) &c{CATEGORY} &7kategóriát (A parancs 15 másodpercig lesz elérhető){nl}&cA törlés nem visszavonható!'
+      FAILED: '&eTörlés: &cAz alkategória törlése nem sikerült'
+      SUCCESSFUL: '&eTörlés: &a{CATEGORY} &7(&e{ID}&7) törölve!'
+  IMPORT:
+    NOCATEGORYFOLDER: '&eImportálás: &7Nem található &cKategória könyvtár'
+    BASE_COMMAND:
+      NOFILES: '&eImportálás: &7Nincs importálható fájl'
+      LIST: '&bElérhető fájlok importáláshoz'
+      LIST_FORMAT: ' &e{FILE}'
+      CLICKTOIMPORT: '&7Kattints ide az importáláshoz'
+    SUCCESSFUL: '&eImportálás: &7Sikeresen importáltuk a kategóriát innen: &b{FILE}'
+    DUBLICATE_CATEGORY: '&eImportálás: &7Már létezik ilyen ID-val rendelkező kategória {ID}'
+    DUBLICATE_SUBCATEGORY: '&eImportálás: &7Duplikált alkategória a(z) {FILE} fájlban'
+    ERROR: '&eImportálás: &7Hiba történt a(z) {FILE} fájl olvasása közben'
+    INVALID_FILE: '&eImportálás: &7Érvénytelen &cKategória fájl'
+    FILENOTFOUND: '&eImportálás: &7Nem található &c{FILE}'
+FONTS:
+  GENERAL_NOTFOUND: '&eBetűtípusok: &c{FONT} &7nem található'
+  CREATE_ALREADYEXISTS: '&eBetűtípusok: &c{FONT} &7már létezik'
+  CREATE_SUCCESSFUL: '&eBetűtípusok: &a{FONT} &7létrehozva'
+  REMOVE_SUCCESSFUL: '&eBetűtípusok: &b{FONT} &7eltávolítva'
+  REMOVE_FAILED: '&eBetűtípusok: &7Nem sikerült eltávolítani &c{FONT}'
+  NOFONTS: '&eBetűtípusok: &7Nincs elérhető betűtípus'
+  LIST_HEADER: '&eElérhető betűtípusok'
+  LIST: '&e{FILE} - {CHARACTERS} karakterrel'
+  EDIT_TITLE: '&bSzerkesztés: {FONT}'
+  EDIT_ADDCHARACTER: '&aKarakter hozzáadása'
+  EDIT_REMOVECHARACTER: '&cKarakter eltávolítása'
+  EDIT_REMOVECHARACTER_INFO:
+  - '&7Kattints a váltáshoz'
+  - '&7Shift + Bal kattintás a kijelölt'
+  - '&7karakterek eltávolításához'
+  EDIT_ADDCHARACTER_SUCCESSFUL: "&eBetűtípusok: &7Hozzáadva: &b{CHARACTER}"
+  EDIT_ADDCHARACTER_FAILED: "&eBetűtípusok: &7Nem lehet hozzáadni: &c{CHARACTER}"
+  EDIT_SELECTED: "&bKiválasztva &7- &b{CHARACTER}"
+  EDIT_REMOVECHARCATER_CONFIRM: '&cTörlöd ezeket a karaktereket?'
+  EDIT_REMOVECHARCATER_FAILED: "&eBetűtípusok: &7Nem sikerült eltávolítani: &c{CHARACTER}"
+  EDIT_REMOVECHARCATER_SUCCESSFUL: '&eBetűtípusok: &7Sikeresen eltávolítva &b{CHARACTERS} &7karakterek'
+  EDIT_REMOVECHARCATER_PREINFO: '&cAz alábbi karakterek eltávolításra kerülnek'
+  EDIT_ADDCHARACTER_TITLE: '&eDragNDrop Karakter hozzáadó &7: &e{FONT}'
+  EDIT_ADD_DROPPER_TOGGLE: '&bKarakterek kényszerített hozzáadása: &b{MODE}'
+  EDIT_ADD_DROPPER_NAME: '&bDobd ide a karaktereket!'
+  EDIT_ADD_DROPPER_LORE:
+  - '&7Valami hozzáadásához fogd meg a fejet'
+  - '&7a textúráddal és nevezd át'
+  - '&7a hozzáadni kívánt karakterrel.'
+  - '&7Ezután cseréld ki ezzel az elemmel'
+  - '&eHasználhatod a BLANK karaktert a szóköz karakterként'
+  EDIT_SAVENEXIT: '&aMódosítások mentése és kilépés'
+  EDIT_SAVE_SUCCESSFUL: '&eBetűtípusok: &a{FONT} &7mentve és frissítve'
+# Továbbiak
+UNDO_INVALID_INPUT: "&eVisszavonás: &7Érvénytelen bemenet &c'{TIMES}'"
+UNDO_SUCCESSFUL: '&eVisszavonás: &7Sikeres visszavonás &7{TIMES}'
+UNDO_NOTHING_LEFT: '&eVisszavonás: &7Nincs több visszavonni való'
+GET_HEAD_NAME: '&rFej {PLAYER}-től'
+GET_INVALID: "&eGet: &7Érvénytelen játékosnév: &c'{PLAYER}'"
+SAVE_GET_TEXTURE: '&eMentés: &7Textúra lekérése...'
+SAVE_OWN_SUCCESSFUL: '&eMentés: &7A fejed hozzáadva mint &b{NAME}.'
+SAVE_OWN_FAILED: '&eMentés: &cA fej mentése nem sikerült!'
+SAVE_UNAVIABLE: '&eMentés: &cEgyedi textúra hozzáadása a fejekből jelenleg le van tiltva!'
+SAVE_NOT_CUSTOM_TEXTURE: '&eMentés: &cEz nem egy egyedi textúrájú fej!'
+SAVE_SUCCESSFUL: '&eMentés: &b{NAME} &7hozzáadva'
+SAVE_ALREADY_EXIST: '&eMentés: &c{NAME} már létezik'
+SAVE_NOT_SKULL: '&eMentés: &cEz nem egy játékos fej'
+REMOVE_SUCCESSFUL: '&eMentés: &7A fej &r{NAME} &7eltávolítva'
+REMOVE_FAILED: "&eMentés: &7Ez a fej nem létezik"
+REMOVE_CONFIRMATION: '&c{HEAD} törlése?'
+WRITE_NOFONT: "&eÍrás: &cEz a betűtípus nem létezik"
+WRITE_TO_LONG: '&eÍrás: &cA szöveged nem lehet hosszabb mint 40 karakter'
+WRITE_WRITING: '&eÍrás: &7Írás &b{TEXT}'
+# Gombok
+BACK_GENERAL: '&cVissza'
+BACK_TO_PREVIOUS: '&7Vissza az előző menübe'
+NEXT_PAGE: '&cKövetkező oldal'
+PREVIOUS_PAGE: '&cElőző oldal'
+# Előzmények
+HISTORY_INV_TITLE: '&a{PLAYER} előzményei'
+HISTORY_SEARCHHISTORY_ACTIVE: '&aKeresési előzmények'
+HISTORY_SEARCHHISTORY: '&7Keresési előzmények'
+HISTORY_GETHISTORY_ACTIVE: '&aElőzmények lekérése'
+HISTORY_GETHISTORY: '&7Előzmények lekérése'
+HISTORY_NO_HISTORY_LORE:
+- "&cEnnek a játékosnak nincs"
+- '&celőzménye'
+HISTORY_SEARCHHISTORY_LORE:
+- '&7Kattints jobb gombbal a kereséshez'
+- '&7ehhez'
+HISTORY_GET_LORE:
+- '&7Kattints jobb gombbal a másoláshoz'
+- '&7Fej az inventory-ba'
+# Extra
+ITEM_NAMES:
+  YOUR_HEAD: '&eA te fejed'
+  COLLECTION: '&aGyűjteményem &7{SIZE}'
+  HELP: '&aSegítség'
+  HELP_LORE:
+  - '&7Megmutatja az összes parancsot'
+  INFO: '&aInfo'
+  INFO_LORE:
+  - '&7Shift + Jobb kattintás'
+  - '&7hogy alkalmazd a fejet'
+  - '&7sisak pozícióban'
+  SEARCH: Keresés
+  SEARCH_LORE:
+  - '&7Fej keresése'
+  - '&7az adatbázisban'
+  FIND_MORE: '&3Találj többet'
+  FIND_MORE_LORE:
+  - '&7Kattints ide a link lekéréséhez'
+
