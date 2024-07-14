@@ -48,4 +48,9 @@ public class FieldWrapper extends WrapperBase<FieldWrapper, Field> {
     public Object getInstance(Object obj) throws IllegalAccessException {
         return ReflectionUtils.getFieldValue(resolve(), obj);
     }
+
+    @Override
+    public String toString() {
+        return "FieldWrapper{fieldName=" + fieldName + " fieldClass=" + fieldClass.getCanonicalName() + " fromVersion=" + this.from + " toVersion=" + this.to + "}";
+    }
 }

@@ -10,6 +10,7 @@ package de.likewhat.customheads.utils.history;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import de.likewhat.customheads.CustomHeads;
+import de.likewhat.customheads.utils.CustomHeadsInventoryHolder;
 import de.likewhat.customheads.utils.ItemEditor;
 import lombok.Getter;
 import org.bukkit.Bukkit;
@@ -39,7 +40,7 @@ public class SearchHistory extends OverflowableHistory {
     }
 
     public Inventory getInventory() {
-        Inventory hisInv = Bukkit.createInventory(null, 9 * 5, CustomHeads.getLanguageManager().HISTORY_INV_TITLE.replace("{PLAYER}", super.offlinePlayer.getName()));
+        Inventory hisInv = Bukkit.createInventory(new CustomHeadsInventoryHolder.BaseHolder("custom_heads:search_history"), 9 * 5, CustomHeads.getLanguageManager().HISTORY_INV_TITLE.replace("{PLAYER}", super.offlinePlayer.getName()));
         hisInv.setItem(0, new ItemEditor(Material.STAINED_GLASS_PANE,  5).setDisplayName(CustomHeads.getLanguageManager().HISTORY_SEARCHHISTORY_ACTIVE).getItem());
         hisInv.setItem(1, CustomHeads.getTagEditor().setTags(new ItemEditor(Material.STAINED_GLASS_PANE,  15).setDisplayName(CustomHeads.getLanguageManager().HISTORY_GETHISTORY).getItem(), "history", "open#>get"));
         hisInv.setItem(8, new ItemEditor(Material.SKULL_ITEM,  3).setDisplayName("§b" + offlinePlayer.getName()).setOwner(super.offlinePlayer.getName()).getItem());

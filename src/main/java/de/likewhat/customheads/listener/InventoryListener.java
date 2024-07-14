@@ -8,10 +8,7 @@ import de.likewhat.customheads.category.Category;
 import de.likewhat.customheads.category.CustomHead;
 import de.likewhat.customheads.category.SubCategory;
 import de.likewhat.customheads.headwriter.HeadFontType;
-import de.likewhat.customheads.utils.CHSearchQuery;
-import de.likewhat.customheads.utils.ItemEditor;
-import de.likewhat.customheads.utils.ScrollableInventory;
-import de.likewhat.customheads.utils.Utils;
+import de.likewhat.customheads.utils.*;
 import de.likewhat.customheads.utils.reflection.TagEditor;
 import de.likewhat.customheads.utils.updaters.GitHubDownloader;
 import org.bukkit.Bukkit;
@@ -53,8 +50,76 @@ public class InventoryListener implements Listener {
     @EventHandler
     public void onInvOpen(InventoryOpenEvent event) {
         Player player = (Player) event.getPlayer();
+        Inventory inventory = event.getInventory();
 
-        if (CustomHeads.getLooks().getMenuTitles().contains(event.getView().getTitle())) {
+        if(inventory == null) {
+            return;
+        }
+
+        if(inventory.getHolder() instanceof CustomHeadsInventoryHolder.MenuHolder) {
+            CustomHeadsInventoryHolder.MenuHolder menu = (CustomHeadsInventoryHolder.MenuHolder) inventory.getHolder();
+            if (!hasPermission(player, menu.getPermission())) {
+                player.closeInventory();
+                event.setCancelled(true);
+                return;
+            }
+
+            CustomHeadsPlayer customHeadsPlayer = CustomHeads.getApi().wrapPlayer(player);
+            List<Category> unlockedCategories = customHeadsPlayer.getUnlockedCategories(CustomHeads.hasEconomy() && !CustomHeads.keepCategoryPermissions());
+            ItemStack[] inventoryContent = inventory.getContents();
+            for (int i = 0; i < inventoryContent.length; i++) {
+                if (inventoryContent[i] == null) continue;
+                ItemStack contentItem = inventoryContent[i];
+                if (CustomHeads.getTagEditor().getTags(contentItem).contains("openCategory")) {
+                    String[] categoryArgs = CustomHeads.getTagEditor().getTags(contentItem).get(CustomHeads.getTagEditor().indexOf(contentItem, "openCategory") + 1).split("#>");
+                    if (categoryArgs[0].equals("category")) {
+                        Category category = CustomHeads.getCategoryManager().getCategory(categoryArgs[1]);
+                        ItemStack nextIcon = category.nextIcon();
+                        boolean bought = false;
+                        if(CustomHeads.hasEconomy() && CustomHeads.categoriesBuyable()) {
+                            bought = customHeadsPlayer.getUnlockedCategories(true).contains(category);
+                        }
+                        nextIcon = new ItemEditor(nextIcon)
+                                .setDisplayName(unlockedCategories.contains(category) ? ("§a" + nextIcon.getItemMeta().getDisplayName()) : ("§7" + ChatColor.stripColor(nextIcon.getItemMeta().getDisplayName()) + " " + CustomHeads.getLanguageManager().LOCKED))
+                                .addLoreLine(CustomHeads.hasEconomy() && CustomHeads.categoriesBuyable() ? bought || hasPermission(player, category.getPermission()) ? CustomHeads.getLanguageManager().ECONOMY_BOUGHT : Utils.getCategoryPriceFormatted(category, true) + "\n" + CustomHeads.getLanguageManager().ECONOMY_BUY_PROMPT : null)
+                                .addLoreLines(hasPermission(player, "heads.view.permissions") ? Arrays.asList(" ", "§7§oPermission: " + category.getPermission()) : null)
+                                .getItem();
+                        if (CustomHeads.hasEconomy() && CustomHeads.categoriesBuyable()) {
+                            if(!(CustomHeads.keepCategoryPermissions() && hasPermission(player, category.getPermission()))) {
+                                if (!bought) {
+                                    nextIcon = CustomHeads.getTagEditor().addTags(nextIcon, "buyCategory", category.getId());
+                                }
+                            }
+                        }
+                        contentItem = nextIcon;
+                    }
+                }
+                if (CustomHeads.getTagEditor().getTags(contentItem).contains("chItem")) {
+                    contentItem = CustomHeads.getLooks().getItems().get(CustomHeads.getTagEditor().getTags(contentItem).get(CustomHeads.getTagEditor().indexOf(contentItem, "chItem") + 1));
+                    if (CustomHeads.getTagEditor().getTags(contentItem).contains("your_head")) {
+                        SkullMeta meta = (SkullMeta) contentItem.getItemMeta();
+                        meta.setDisplayName(CustomHeads.getLanguageManager().ITEMS_YOUR_HEAD.replace("{PLAYER}", player.getName()));
+                        meta.setOwner(player.getName());
+                        contentItem.setItemMeta(meta);
+                    } else if (CustomHeads.getTagEditor().getTags(contentItem).contains("saved_heads")) {
+                        contentItem = new ItemEditor(contentItem).setDisplayName(hasPermission(player, "heads.use.more") ? contentItem.getItemMeta().getDisplayName().replace("{SIZE}", "(" + customHeadsPlayer.getSavedHeads().size() + ")") : "§7" + ChatColor.stripColor(contentItem.getItemMeta().getDisplayName().replace("{SIZE}", "") + " " + CustomHeads.getLanguageManager().LOCKED)).addLoreLines(hasPermission(player, "heads.view.permissions") ? Arrays.asList(" ", "§7§oPermission: heads.use.more") : null).getItem();
+                    }
+                    if (CustomHeads.getTagEditor().getTags(contentItem).contains("openMenu")) {
+                        contentItem = CustomHeads.getTagEditor().addTags(contentItem, "needsPermission", CustomHeads.getLooks().getMenuInfo(CustomHeads.getTagEditor().getTags(contentItem).get(CustomHeads.getTagEditor().indexOf(contentItem, "openMenu") + 1).toLowerCase())[1]);
+                    }
+                    if (CustomHeads.getTagEditor().getTags(contentItem).contains("needsPermission")) {
+                        contentItem = new ItemEditor(contentItem)
+                                .setDisplayName(hasPermission(player, CustomHeads.getTagEditor().getTags(contentItem).get(CustomHeads.getTagEditor().indexOf(contentItem, "needsPermission") + 1)) ? "§a" + contentItem.getItemMeta().getDisplayName() : "§7" + ChatColor.stripColor(contentItem.getItemMeta().getDisplayName()) + " " + CustomHeads.getLanguageManager().LOCKED)
+                                .addLoreLines(hasPermission(player, "heads.view.permissions") ? Arrays.asList(" ", "§7Permission: " + CustomHeads.getTagEditor().getTags(contentItem).get(CustomHeads.getTagEditor().indexOf(contentItem, "needsPermission") + 1)) : null)
+                                .getItem();
+                    }
+                }
+                inventoryContent[i] = CustomHeads.getTagEditor().addTags(contentItem, "menuID", menu.getId());
+            }
+            event.getInventory().setContents(inventoryContent);
+        }
+       /* TODO Remove after testing
+       if (CustomHeads.getLooks().getMenuTitles().contains(event.getView().getTitle())) {
             if (!hasPermission(player, CustomHeads.getLooks().getMenuInfo(CustomHeads.getLooks().getIDbyTitle(event.getView().getTitle()))[1])) {
                 player.closeInventory();
                 event.setCancelled(true);
@@ -114,16 +179,18 @@ public class InventoryListener implements Listener {
             }
             event.getInventory().setContents(inventoryContent);
         }
+        */
         player.updateInventory();
     }
 
     @EventHandler
     public void onInvClick(InventoryClickEvent event) {
         Player player = (Player) event.getWhoClicked();
-        if(event.getClickedInventory() != null && event.getClickedInventory().getType() == InventoryType.PLAYER && event.isShiftClick()) {
+        Inventory clickedInventory = event.getClickedInventory();
+        if(clickedInventory != null && clickedInventory.getType() == InventoryType.PLAYER && event.isShiftClick()) {
             handleInventoryAction(event);
         }
-        if (event.getInventory() == null || event.getRawSlot() >= event.getInventory().getSize() || event.getInventory().getType() != InventoryType.CHEST || !hasPermission(player, "heads.use")) {
+        if (clickedInventory == null || event.getRawSlot() >= clickedInventory.getSize() || clickedInventory.getType() != InventoryType.CHEST || !(clickedInventory.getHolder() instanceof CustomHeadsInventoryHolder.BaseHolder) || !hasPermission(player, "heads.use")) {
             return;
         }
 
@@ -189,10 +256,14 @@ public class InventoryListener implements Listener {
         }
 
         ScrollableInventory currentScrollInventory = null;
+        if(clickedInventory.getHolder() instanceof ScrollableInventory.InvHolder) {
+            currentScrollInventory = ((ScrollableInventory.InvHolder)clickedInventory.getHolder()).getInstance();
+        }
+        /*
         if (itemTags.contains("scInvID")) {
             currentScrollInventory = ScrollableInventory.getInventoryByID(itemTags.get(itemTags.indexOf("scInvID") + 1));
         }
-
+        */
         String menuID = null;
         if (itemTags.contains("menuID")) {
             menuID = itemTags.get(itemTags.indexOf("menuID") + 1).toLowerCase();
@@ -218,11 +289,11 @@ public class InventoryListener implements Listener {
                 case "addCharacter": {
                     List<String> extraTags = Arrays.asList(currentScrollInventory.getExtraTags());
                     HeadFontType font = new HeadFontType(extraTags.get(extraTags.indexOf("fontName") + 1)).enableCache();
-                    Inventory adder = Bukkit.createInventory(player, 27, CustomHeads.getLanguageManager().FONTS_EDIT_ADDCHARACTER_TITLE.replace("{FONT}", font.getFontName()));
+                    Inventory adder = Bukkit.createInventory(new CustomHeadsInventoryHolder.BaseHolder("fonts:addCharacter", player), 27, CustomHeads.getLanguageManager().FONTS_EDIT_ADDCHARACTER_TITLE.replace("{FONT}", font.getFontName()));
                     adder.setItem(4, CustomHeads.getTagEditor().addTags(new ItemEditor(Material.PAPER).setDisplayName(CustomHeads.getLanguageManager().FONTS_EDIT_ADD_TOGGLE.replace("{MODE}", CustomHeads.getLanguageManager().NO)).getItem(), "editFont", "adderToggle"));
                     adder.setItem(13, CustomHeads.getTagEditor().addTags(new ItemEditor(Material.HOPPER).setDisplayName(CustomHeads.getLanguageManager().FONTS_EDIT_ADD_DROPPER_NAME).setLore(CustomHeads.getLanguageManager().FONTS_EDIT_ADD_DROPPER_LORE).getItem(), "editFont", "adder", "fontCacheID", font.getCacheID()));
-                    adder.setItem(18, Utils.getBackButton("openScInv", currentScrollInventory.getUid()));
-                    adder.setItem(26, CustomHeads.getTagEditor().addTags(new ItemEditor(Material.SKULL_ITEM,  3).setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMWI2ZjFhMjViNmJjMTk5OTQ2NDcyYWVkYjM3MDUyMjU4NGZmNmY0ZTgzMjIxZTU5NDZiZDJlNDFiNWNhMTNiIn19fQ==").setDisplayName(CustomHeads.getLanguageManager().FONTS_EDIT_SAVENEXIT).getItem(), "editFont", "saveAndExit", "fontCacheID", font.getCacheID(), "openScInv", currentScrollInventory.getUid()));
+                    adder.setItem(18, Utils.getBackButton("openScInv", currentScrollInventory.getId().toString()));
+                    adder.setItem(26, CustomHeads.getTagEditor().addTags(new ItemEditor(Material.SKULL_ITEM,  3).setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMWI2ZjFhMjViNmJjMTk5OTQ2NDcyYWVkYjM3MDUyMjU4NGZmNmY0ZTgzMjIxZTU5NDZiZDJlNDFiNWNhMTNiIn19fQ==").setDisplayName(CustomHeads.getLanguageManager().FONTS_EDIT_SAVENEXIT).getItem(), "editFont", "saveAndExit", "fontCacheID", font.getCacheID(), "openScInv", currentScrollInventory.getId().toString()));
                     player.openInventory(adder);
                     break;
                 }
@@ -300,7 +371,7 @@ public class InventoryListener implements Listener {
                         break;
                     }
                     if (itemTags.contains("openScInv")) {
-                        ScrollableInventory inv = ScrollableInventory.getInventoryByID(itemTags.get(itemTags.indexOf("openScInv") + 1));
+                        ScrollableInventory inv = ScrollableInventory.getInventoryById(itemTags.get(itemTags.indexOf("openScInv") + 1));
                         List<ItemStack> characterList = new ArrayList<>();
                         font.getCharacterItems().forEach((character, customHead) -> characterList.add(CustomHeads.getTagEditor().addTags(new ItemEditor(customHead).setDisplayName("§b" + (character.equals(' ') ? "BLANK" : character)).getItem(), "fontName", font.getFontName(), "character", "" + character, "editFont", "select")));
                         characterList.sort(Comparator.comparing(itemStack -> itemStack.getItemMeta().getDisplayName()));
@@ -326,7 +397,7 @@ public class InventoryListener implements Listener {
         }
 
         if (itemTags.contains("openScInv")) {
-            player.openInventory(ScrollableInventory.getInventoryByID(itemTags.get(itemTags.indexOf("openScInv") + 1)).getAsInventory());
+            player.openInventory(ScrollableInventory.getInventoryById(itemTags.get(itemTags.indexOf("openScInv") + 1)).getAsInventory());
         }
 
         if (itemTags.contains("openCategory")) {
@@ -421,9 +492,10 @@ public class InventoryListener implements Listener {
             }
             String mId = itemTags.get(itemTags.indexOf("openMenu") + 1).toLowerCase();
             Inventory menu = CustomHeads.getLooks().getMenu(mId);
-            LAST_ACTIVE_MENU.put(player.getUniqueId(), mId);
-            if (menu != null)
+            if (menu != null) {
+                LAST_ACTIVE_MENU.put(player.getUniqueId(), mId);
                 player.openInventory(menu);
+            }
         }
 
         // delet confirm
@@ -514,7 +586,8 @@ public class InventoryListener implements Listener {
                     break;
                 // slide it
                 case "slidePage": {
-                    ScrollableInventory inventory = ScrollableInventory.getInventories().get(uid);
+                    ScrollableInventory inventory = ((ScrollableInventory.InvHolder)clickedInventory.getHolder()).getInstance();
+//                    ScrollableInventory inventory = ScrollableInventory.getInventories().get(uid);
                     if (inventory != null) {
                         if (args[1].equals("next")) {
                             inventory.nextPage();
@@ -525,7 +598,8 @@ public class InventoryListener implements Listener {
                     break;
                 }
                 case "reArrange": {
-                    ScrollableInventory inventory = ScrollableInventory.getInventories().get(uid);
+                    ScrollableInventory inventory = ((ScrollableInventory.InvHolder)clickedInventory.getHolder()).getInstance();
+//                    ScrollableInventory inventory = ScrollableInventory.getInventories().get(uid);
                     if (inventory != null) {
                         int nextArrangement;
                         if (args[1].equals("next")) {
@@ -630,10 +704,7 @@ public class InventoryListener implements Listener {
     @EventHandler
     public void onEvent(InventoryCloseEvent event) {
         Player player = (Player) event.getPlayer();
-        if(LAST_ACTIVE_MENU.containsKey(player)) {
-//            player.sendMessage("Clearing Last Menu");
-            LAST_ACTIVE_MENU.remove(player);
-        }
+        LAST_ACTIVE_MENU.remove(player.getUniqueId());
     }
 
 }

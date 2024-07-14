@@ -26,7 +26,7 @@ public class GameProfileBuilder {
     private static final String SERVICE_URL = "https://sessionserver.mojang.com/session/minecraft/profile/%s";
     private static final Gson GSON = new GsonBuilder().disableHtmlEscaping().registerTypeAdapter(UUID.class, new UUIDTypeAdapter()).registerTypeAdapter(GameProfile.class, new GameProfileSerializer()).registerTypeAdapter(PropertyMap.class, new PropertyMap.Serializer()).create();
 
-    public static final HashMap<UUID, CachedProfile> cache = new HashMap<>();
+    private static final HashMap<UUID, CachedProfile> PROFILE_CACHE = new HashMap<>();
     private static final long CACHE_TIME = 6000;
 
     public static String gameProfileToString(GameProfile profile) {
@@ -41,8 +41,8 @@ public class GameProfileBuilder {
         new BukkitRunnable() {
             public void run() {
                 try {
-                    if (cache.containsKey(uuid) && cache.get(uuid).isValid()) {
-                        consumer.accept(cache.get(uuid).profile);
+                    if (PROFILE_CACHE.containsKey(uuid) && PROFILE_CACHE.get(uuid).isValid()) {
+                        consumer.accept(PROFILE_CACHE.get(uuid).profile);
                         return;
                     } else {
                         HttpURLConnection connection = (HttpURLConnection) new URL(String.format(SERVICE_URL, UUIDTypeAdapter.fromUUID(uuid))).openConnection();
@@ -56,7 +56,7 @@ public class GameProfileBuilder {
                         if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
                             BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
                             GameProfile result = GSON.fromJson(reader.lines().collect(Collectors.joining()), GameProfile.class);
-                            cache.put(uuid, new CachedProfile(result));
+                            PROFILE_CACHE.put(uuid, new CachedProfile(result));
                             consumer.accept(result);
                             return;
                         }
@@ -88,6 +88,10 @@ public class GameProfileBuilder {
         PropertyMap propertyMap = profile.getProperties();
         propertyMap.put("textures", new Property("textures", texture));
         return profile;
+    }
+
+    public static void clearCache() {
+        PROFILE_CACHE.entrySet().removeIf(entry -> !entry.getValue().isValid());
     }
 
     private static class GameProfileSerializer implements JsonSerializer<GameProfile>, JsonDeserializer<GameProfile> {

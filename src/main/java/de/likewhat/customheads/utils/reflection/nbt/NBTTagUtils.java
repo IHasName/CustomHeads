@@ -7,113 +7,96 @@ package de.likewhat.customheads.utils.reflection.nbt;
  *  created on 17.12.2019 at 23:29
  */
 
-import de.likewhat.customheads.CustomHeads;
-import de.likewhat.customheads.utils.reflection.helpers.ReflectionUtils;
-import de.likewhat.customheads.utils.reflection.helpers.Version;
-import de.likewhat.customheads.utils.reflection.helpers.collections.MethodReflectionCollection;
-import lombok.Getter;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
+import de.likewhat.customheads.utils.reflection.helpers.wrappers.instances.nbt.NBTTagCompoundWrapper;
+import de.likewhat.customheads.utils.reflection.helpers.wrappers.instances.nbt.NBTTagListWrapper;
+import de.likewhat.customheads.utils.reflection.nbt.errors.NBTException;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.util.Arrays;
-import java.util.logging.Level;
+import java.util.Map;
 
 public class NBTTagUtils {
 
-    public static void addObjectToNBTList(Object list, Object objectToAdd) {
-        try {
-            if(Version.getCurrentVersion().isOlderThan(Version.V1_14_R1)) {
-                MethodReflectionCollection.NBT_TAGLIST_ADD.invokeOn(list, objectToAdd);
-            } else {
-                MethodReflectionCollection.NBT_TAGLIST_ADD.invokeOn(list, MethodReflectionCollection.NBT_TAGLIST_SIZE.invokeOn(list), objectToAdd);
-            }
-        } catch(IllegalAccessException | InvocationTargetException e) {
-            CustomHeads.getPluginLogger().log(Level.WARNING, "Failed to add Object to NBT List", e);
-        }
+    // Imperfect Json to NBT Converter
+    public static Object jsonToNBT(JsonObject jsonObject) throws NBTException {
+        return serializeJsonToNBT(jsonObject);
     }
 
-    public static Object createInstance(NBTType nbtType) {
-        try {
-            Class<?> clazz = nbtType.getNBTClass();
-            if(clazz == null) {
-                return null;
+    private static Object serializeJsonToNBT(JsonElement element) throws NBTException {
+        if(element.isJsonObject()) {
+            JsonObject jsonObject = element.getAsJsonObject();
+            NBTTagCompoundWrapper nbtCompound = new NBTTagCompoundWrapper();
+            for (Map.Entry<String, JsonElement> entry : jsonObject.entrySet()) {
+                Object serialized = checkSerialized(serializeJsonToNBT(entry.getValue()));
+                if(serialized == NBTType.INVALID) {
+                    continue;
+                }
+                nbtCompound.set(entry.getKey(), serialized);
             }
-            return clazz.newInstance();
-        } catch(Exception e) {
-            CustomHeads.getPluginLogger().log(Level.WARNING, "Failed to create Instance of " + nbtType.name() + " ("+ nbtType.getClassName() + ")", e);
-        }
-        return null;
-    }
-
-    // Don't ask what I did here. It works for what I need it to do and it didn't break anything... yet
-    public static <T> Object createInstance(NBTType nbtType, T newInstanceObject) {
-        try {
-            Class<?> clazz = nbtType.getNBTClass();
-            if(clazz == null) {
-                return null;
+            return nbtCompound.getNBTObject();
+        } else if (element.isJsonArray()) {
+            JsonArray jsonArray = element.getAsJsonArray();
+            NBTTagListWrapper nbtList = new NBTTagListWrapper();
+            for (JsonElement jsonElement : jsonArray) {
+                Object serialized = checkSerialized(serializeJsonToNBT(jsonElement));
+                if(serialized == NBTType.INVALID) {
+                    continue;
+                }
+                nbtList.addObject(serialized);
             }
-            Object instance = null;
-            // Just return a new empty Instance if the Object is null
-            if(newInstanceObject == null) {
-                return clazz.newInstance();
-            }
-            try {
-                Constructor<?> constructor = clazz.getConstructor(newInstanceObject.getClass());
-                instance = constructor.newInstance(newInstanceObject);
-            } catch(NoSuchMethodException e) {
-                try {
-                    // Newer Versions use a Method to initialize an Instance
-                    instance = clazz.getMethod("a", newInstanceObject.getClass()).invoke(null, newInstanceObject);
-                } catch(NoSuchMethodException e2) {
-                    CustomHeads.getPluginLogger().log(Level.WARNING, "Failed to initialize Instance of " + clazz.getCanonicalName());
+            return nbtList.getNBTObject();
+        } else if (element.isJsonPrimitive()) {
+            JsonPrimitive jsonPrimitive = element.getAsJsonPrimitive();
+            if(jsonPrimitive.isString()) {
+                return NBTType.STRING.createInstance(jsonPrimitive.getAsString());
+            } else if (jsonPrimitive.isBoolean()) {
+                return NBTType.BYTE.createInstance((byte) (jsonPrimitive.getAsBoolean() ?  1 : 0));
+            } else if (jsonPrimitive.isNumber()) {
+                Number number = jsonPrimitive.getAsNumber();
+                if(number instanceof Integer) {
+                    return NBTType.INT.createInstance(number.intValue());
+                } else if (number instanceof Long) {
+                    return NBTType.LONG.createInstance(number.longValue());
+                } else if (number instanceof Float) {
+                    return NBTType.FLOAT.createInstance(number.floatValue());
+                } else if (number instanceof Double) {
+                    return NBTType.DOUBLE.createInstance(number.doubleValue());
+                } else if (number instanceof Byte) {
+                    return NBTType.BYTE.createInstance(number.byteValue());
+                } else if (number instanceof Short) {
+                    return NBTType.SHORT.createInstance(number.shortValue());
                 }
             }
-            return instance;
-        } catch(Exception e) {
-            CustomHeads.getPluginLogger().log(Level.WARNING, "Failed to create Instance of " + nbtType.name() + " ("+ nbtType.getClassName() + ")", e);
+        } else if (element.isJsonNull()) {
+            return NBTType.NULL;
         }
-        return null;
+        return NBTType.INVALID;
     }
 
-    @Getter
-    public enum NBTType {
-        END(0, "NBTTagEnd"),
-        BYTE(1, "NBTTagByte"),
-        SHORT(2, "NBTTagShort"),
-        INT(3, "NBTTagInt"),
-        LONG(4, "NBTTagLong"),
-        FLOAT(5, "NBTTagFloat"),
-        DOUBLE(6, "NBTTagDouble"),
-        BYTE_LIST(7, "NBTTagByteArray"),
-        STRING(8, "NBTTagString"),
-        LIST(9, "NBTTagList"),
-        COMPOUND(10, "NBTTagCompound"),
-        INTEGER_LIST(11, "NBTTagIntArray");
-
-        private final int id;
-        private final String className;
-
-        NBTType(int id, String className) {
-            this.id = id;
-            this.className = className;
+    private static Object checkSerialized(Object serializedObject) throws NBTException {
+        if (serializedObject == NBTType.NULL) {
+            return null; // Implicit null return
+        } else if (serializedObject == null) {
+            throw new NBTException("Failed to encode Json Element");
         }
+        return serializedObject;
+    }
 
-        public Class<?> getNBTClass() {
-            try {
-                return ReflectionUtils.getMCServerClassByName(this.className, "nbt");
-            } catch(Exception e) {
-                CustomHeads.getPluginLogger().log(Level.WARNING, "Failed to get NBT Class", e);
-            }
-            return null;
-        }
+    /**
+     *
+     * @param nbt The NBT Object to deserialize
+     * @param assumeByteBoolean Assume that every Key Value byte between 0 and 1 (excluding ByteList) is a Boolean
+     * @return a Json Element representing the deserialized NBT
+     */
+    public static JsonElement nbtToJsonObject(Object nbt, boolean assumeByteBoolean) {
+        return deserializeNBTToJson(nbt, assumeByteBoolean);
+    }
 
-        public static NBTType getById(int id) {
-            return Arrays.stream(values()).filter(nbtType -> nbtType.id == id).findFirst().orElse(null);
-        }
-
-        public static NBTType getByClassName(String className) {
-            return Arrays.stream(values()).filter(nbtType -> nbtType.className.equals(className)).findFirst().orElse(null);
-        }
+    private static JsonElement deserializeNBTToJson(Object nbt, boolean assumeByteBoolean) {
+        // TODO Implement this
+        return null;
     }
 
 }

@@ -57,4 +57,9 @@ public class ConstructorWrapper<T> extends WrapperBase<ConstructorWrapper<T>, Co
     public T construct(Object... params) throws IllegalAccessException, InvocationTargetException, InstantiationException {
         return (T) resolve().newInstance(params);
     }
+
+    @Override
+    public String toString() {
+        return "ConstructorWrapper{constructor=" + LoggingUtils.methodLikeString(targetClass.getCanonicalName(), paramTypes) + " fromVersion=" + this.from + " toVersion=" + this.to + "}";
+    }
 }

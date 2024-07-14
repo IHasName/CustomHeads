@@ -1,11 +1,17 @@
 package de.likewhat.customheads.utils;
 
+import com.google.gson.JsonObject;
 import com.mojang.authlib.GameProfile;
 import de.likewhat.customheads.CustomHeads;
 import de.likewhat.customheads.utils.reflection.helpers.ReflectionUtils;
 import de.likewhat.customheads.utils.reflection.helpers.Version;
-import de.likewhat.customheads.utils.reflection.helpers.collections.MethodReflectionCollection;
+import de.likewhat.customheads.utils.reflection.helpers.wrappers.instances.MethodWrappers;
+import de.likewhat.customheads.utils.reflection.nbt.ItemNBTUtils;
 import de.likewhat.customheads.utils.reflection.nbt.NBTTagUtils;
+import de.likewhat.customheads.utils.reflection.nbt.NBTType;
+import de.likewhat.customheads.utils.reflection.nbt.errors.NBTException;
+import de.likewhat.customheads.utils.reflection.nbt.errors.NBTVerifyException;
+import org.apache.commons.lang3.NotImplementedException;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
@@ -28,7 +34,7 @@ import java.util.Map;
 
 public class ItemEditor {
 
-    private final ItemStack itemStack;
+    private ItemStack itemStack;
 
     private final ItemMeta meta;
 
@@ -153,7 +159,7 @@ public class ItemEditor {
                 throw new IllegalStateException("Unable to inject GameProfile");
             }
             if (Version.getCurrentVersion().isNewerThan(Version.V1_17_R1)) {
-                Object serializedProfile = MethodReflectionCollection.GAMEPROFILE_SERIALIZE.invokeOn(null, NBTTagUtils.createInstance(NBTTagUtils.NBTType.COMPOUND), profile);
+                Object serializedProfile = MethodWrappers.GAMEPROFILE_SERIALIZE.invokeOn(null, NBTType.COMPOUND.createInstance(), profile);
                 ReflectionUtils.setField(meta, "serializedProfile", serializedProfile);
             }
         } catch(NoSuchFieldException | InvocationTargetException | IllegalAccessException e) {
@@ -192,6 +198,16 @@ public class ItemEditor {
     public ItemEditor hideAllFlags() {
         meta.addItemFlags(ItemFlag.values());
         return this;
+    }
+
+    public ItemEditor setNBT(JsonObject jsonObject) throws NBTException, NBTVerifyException {
+        this.itemStack = ItemNBTUtils.setTagOnItem(this.itemStack, NBTTagUtils.jsonToNBT(jsonObject));
+        return this;
+    }
+
+    // TODO Add a Deserializer to NBT Data
+    public JsonObject getNBT() throws NBTException {
+        throw new NotImplementedException("getNBT is not yet implemented");
     }
 
     public ItemStack getItem() {

@@ -19,13 +19,24 @@ public enum Version {
     V1_17_R1(1171),
     V1_18_R1(1181), V1_18_R2(1182),
     V1_19_R1(1191), V1_19_R2(1192), V1_19_R3(1193),
-    V1_20_R1(1201),
+    V1_20_R1(1201), V1_20_R2(1202), V1_20_R3(1203),
+    V1_20_5(1205), V1_20_6(1206), V1_21_0(1210),
     LATEST(Integer.MAX_VALUE),
 
-    LATEST_UPDATE(1201);
+    LATEST_UPDATE(V1_20_R3);
 
     private static final String PACKET_NAME = Bukkit.getServer().getClass().getPackage().getName();
-    private static final String RAW_VERSION = PACKET_NAME.substring(PACKET_NAME.lastIndexOf('.') + 1);
+    private static final String RAW_VERSION;
+
+    static {
+        String packetVersion = PACKET_NAME.substring(PACKET_NAME.lastIndexOf('.') + 1);
+        if(packetVersion.isEmpty()) { // We don't have a Craftbukkit Packet Version so we use the Server Version itself (since 1.20.5)
+            String bukkitVersionString = Bukkit.getBukkitVersion();
+            RAW_VERSION = bukkitVersionString.substring(0, bukkitVersionString.indexOf("-") - 1);
+        } else {
+            RAW_VERSION = packetVersion;
+        }
+    }
 
     public static Version getCurrentVersion() {
         if(currentVersion != null) {
@@ -43,6 +54,10 @@ public enum Version {
 
     Version(int versionValue) {
         this.versionValue = versionValue;
+    }
+
+    Version(Version otherVersion) {
+        this.versionValue = otherVersion.versionValue;
     }
 
     private static Version fromValue(int value) {

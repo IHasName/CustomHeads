@@ -29,6 +29,7 @@ public class JsonFile {
     @Setter
     private static String defaultSubfolder = "";
 
+    @Setter
     private JsonElement json;
 
     private final File file;
@@ -51,7 +52,7 @@ public class JsonFile {
         try (OutputStreamWriter writer = new OutputStreamWriter(Files.newOutputStream(file.toPath()), StandardCharsets.UTF_8)) {
             writer.write(Utils.GSON_PRETTY.toJson(json));
         } catch (Exception e) {
-            e.printStackTrace();
+            CustomHeads.getPluginLogger().log(Level.SEVERE, "Failed to write Json to File", e);
         }
     }
 
@@ -65,10 +66,6 @@ public class JsonFile {
 
     public String getJsonAsString() {
         return json.toString();
-    }
-
-    public void setJson(JsonElement json) {
-        this.json = json;
     }
 
 }

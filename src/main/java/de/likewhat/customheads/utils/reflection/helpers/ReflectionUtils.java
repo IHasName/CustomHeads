@@ -2,8 +2,9 @@ package de.likewhat.customheads.utils.reflection.helpers;
 
 import de.likewhat.customheads.CustomHeads;
 import de.likewhat.customheads.utils.LoggingUtils;
-import de.likewhat.customheads.utils.reflection.helpers.collections.FieldReflectionCollection;
-import de.likewhat.customheads.utils.reflection.helpers.collections.MethodReflectionCollection;
+import de.likewhat.customheads.utils.reflection.helpers.wrappers.MethodWrapper;
+import de.likewhat.customheads.utils.reflection.helpers.wrappers.instances.FieldWrappers;
+import de.likewhat.customheads.utils.reflection.helpers.wrappers.instances.MethodWrappers;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
@@ -47,7 +48,7 @@ public class ReflectionUtils {
             field.set(instance, newValue);
             return true;
         } catch(Exception e) {
-            e.printStackTrace();
+            CustomHeads.getPluginLogger().log(Level.WARNING, "Failed to set Field", e);
             return false;
         } finally {
             if(!wasAccessible) {
@@ -57,7 +58,7 @@ public class ReflectionUtils {
     }
 
     /**
-     * Tries to get a Field by its Name (tries Normal Fields first and then Declared Fields)
+     * Tries to get a Field by its Name
      * @param clazz The Class that has the Field
      * @param fieldName The Field Name to get
      * @return Field from the given Class
@@ -88,7 +89,7 @@ public class ReflectionUtils {
         try {
             return getFieldValue(getField(objectInstance.getClass(), fieldName), objectInstance);
         } catch(NoSuchFieldException e) {
-            e.printStackTrace();
+            CustomHeads.getPluginLogger().log(Level.SEVERE, "Failed to get Field Value", e);
         }
         return null;
     }
@@ -107,7 +108,7 @@ public class ReflectionUtils {
             }
             return field.get(objectInstance);
         } catch(Exception e) {
-            e.printStackTrace();
+            CustomHeads.getPluginLogger().log(Level.SEVERE, "Failed to get Field Value", e);
             return null;
         } finally {
             if(!accessible) {
@@ -120,6 +121,7 @@ public class ReflectionUtils {
 
     // Yeah, this seems like a bad Idea...
     // But since the Fields always get changed in each Update it's kinda my last resort... sort of?
+    // This only gets used to help update the Plugin for newer Versions
     /**
      * <p>Gets a Field by the Field Type Class</p>
      * <b>WARNING!</b> This Method should only be used when you're 100% sure the Field Type Class only appears once in
@@ -157,7 +159,7 @@ public class ReflectionUtils {
     }
 
     /**
-     * Tries to get a Constructor by its Name (tries Normal Constructors first and then Declared Constructors)
+     * Tries to get a Constructor by its Name
      * @param clazz The Class that has the Constructor
      * @param paramTypes The Constructor Parameters
      * @return Constructor from the given Class and Parameter Types
@@ -167,13 +169,9 @@ public class ReflectionUtils {
     public static Constructor<?> getConstructorDynamic(Class<?> clazz, Class<?>... paramTypes) throws NoSuchMethodException {
         Constructor<?> result;
         try {
-            result = clazz.getConstructor(paramTypes);
+            result = clazz.getDeclaredConstructor(paramTypes);
         } catch (NoSuchMethodException noConstructor) {
-            try {
-                result = clazz.getDeclaredConstructor(paramTypes);
-            } catch(NoSuchMethodException noDeclaredConstructor) {
-                throw new NoSuchMethodException("Failed to find Constructor for " + LoggingUtils.methodLikeString(clazz.getCanonicalName(), paramTypes) + " in either declared or non-declared State");
-            }
+            throw new NoSuchMethodException("Failed to find Constructor for " + LoggingUtils.methodLikeString(clazz.getCanonicalName(), paramTypes) + " in either declared or non-declared State");
         }
         return result;
     }
@@ -206,11 +204,13 @@ public class ReflectionUtils {
     public static Method getMethod(String methodName, Class<?> clazz, Class<?>... params) throws NoSuchMethodException {
         Objects.requireNonNull(methodName);
         Objects.requireNonNull(clazz);
-        try {
-            return clazz.getMethod(methodName, params);
-        } catch(NoSuchMethodException e) {
-            throw new NoSuchMethodException("Failed to get Method from Class " + clazz.getCanonicalName());
-        }
+        return clazz.getMethod(methodName, params);
+    }
+
+    public static Method getDeclaredMethod(String methodName, Class<?> clazz, Class<?>... params) throws NoSuchMethodException {
+        Objects.requireNonNull(methodName);
+        Objects.requireNonNull(clazz);
+        return clazz.getDeclaredMethod(methodName, params);
     }
 
     /**
@@ -221,7 +221,6 @@ public class ReflectionUtils {
      */
     public static Object invokeMethod(Method method, Object object, Object... params) throws InvocationTargetException, IllegalAccessException {
         Objects.requireNonNull(method);
-        Objects.requireNonNull(object);
         boolean wasAccessible = method.isAccessible();
         if(!wasAccessible) {
             method.setAccessible(true);
@@ -236,7 +235,7 @@ public class ReflectionUtils {
     /**
      * Returns an Enum Constant by its Name
      * @param clazz The Class where the Enum is located
-     * @param enumName The Enmum Name
+     * @param enumName The Enum Name
      * @return Enum Constant by given Name
      */
     public static Enum<?> getEnumConstant(Class<?> clazz, String enumName) {
@@ -247,15 +246,15 @@ public class ReflectionUtils {
                 }
             }
         } catch(Exception e) {
-            e.printStackTrace();
+            CustomHeads.getPluginLogger().log(Level.SEVERE, "Failed to get Enum Instance of " + enumName, e);
         }
         return null;
     }
 
     public static void sendPacket(Object packet, Player player) throws Exception {
         Object playerHandle = ReflectionUtils.getPlayerHandle(player);
-        Object connection = FieldReflectionCollection.PLAYER_CONNECTION.getInstance(playerHandle);
-        MethodReflectionCollection.PLAYER_SEND_PACKET.invokeOn(connection, packet);
+        Object connection = FieldWrappers.PLAYER_CONNECTION.getInstance(playerHandle);
+        MethodWrappers.PLAYER_SEND_PACKET.invokeOn(connection, packet);
     }
 
     public static Class<?> getMCServerClassByName(String className) {
@@ -263,11 +262,11 @@ public class ReflectionUtils {
     }
 
     public static Class<?> getMCServerClassByName(String className, String alternativePrefix) {
-        if (className.equals("ChatSerializer") && (Version.getCurrentVersion() == Version.V1_8_R1 || Version.getCurrentVersion().isNewerThan(Version.V1_17_R1))) {
+        if (className.equals("ChatSerializer") && (Version.getCurrentVersion() != Version.V1_8_R1 || Version.getCurrentVersion().isNewerThan(Version.V1_16_R3))) {
             className = "IChatBaseComponent$ChatSerializer";
         }
         String classPath;
-        if(Version.getCurrentVersion().isNewerThan(Version.V1_17_R1)) {
+        if(Version.getCurrentVersion().isNewerThan(Version.V1_16_R3)) {
             String altPrefix = "";
             if(alternativePrefix != null) {
                 altPrefix = alternativePrefix + ".";
@@ -276,18 +275,10 @@ public class ReflectionUtils {
         } else {
             classPath = "net.minecraft.server." + Version.getCurrentVersionRaw() + "." + className;
         }
-        return checkCachedClassname(classPath);
+        return getClassByName(classPath);
     }
 
     public static Class<?> getClassByName(String className) {
-        return checkCachedClassname(className);
-    }
-
-    public static Class<?> getCraftBukkitClass(String className) {
-        return checkCachedClassname("org.bukkit.craftbukkit." + Version.getCurrentVersionRaw() + "." + className);
-    }
-
-    private static Class<?> checkCachedClassname(String className) {
         if(CACHED_CLASSES.containsKey(className)) {
             return CACHED_CLASSES.get(className);
         } else {
@@ -302,9 +293,14 @@ public class ReflectionUtils {
         return null;
     }
 
+    // Since 1.20.5 Craft-Bukkit Packages also dropped the Revisions so we just use the Package Name
+    public static Class<?> getCraftBukkitClass(String className) {
+        return getClassByName("org.bukkit.craftbukkit." + (Version.getCurrentVersion().isOlderThan(Version.V1_20_5) ? (Version.getCurrentVersionRaw() + ".") : "") + className);
+    }
+
     public static Object getPlayerHandle(Player player) {
         try {
-            return getCraftBukkitClass("entity.CraftPlayer").getMethod("getHandle").invoke(player);
+            return MethodWrappers.CRAFTBUKKIT_CRAFTPLAYER_GET_HANDLE.invokeOn(player);
         } catch (Exception e) {
             CustomHeads.getPluginLogger().log(Level.SEVERE, "Failed to get Player Handle", e);
         }
@@ -313,11 +309,30 @@ public class ReflectionUtils {
 
     public static Object getWorldHandle(World world) {
         try {
-            return getCraftBukkitClass("CraftWorld").getMethod("getHandle").invoke(world);
+            return MethodWrappers.CRAFTBUKKIT_CRAFTWORLD_GET_HANDLE.invokeOn(world);
         } catch (Exception e) {
             CustomHeads.getPluginLogger().log(Level.SEVERE, "Failed to get World Handle", e);
         }
         return null;
+    }
+
+    // Generic Types don't like to be called with null Parameters
+    public static <T> T callWrapperAndGetOrNull(Object instance, MethodWrapper<T> wrapper, Object... params) {
+        try {
+            return wrapper.invokeOn(instance, params);
+        } catch(InvocationTargetException | IllegalAccessException e) {
+            CustomHeads.getPluginLogger().log(Level.WARNING, "Failed to call Wrapper for " + wrapper, e);
+        }
+        return null;
+    }
+
+    public static <T> T callWrapperAndGetOrDefault(Object instance, MethodWrapper<T> wrapper, T defaultValue, Object... params) {
+        try {
+            return wrapper.invokeOn(instance, params);
+        } catch(InvocationTargetException | IllegalAccessException e) {
+            CustomHeads.getPluginLogger().log(Level.WARNING, "Failed to call Wrapper for " + wrapper, e);
+        }
+        return defaultValue;
     }
 
 

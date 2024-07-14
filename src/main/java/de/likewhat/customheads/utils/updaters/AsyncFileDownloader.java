@@ -3,6 +3,7 @@ package de.likewhat.customheads.utils.updaters;
 import com.google.common.io.Files;
 import de.likewhat.customheads.CustomHeads;
 import de.likewhat.customheads.utils.Utils;
+import lombok.*;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
@@ -10,6 +11,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLConnection;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 
@@ -18,22 +20,18 @@ import java.nio.channels.ReadableByteChannel;
  *     by LikeWhat
  */
 
+@AllArgsConstructor
+@RequiredArgsConstructor
 public class AsyncFileDownloader {
 
-    private String userAgent = "Mozilla/5.0 (Windows NT 6.3; Trident/7.0; rv:11.0) like Gecko";
-    private final String fileName;
-    private final String path;
+    @NonNull
     private final String url;
-
-    public AsyncFileDownloader(String url, String fileName, String toPath) {
-        this.url = url;
-        this.fileName = fileName;
-        path = toPath;
-    }
-
-    public void setUserAgent(String userAgent) {
-        this.userAgent = userAgent;
-    }
+    @NonNull
+    private final String fileName;
+    @NonNull
+    private final String path;
+    @Setter
+    private String userAgent = "AsyncFileDownloader/1.1";
 
     public void startDownload(FileDownloaderCallback callback) {
         CustomHeads.getPluginLogger().info("Downloading " + fileName + "...");
@@ -55,50 +53,69 @@ public class AsyncFileDownloader {
                         callback.complete();
                         return;
                     }
-                    callback.failed(DownloaderStatus.HTTP_ERROR.setDescription("Server Responded with " + connection.getResponseCode() + "(" + connection.getResponseMessage() + ")"));
+                    callback.failed(new DownloaderError(DownloaderStatus.HTTP_ERROR, HttpException.fromConnection(connection)));
                 } catch (IOException e) {
-                    callback.failed(DownloaderStatus.ERROR.setDescription("Failed to download File").setException(e));
+                    callback.failed(new DownloaderError(DownloaderStatus.ERROR, e));
                 }
             }
         });
     }
 
+    @Getter
     public enum DownloaderStatus {
-        ERROR(1), HTTP_ERROR(2), FILE_ERROR(3);
-
-        String desc;
+        ERROR, HTTP_ERROR, FILE_ERROR;
 
         Exception exception;
-
-        DownloaderStatus(int id) {}
-
-        public Exception getException() {
-            return exception;
-        }
 
         public DownloaderStatus setException(Exception exception) {
             this.exception = exception;
             return this;
         }
+    }
 
-        public String getDescription() {
-            return desc;
+    @Getter
+    @AllArgsConstructor
+    @RequiredArgsConstructor
+    public static class DownloaderError {
+        @NonNull
+        private DownloaderStatus status;
+        private Exception exception;
+    }
+
+    @Getter
+    public static class HttpException extends Exception {
+        private final int responseCode;
+        private final URLConnection originalConnection;
+
+        public HttpException(int responseCode, String responseMessage) {
+            super(responseMessage);
+            this.responseCode = responseCode;
+            this.originalConnection = null;
         }
 
-        public DownloaderStatus setDescription(String description) {
-            desc = description;
-            return this;
+        /**
+         * Gets the Response Message (equivalent to {@link java.lang.Throwable#getMessage})
+         * @return The Response Message
+         */
+        public String getResponseMessage() {
+            return super.getMessage();
         }
 
-        public String toString() {
-            return desc == null ? name() : name() + " " + desc;
+        /**
+         * Converts a HttpURLConnection into a HttpException
+         * @param connection The URL Connection
+         * @return The HttpException from the
+         * @throws IOException see {@link java.net.HttpURLConnection#getResponseCode} and {@link java.net.HttpURLConnection#getResponseMessage}
+         */
+        public static HttpException fromConnection(HttpURLConnection connection) throws IOException {
+            return new HttpException(connection.getResponseCode(), connection.getResponseMessage());
         }
     }
 
     public interface FileDownloaderCallback {
         void complete();
 
-        void failed(AsyncFileDownloader.DownloaderStatus status);
+        void failed(AsyncFileDownloader.DownloaderError error);
     }
 
     public interface AfterTask {

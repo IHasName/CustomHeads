@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 import de.likewhat.customheads.CustomHeads;
 import de.likewhat.customheads.category.Category;
 import de.likewhat.customheads.category.SubCategory;
+import de.likewhat.customheads.utils.CustomHeadsInventoryHolder;
 import de.likewhat.customheads.utils.ItemEditor;
 import de.likewhat.customheads.utils.JsonFile;
 import de.likewhat.customheads.utils.JsonToItem;
@@ -56,13 +57,10 @@ public class Looks {
         try {
             // Base
             JsonObject jsonLooks = jsf.getJson().getAsJsonObject().get("looks").getAsJsonObject();
-            JsonObject objs;
+            JsonObject itemObjects  = jsonLooks.get("items").getAsJsonObject();
 
-            // Items
-            objs = jsonLooks.get("items").getAsJsonObject();
-
-            if (!objs.entrySet().isEmpty()) {
-                for (Map.Entry<String, JsonElement> idEntry : objs.entrySet()) {
+            if (!itemObjects.entrySet().isEmpty()) {
+                for (Map.Entry<String, JsonElement> idEntry : itemObjects.entrySet()) {
                     if (idEntry == null || idEntry.getKey().startsWith("__")) continue;
                     ItemStack itemStack;
                     List<String> tags = new ArrayList<>();
@@ -119,15 +117,20 @@ public class Looks {
 
             // Menus
             JsonArray menus = jsonLooks.getAsJsonArray("menus");
-            if (menus == null)
+            if (menus == null || menus.size() == 0) {
                 throw new IllegalArgumentException("No Menus found... At least one is required!");
+            }
             for (JsonElement menuElement : menus) {
                 JsonObject menuJson = menuElement.getAsJsonObject();
-                if (createdMenus.containsKey(menuJson.get("id").getAsString())) {
-                    CustomHeads.getPluginLogger().info(CustomHeads.PREFIX_WARNING + "Duplicate Menu ID: " + menuJson.get("id").getAsString() + ". Skipping...");
+                
+                String menuId = menuJson.get("id").getAsString();
+                String menuTitle = menuJson.get("title").getAsString();
+                String menuPermission = menuJson.has("permission") ? menuJson.get("permission").getAsString() : "heads.view.menu." + menuId;
+                if (createdMenus.containsKey(menuId)) {
+                    CustomHeads.getPluginLogger().info(CustomHeads.PREFIX_WARNING + "Duplicate Menu ID: " + menuId + ". Skipping...");
                     continue;
                 }
-                Inventory menu = Bukkit.createInventory(null, menuJson.get("size").getAsInt(), format(menuJson.get("title").getAsString()));
+                Inventory menu = Bukkit.createInventory(new CustomHeadsInventoryHolder.MenuHolder(menuId, menuTitle, menuPermission), menuJson.get("size").getAsInt(), format(menuTitle));
                 for (JsonElement contentElement : menuJson.getAsJsonArray("content")) {
                     JsonObject contentObject = contentElement.getAsJsonObject();
                     int slot = contentObject.get("slot").getAsInt();
@@ -137,34 +140,34 @@ public class Looks {
                         case "category":
                             Category category = CustomHeads.getCategoryManager().getCategories().get(String.valueOf(contentObject.get("id").getAsInt()));
                             if (category == null)
-                                throw new NullPointerException("Cannot find Category for ID " + contentObject.get("id") + " for " + menuJson.get("id").getAsString());
+                                throw new NullPointerException("Cannot find Category for ID " + contentObject.get("id") + " for " + menuId);
                             usedCategories.add(category);
-                            menu.setItem(slot, CustomHeads.getTagEditor().addTags(category.nextIcon(), "menuID", menuJson.get("id").getAsString()));
+                            menu.setItem(slot, CustomHeads.getTagEditor().addTags(category.nextIcon(), "menuID", menuId));
                             break;
                         case "item":
                             ItemStack item = items.get(contentObject.get("id").getAsString());
                             if (item == null)
-                                throw new NullPointerException("Cannot find Item for ID " + contentObject.get("id") + " for " + menuJson.get("id").getAsString());
-                            menu.setItem(slot, CustomHeads.getTagEditor().addTags(item, "menuID", menuJson.get("id").getAsString()));
+                                throw new NullPointerException("Cannot find Item for ID " + contentObject.get("id") + " for " + menuId);
+                            menu.setItem(slot, CustomHeads.getTagEditor().addTags(item, "menuID", menuId));
                             break;
                         default:
-                            throw new IllegalArgumentException("Unknown Content Type: " + contentObject.get("type").getAsString() + " for " + menuJson.get("id").getAsString());
+                            throw new IllegalArgumentException("Unknown Content Type: " + contentObject.get("type").getAsString() + " for " + menuId);
                     }
                 }
 
-                menuInfo.put(menuJson.get("id").getAsString(), new String[]{menuJson.get("title").getAsString(), menuJson.has("permission") ? menuJson.get("permission").getAsString() : "heads.view.menu." + menuJson.get("id").getAsString()});
-                createdMenus.put(menuJson.get("id").getAsString(), menu);
-                createdMenuTitles.put(menuJson.get("id").getAsString(), menuJson.get("title").getAsString());
+                menuInfo.put(menuId, new String[]{menuTitle, menuPermission});
+                createdMenus.put(menuId, menu);
+                createdMenuTitles.put(menuId, menuTitle);
             }
 
             // Sub Category Slots
-            objs = jsonLooks.get("sub_category-looks").getAsJsonObject();
-            JsonObject slots = objs.get("slots").getAsJsonObject();
+            itemObjects = jsonLooks.get("sub_category-looks").getAsJsonObject();
+            JsonObject slots = itemObjects.get("slots").getAsJsonObject();
 
             for (Map.Entry<String, JsonElement> slotEntry : slots.entrySet()) {
-                Inventory inv = Bukkit.createInventory(null, slots.get(slotEntry.getKey()).getAsJsonObject().get("size").getAsInt(), format(slots.get(slotEntry.getKey()).getAsJsonObject().get("title").getAsString()));
                 Category category = CustomHeads.getCategoryManager().getCategories().get(slotEntry.getKey());
                 if (category != null && category.hasSubCategories()) {
+                    Inventory inv = Bukkit.createInventory(new CustomHeadsInventoryHolder.MenuHolder(category.getId(), category.getName(), category.getPermission()), slots.get(slotEntry.getKey()).getAsJsonObject().get("size").getAsInt(), format(slots.get(slotEntry.getKey()).getAsJsonObject().get("title").getAsString()));
                     for (JsonElement contents : slotEntry.getValue().getAsJsonObject().get("contents").getAsJsonArray()) {
                         JsonObject subcategoryObject = contents.getAsJsonObject();
                         if (subcategoryObject.get("type").getAsString().equals("category")) {

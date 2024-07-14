@@ -19,6 +19,7 @@ public abstract class WrapperBase<M extends WrapperBase<M, T>, T> {
     protected Version to;
     protected WrapperBase<M, T> replacedBy;
 
+    @Getter
     private final WrapperType wrapperType;
 
     protected T resolvedValue;
@@ -50,7 +51,7 @@ public abstract class WrapperBase<M extends WrapperBase<M, T>, T> {
             throw new UnsupportedOperationException("Version " + current.name() + " isn't supported yet (from " + from.name() + ")");
         } else if(current.isNewerThan(to)) {
             if(replacedBy == null) {
-                throw new UnsupportedOperationException("This " + wrapperType.getTypeClass().getName() + " hasn't been implemented yet for " + current.name());
+                throw new UnsupportedOperationException("This " + wrapperType.getTypeClass().getName() + " hasn't been implemented yet for " + current.name() + (current == Version.LATEST ? ("( " + Version.getCurrentVersionRaw() + ")") : ""));
             } else {
                 resolvedValue = replacedBy.getResolver().resolve();
                 return resolvedValue;
@@ -79,7 +80,7 @@ public abstract class WrapperBase<M extends WrapperBase<M, T>, T> {
             throw new UnsupportedOperationException("Version " + current.name() + " isn't supported yet (from " + from.name() + ")");
         } else if(current.isNewerThan(to)) {
             if(replacedBy == null) {
-                throw new UnsupportedOperationException("This " + wrapperType.getTypeClass().getSimpleName() + " hasn't been implemented yet for " + current.name());
+                throw new UnsupportedOperationException("This " + wrapperType.getTypeClass().getSimpleName() + " hasn't been implemented yet for " + current.name() + (current == Version.LATEST ? ("( " + Version.getCurrentVersionRaw() + ")") : ""));
             } else {
                 return replacedBy.getResolver();
             }
@@ -94,12 +95,12 @@ public abstract class WrapperBase<M extends WrapperBase<M, T>, T> {
 
     protected abstract T resolveValue() throws Throwable;
 
-    public WrapperType getWrapperType() {
-        return wrapperType;
-    }
-
     protected void errorHandler(Throwable throwable) {
         CustomHeads.getPluginLogger().log(Level.WARNING, "Failed to resolve Value", throwable);
+    }
+
+    public String toString() {
+        return this.getClass().getSimpleName() + "{type=" + this.wrapperType + " fromVersion=" + this.from + " toVersion=" + this.to + "}";
     }
 
     public void test() {

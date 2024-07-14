@@ -121,7 +121,7 @@ public class GitHubDownloader {
                 for (JsonElement jsonElement : assets) {
                     JsonObject jsonObject = jsonElement.getAsJsonObject();
                     if (jsonObject.get("name").getAsString().equals(assetName)) {
-                        AsyncFileDownloader downloader = new AsyncFileDownloader(jsonObject.get("browser_download_url").getAsString(), assetName, downloadDir.getPath());
+                        AsyncFileDownloader downloader = new AsyncFileDownloader(jsonObject.get("browser_download_url").getAsString(), assetName, downloadDir.getPath(), "GitHubAssetFetcher/1.0");
                         downloader.startDownload(new AsyncFileDownloader.FileDownloaderCallback() {
                             public void complete() {
                                 Bukkit.getServer().getConsoleSender().sendMessage(CustomHeads.PREFIX_GENERAL + "Download of " + assetName + " complete.");
@@ -133,8 +133,6 @@ public class GitHubDownloader {
                                 }
                                 try {
                                     Files.copy(new File(downloadDir, assetName), downloadTo);
-
-                                    //FileUtils.copyFile(new File(downloadDir, assetName), downloadTo);
                                     if (afterTask.length > 0)
                                         afterTask[0].call();
                                 } catch (Exception e) {
@@ -142,12 +140,10 @@ public class GitHubDownloader {
                                 }
                             }
 
-                            public void failed(AsyncFileDownloader.DownloaderStatus status) {
-                                if (status == AsyncFileDownloader.DownloaderStatus.ERROR) {
-                                    CustomHeads.getPluginLogger().log(Level.WARNING, "Something went wrong while downloading " + assetName, status.getException());
-                                } else {
-                                    Bukkit.getServer().getConsoleSender().sendMessage(CustomHeads.PREFIX_ERROR + "Failed to download " + assetName + ". " + status);
-                                }
+                            @Override
+                            public void failed(AsyncFileDownloader.DownloaderError error) {
+                                AsyncFileDownloader.DownloaderStatus status = error.getStatus();
+                                CustomHeads.getPluginLogger().log(Level.SEVERE, "Failed to download Asset File " + assetName, status.getException());
                             }
                         });
                         break;
@@ -156,7 +152,7 @@ public class GitHubDownloader {
             }
 
             public void error(Exception exception) {
-                CustomHeads.getPluginLogger().log(Level.WARNING, "Failed to download Files", exception);
+                CustomHeads.getPluginLogger().log(Level.SEVERE, "Failed to fetch Release " + tagName, exception);
             }
         });
     }
@@ -168,7 +164,7 @@ public class GitHubDownloader {
             }
 
             public void error(Exception exception) {
-                CustomHeads.getPluginLogger().log(Level.WARNING, "Failed to fetch latest Data", exception);
+                CustomHeads.getPluginLogger().log(Level.WARNING, "Failed to fetch latest Release", exception);
             }
         }, false);
     }
@@ -185,7 +181,7 @@ public class GitHubDownloader {
 
             @Override
             public void error(Exception exception) {
-                exception.printStackTrace();
+                CustomHeads.getPluginLogger().log(Level.SEVERE, "Failed to fetch Rate Limit Data", exception);
             }
         }, true);
     }

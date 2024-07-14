@@ -23,6 +23,9 @@ import java.util.function.Consumer;
 
 public class InteractiveDialog {
 
+    private static final ItemEditor YES_ITEM_BASE = new ItemEditor(Material.SKULL_ITEM,  3).setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzYxZTViMzMzYzJhMzg2OGJiNmE1OGI2Njc0YTI2MzkzMjM4MTU3MzhlNzdlMDUzOTc3NDE5YWYzZjc3In19fQ==");
+    private static final ItemEditor NO_ITEM_BASE = new ItemEditor(Material.SKULL_ITEM,  3).setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNGJhYzc3NTIwYjllZWU2NTA2OGVmMWNkOGFiZWFkYjAxM2I0ZGUzOTUzZmQyOWFjNjhlOTBlNDg2NjIyNyJ9fX0=");
+
     private Inventory dialog;
     private ItemStack yesItem;
     private ItemStack noItem;
@@ -30,14 +33,15 @@ public class InteractiveDialog {
     private Listener listener;
 
     InteractiveDialog(String title, Consumer<Boolean> callback, String[] yesLore, String[] noLore, ItemStack middleItem) {
-        dialog = Bukkit.createInventory(null, 9 * 3, title);
-        yesItem = new ItemEditor(Material.SKULL_ITEM,  3).setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzYxZTViMzMzYzJhMzg2OGJiNmE1OGI2Njc0YTI2MzkzMjM4MTU3MzhlNzdlMDUzOTc3NDE5YWYzZjc3In19fQ==").setDisplayName("§a" + CustomHeads.getLanguageManager().YES).setLore(yesLore).getItem();
-        noItem = new ItemEditor(Material.SKULL_ITEM,  3).setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNGJhYzc3NTIwYjllZWU2NTA2OGVmMWNkOGFiZWFkYjAxM2I0ZGUzOTUzZmQyOWFjNjhlOTBlNDg2NjIyNyJ9fX0=").setDisplayName("§c" + CustomHeads.getLanguageManager().NO).setLore(noLore).getItem();
-        dialog.setItem(11, yesItem);
-        dialog.setItem(13, middleItem);
-        dialog.setItem(15, noItem);
+        this.dialog = Bukkit.createInventory(new CustomHeadsInventoryHolder.BaseHolder("interactive_dialog", null), 9 * 3, title);
 
-        listener = new Listener() {
+        this.yesItem = new ItemEditor(YES_ITEM_BASE.getItem()).setDisplayName("§a" + CustomHeads.getLanguageManager().YES).setLore(yesLore).getItem();
+        this.noItem = new ItemEditor(NO_ITEM_BASE.getItem()).setDisplayName("§c" + CustomHeads.getLanguageManager().NO).setLore(noLore).getItem();
+        this.dialog.setItem(11, this.yesItem);
+        this.dialog.setItem(13, middleItem);
+        this.dialog.setItem(15, this.noItem);
+
+        this.listener = new Listener() {
             @EventHandler
             public void onEvent(InventoryClickEvent event) {
                 if(event.getView().getTopInventory() == dialog) {
@@ -57,19 +61,19 @@ public class InteractiveDialog {
                 }
             }
         };
-        Bukkit.getPluginManager().registerEvents(listener, CustomHeads.getInstance());
+        Bukkit.getPluginManager().registerEvents(this.listener, CustomHeads.getInstance());
     }
 
     private void destroy() {
-        dialog = null;
-        yesItem = null;
-        noItem = null;
-        HandlerList.unregisterAll(listener);
-        listener = null;
+        this.dialog = null;
+        this.yesItem = null;
+        this.noItem = null;
+        HandlerList.unregisterAll(this.listener);
+        this.listener = null;
     }
 
     public void showTo(Player player) {
-        player.openInventory(dialog);
+        player.openInventory(this.dialog);
     }
 
 }

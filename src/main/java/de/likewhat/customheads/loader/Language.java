@@ -5,7 +5,11 @@ import de.likewhat.customheads.utils.Configs;
 import lombok.Getter;
 import org.bukkit.ChatColor;
 
+import java.io.File;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static de.likewhat.customheads.utils.Utils.format;
 
@@ -391,6 +395,24 @@ public class Language {
         if (!languageConfig.get().contains(path))
             throw new NullPointerException("Error getting " + path + " from language/" + currentLanguage + "/language.yml. If this Error keeps occurring please try to delete the Language Folder");
         return format(languageConfig.get().getStringList(path));
+    }
+
+    public static List<String> getInstalledLanguages() {
+        File languageDirectory = new File("plugins/" + CustomHeads.getInstance().getName() + "/language");
+        File[] languageDirectories = languageDirectory.listFiles(pathname -> {
+            File[] files = pathname.listFiles();
+            if(files == null) {
+                return false;
+            }
+            return pathname.isDirectory() && Arrays.stream(files).allMatch(file -> {
+                String fileName = file.getName();
+                return (file.isDirectory() && fileName.equals("categories")) || (file.isFile() && (fileName.equals("language.yml") || fileName.equals("settings.json")));
+            });
+        });
+        if(languageDirectories == null) {
+            return Collections.emptyList();
+        }
+        return Arrays.stream(languageDirectories).map(File::getName).collect(Collectors.toList());
     }
 
 }

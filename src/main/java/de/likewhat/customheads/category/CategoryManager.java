@@ -45,7 +45,7 @@ public class CategoryManager {
     public CategoryManager(String language) {
         loaded = false;
         this.language = language;
-        langRootDir = new File("plugins/CustomHeads/language/" + language + "/categories");
+        langRootDir = new File("plugins/" + CustomHeads.getInstance().getName() + "/language/" + language + "/categories");
 
         defaultCategoryPrice = CustomHeads.getHeadsConfig().get().getInt("economy.category.default-price");
         defaultHeadPrice = CustomHeads.getHeadsConfig().get().getInt("economy.heads.default-price");
@@ -135,7 +135,7 @@ public class CategoryManager {
             outputStream.write(category.toString());
             outputStream.flush();
         } catch (Exception e) {
-            e.printStackTrace();
+            CustomHeads.getPluginLogger().log(Level.SEVERE, "Failed to update Category File", e);
         }
     }
 

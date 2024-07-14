@@ -13,9 +13,9 @@ import de.likewhat.customheads.category.SubCategory;
 import de.likewhat.customheads.utils.reflection.AnvilGUI;
 import de.likewhat.customheads.utils.reflection.helpers.ReflectionUtils;
 import de.likewhat.customheads.utils.reflection.helpers.Version;
-import de.likewhat.customheads.utils.reflection.helpers.collections.ClassReflectionCollection;
-import de.likewhat.customheads.utils.reflection.helpers.collections.ConstructorReflectionCollection;
-import de.likewhat.customheads.utils.reflection.helpers.collections.MethodReflectionCollection;
+import de.likewhat.customheads.utils.reflection.helpers.wrappers.instances.ClassWrappers;
+import de.likewhat.customheads.utils.reflection.helpers.wrappers.instances.ConstructorWrappers;
+import de.likewhat.customheads.utils.reflection.helpers.wrappers.instances.MethodWrappers;
 import de.likewhat.customheads.utils.reflection.nbt.ItemNBTUtils;
 import de.likewhat.customheads.utils.updaters.FetchResult;
 import de.likewhat.customheads.utils.updaters.GitHubDownloader;
@@ -26,6 +26,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -98,7 +99,7 @@ public class Utils {
     }
 
     public static List<String> getPermissions(Player player) {
-        return getPermissions().keySet().stream().filter(permission -> hasPermission(player, permission) || permission.equals("")).collect(Collectors.toList());
+        return getPermissions().keySet().stream().filter(permission -> hasPermission(player, permission) || permission.isEmpty()).collect(Collectors.toList());
     }
 
     public static void openSearchGUI(Player player, String itemName, String... action) {
@@ -106,7 +107,7 @@ public class Utils {
             public void onAnvilClick(AnvilGUI.AnvilClickEvent event) {
                 event.setCancelled(true);
                 if (event.getSlot() == AnvilGUI.AnvilSlot.OUTPUT) {
-                    if (event.getName().equals("")) {
+                    if (event.getName().isEmpty()) {
                         return;
                     }
                     if (event.getName().length() > 16) {
@@ -119,7 +120,7 @@ public class Utils {
                     categories.removeAll(CustomHeads.getApi().wrapPlayer(player).getUnlockedCategories(false));
                     query.excludeCategories(categories);
                     if (query.resultsReturned() == 0) {
-                        Inventory noRes = Bukkit.createInventory(event.getPlayer(), 9 * 3, CustomHeads.getLanguageManager().NO_RESULTS);
+                        Inventory noRes = Bukkit.createInventory(new CustomHeadsInventoryHolder.BaseHolder("custom_heads:search:no_results", event.getPlayer()), 9 * 3, CustomHeads.getLanguageManager().NO_RESULTS);
                         noRes.setItem(13, CustomHeads.getTagEditor().setTags(new ItemEditor(Material.BARRIER).setDisplayName(CustomHeads.getLanguageManager().NO_RESULTS).getItem(), "blockMoving"));
                         if (action.length > 0) {
                             noRes.setItem(18, Utils.getBackButton(action));
@@ -182,9 +183,9 @@ public class Utils {
     }
 
     // The good ol Pre-Loader that you latterly only see for a fraction of a second
-    public static void openPreloader(Player player) {
+    public static void openPreLoader(Player player) {
         player.closeInventory();
-        Inventory preLoader = Bukkit.createInventory(null, 27, CustomHeads.getLanguageManager().LOADING);
+        Inventory preLoader = Bukkit.createInventory(new CustomHeadsInventoryHolder.BaseHolder("custom_heads:pre_loader", player), 27, CustomHeads.getLanguageManager().LOADING);
         preLoader.setItem(13, CustomHeads.getTagEditor().addTags(new ItemEditor(Material.WATCH).setDisplayName(CustomHeads.getLanguageManager().LOADING).getItem(), "blockMoving"));
         player.openInventory(preLoader);
     }
@@ -206,7 +207,7 @@ public class Utils {
             }
         }
         int lines = (int) Math.ceil(items.size() / 7.0);
-        Inventory helpMenu = Bukkit.createInventory(null, 9 * (Math.min(2 + lines, 6)), CustomHeads.getLanguageManager().ITEMS_HELP);
+        Inventory helpMenu = Bukkit.createInventory(new CustomHeadsInventoryHolder.BaseHolder("custom_heads:help_menu", player), 9 * (Math.min(2 + lines, 6)), CustomHeads.getLanguageManager().ITEMS_HELP);
         int itemCount = items.size();
         int offset = 10;
         int itemCounter = 0;
@@ -283,7 +284,7 @@ public class Utils {
     }
 
     public static ScrollableInventory getInventory(ItemStack item) {
-        return ScrollableInventory.getInventoryByID(CustomHeads.getTagEditor().getTags(item).get(CustomHeads.getTagEditor().indexOf(item, "scInvID") + 1));
+        return ScrollableInventory.getInventoryById(CustomHeads.getTagEditor().getTags(item).get(CustomHeads.getTagEditor().indexOf(item, "scInvID") + 1));
     }
 
     public static List<ItemStack> getSelectedCharacters(Inventory inventory) {
@@ -291,8 +292,7 @@ public class Utils {
     }
 
     public static Inventory getDialog(String title, String[] yesAction, String[] yesActionLore, String[] noAction, String[] noActionLore, ItemStack middleItem) {
-        //System.out.println("title: " + title + "\nyesAction: " + Utils.GSON.toJson(yesAction) + " noAction: " + Utils.GSON.toJson(noAction));
-        Inventory dialog = Bukkit.createInventory(null, 9 * 3, title.length() > 32 ? title.substring(0, 29) + "..." : title);
+        Inventory dialog = Bukkit.createInventory(new CustomHeadsInventoryHolder.BaseHolder("custom_heads:dialog"), 9 * 3, title.length() > 32 ? title.substring(0, 29) + "..." : title);
         dialog.setItem(11, CustomHeads.getTagEditor().setTags(new ItemEditor(Material.SKULL_ITEM,  3).setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzYxZTViMzMzYzJhMzg2OGJiNmE1OGI2Njc0YTI2MzkzMjM4MTU3MzhlNzdlMDUzOTc3NDE5YWYzZjc3In19fQ==").setDisplayName("§a" + CustomHeads.getLanguageManager().YES).setLore(yesActionLore).getItem(), yesAction));
         dialog.setItem(13, CustomHeads.getTagEditor().setTags(middleItem, "blockMoving"));
         dialog.setItem(15, CustomHeads.getTagEditor().setTags(new ItemEditor(Material.SKULL_ITEM,  3).setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNGJhYzc3NTIwYjllZWU2NTA2OGVmMWNkOGFiZWFkYjAxM2I0ZGUzOTUzZmQyOWFjNjhlOTBlNDg2NjIyNyJ9fX0=").setDisplayName("§c" + CustomHeads.getLanguageManager().NO).setLore(noActionLore).getItem(), noAction));
@@ -320,11 +320,13 @@ public class Utils {
         return UUID.fromString(uuidStr.substring(0, 8) + "-" + uuidStr.substring(8, 12) + "-" + uuidStr.substring(12, 16) + "-" + uuidStr.substring(16, 20) + "-" + uuidStr.substring(20));
     }
 
-    public static Inventory cloneInventory(Inventory inventory, String title, Player newOwner) {
-        Inventory inv = Bukkit.createInventory(newOwner, inventory.getSize(), title);
+    public static Inventory cloneInventory(Inventory inventory, String title, InventoryHolder holder) {
+        Inventory inv = Bukkit.createInventory(holder, inventory.getSize(), title);
         inv.setContents(inventory.getContents());
         return inv;
     }
+
+
 
     /**
      * Scans the Inventory for a Free Slot with the given Item
@@ -394,11 +396,11 @@ public class Utils {
                 player.openInventory(CustomHeads.getLooks().subCategoryLooks.get(Integer.parseInt(category.getId())));
                 return;
             } else {
-                openPreloader(player);
+                openPreLoader(player);
                 categoryHeads = category.getHeads();
             }
         }
-        openPreloader(player);
+        openPreLoader(player);
 
         runAsync(new BukkitRunnable() {
             public void run() {
@@ -459,6 +461,7 @@ public class Utils {
     }
 
     // I created this Code at Random just to Split Text
+    // Fun Fact: This Method is only used once when a Fetch Request fails when trying to download a Language
     public static String[] splitEvery(String string, String regex, int index) {
         if (index <= 0)
             throw new IllegalArgumentException("Index must be higher than 0");
@@ -530,7 +533,7 @@ public class Utils {
                         InputStream stream = connection.getInputStream();
 
                         String json = new BufferedReader(new InputStreamReader(stream)).readLine();
-                        if (json.equals("")) {
+                        if (json.isEmpty()) {
                             consumer.accept(null);
                             return;
                         }
@@ -684,7 +687,7 @@ public class Utils {
 
     public static void sendJSONMessage(String json, Player player) {
         try {
-            Object serializedMessage = MethodReflectionCollection.CHAT_COMPONENT_SERIALIZE.invokeOn(null, json);
+            Object serializedMessage = MethodWrappers.CHAT_COMPONENT_SERIALIZE.invokeOn(null, json);
             switch(Version.getCurrentVersion()) {
                 case V1_8_R1:
                 case V1_8_R2:
@@ -698,7 +701,7 @@ public class Utils {
                 case V1_13_R2:
                 case V1_14_R1:
                 case V1_15_R1: {
-                    Object packet = ConstructorReflectionCollection.PACKET_PLAYOUT_CHAT.construct(serializedMessage);
+                    Object packet = ConstructorWrappers.PACKET_PLAYOUT_CHAT.construct(serializedMessage);
                     ReflectionUtils.sendPacket(packet, player);
                 }
                 case V1_16_R1:
@@ -707,20 +710,20 @@ public class Utils {
                 case V1_17_R1:
                 case V1_18_R1:
                 case V1_18_R2: {
-                    Enum<?> messageType = ReflectionUtils.getEnumConstant(ClassReflectionCollection.CHAT_MESSAGE_TYPE.resolve(), "CHAT");
+                    Enum<?> messageType = ReflectionUtils.getEnumConstant(ClassWrappers.CHAT_MESSAGE_TYPE.resolve(), "CHAT");
                     if (messageType == null) {
-                        messageType = ReflectionUtils.getEnumConstant(ClassReflectionCollection.CHAT_MESSAGE_TYPE.resolve(), "a");
+                        messageType = ReflectionUtils.getEnumConstant(ClassWrappers.CHAT_MESSAGE_TYPE.resolve(), "a");
                     }
-                    Object packet = ConstructorReflectionCollection.PACKET_PLAYOUT_CHAT.construct(serializedMessage, messageType, null);
+                    Object packet = ConstructorWrappers.PACKET_PLAYOUT_CHAT.construct(serializedMessage, messageType, null);
                     ReflectionUtils.sendPacket(packet, player);
                 }
                 default:
                 case V1_19_R1: {
-                    Class<?> chatMessageTypeClass = ClassReflectionCollection.CHAT_MESSAGE_TYPE.resolve();
+                    Class<?> chatMessageTypeClass = ClassWrappers.CHAT_MESSAGE_TYPE.resolve();
                     Object messageType = ReflectionUtils.getField(chatMessageTypeClass, "i"); // Field i should be tellraw_command
                     //Method sendMessageMethod = ReflectionClassCollection.ENTITY_PLAYER.resolve().getMethod("a", ReflectionClassCollection.ICHAT_BASE_COMPONENT.resolve(), ReflectionClassCollection.RESOURCE_KEY.resolve());
                     //sendMessageMethod.invoke(playerHandle, serializedMessage, messageType);
-                    Method sendMessageMethod = ClassReflectionCollection.ENTITY_PLAYER.resolve().getMethod("a", ClassReflectionCollection.ICHAT_BASE_COMPONENT.resolve());
+                    Method sendMessageMethod = ClassWrappers.ENTITY_PLAYER.resolve().getMethod("a", ClassWrappers.ICHAT_BASE_COMPONENT.resolve());
 
                     Object playerHandle = ReflectionUtils.getPlayerHandle(player);
                     sendMessageMethod.invoke(playerHandle, serializedMessage);

@@ -5,9 +5,9 @@ import de.likewhat.customheads.utils.LoggingUtils;
 import de.likewhat.customheads.utils.Utils;
 import de.likewhat.customheads.utils.reflection.helpers.ReflectionUtils;
 import de.likewhat.customheads.utils.reflection.helpers.Version;
-import de.likewhat.customheads.utils.reflection.helpers.collections.ClassReflectionCollection;
-import de.likewhat.customheads.utils.reflection.helpers.collections.FieldReflectionCollection;
-import de.likewhat.customheads.utils.reflection.helpers.collections.MethodReflectionCollection;
+import de.likewhat.customheads.utils.reflection.helpers.wrappers.instances.ClassWrappers;
+import de.likewhat.customheads.utils.reflection.helpers.wrappers.instances.FieldWrappers;
+import de.likewhat.customheads.utils.reflection.helpers.wrappers.instances.MethodWrappers;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Bukkit;
@@ -40,6 +40,7 @@ public class AnvilGUI {
     private ItemStack currentItem = null;
     private Inventory inventory;
     private Listener listener;
+    @Getter
     private Player player;
     private final String title;
 
@@ -111,10 +112,6 @@ public class AnvilGUI {
         Bukkit.getPluginManager().registerEvents(listener, CustomHeads.getInstance());
     }
 
-    public Player getPlayer() {
-        return player;
-    }
-
     public void setSlot(AnvilSlot slot, ItemStack item) {
         items.put(slot, item);
     }
@@ -130,14 +127,14 @@ public class AnvilGUI {
             int nextContainerId = (int) playerHandleClass.getMethod("nextContainerCounter").invoke(playerHandle);
 
             Location location = player.getLocation();
-            Object titleObject = MethodReflectionCollection.CHAT_COMPONENT_SERIALIZE.invokeOn(null, String.format(Utils.TEXT_JSON_FORMAT, title));
+            Object titleObject = MethodWrappers.CHAT_COMPONENT_SERIALIZE.invokeOn(null, String.format(Utils.TEXT_JSON_FORMAT, title));
             Class<?> playerInventoryClass = ReflectionUtils.getMCServerClassByName("PlayerInventory", "world.entity.player");
 
-            Field playerInventoryField = FieldReflectionCollection.PLAYER_INVENTORY.resolve();
-            Field activeContainerField = FieldReflectionCollection.PLAYER_ACTIVE_CONTAINER.resolve();
-            Field windowIdField = FieldReflectionCollection.CONTAINER_WINDOW_ID.resolve();
+            Field playerInventoryField = FieldWrappers.PLAYER_INVENTORY.resolve();
+            Field activeContainerField = FieldWrappers.PLAYER_ACTIVE_CONTAINER.resolve();
+            Field windowIdField = FieldWrappers.CONTAINER_WINDOW_ID.resolve();
 
-            Object playerWorld = FieldReflectionCollection.ENTITY_WORLD.getInstance(playerHandle);
+            Object playerWorld = FieldWrappers.ENTITY_WORLD.getInstance(playerHandle);
             Object containerAnvil;
             Object packet;
             switch (currentVersion) {
@@ -151,8 +148,8 @@ public class AnvilGUI {
                 case V1_12_R1:
                 case V1_13_R1:
                 case V1_13_R2:
-                    containerAnvil = ClassReflectionCollection.CONTAINER_ANVIL.resolve().getConstructor(playerInventoryClass, ReflectionUtils.getMCServerClassByName("World"), ReflectionUtils.getMCServerClassByName("BlockPosition"), ReflectionUtils.getMCServerClassByName("EntityHuman")).newInstance(playerHandleClass.getField("inventory").get(playerHandle), playerWorld, ReflectionUtils.getMCServerClassByName("BlockPosition").getConstructor(int.class, int.class, int.class).newInstance(location.getBlockX(), location.getBlockY(), location.getBlockZ()), playerHandle);
-                    packet = ClassReflectionCollection.PACKET_PLAY_OUT_OPEN_WINDOW.resolve().getConstructor(int.class, String.class, ReflectionUtils.getMCServerClassByName("IChatBaseComponent"), int.class).newInstance(nextContainerId, "minecraft:anvil", titleObject, 0);
+                    containerAnvil = ClassWrappers.CONTAINER_ANVIL.resolve().getConstructor(playerInventoryClass, ReflectionUtils.getMCServerClassByName("World"), ReflectionUtils.getMCServerClassByName("BlockPosition"), ReflectionUtils.getMCServerClassByName("EntityHuman")).newInstance(playerHandleClass.getField("inventory").get(playerHandle), playerWorld, ReflectionUtils.getMCServerClassByName("BlockPosition").getConstructor(int.class, int.class, int.class).newInstance(location.getBlockX(), location.getBlockY(), location.getBlockZ()), playerHandle);
+                    packet = ClassWrappers.PACKET_PLAY_OUT_OPEN_WINDOW.resolve().getConstructor(int.class, String.class, ReflectionUtils.getMCServerClassByName("IChatBaseComponent"), int.class).newInstance(nextContainerId, "minecraft:anvil", titleObject, 0);
                     break;
                 default:
                 case LATEST:
@@ -171,8 +168,8 @@ public class AnvilGUI {
                 case V1_20_R1: {
                     Class<?> containersClass = ReflectionUtils.getMCServerClassByName("Containers", "world.inventory");
                     Class<?> containerAccessClass = ReflectionUtils.getMCServerClassByName("ContainerAccess", "world.inventory");
-                    containerAnvil = ClassReflectionCollection.CONTAINER_ANVIL.resolve().getConstructor(int.class, playerInventoryClass, containerAccessClass).newInstance(nextContainerId, ReflectionUtils.getFieldValue(playerInventoryField, playerHandle), MethodReflectionCollection.CONTAINER_ACCESS_AT.invokeOn(containerAccessClass, playerWorld, ReflectionUtils.getMCServerClassByName("BlockPosition", "core").getConstructor(int.class, int.class, int.class).newInstance(location.getBlockX(), location.getBlockY(), location.getBlockZ())));
-                    packet = ClassReflectionCollection.PACKET_PLAY_OUT_OPEN_WINDOW.resolve().getConstructor(int.class, containersClass, ReflectionUtils.getMCServerClassByName("IChatBaseComponent", "network.chat")).newInstance(nextContainerId, FieldReflectionCollection.CONTAINERS_ANVIL.getInstance(containersClass), titleObject);
+                    containerAnvil = ClassWrappers.CONTAINER_ANVIL.resolve().getConstructor(int.class, playerInventoryClass, containerAccessClass).newInstance(nextContainerId, ReflectionUtils.getFieldValue(playerInventoryField, playerHandle), MethodWrappers.CONTAINER_ACCESS_AT.invokeOn(containerAccessClass, playerWorld, ReflectionUtils.getMCServerClassByName("BlockPosition", "core").getConstructor(int.class, int.class, int.class).newInstance(location.getBlockX(), location.getBlockY(), location.getBlockZ())));
+                    packet = ClassWrappers.PACKET_PLAY_OUT_OPEN_WINDOW.resolve().getConstructor(int.class, containersClass, ReflectionUtils.getMCServerClassByName("IChatBaseComponent", "network.chat")).newInstance(nextContainerId, FieldWrappers.CONTAINERS_ANVIL.getInstance(containersClass), titleObject);
                     break;
                 }
             }
@@ -189,11 +186,11 @@ public class AnvilGUI {
 
             // Thanks to JordanPlayz for helping me find this Issue with the GUI
             if(currentVersion.isOlderThan(Version.V1_17_R1)) {
-                ClassReflectionCollection.CONTAINER.resolve().getMethod("addSlotListener", ReflectionUtils.getMCServerClassByName("ICrafting")).invoke(containerAnvil, playerHandle);
+                ClassWrappers.CONTAINER.resolve().getMethod("addSlotListener", ReflectionUtils.getMCServerClassByName("ICrafting")).invoke(containerAnvil, playerHandle);
             } else if (currentVersion.isOlderThan(Version.V1_18_R1)) {
-                playerHandle.getClass().getMethod("initMenu", ClassReflectionCollection.CONTAINER.resolve()).invoke(playerHandle, containerAnvil);
+                playerHandle.getClass().getMethod("initMenu", ClassWrappers.CONTAINER.resolve()).invoke(playerHandle, containerAnvil);
             } else {
-                playerHandle.getClass().getMethod("a", ClassReflectionCollection.CONTAINER.resolve()).invoke(playerHandle, containerAnvil);
+                playerHandle.getClass().getMethod("a", ClassWrappers.CONTAINER.resolve()).invoke(playerHandle, containerAnvil);
             }
         } catch (Exception exception) {
             CustomHeads.getPluginLogger().log(Level.WARNING, "Failed to open AnvilGUI", exception);
@@ -208,6 +205,7 @@ public class AnvilGUI {
         listener = null;
     }
 
+    @Getter
     public enum AnvilSlot {
         INPUT_LEFT(0), INPUT_RIGHT(1), OUTPUT(2);
         private final int slot;
@@ -225,9 +223,6 @@ public class AnvilGUI {
             return null;
         }
 
-        public int getSlot() {
-            return slot;
-        }
     }
 
     public interface AnvilClickEventHandler {

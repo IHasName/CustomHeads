@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
+import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 public class PlayerWrapper implements CustomHeadsPlayer {
@@ -76,7 +77,7 @@ public class PlayerWrapper implements CustomHeadsPlayer {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            CustomHeads.getPluginLogger().log(Level.WARNING, "Failed to wrap Player", e);
         }
         WRAPPED_PLAYERS_CACHE.put(player.getUniqueId(), this);
     }

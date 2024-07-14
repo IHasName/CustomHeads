@@ -10,10 +10,10 @@ import org.bukkit.event.HandlerList;
 @Getter
 public class PlayerClickCustomHeadEvent extends Event implements Cancellable {
 
-    private static HandlerList handlers = new HandlerList();
+    private static final HandlerList handlers = new HandlerList();
 
-    private Player player;
-    private CustomHead head;
+    private final Player player;
+    private final CustomHead head;
 
     private boolean cancelled = false;
 
@@ -28,10 +28,6 @@ public class PlayerClickCustomHeadEvent extends Event implements Cancellable {
 
     public void setCancelled(boolean cancelled) {
         this.cancelled = cancelled;
-    }
-
-    public static HandlerList getHandlerList() {
-        return handlers;
     }
 
     public HandlerList getHandlers() {

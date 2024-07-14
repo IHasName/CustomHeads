@@ -41,7 +41,7 @@ public class SubCategory extends BaseCategory {
             //Sub Category Info Header
             subCategoryObject.addProperty("id", Integer.parseInt(subCategory.getId().contains(":") ? subCategory.getId().split(":")[1] : subCategory.getId()));
             subCategoryObject.addProperty("name", subCategory.getName());
-            subCategoryObject.add("icon", new JsonParser().parse(JsonToItem.convertToJson(subCategory.getCategoryIcon())));
+            subCategoryObject.add("icon", JsonToItem.convertToJson(subCategory.getCategoryIcon()));
 
             // Gets Heads and puts them into an JsonArray
             JsonArray heads = new JsonArray();

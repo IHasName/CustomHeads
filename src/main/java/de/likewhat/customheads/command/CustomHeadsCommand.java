@@ -89,7 +89,8 @@ public class CustomHeadsCommand implements CommandExecutor {
                 if (menu == null) {
                     return false;
                 }
-                player.openInventory(cloneInventory(menu, CustomHeads.getLooks().getCreatedMenuTitles().get(headsConfig.get().getString("mainMenu")), player));
+                CustomHeadsInventoryHolder.MenuHolder menuHolder = ((CustomHeadsInventoryHolder.MenuHolder)menu.getHolder()).copyWithNewOwner(player);
+                player.openInventory(cloneInventory(menu, CustomHeads.getLooks().getCreatedMenuTitles().get(headsConfig.get().getString("mainMenu")), menuHolder));
                 return true;
             }
             if (args[0].equalsIgnoreCase("help")) {
@@ -150,7 +151,7 @@ public class CustomHeadsCommand implements CommandExecutor {
                         return true;
                     }
                     if (args[1].equalsIgnoreCase("download")) {
-                        Inventory inventory = Bukkit.createInventory(player, 9 * 4, CustomHeads.getLanguageManager().LANGUAGE_DOWNLOAD_TITLE);
+                        Inventory inventory = Bukkit.createInventory(new CustomHeadsInventoryHolder.BaseHolder("heads:download", player), 9 * 4, CustomHeads.getLanguageManager().LANGUAGE_DOWNLOAD_TITLE);
                         inventory.setItem(13, new ItemEditor(Material.SKULL_ITEM, (byte) 3).setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzMxNmMxNmIxYWM0NzBkMmMxMTQ0MzRmZjg3MzBmMTgxNTcwOTM4M2RiNmYzY2Y3MjBjMzliNmRjZTIxMTYifX19").setDisplayName(CustomHeads.getLanguageManager().LANGUAGE_DOWNLOAD_FETCHING).getItem());
                         player.openInventory(inventory);
                         BukkitTask animationTask = new BukkitRunnable() {
@@ -493,7 +494,7 @@ public class CustomHeadsCommand implements CommandExecutor {
                                     Class<?> particleClass = ReflectionUtils.getClassByName("org.bukkit.Particle");
                                     World.class.getMethod("spawnParticle", particleClass, Location.class, int.class).invoke(world, ReflectionUtils.getEnumConstant(particleClass, "LAVA"), location, 6);
                                 } catch (Exception e) {
-                                    e.printStackTrace();
+                                    CustomHeads.getPluginLogger().log(Level.WARNING, "Failed to spawn Particle for Firework", e);
                                 }
                             } else {
                                 for (int i = 0; i < 6; i++) {
@@ -526,13 +527,13 @@ public class CustomHeadsCommand implements CommandExecutor {
                     categories.removeAll(wrappedPlayer.getUnlockedCategories(false));
                     query.excludeCategories(categories);
                     if (query.resultsReturned() == 0) {
-                        Inventory noRes = Bukkit.createInventory(player, 9 * 3, CustomHeads.getLanguageManager().NO_RESULTS);
+                        Inventory noRes = Bukkit.createInventory(new CustomHeadsInventoryHolder.BaseHolder("heads:search", player), 9 * 3, CustomHeads.getLanguageManager().NO_RESULTS);
                         noRes.setItem(13, CustomHeads.getTagEditor().setTags(new ItemEditor(Material.BARRIER).setDisplayName(CustomHeads.getLanguageManager().NO_RESULTS).getItem(), "blockMoving"));
                         noRes.setItem(26, CustomHeads.getTagEditor().setTags(new ItemEditor(Material.SKULL_ITEM,  3).setDisplayName(CustomHeads.getLanguageManager().NO_RESULTS_TRY_AGAIN).setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMWI2ZjFhMjViNmJjMTk5OTQ2NDcyYWVkYjM3MDUyMjU4NGZmNmY0ZTgzMjIxZTU5NDZiZDJlNDFiNWNhMTNiIn19fQ==").getItem(), "invAction", "retrySearch#>" + args[1]));
                         player.openInventory(noRes);
                         return true;
                     }
-                    Utils.openPreloader(player);
+                    Utils.openPreLoader(player);
                     query.viewTo(player, "willClose");
                     return true;
                 }
@@ -732,13 +733,8 @@ public class CustomHeadsCommand implements CommandExecutor {
                                 ItemEditor itemStack = new ItemEditor(player.getItemInHand());
                                 args[1] = toConfigString(args[1]);
                                 if (itemStack.getOwner() == null) {
-
-//                                    if (!CustomHeads.USE_TEXTURES) {
-//                                        player.sendMessage(CustomHeads.getLanguageManager().SAVE_UNAVAILABLE);
-//                                        return true;
-//                                    }
                                     String nbtstring = itemStack.getTexture();
-                                    if (nbtstring == null || nbtstring.equals("")) {
+                                    if (nbtstring == null || nbtstring.isEmpty()) {
                                         player.sendMessage(CustomHeads.getLanguageManager().SAVE_NOT_CUSTOM_TEXTURE);
                                         return true;
                                     }
@@ -822,11 +818,11 @@ public class CustomHeadsCommand implements CommandExecutor {
     }
 
     private String replace(String string, Category category) {
-        return string.replace("{ID}", "" + category.getId()).replace("{CATEGORY}", category.getPlainName()).replace("{PERMISSION}", category.getPermission()).replace("{USED}", category.isUsed() ? CustomHeads.getLanguageManager().YES : CustomHeads.getLanguageManager().NO);
+        return string.replace("{ID}", category.getId()).replace("{CATEGORY}", category.getPlainName()).replace("{PERMISSION}", category.getPermission()).replace("{USED}", category.isUsed() ? CustomHeads.getLanguageManager().YES : CustomHeads.getLanguageManager().NO);
     }
 
     private String replace(String string, SubCategory subCategory) {
-        return string.replace("{ID}", "" + subCategory.getId()).replace("{CATEGORY}", subCategory.getPlainName()).replace("{USED}", subCategory.isUsed() ? CustomHeads.getLanguageManager().YES : CustomHeads.getLanguageManager().NO);
+        return string.replace("{ID}", subCategory.getId()).replace("{CATEGORY}", subCategory.getPlainName()).replace("{USED}", subCategory.isUsed() ? CustomHeads.getLanguageManager().YES : CustomHeads.getLanguageManager().NO);
     }
 
     private String replace(String string, File file) {

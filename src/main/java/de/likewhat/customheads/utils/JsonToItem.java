@@ -54,13 +54,14 @@ public class JsonToItem {
                 if (itemObj.has("texture"))
                     itemEditor.setTexture(itemObj.get("texture").getAsString());
             }
+
         } catch (Exception e) {
             CustomHeads.getPluginLogger().log(Level.WARNING, "Failed to create Item", e);
         }
         return itemEditor == null ? null : itemEditor.getItem();
     }
 
-    public static String convertToJson(ItemStack itemStack) {
+    public static JsonObject convertToJson(ItemStack itemStack) {
         JsonObject itemObject = new JsonObject();
         itemObject.addProperty("item", itemStack.getType().toString());
         if (itemStack.getAmount() > 1)
@@ -97,7 +98,11 @@ public class JsonToItem {
                 itemObject.addProperty("texture", CustomHeads.getApi().getSkullTexture(itemStack));
             }
         }
-        return Utils.GSON_PRETTY.toJson(itemObject);
+        return itemObject;
+    }
+
+    public static String convertToJsonString(ItemStack itemStack) {
+        return Utils.GSON_PRETTY.toJson(convertToJson(itemStack));
     }
 
 }

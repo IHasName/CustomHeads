@@ -19,6 +19,9 @@ import de.likewhat.customheads.loader.Looks;
 import de.likewhat.customheads.utils.*;
 import de.likewhat.customheads.utils.reflection.TagEditor;
 import de.likewhat.customheads.utils.reflection.helpers.Version;
+import de.likewhat.customheads.utils.reflection.helpers.wrappers.instances.nbt.NBTTagCompoundWrapper;
+import de.likewhat.customheads.utils.reflection.helpers.wrappers.instances.nbt.NBTTagListWrapper;
+import de.likewhat.customheads.utils.reflection.nbt.NBTTagUtils;
 import de.likewhat.customheads.utils.updaters.FetchResult;
 import de.likewhat.customheads.utils.updaters.GitHubDownloader;
 import de.likewhat.customheads.utils.updaters.SpigetResourceFetcher;
@@ -421,6 +424,32 @@ public class CustomHeads extends JavaPlugin {
         initAsyncTimers();
 
         isInit = true;
+
+        // Testing like a real Pro... not
+        try {
+            Object nbt = NBTTagUtils.jsonToNBT(categoryManager.getAllCategories().get(0).getAsCategory().serializeToJson());
+
+            NBTTagCompoundWrapper wrappedCompound = new NBTTagCompoundWrapper(nbt);
+            String itemString = wrappedCompound.getCompound("icon").getString("item");
+            pluginLogger.info("string icon > item " + itemString);
+
+            NBTTagListWrapper tagList = wrappedCompound.getList("heads");
+
+            tagList.forEach(item -> {
+                pluginLogger.info("tagListItem=" + item.getNBTObject());
+            });
+
+            pluginLogger.info("Tag List to Array");
+            pluginLogger.info(Arrays.toString(tagList.toArray()));
+
+
+//            wrappedCompound.keySet().forEach(key -> {
+//                pluginLogger.info("key=" + key + " type=" + wrappedCompound.getKeyType(key));
+//            });
+        } catch (Exception e) {
+            pluginLogger.log(Level.SEVERE, "NBT Error", e);
+        }
+
     }
 
     private void doDelayedTasks() {
@@ -430,7 +459,7 @@ public class CustomHeads extends JavaPlugin {
                 try {
                     task.call();
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    pluginLogger.log(Level.WARNING, "Failed to run Delayed Task", e);
                 }
             });
         }
@@ -442,7 +471,7 @@ public class CustomHeads extends JavaPlugin {
                 UUID_CACHE.clear();
                 HeadFontType.clearCache();
                 GitHubDownloader.clearCache();
-                GameProfileBuilder.cache.clear();
+                GameProfileBuilder.clearCache();
                 ScrollableInventory.clearCache();
                 PlayerWrapper.clearCache();
             }
