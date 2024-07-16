@@ -11,6 +11,9 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
+import de.likewhat.customheads.CustomHeads;
+import de.likewhat.customheads.utils.reflection.helpers.wrappers.instances.nbt.NBTBaseWrapper;
+import de.likewhat.customheads.utils.reflection.helpers.wrappers.instances.nbt.NBTGenericWrapper;
 import de.likewhat.customheads.utils.reflection.helpers.wrappers.instances.nbt.NBTTagCompoundWrapper;
 import de.likewhat.customheads.utils.reflection.helpers.wrappers.instances.nbt.NBTTagListWrapper;
 import de.likewhat.customheads.utils.reflection.nbt.errors.NBTException;
@@ -91,11 +94,91 @@ public class NBTTagUtils {
      * @return a Json Element representing the deserialized NBT
      */
     public static JsonElement nbtToJsonObject(Object nbt, boolean assumeByteBoolean) {
-        return deserializeNBTToJson(nbt, assumeByteBoolean);
+        return deserializeNBTToJson(new NBTGenericWrapper(nbt), assumeByteBoolean);
     }
 
-    private static JsonElement deserializeNBTToJson(Object nbt, boolean assumeByteBoolean) {
-        // TODO Implement this
+    private static JsonElement deserializeNBTToJson(NBTBaseWrapper nbt, boolean assumeByteBoolean) {
+        if(nbt.isCompound()) {
+            NBTTagCompoundWrapper compound = nbt.asCompound();
+            JsonObject jsonObject = new JsonObject();
+            compound.entrySet().forEach(entry -> {
+                JsonElement element = deserializeNBTToJson(entry.getValue(), assumeByteBoolean);
+                if(element == null) {
+                    return;
+                }
+                jsonObject.add(entry.getKey(), element);
+            });
+            return jsonObject;
+        } else if(nbt.isList()) {
+            NBTTagListWrapper list = nbt.asList();
+            JsonArray jsonArray = new JsonArray();
+            list.forEach(item -> {
+                JsonElement element = deserializeNBTToJson(item, assumeByteBoolean);
+                if(element == null) {
+                    return;
+                }
+                jsonArray.add(element);
+            });
+            return jsonArray;
+        } else if(nbt.isGeneric()) {
+            NBTGenericWrapper generic = nbt.asGeneric();
+            JsonElement result;
+            switch(generic.getType()) {
+                case BYTE:
+                    byte byts = generic.asByte();
+                    if(assumeByteBoolean && byts == 0 || byts == 1) {
+                        result = new JsonPrimitive(byts == 1);
+                    } else {
+                        result = new JsonPrimitive(byts);
+                    }
+                    break;
+                case SHORT:
+                    result = new JsonPrimitive(generic.asShort());
+                    break;
+                case INT:
+                    result = new JsonPrimitive(generic.asInt());
+                    break;
+                case LONG:
+                    result = new JsonPrimitive(generic.asLong());
+                    break;
+                case FLOAT:
+                    result = new JsonPrimitive(generic.asFloat());
+                    break;
+                case DOUBLE:
+                    result = new JsonPrimitive(generic.asDouble());
+                    break;
+                case STRING:
+                    result = new JsonPrimitive(generic.asString());
+                    break;
+                case BYTE_ARRAY:
+                    byte[] bytes = generic.asByteArray();
+                    // I'm going to assume that no one tries to save an Array of Booleans like this
+                    result = new JsonArray();
+                    for (byte b : bytes) {
+                        ((JsonArray) result).add(new JsonPrimitive(b));
+                    }
+                    break;
+                case INTEGER_ARRAY:
+                    int[] ints = generic.asIntegerArray();
+                    result = new JsonArray();
+                    for (int i : ints) {
+                        ((JsonArray) result).add(new JsonPrimitive(i));
+                    }
+                    break;
+                case LONG_ARRAY:
+                    long[] longs = generic.asLongArray();
+                    result = new JsonArray();
+                    for (long l : longs) {
+                        ((JsonArray) result).add(new JsonPrimitive(l));
+                    }
+                    break;
+                default:
+                    CustomHeads.getPluginLogger().warning("Invalid Tag Type encountered while deserializing NBT: " + generic.getType());
+                    result = null;
+                    break;
+            }
+            return result;
+        }
         return null;
     }
 

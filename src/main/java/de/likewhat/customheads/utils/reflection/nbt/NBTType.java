@@ -10,7 +10,6 @@ import java.util.Arrays;
 import java.util.logging.Level;
 
 public enum NBTType {
-    BASE(-1, "NBTBase", "Tag", false),
     END(0, "NBTTagEnd", "EndTag", false),
     BYTE(1, "NBTTagByte", "ByteTag", true),
     SHORT(2, "NBTTagShort", "ShortTag", true),
@@ -172,7 +171,7 @@ public enum NBTType {
     }
 
     public static NBTType getById(int id) {
-        return Arrays.stream(values()).filter(nbtType -> nbtType.id == id).findFirst().orElse(null);
+        return id < 0 ? null : Arrays.stream(values()).filter(nbtType -> nbtType.id == id).findFirst().orElse(null);
     }
 
     public static NBTType getByClassName(String className) {

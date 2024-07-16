@@ -3,6 +3,7 @@ package de.likewhat.customheads.utils.reflection.helpers.wrappers.instances.nbt;
 import de.likewhat.customheads.utils.reflection.helpers.ReflectionUtils;
 import de.likewhat.customheads.utils.reflection.helpers.Version;
 import de.likewhat.customheads.utils.reflection.helpers.wrappers.MethodWrapper;
+import de.likewhat.customheads.utils.reflection.helpers.wrappers.instances.ClassWrappers;
 import de.likewhat.customheads.utils.reflection.nbt.NBTType;
 import lombok.Getter;
 import org.apache.commons.lang3.ArrayUtils;
@@ -11,44 +12,58 @@ import org.apache.commons.lang3.ArrayUtils;
 public class NBTGenericWrapper implements NBTBaseWrapper {
 
     private static final MethodWrapper<Byte> NBT_AS_BYTE_V1205 = new MethodWrapper<>(Version.V1_20_5, null, "getAsByte", NBTType.ANY_NUMERIC.getNBTClass());
-    private static final MethodWrapper<Byte> NBT_AS_BYTE_V1181 = new MethodWrapper<>(Version.V1_18_R1, Version.V1_20_R3, "h", NBTType.ANY_NUMERIC.getNBTClass());
-    private static final MethodWrapper<Byte> NBT_AS_BYTE = new MethodWrapper<>(null, Version.V1_17_R1, "asByte", NBTType.ANY_NUMERIC.getNBTClass());
+    private static final MethodWrapper<Byte> NBT_AS_BYTE_V1201 = new MethodWrapper<>(Version.V1_20_R1, Version.V1_20_R3, "i", NBTType.ANY_NUMERIC.getNBTClass(), NBT_AS_BYTE_V1205);
+    private static final MethodWrapper<Byte> NBT_AS_BYTE_V1181 = new MethodWrapper<>(Version.V1_18_R1, Version.V1_19_R1, "h", NBTType.ANY_NUMERIC.getNBTClass(), NBT_AS_BYTE_V1201);
+    private static final MethodWrapper<Byte> NBT_AS_BYTE = new MethodWrapper<>(null, Version.V1_17_R1, "asByte", NBTType.ANY_NUMERIC.getNBTClass(), NBT_AS_BYTE_V1181);
 
     private static final MethodWrapper<Short> NBT_AS_SHORT_V1205 = new MethodWrapper<>(Version.V1_20_5, null, "getAsShort", NBTType.ANY_NUMERIC.getNBTClass());
-    private static final MethodWrapper<Short> NBT_AS_SHORT_V1181 = new MethodWrapper<>(Version.V1_18_R1, Version.V1_20_R3, "g", NBTType.ANY_NUMERIC.getNBTClass());
-    private static final MethodWrapper<Short> NBT_AS_SHORT = new MethodWrapper<>(null, Version.V1_17_R1, "asShort", NBTType.ANY_NUMERIC.getNBTClass());
+    private static final MethodWrapper<Short> NBT_AS_SHORT_V1201 = new MethodWrapper<>(Version.V1_20_R1, Version.V1_20_R3, "h", NBTType.ANY_NUMERIC.getNBTClass(), NBT_AS_SHORT_V1205);
+    private static final MethodWrapper<Short> NBT_AS_SHORT_V1181 = new MethodWrapper<>(Version.V1_18_R1, Version.V1_19_R1, "g", NBTType.ANY_NUMERIC.getNBTClass(), NBT_AS_SHORT_V1201);
+    private static final MethodWrapper<Short> NBT_AS_SHORT = new MethodWrapper<>(null, Version.V1_17_R1, "asShort", NBTType.ANY_NUMERIC.getNBTClass(), NBT_AS_SHORT_V1181);
 
     private static final MethodWrapper<Integer> NBT_AS_INT_V1205 = new MethodWrapper<>(Version.V1_20_5, null, "getAsInt", NBTType.ANY_NUMERIC.getNBTClass());
-    private static final MethodWrapper<Integer> NBT_AS_INT_V1181 = new MethodWrapper<>(Version.V1_18_R1, Version.V1_20_R3, "f", NBTType.ANY_NUMERIC.getNBTClass());
-    private static final MethodWrapper<Integer> NBT_AS_INT = new MethodWrapper<>(null, Version.V1_17_R1, "asInt", NBTType.ANY_NUMERIC.getNBTClass());
+    private static final MethodWrapper<Integer> NBT_AS_INT_V1201 = new MethodWrapper<>(Version.V1_20_R1, Version.V1_20_R3, "g", NBTType.ANY_NUMERIC.getNBTClass(), NBT_AS_INT_V1205);
+    private static final MethodWrapper<Integer> NBT_AS_INT_V1181 = new MethodWrapper<>(Version.V1_18_R1, Version.V1_19_R1, "f", NBTType.ANY_NUMERIC.getNBTClass(), NBT_AS_INT_V1201);
+    private static final MethodWrapper<Integer> NBT_AS_INT = new MethodWrapper<>(null, Version.V1_17_R1, "asInt", NBTType.ANY_NUMERIC.getNBTClass(), NBT_AS_INT_V1181);
 
     private static final MethodWrapper<Long> NBT_AS_LONG_V1205 = new MethodWrapper<>(Version.V1_20_5, null, "getAsLong", NBTType.ANY_NUMERIC.getNBTClass());
-    private static final MethodWrapper<Long> NBT_AS_LONG_V1181 = new MethodWrapper<>(Version.V1_18_R1, Version.V1_20_R3, "e", NBTType.ANY_NUMERIC.getNBTClass());
-    private static final MethodWrapper<Long> NBT_AS_LONG = new MethodWrapper<>(null, Version.V1_17_R1, "asLong", NBTType.ANY_NUMERIC.getNBTClass());
+    private static final MethodWrapper<Long> NBT_AS_LONG_V1201 = new MethodWrapper<>(Version.V1_20_R1, Version.V1_20_R3, "f", NBTType.ANY_NUMERIC.getNBTClass(), NBT_AS_LONG_V1205);
+    private static final MethodWrapper<Long> NBT_AS_LONG_V1181 = new MethodWrapper<>(Version.V1_18_R1, Version.V1_19_R1, "e", NBTType.ANY_NUMERIC.getNBTClass(), NBT_AS_LONG_V1201);
+    private static final MethodWrapper<Long> NBT_AS_LONG = new MethodWrapper<>(null, Version.V1_17_R1, "asLong", NBTType.ANY_NUMERIC.getNBTClass(), NBT_AS_LONG_V1181);
 
     private static final MethodWrapper<Float> NBT_AS_FLOAT_V1205 = new MethodWrapper<>(Version.V1_20_5, null, "getAsFloat", NBTType.ANY_NUMERIC.getNBTClass());
-    private static final MethodWrapper<Float> NBT_AS_FLOAT_V1181 = new MethodWrapper<>(Version.V1_18_R1, Version.V1_20_R3, "j", NBTType.ANY_NUMERIC.getNBTClass());
-    private static final MethodWrapper<Float> NBT_AS_FLOAT = new MethodWrapper<>(null, Version.V1_17_R1, "asFloat", NBTType.ANY_NUMERIC.getNBTClass());
+    private static final MethodWrapper<Float> NBT_AS_FLOAT_V1201 = new MethodWrapper<>(Version.V1_20_R1, Version.V1_20_R3, "k", NBTType.ANY_NUMERIC.getNBTClass(), NBT_AS_FLOAT_V1205);
+    private static final MethodWrapper<Float> NBT_AS_FLOAT_V1181 = new MethodWrapper<>(Version.V1_18_R1, Version.V1_19_R1, "j", NBTType.ANY_NUMERIC.getNBTClass(), NBT_AS_FLOAT_V1201);
+    private static final MethodWrapper<Float> NBT_AS_FLOAT = new MethodWrapper<>(null, Version.V1_17_R1, "asFloat", NBTType.ANY_NUMERIC.getNBTClass(), NBT_AS_FLOAT_V1181);
 
     private static final MethodWrapper<Double> NBT_AS_DOUBLE_V1205 = new MethodWrapper<>(Version.V1_20_5, null, "getAsDouble", NBTType.ANY_NUMERIC.getNBTClass());
-    private static final MethodWrapper<Double> NBT_AS_DOUBLE_V1181 = new MethodWrapper<>(Version.V1_18_R1, Version.V1_20_R3, "i", NBTType.ANY_NUMERIC.getNBTClass());
-    private static final MethodWrapper<Double> NBT_AS_DOUBLE = new MethodWrapper<>(null, Version.V1_17_R1, "asDouble", NBTType.ANY_NUMERIC.getNBTClass());
+    private static final MethodWrapper<Double> NBT_AS_DOUBLE_V1201 = new MethodWrapper<>(Version.V1_20_R1, Version.V1_20_R3, "j", NBTType.ANY_NUMERIC.getNBTClass(), NBT_AS_DOUBLE_V1205);
+    private static final MethodWrapper<Double> NBT_AS_DOUBLE_V1181 = new MethodWrapper<>(Version.V1_18_R1, Version.V1_19_R1, "i", NBTType.ANY_NUMERIC.getNBTClass(), NBT_AS_DOUBLE_V1201);
+    private static final MethodWrapper<Double> NBT_AS_DOUBLE = new MethodWrapper<>(null, Version.V1_17_R1, "asDouble", NBTType.ANY_NUMERIC.getNBTClass(), NBT_AS_DOUBLE_V1181);
 
-    private static final MethodWrapper<String> NBT_AS_STRING_V1205 = new MethodWrapper<>(Version.V1_20_5, null, "getAsString", NBTType.BASE.getNBTClass());
-    private static final MethodWrapper<String> NBT_AS_STRING_V1181 = new MethodWrapper<>(Version.V1_18_R1, Version.V1_20_R3, "e_", NBTType.BASE.getNBTClass());
-    private static final MethodWrapper<String> NBT_AS_STRING = new MethodWrapper<>(null, Version.V1_17_R1, "asString", NBTType.BASE.getNBTClass());
+    // At this point I could just use toString =/
+    private static final MethodWrapper<String> NBT_AS_STRING_V1205 = new MethodWrapper<>(Version.V1_20_5, null, "getAsString", ClassWrappers.NBT_BASE);
+    private static final MethodWrapper<String> NBT_AS_STRING_V1203 = new MethodWrapper<>(Version.V1_20_R3, Version.V1_20_R3, "t_", ClassWrappers.NBT_BASE, NBT_AS_STRING_V1205);
+    private static final MethodWrapper<String> NBT_AS_STRING_V1202 = new MethodWrapper<>(Version.V1_20_R2, Version.V1_20_R2, "r_", ClassWrappers.NBT_BASE, NBT_AS_STRING_V1203);
+    private static final MethodWrapper<String> NBT_AS_STRING_V1201 = new MethodWrapper<>(Version.V1_20_R1, Version.V1_20_R1, "m_", ClassWrappers.NBT_BASE, NBT_AS_STRING_V1202);
+    private static final MethodWrapper<String> NBT_AS_STRING_V1192 = new MethodWrapper<>(Version.V1_19_R2, Version.V1_19_R3, "f_", ClassWrappers.NBT_BASE, NBT_AS_STRING_V1201);
+    private static final MethodWrapper<String> NBT_AS_STRING_V1181 = new MethodWrapper<>(Version.V1_18_R1, Version.V1_19_R1, "e_", ClassWrappers.NBT_BASE, NBT_AS_STRING_V1192);
+    private static final MethodWrapper<String> NBT_AS_STRING = new MethodWrapper<>(null, Version.V1_17_R1, "asString", ClassWrappers.NBT_BASE, NBT_AS_STRING_V1181);
 
     private static final MethodWrapper<Byte[]> NBT_AS_BYTE_ARRAY_V1205 = new MethodWrapper<>(Version.V1_20_5, null, "getAsByteArray", NBTType.BYTE_ARRAY.getNBTClass());
-    private static final MethodWrapper<Byte[]> NBT_AS_BYTE_ARRAY_V1181 = new MethodWrapper<>(Version.V1_18_R1, Version.V1_20_R3, "d", NBTType.BYTE_ARRAY.getNBTClass());
-    private static final MethodWrapper<Byte[]> NBT_AS_BYTE_ARRAY = new MethodWrapper<>(null, Version.V1_17_R1, "getBytes", NBTType.BYTE_ARRAY.getNBTClass());
+    private static final MethodWrapper<Byte[]> NBT_AS_BYTE_ARRAY_V1192 = new MethodWrapper<>(Version.V1_19_R2, Version.V1_20_R3, "e", NBTType.BYTE_ARRAY.getNBTClass(), NBT_AS_BYTE_ARRAY_V1205);
+    private static final MethodWrapper<Byte[]> NBT_AS_BYTE_ARRAY_V1181 = new MethodWrapper<>(Version.V1_18_R1, Version.V1_19_R1, "d", NBTType.BYTE_ARRAY.getNBTClass(), NBT_AS_BYTE_ARRAY_V1192);
+    private static final MethodWrapper<Byte[]> NBT_AS_BYTE_ARRAY = new MethodWrapper<>(null, Version.V1_17_R1, "getBytes", NBTType.BYTE_ARRAY.getNBTClass(), NBT_AS_BYTE_ARRAY_V1181);
 
     private static final MethodWrapper<Integer[]> NBT_AS_INTEGER_ARRAY_V1205 = new MethodWrapper<>(Version.V1_20_5, null, "getAsIntArray", NBTType.INTEGER_ARRAY.getNBTClass());
-    private static final MethodWrapper<Integer[]> NBT_AS_INTEGER_ARRAY_V1181 = new MethodWrapper<>(Version.V1_18_R1, Version.V1_20_R3, "f", NBTType.INTEGER_ARRAY.getNBTClass());
-    private static final MethodWrapper<Integer[]> NBT_AS_INTEGER_ARRAY = new MethodWrapper<>(null, Version.V1_17_R1, "getInts", NBTType.INTEGER_ARRAY.getNBTClass());
+    private static final MethodWrapper<Integer[]> NBT_AS_INTEGER_ARRAY_V1192 = new MethodWrapper<>(Version.V1_19_R2, Version.V1_20_R3, "g", NBTType.INTEGER_ARRAY.getNBTClass(), NBT_AS_INTEGER_ARRAY_V1205);
+    private static final MethodWrapper<Integer[]> NBT_AS_INTEGER_ARRAY_V1181 = new MethodWrapper<>(Version.V1_18_R1, Version.V1_19_R1, "f", NBTType.INTEGER_ARRAY.getNBTClass(), NBT_AS_INTEGER_ARRAY_V1192);
+    private static final MethodWrapper<Integer[]> NBT_AS_INTEGER_ARRAY = new MethodWrapper<>(null, Version.V1_17_R1, "getInts", NBTType.INTEGER_ARRAY.getNBTClass(), NBT_AS_INTEGER_ARRAY_V1181);
 
     private static final MethodWrapper<Long[]> NBT_AS_LONG_ARRAY_V1205 = new MethodWrapper<>(Version.V1_20_5, null, "getAsLongArray", NBTType.LONG_ARRAY.getNBTClass());
-    private static final MethodWrapper<Long[]> NBT_AS_LONG_ARRAY_V1181 = new MethodWrapper<>(Version.V1_18_R1, Version.V1_20_R3, "f", NBTType.LONG_ARRAY.getNBTClass());
-    private static final MethodWrapper<Long[]> NBT_AS_LONG_ARRAY = new MethodWrapper<>(null, Version.V1_17_R1, "getLongs", NBTType.LONG_ARRAY.getNBTClass());
+    private static final MethodWrapper<Long[]> NBT_AS_LONG_ARRAY_V1192 = new MethodWrapper<>(Version.V1_19_R2, Version.V1_20_R3, "g", NBTType.LONG_ARRAY.getNBTClass(), NBT_AS_LONG_ARRAY_V1205);
+    private static final MethodWrapper<Long[]> NBT_AS_LONG_ARRAY_V1181 = new MethodWrapper<>(Version.V1_18_R1, Version.V1_19_R1, "f", NBTType.LONG_ARRAY.getNBTClass(), NBT_AS_LONG_ARRAY_V1192);
+    private static final MethodWrapper<Long[]> NBT_AS_LONG_ARRAY = new MethodWrapper<>(null, Version.V1_17_R1, "getLongs", NBTType.LONG_ARRAY.getNBTClass(), NBT_AS_LONG_ARRAY_V1181);
 
     protected final Object nbtObject;
     protected final NBTType type;
@@ -64,16 +79,27 @@ public class NBTGenericWrapper implements NBTBaseWrapper {
     }
 
     @Override
-    public Object getNBTObject() {
-        return this.nbtObject;
-    }
-
     public boolean isCompound() {
         return this.type == NBTType.COMPOUND;
     }
 
+    @Override
     public boolean isList() {
         return this.type == NBTType.LIST;
+    }
+
+    @Override
+    public boolean isGeneric() {
+        return true;
+    }
+
+    public static NBTGenericWrapper of(Object nbtObject) {
+        return new NBTGenericWrapper(nbtObject);
+    }
+
+    @Override
+    public Object getNBTObject() {
+        return this.nbtObject;
     }
 
     public boolean isByte() {
@@ -114,14 +140,6 @@ public class NBTGenericWrapper implements NBTBaseWrapper {
 
     public boolean isLongArray() {
         return this.type == NBTType.LONG_ARRAY;
-    }
-
-    public NBTTagCompoundWrapper asCompound() {
-        return new NBTTagCompoundWrapper(this.nbtObject);
-    }
-
-    public NBTTagListWrapper asList() {
-        return new NBTTagListWrapper(this.nbtObject);
     }
 
     // TODO Throw an Error instead of returning a Value?

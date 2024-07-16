@@ -94,6 +94,25 @@ public class NBTTagListWrapper extends AbstractList<NBTGenericWrapper> implement
         this.nbtObject = nbtObject;
     }
 
+    @Override
+    public boolean isCompound() {
+        return false;
+    }
+
+    @Override
+    public boolean isList() {
+        return true;
+    }
+
+    @Override
+    public boolean isGeneric() {
+        return false;
+    }
+
+    public static NBTTagListWrapper of(Object nbtObject) {
+        return new NBTTagListWrapper(nbtObject);
+    }
+
     public NBTType getListType() {
         return NBTType.getById(ReflectionUtils.callWrapperAndGetOrDefault(this.nbtObject, GET_LIST_ELEMENTS_TYPE, (byte) -1));
     }

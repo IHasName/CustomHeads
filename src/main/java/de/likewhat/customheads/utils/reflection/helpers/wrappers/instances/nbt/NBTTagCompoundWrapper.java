@@ -177,6 +177,21 @@ public class NBTTagCompoundWrapper implements NBTBaseWrapper {
         this.nbtObject = nbtObject;
     }
 
+    @Override
+    public boolean isCompound() {
+        return true;
+    }
+
+    @Override
+    public boolean isList() {
+        return true;
+    }
+
+    @Override
+    public boolean isGeneric() {
+        return false;
+    }
+
     public static NBTTagCompoundWrapper of(Object nbtObject) {
         return new NBTTagCompoundWrapper(nbtObject);
     }
@@ -201,7 +216,7 @@ public class NBTTagCompoundWrapper implements NBTBaseWrapper {
         return ReflectionUtils.callWrapperAndGetOrDefault(this.nbtObject, GET_KEYS, Collections.emptySet());
     }
 
-    public Set<Map.Entry<String, Object>> entrySet() {
+    public Set<Map.Entry<String, NBTGenericWrapper>> entrySet() {
         Object result = ReflectionUtils.callWrapperAndGetOrNull(this.nbtObject, UNMODIFIABLE_COPY);
         if(result == null) {
             return Collections.emptySet();
@@ -213,7 +228,11 @@ public class NBTTagCompoundWrapper implements NBTBaseWrapper {
         } else {
             actualResult = ((Map<String, Object>) result).entrySet();
         }
-        return actualResult;
+        Set<Map.Entry<String, NBTGenericWrapper>> genericWrapperResult = new HashSet<>();
+        actualResult.forEach(entry -> {
+            genericWrapperResult.add(new AbstractMap.SimpleEntry<>(entry.getKey(), NBTGenericWrapper.of(entry.getValue())));
+        });
+        return genericWrapperResult;
     }
 
     // Getters

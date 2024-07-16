@@ -1,6 +1,7 @@
 package de.likewhat.customheads;
 
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import de.likewhat.customheads.api.CustomHeadsAPI;
 import de.likewhat.customheads.api.CustomHeadsPlayer;
@@ -19,8 +20,6 @@ import de.likewhat.customheads.loader.Looks;
 import de.likewhat.customheads.utils.*;
 import de.likewhat.customheads.utils.reflection.TagEditor;
 import de.likewhat.customheads.utils.reflection.helpers.Version;
-import de.likewhat.customheads.utils.reflection.helpers.wrappers.instances.nbt.NBTTagCompoundWrapper;
-import de.likewhat.customheads.utils.reflection.helpers.wrappers.instances.nbt.NBTTagListWrapper;
 import de.likewhat.customheads.utils.reflection.nbt.NBTTagUtils;
 import de.likewhat.customheads.utils.updaters.FetchResult;
 import de.likewhat.customheads.utils.updaters.GitHubDownloader;
@@ -428,20 +427,22 @@ public class CustomHeads extends JavaPlugin {
         // Testing like a real Pro... not
         try {
             Object nbt = NBTTagUtils.jsonToNBT(categoryManager.getAllCategories().get(0).getAsCategory().serializeToJson());
+            pluginLogger.info("Serialized JsonObject > NBT");
+            pluginLogger.info(nbt.toString());
 
-            NBTTagCompoundWrapper wrappedCompound = new NBTTagCompoundWrapper(nbt);
-            String itemString = wrappedCompound.getCompound("icon").getString("item");
-            pluginLogger.info("string icon > item " + itemString);
+            JsonElement convertedElement = NBTTagUtils.nbtToJsonObject(nbt, true);
+            pluginLogger.info("Deserialized NBT > JsonObject");
+            pluginLogger.info(convertedElement.toString());
 
-            NBTTagListWrapper tagList = wrappedCompound.getList("heads");
-
-            tagList.forEach(item -> {
-                pluginLogger.info("tagListItem=" + item.getNBTObject());
-            });
-
-            pluginLogger.info("Tag List to Array");
-            pluginLogger.info(Arrays.toString(tagList.toArray()));
-
+//            NBTTagCompoundWrapper wrappedCompound = new NBTTagCompoundWrapper(nbt);
+//            String itemString = wrappedCompound.getCompound("icon").getString("item");
+//            pluginLogger.info("string icon > item " + itemString);
+//            NBTTagListWrapper tagList = wrappedCompound.getList("heads");
+//            tagList.forEach(item -> {
+//                pluginLogger.info("tagListItem=" + item.getNBTObject());
+//            });
+//            pluginLogger.info("Tag List to Array");
+//            pluginLogger.info(Arrays.toString(tagList.toArray()));
 
 //            wrappedCompound.keySet().forEach(key -> {
 //                pluginLogger.info("key=" + key + " type=" + wrappedCompound.getKeyType(key));

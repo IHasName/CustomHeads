@@ -11,6 +11,20 @@ public interface NBTBaseWrapper {
 
     Object getNBTObject();
 
+    boolean isCompound();
+
+    boolean isList();
+
+    boolean isGeneric();
+
+    default NBTTagCompoundWrapper asCompound() {
+        return new NBTTagCompoundWrapper(this.getNBTObject());
+    }
+
+    default NBTTagListWrapper asList() {
+        return new NBTTagListWrapper(this.getNBTObject());
+    }
+
     default NBTGenericWrapper asGeneric() {
         return new NBTGenericWrapper(this.getNBTObject());
     }
