@@ -16,7 +16,6 @@ import de.likewhat.customheads.utils.reflection.helpers.Version;
 import de.likewhat.customheads.utils.reflection.helpers.wrappers.instances.ClassWrappers;
 import de.likewhat.customheads.utils.reflection.helpers.wrappers.instances.ConstructorWrappers;
 import de.likewhat.customheads.utils.reflection.helpers.wrappers.instances.MethodWrappers;
-import de.likewhat.customheads.utils.reflection.nbt.ItemNBTUtils;
 import de.likewhat.customheads.utils.updaters.FetchResult;
 import de.likewhat.customheads.utils.updaters.GitHubDownloader;
 import org.bukkit.Bukkit;
@@ -68,8 +67,6 @@ public class Utils {
     private static final String JSON_SKIN = "{\"textures\":{\"SKIN\":{\"url\":\"%s\"}}}";
 
     public static final String TEXT_JSON_FORMAT = "{\"text\":\"%s\"}";
-
-    private static final HashMap<String, List<String>> PERMISSION_CACHE = new HashMap<>();
 
     public static String getTextureFromProfile(GameProfile profile) {
         String value = "";
@@ -422,18 +419,10 @@ public class Utils {
     }
 
     public static boolean hasCustomTexture(ItemStack itemStack) {
-        if (itemStack == null) return false;
-        try {
-            Object nmscopy = ItemNBTUtils.asNMSCopy(itemStack);
-            Object tag = nmscopy.getClass().getMethod("getTag").invoke(nmscopy);
-            Object so = tag.getClass().getMethod("getCompound", String.class).invoke(tag, "SkullOwner");
-            Object prop = so.getClass().getMethod("getCompound", String.class).invoke(so, "Properties");
-            Object tex = prop.getClass().getMethod("getList", String.class, int.class).invoke(prop, "textures", 10);
-            Object list = tex.getClass().getMethod("get", int.class).invoke(tex, 0);
-            return list.getClass().getMethod("getString", String.class).invoke(list, "Value").toString() != null;
-        } catch (Exception ignored) {
+        if (itemStack == null) {
+            return false;
         }
-        return false;
+        return CustomHeads.getApi().getSkullTexture(itemStack) != null;
     }
 
     public static void runSynced(BukkitRunnable runnable) {

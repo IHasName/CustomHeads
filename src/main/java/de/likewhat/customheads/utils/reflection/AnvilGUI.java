@@ -166,10 +166,8 @@ public class AnvilGUI {
                 case V1_19_R2:
                 case V1_19_R3:
                 case V1_20_R1: {
-                    Class<?> containersClass = ReflectionUtils.getMCServerClassByName("Containers", "world.inventory");
-                    Class<?> containerAccessClass = ReflectionUtils.getMCServerClassByName("ContainerAccess", "world.inventory");
-                    containerAnvil = ClassWrappers.CONTAINER_ANVIL.resolve().getConstructor(int.class, playerInventoryClass, containerAccessClass).newInstance(nextContainerId, ReflectionUtils.getFieldValue(playerInventoryField, playerHandle), MethodWrappers.CONTAINER_ACCESS_AT.invokeOn(containerAccessClass, playerWorld, ReflectionUtils.getMCServerClassByName("BlockPosition", "core").getConstructor(int.class, int.class, int.class).newInstance(location.getBlockX(), location.getBlockY(), location.getBlockZ())));
-                    packet = ClassWrappers.PACKET_PLAY_OUT_OPEN_WINDOW.resolve().getConstructor(int.class, containersClass, ReflectionUtils.getMCServerClassByName("IChatBaseComponent", "network.chat")).newInstance(nextContainerId, FieldWrappers.CONTAINERS_ANVIL.getInstance(containersClass), titleObject);
+                    containerAnvil = ClassWrappers.CONTAINER_ANVIL.resolve().getConstructor(int.class, playerInventoryClass, ClassWrappers.CONTAINER_ACCESS.resolve()).newInstance(nextContainerId, ReflectionUtils.getFieldValue(playerInventoryField, playerHandle), MethodWrappers.CONTAINER_ACCESS_AT.invokeOn(ClassWrappers.CONTAINER_ACCESS.resolve(), playerWorld, ReflectionUtils.getMCServerClassByName("BlockPosition", "core").getConstructor(int.class, int.class, int.class).newInstance(location.getBlockX(), location.getBlockY(), location.getBlockZ())));
+                    packet = ClassWrappers.PACKET_PLAY_OUT_OPEN_WINDOW.resolve().getConstructor(int.class, ClassWrappers.CONTAINERS.resolve(), ReflectionUtils.getMCServerClassByName("IChatBaseComponent", "network.chat")).newInstance(nextContainerId, FieldWrappers.CONTAINERS_ANVIL.getInstance(ClassWrappers.CONTAINERS.resolve()), titleObject);
                     break;
                 }
             }

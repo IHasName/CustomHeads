@@ -194,7 +194,7 @@ public class Category extends BaseCategory {
                     subCategoryIcons = editedSubCategoryIcons;
                 }
                 category.setCategoryIcon(subCategoryIcons.isEmpty() || (categoryJson.has("fixed-icon") && categoryJson.get("fixed-icon").getAsBoolean()) ? CustomHeads.getTagEditor().setTags(JsonToItem.convertFromJson(categoryJson.get("icon").toString()), "openCategory", "category#>" + categoryJson.get("id").getAsString(), "icon-fixed") : subCategoryIcons.get(0));
-                category.setIcons(subCategoryIcons.isEmpty() || (categoryJson.has("fixed-icon") && category.setFixedIcon(categoryJson.get("fixed-icon").getAsBoolean())) ? Arrays.asList(CustomHeads.getTagEditor().setTags(JsonToItem.convertFromJson(categoryJson.get("icon").toString()), "openCategory", "category#>" + categoryJson.get("id").getAsString(), "icon-fixed")) : subCategoryIcons);
+                category.setIcons(subCategoryIcons.isEmpty() || (categoryJson.has("fixed-icon") && category.setFixedIcon(categoryJson.get("fixed-icon").getAsBoolean())) ? Collections.singletonList(CustomHeads.getTagEditor().setTags(JsonToItem.convertFromJson(categoryJson.get("icon").toString()), "openCategory", "category#>" + categoryJson.get("id").getAsString(), "icon-fixed")) : subCategoryIcons);
             } else {
                 for (JsonElement rawHeadObject : categoryJson.get("heads").getAsJsonArray()) {
                     JsonObject headObject = rawHeadObject.getAsJsonObject();

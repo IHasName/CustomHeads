@@ -11,7 +11,6 @@ import de.likewhat.customheads.utils.reflection.nbt.NBTTagUtils;
 import de.likewhat.customheads.utils.reflection.nbt.NBTType;
 import de.likewhat.customheads.utils.reflection.nbt.errors.NBTException;
 import de.likewhat.customheads.utils.reflection.nbt.errors.NBTVerifyException;
-import org.apache.commons.lang3.NotImplementedException;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
@@ -158,7 +157,8 @@ public class ItemEditor {
             if (!ReflectionUtils.setField(meta, "profile", profile)) {
                 throw new IllegalStateException("Unable to inject GameProfile");
             }
-            if (Version.getCurrentVersion().isNewerThan(Version.V1_17_R1)) {
+            // Game Profiles only get pre-serialized between 1.17 and 1.20.4 apparently
+            if (Version.getCurrentVersion().isNewerThan(Version.V1_17_R1) && Version.getCurrentVersion().isOlderThan(Version.V1_20_R3)) {
                 Object serializedProfile = MethodWrappers.GAMEPROFILE_SERIALIZE.invokeOn(null, NBTType.COMPOUND.createInstance(), profile);
                 ReflectionUtils.setField(meta, "serializedProfile", serializedProfile);
             }
@@ -205,9 +205,8 @@ public class ItemEditor {
         return this;
     }
 
-    // TODO Add a Deserializer to NBT Data
     public JsonObject getNBT() throws NBTException {
-        throw new NotImplementedException("getNBT is not yet implemented");
+        return NBTTagUtils.nbtToJsonObject(ItemNBTUtils.getTagFromItem(this.getItem()).getNBTObject(), true).getAsJsonObject();
     }
 
     public ItemStack getItem() {

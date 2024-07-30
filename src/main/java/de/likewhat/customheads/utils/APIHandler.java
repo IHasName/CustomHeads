@@ -144,7 +144,6 @@ public void setSkull(Block block, String texture, BlockFace blockFace) {
                 Object blockDataState = craftBlockDataClass.getMethod("getState").invoke(blockDataInstance);
                 Object positionInstance = blockPositionConstructor.newInstance(location.getBlockX(), location.getBlockY(), location.getBlockZ());
                 MethodWrappers.WORLD_SET_TYPE_AND_DATA.invokeOn(nmsWorld, positionInstance, blockDataState, 3);
-                //nmsWorld.getClass().getMethod("setTypeAndData", blockPositionClass, ReflectionUtils.getMCServerClassByName("IBlockData", "world.level.block.state"), int.class).invoke(nmsWorld, positionInstance, blockDataState, 3);
 
                 // Actually Update the Skull now
                 switch(Version.getCurrentVersion()) {
@@ -160,6 +159,8 @@ public void setSkull(Block block, String texture, BlockFace blockFace) {
                         nmsWorld.getClass().getMethod("setTileEntity", blockPositionClass, ReflectionUtils.getMCServerClassByName("TileEntity", "world.level.block.entity")).invoke(nmsWorld, positionInstance, skullInstance);
                         break;
                     }
+                    default:
+                        LoggingUtils.logOnce(Level.WARNING, "Setting a Textured Skull may be broken for this Version (" + Version.getCurrentVersion() + ")");
                     case V1_17_R1:
                     case V1_18_R1:
                     case V1_18_R2:
@@ -169,7 +170,6 @@ public void setSkull(Block block, String texture, BlockFace blockFace) {
                     case V1_20_R1: {
                         Object skullInstance = tileEntitySkullClass.getConstructor(blockPositionClass, ReflectionUtils.getMCServerClassByName("IBlockData", "world.level.block.state")).newInstance(positionInstance, blockDataState);
                         MethodWrappers.WORLD_SET_TILE_ENTITY.invokeOn(nmsWorld, skullInstance);
-                        //nmsWorld.getClass().getMethod("setTileEntity", ReflectionUtils.getMCServerClassByName("TileEntity", "world.level.block.entity")).invoke(nmsWorld, skullInstance);
                         break;
                     }
                 }
@@ -189,7 +189,6 @@ public void setSkull(Block block, String texture, BlockFace blockFace) {
             Object nmsWorld = ReflectionUtils.getWorldHandle(block.getWorld());
             Object craftSkull = tileEntitySkullClass.cast(MethodWrappers.WORLD_GET_TILE_ENTITY.invokeOn(nmsWorld, blockPositionConstructor.newInstance(block.getX(), block.getY(), block.getZ())));
             MethodWrappers.TILE_ENTITY_SET_GAME_PROFILE.invokeOn(craftSkull, GameProfileBuilder.createProfileWithTexture(texture));
-            //tileEntitySkullClass.getMethod("setGameProfile", GameProfile.class).invoke(craftSkull, GameProfileBuilder.createProfileWithTexture(texture));
         } catch (Exception e) {
             CustomHeads.getPluginLogger().log(Level.WARNING, "Failed to set Skull Texture", e);
         }

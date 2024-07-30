@@ -1,6 +1,8 @@
 package de.likewhat.customheads.utils.reflection.nbt;
 
 import de.likewhat.customheads.CustomHeads;
+import de.likewhat.customheads.utils.reflection.helpers.DataComponentTypes;
+import de.likewhat.customheads.utils.reflection.helpers.Version;
 import de.likewhat.customheads.utils.reflection.helpers.wrappers.instances.MethodWrappers;
 import de.likewhat.customheads.utils.reflection.helpers.wrappers.instances.nbt.NBTTagCompoundWrapper;
 import de.likewhat.customheads.utils.reflection.nbt.errors.NBTException;
@@ -31,10 +33,17 @@ public class ItemNBTUtils {
     }
 
     public static boolean hasNBTTag(ItemStack item) {
+        return nmsItemHasTag(ItemNBTUtils.asNMSCopy(item));
+    }
+
+    private static boolean nmsItemHasTag(Object nmsItem) {
         try {
-            Object nmsCopy = ItemNBTUtils.asNMSCopy(item);
-            if(nmsCopy != null) {
-                return MethodWrappers.ITEMSTACK_HASTAG.invokeOn(nmsCopy);
+            if(nmsItem != null) {
+                if(Version.getCurrentVersion().isNewerThan(Version.V1_20_R3)) {
+                    return MethodWrappers.ITEMSTACK_HASTAG.invokeOn(nmsItem);
+                } else {
+                    return MethodWrappers.ITEMSTACK_DATA_HAS.invokeOn(nmsItem, DataComponentTypes.CUSTOM_DATA.getInstance());
+                }
             }
         } catch (IllegalAccessException | InvocationTargetException e) {
             CustomHeads.getPluginLogger().log(Level.SEVERE, "Failed to check NBT on Item", e);
@@ -47,12 +56,22 @@ public class ItemNBTUtils {
     }
 
     public static NBTTagCompoundWrapper getTagFromItem(ItemStack itemStack, boolean force) throws NBTException {
-        if(!force && !hasNBTTag(itemStack)) {
+        return getTagFromNMSItem(ItemNBTUtils.asNMSCopy(itemStack), force);
+    }
+
+    private static NBTTagCompoundWrapper getTagFromNMSItem(Object nmsItem, boolean force) throws NBTException {
+        if(!force && !nmsItemHasTag(nmsItem)) {
             return new NBTTagCompoundWrapper();
         }
         try {
-            Object nmsCopy = ItemNBTUtils.asNMSCopy(itemStack);
-            return NBTTagCompoundWrapper.of(MethodWrappers.ITEMSTACK_GETTAG.invokeOn(nmsCopy));
+            Object tag;
+            if(Version.getCurrentVersion().isNewerThan(Version.V1_20_R3)) {
+                tag = MethodWrappers.ITEMSTACK_GETTAG.invokeOn(nmsItem);
+            } else {
+                Object customData = MethodWrappers.ITEMSTACK_DATA_GET.invokeOn(nmsItem, DataComponentTypes.CUSTOM_DATA.getInstance());
+                tag = MethodWrappers.COMPONENT_CUSTOM_DATA_COPY_TAG.invokeOn(customData);
+            }
+            return NBTTagCompoundWrapper.of(tag);
         } catch(InvocationTargetException | IllegalAccessException e) {
             throw new NBTException(e);
         }
@@ -66,10 +85,14 @@ public class ItemNBTUtils {
 
     public static void setTagOnItem(Object nmsItem, Object nbt) throws NBTException, NBTVerifyException  {
         try {
-            MethodWrappers.ITEMSTACK_SETTAG.invokeOn(nmsItem, nbt);
+            if(Version.getCurrentVersion().isNewerThan(Version.V1_20_R3)) {
+                MethodWrappers.ITEMSTACK_SETTAG.invokeOn(nmsItem, nbt);
+            } else {
+                MethodWrappers.ITEMSTACK_DATA_SET.invokeOn(nmsItem, nbt);
+            }
 
             // Verify NBT Set
-            Object tagToVerify = MethodWrappers.ITEMSTACK_GETTAG.invokeOn(nmsItem);
+            Object tagToVerify = getTagFromNMSItem(nmsItem, false).getNBTObject();
             if (!tagToVerify.equals(nbt)) {
                 throw new NBTVerifyException("Failed to verify NBT");
             }

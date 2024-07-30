@@ -41,6 +41,11 @@ public class NBTGenericWrapper implements NBTBaseWrapper {
     private static final MethodWrapper<Double> NBT_AS_DOUBLE_V1181 = new MethodWrapper<>(Version.V1_18_R1, Version.V1_19_R1, "i", NBTType.ANY_NUMERIC.getNBTClass(), NBT_AS_DOUBLE_V1201);
     private static final MethodWrapper<Double> NBT_AS_DOUBLE = new MethodWrapper<>(null, Version.V1_17_R1, "asDouble", NBTType.ANY_NUMERIC.getNBTClass(), NBT_AS_DOUBLE_V1181);
 
+    private static final MethodWrapper<Number> NBT_AS_NUMBER_V1205 = new MethodWrapper<>(Version.V1_20_5, null, "getAsNumber", NBTType.ANY_NUMERIC.getNBTClass());
+    private static final MethodWrapper<Number> NBT_AS_NUMBER_V1201 = new MethodWrapper<>(Version.V1_20_R1, Version.V1_20_R3, "l", NBTType.ANY_NUMERIC.getNBTClass(), NBT_AS_NUMBER_V1205);
+    private static final MethodWrapper<Number> NBT_AS_NUMBER_V1181 = new MethodWrapper<>(Version.V1_18_R1, Version.V1_19_R1, "k", NBTType.ANY_NUMERIC.getNBTClass(), NBT_AS_NUMBER_V1201);
+    private static final MethodWrapper<Number> NBT_AS_NUMBER = new MethodWrapper<>(null, Version.V1_17_R1, "asNumber", NBTType.ANY_NUMERIC.getNBTClass(), NBT_AS_NUMBER_V1181);
+    
     // At this point I could just use toString =/
     private static final MethodWrapper<String> NBT_AS_STRING_V1205 = new MethodWrapper<>(Version.V1_20_5, null, "getAsString", ClassWrappers.NBT_BASE);
     private static final MethodWrapper<String> NBT_AS_STRING_V1203 = new MethodWrapper<>(Version.V1_20_R3, Version.V1_20_R3, "t_", ClassWrappers.NBT_BASE, NBT_AS_STRING_V1205);
@@ -145,48 +150,55 @@ public class NBTGenericWrapper implements NBTBaseWrapper {
     // TODO Throw an Error instead of returning a Value?
     public byte asByte() {
         if(type.isNumber()) {
-            return ReflectionUtils.callWrapperAndGetOrDefault(this.nbtObject, NBT_AS_BYTE, (byte) 0);
+            return this.asNumber().byteValue();
         }
         return 0;
     }
 
     public short asShort() {
         if(type.isNumber()) {
-            return ReflectionUtils.callWrapperAndGetOrDefault(this.nbtObject, NBT_AS_SHORT, (short) 0);
+            return this.asNumber().shortValue();
         }
         return 0;
     }
 
     public int asInt() {
         if(type.isNumber()) {
-            return ReflectionUtils.callWrapperAndGetOrDefault(this.nbtObject, NBT_AS_INT, 0);
+            return this.asNumber().intValue();
         }
         return 0;
     }
 
     public long asLong() {
         if(type.isNumber()) {
-            return ReflectionUtils.callWrapperAndGetOrDefault(this.nbtObject, NBT_AS_LONG, 0L);
+            return this.asNumber().longValue();
         }
         return 0;
     }
 
     public float asFloat() {
         if(type.isNumber()) {
-            return ReflectionUtils.callWrapperAndGetOrDefault(this.nbtObject, NBT_AS_FLOAT, 0f);
+            return this.asNumber().floatValue();
         }
         return 0;
     }
 
     public double asDouble() {
         if(type.isNumber()) {
-            return ReflectionUtils.callWrapperAndGetOrDefault(this.nbtObject, NBT_AS_DOUBLE, 0d);
+            return this.asNumber().doubleValue();
+        }
+        return 0;
+    }
+
+    public Number asNumber() {
+        if(type.isNumber()) {
+            return ReflectionUtils.callWrapperAndGetOrDefault(this.nbtObject, NBT_AS_NUMBER, 0);
         }
         return 0;
     }
 
     public String asString() {
-        return ReflectionUtils.callWrapperAndGetOrDefault(this.nbtObject, NBT_AS_STRING, "");
+        return ReflectionUtils.callWrapperAndGetOrNull(this.nbtObject, NBT_AS_STRING);
     }
 
     public byte[] asByteArray() {

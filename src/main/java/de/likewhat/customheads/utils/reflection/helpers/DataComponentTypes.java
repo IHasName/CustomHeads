@@ -1,0 +1,84 @@
+package de.likewhat.customheads.utils.reflection.helpers;
+
+import de.likewhat.customheads.utils.reflection.helpers.wrappers.FieldWrapper;
+import de.likewhat.customheads.utils.reflection.helpers.wrappers.instances.ClassWrappers;
+
+import java.lang.reflect.Field;
+
+/**
+ * @since MC-1.20.5
+ */
+public enum DataComponentTypes {
+
+    CUSTOM_DATA("CUSTOM_DATA"),
+    MAX_STACK_SIZE("MAX_STACK_SIZE"),
+    MAX_DAMAGE("MAX_DAMAGE"),
+    DAMAGE("DAMAGE"),
+    UNBREAKABLE("UNBREAKABLE"),
+    CUSTOM_NAME("CUSTOM_NAME"),
+    ITEM_NAME("ITEM_NAME"),
+    LORE("LORE"),
+    RARITY("RARITY"),
+    ENCHANTMENTS("ENCHANTMENTS"),
+    CAN_PLACE_ON("CAN_PLACE_ON"),
+    CAN_BREAK("CAN_BREAK"),
+    ATTRIBUTE_MODIFIERS("ATTRIBUTE_MODIFIERS"),
+    CUSTOM_MODEL_DATA("CUSTOM_MODEL_DATA"),
+    HIDE_ADDITIONAL_TOOLTIP("HIDE_ADDITIONAL_TOOLTIP"),
+    HIDE_TOOLTIP("HIDE_TOOLTIP"),
+    REPAIR_COST("REPAIR_COST"),
+    CREATIVE_SLOT_LOCK("CREATIVE_SLOT_LOCK"),
+    ENCHANTMENT_GLINT_OVERRIDE("ENCHANTMENT_GLINT_OVERRIDE"),
+    INTANGIBLE_PROJECTILE("INTANGIBLE_PROJECTILE"),
+    FOOD("FOOD"),
+    FIRE_RESISTANT("FIRE_RESISTANT"),
+    TOOL("TOOL"),
+    STORED_ENCHANTMENTS("STORED_ENCHANTMENTS"),
+    DYED_COLOR("DYED_COLOR"),
+    MAP_COLOR("MAP_COLOR"),
+    MAP_ID("MAP_ID"),
+    MAP_DECORATIONS("MAP_DECORATIONS"),
+    MAP_POST_PROCESSING("MAP_POST_PROCESSING"),
+    CHARGED_PROJECTILES("CHARGED_PROJECTILES"),
+    BUNDLE_CONTENTS("BUNDLE_CONTENTS"),
+    POTION_CONTENTS("POTION_CONTENTS"),
+    SUSPICIOUS_STEW_EFFECTS("SUSPICIOUS_STEW_EFFECTS"),
+    WRITABLE_BOOK_CONTENT("WRITABLE_BOOK_CONTENT"),
+    WRITTEN_BOOK_CONTENT("WRITTEN_BOOK_CONTENT"),
+    TRIM("TRIM"),
+    DEBUG_STICK_STATE("DEBUG_STICK_STATE"),
+    ENTITY_DATA("ENTITY_DATA"),
+    BUCKET_ENTITY_DATA("BUCKET_ENTITY_DATA"),
+    BLOCK_ENTITY_DATA("BLOCK_ENTITY_DATA"),
+    INSTRUMENT("INSTRUMENT"),
+    OMINOUS_BOTTLE_AMPLIFIER("OMINOUS_BOTTLE_AMPLIFIER"),
+    RECIPES("RECIPES"),
+    LODESTONE_TRACKER("LODESTONE_TRACKER"),
+    FIREWORK_EXPLOSION("FIREWORK_EXPLOSION"),
+    FIREWORKS("FIREWORKS"),
+    PROFILE("PROFILE"),
+    NOTE_BLOCK_SOUND("NOTE_BLOCK_SOUND"),
+    BANNER_PATTERNS("BANNER_PATTERNS"),
+    BASE_COLOR("BASE_COLOR"),
+    POT_DECORATIONS("POT_DECORATIONS"),
+    CONTAINER("CONTAINER"),
+    BLOCK_STATE("BLOCK_STATE"),
+    BEES("BEES"),
+    LOCK("LOCK"),
+    CONTAINER_LOOT("CONTAINER_LOOT");
+
+    private final FieldWrapper fieldWrapper;
+
+    // Does this even need a Field Name?
+    DataComponentTypes(String fieldName) {
+        this.fieldWrapper = new FieldWrapper(ClassWrappers.DATA_COMPONENTS, fieldName, Version.V1_20_5, null);
+    }
+
+    public Field getField() {
+        return this.fieldWrapper.resolve();
+    }
+
+    public Object getInstance() throws IllegalAccessException {
+        return this.fieldWrapper.getInstance(null);
+    }
+}

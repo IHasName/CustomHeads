@@ -229,7 +229,7 @@ public class CustomHeadsCommand implements CommandExecutor {
                             for (String hoverInfoCategory : CustomHeads.getLanguageManager().CATEGORIES_BASECOMMAND_HOVERINFO_CATEGORY) {
                                 hoverInfoCategoryBuilder.append(hoverInfoCategory).append("\n");
                             }
-                            hoverInfoCategoryBuilder = new StringBuilder(hoverInfoCategoryBuilder.toString().replace("{ID}", "" + cCategory.getId()).replace("{CATEGORY}", cCategory.getName()).replace("{PERMISSION}", cCategory.getPermission()).replace("{USED}", cCategory.isUsed() ? CustomHeads.getLanguageManager().YES : CustomHeads.getLanguageManager().NO));
+                            hoverInfoCategoryBuilder = new StringBuilder(hoverInfoCategoryBuilder.toString().replace("{ID}", cCategory.getId()).replace("{CATEGORY}", cCategory.getName()).replace("{PERMISSION}", cCategory.getPermission()).replace("{USED}", cCategory.isUsed() ? CustomHeads.getLanguageManager().YES : CustomHeads.getLanguageManager().NO));
                             hoverInfoCategoryBuilder = new StringBuilder(hoverInfoCategoryBuilder.substring(0, hoverInfoCategoryBuilder.length() - 1));
                             hoverInfoCategoryBuilder.append("\"}");
 
@@ -242,7 +242,7 @@ public class CustomHeadsCommand implements CommandExecutor {
                                     for (String hoverInfoSubCategory : CustomHeads.getLanguageManager().CATEGORIES_BASECOMMAND_HOVERINFO_SUBCATEGORY) {
                                         hoverInfoSubCategoryBuilder.append(hoverInfoSubCategory).append("\n");
                                     }
-                                    hoverInfoSubCategoryBuilder = new StringBuilder(hoverInfoSubCategoryBuilder.toString().replace("{ID}", "" + cCategory.getId()).replace("{CATEGORY}", cCategory.getName()).replace("{USED}", cSubCategory.isUsed() ? CustomHeads.getLanguageManager().YES : CustomHeads.getLanguageManager().NO));
+                                    hoverInfoSubCategoryBuilder = new StringBuilder(hoverInfoSubCategoryBuilder.toString().replace("{ID}", cCategory.getId()).replace("{CATEGORY}", cCategory.getName()).replace("{USED}", cSubCategory.isUsed() ? CustomHeads.getLanguageManager().YES : CustomHeads.getLanguageManager().NO));
                                     hoverInfoSubCategoryBuilder = new StringBuilder(hoverInfoSubCategoryBuilder.substring(0, hoverInfoSubCategoryBuilder.length() - 1));
                                     hoverInfoSubCategoryBuilder.append("\"}");
 

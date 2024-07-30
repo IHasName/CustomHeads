@@ -5,27 +5,29 @@ import de.likewhat.customheads.utils.reflection.helpers.wrappers.FieldWrapper;
 
 public class FieldWrappers {
 
-    private static final FieldWrapper PLAYER_INVENTORY_V1123 = new FieldWrapper(ClassWrappers.ENTITY_HUMAN, "cm", Version.V1_20_R3, Version.V1_20_R3);
-    private static final FieldWrapper PLAYER_INVENTORY_V1122 = new FieldWrapper(ClassWrappers.ENTITY_HUMAN, "cn", Version.V1_20_R2, Version.V1_20_R2, PLAYER_INVENTORY_V1123);
-    private static final FieldWrapper PLAYER_INVENTORY_V1121 = new FieldWrapper(ClassWrappers.ENTITY_HUMAN, "cl", Version.V1_20_R1, Version.V1_20_R1, PLAYER_INVENTORY_V1122);
-    private static final FieldWrapper PLAYER_INVENTORY_V1193 = new FieldWrapper(ClassWrappers.ENTITY_HUMAN, "ck", Version.V1_19_R3, Version.V1_19_R3, PLAYER_INVENTORY_V1121);
+    private static final FieldWrapper PLAYER_INVENTORY_V1205 = new FieldWrapper(ClassWrappers.ENTITY_HUMAN, "inventory", Version.V1_20_5, null); // Inventory
+    private static final FieldWrapper PLAYER_INVENTORY_V1203 = new FieldWrapper(ClassWrappers.ENTITY_HUMAN, "cm", Version.V1_20_R3, Version.V1_20_R3, PLAYER_INVENTORY_V1205);
+    private static final FieldWrapper PLAYER_INVENTORY_V1202 = new FieldWrapper(ClassWrappers.ENTITY_HUMAN, "cn", Version.V1_20_R2, Version.V1_20_R2, PLAYER_INVENTORY_V1203);
+    private static final FieldWrapper PLAYER_INVENTORY_V1201 = new FieldWrapper(ClassWrappers.ENTITY_HUMAN, "cl", Version.V1_20_R1, Version.V1_20_R1, PLAYER_INVENTORY_V1202);
+    private static final FieldWrapper PLAYER_INVENTORY_V1193 = new FieldWrapper(ClassWrappers.ENTITY_HUMAN, "ck", Version.V1_19_R3, Version.V1_19_R3, PLAYER_INVENTORY_V1201);
     private static final FieldWrapper PLAYER_INVENTORY_V1192 = new FieldWrapper(ClassWrappers.ENTITY_HUMAN, "co", Version.V1_19_R2, Version.V1_19_R2, PLAYER_INVENTORY_V1193);
     private static final FieldWrapper PLAYER_INVENTORY_V1191 = new FieldWrapper(ClassWrappers.ENTITY_HUMAN, "cp", Version.V1_19_R1, Version.V1_19_R1, PLAYER_INVENTORY_V1192);
     private static final FieldWrapper PLAYER_INVENTORY_V1182 = new FieldWrapper(ClassWrappers.ENTITY_HUMAN, "co", Version.V1_18_R2, Version.V1_18_R2, PLAYER_INVENTORY_V1191);
     private static final FieldWrapper PLAYER_INVENTORY_V1181 = new FieldWrapper(ClassWrappers.ENTITY_HUMAN, "cp", Version.V1_18_R1, Version.V1_18_R1, PLAYER_INVENTORY_V1182);
     private static final FieldWrapper PLAYER_INVENTORY_V1171 = new FieldWrapper(ClassWrappers.ENTITY_HUMAN, "co", Version.V1_17_R1, Version.V1_17_R1, PLAYER_INVENTORY_V1181);
-    public static final FieldWrapper PLAYER_INVENTORY = new FieldWrapper(ClassWrappers.ENTITY_HUMAN, "inventory", null, Version.V1_16_R3, PLAYER_INVENTORY_V1171);
+    public static final FieldWrapper PLAYER_INVENTORY = new FieldWrapper(ClassWrappers.ENTITY_HUMAN, "inventory", null, Version.V1_16_R3, PLAYER_INVENTORY_V1171); // PlayerInventory
 
-
-    private static final FieldWrapper PLAYER_ACTIVE_CONTAINER_V1202 = new FieldWrapper(ClassWrappers.ENTITY_HUMAN, "bS", Version.V1_20_R2, Version.V1_20_R3);
+    private static final FieldWrapper PLAYER_ACTIVE_CONTAINER_V1205 = new FieldWrapper(ClassWrappers.ENTITY_HUMAN, "containerMenu", Version.V1_20_5, null); // AbstractContainerMenu
+    private static final FieldWrapper PLAYER_ACTIVE_CONTAINER_V1202 = new FieldWrapper(ClassWrappers.ENTITY_HUMAN, "bS", Version.V1_20_R2, Version.V1_20_R3, PLAYER_ACTIVE_CONTAINER_V1205);
     private static final FieldWrapper PLAYER_ACTIVE_CONTAINER_V1201 = new FieldWrapper(ClassWrappers.ENTITY_HUMAN, "bR", Version.V1_20_R1, Version.V1_20_R1, PLAYER_ACTIVE_CONTAINER_V1202);
     private static final FieldWrapper PLAYER_ACTIVE_CONTAINER_V1193 = new FieldWrapper(ClassWrappers.ENTITY_HUMAN, "bP", Version.V1_19_R3, Version.V1_19_R3, PLAYER_ACTIVE_CONTAINER_V1201);
     private static final FieldWrapper PLAYER_ACTIVE_CONTAINER_V1182 = new FieldWrapper(ClassWrappers.ENTITY_HUMAN, "bU", Version.V1_18_R2, Version.V1_19_R2, PLAYER_ACTIVE_CONTAINER_V1193);
     private static final FieldWrapper PLAYER_ACTIVE_CONTAINER_V1181 = new FieldWrapper(ClassWrappers.ENTITY_HUMAN, "bW", Version.V1_18_R1, Version.V1_18_R1, PLAYER_ACTIVE_CONTAINER_V1182);
     private static final FieldWrapper PLAYER_ACTIVE_CONTAINER_V1171 = new FieldWrapper(ClassWrappers.ENTITY_HUMAN, "bV", Version.V1_17_R1, Version.V1_17_R1, PLAYER_ACTIVE_CONTAINER_V1181);
-    public static final FieldWrapper PLAYER_ACTIVE_CONTAINER = new FieldWrapper(ClassWrappers.ENTITY_HUMAN, "activeContainer", null, Version.V1_16_R3, PLAYER_ACTIVE_CONTAINER_V1171);
+    public static final FieldWrapper PLAYER_ACTIVE_CONTAINER = new FieldWrapper(ClassWrappers.ENTITY_HUMAN, "activeContainer", null, Version.V1_16_R3, PLAYER_ACTIVE_CONTAINER_V1171); // Container
 
-    private static final FieldWrapper PLAYER_CONNECTION_V1201 = new FieldWrapper(ClassWrappers.ENTITY_PLAYER, "c", Version.V1_20_R1, Version.V1_20_R3);
+    private static final FieldWrapper PLAYER_CONNECTION_V1205 = new FieldWrapper(ClassWrappers.ENTITY_PLAYER, "connection", Version.V1_20_5, null);
+    private static final FieldWrapper PLAYER_CONNECTION_V1201 = new FieldWrapper(ClassWrappers.ENTITY_PLAYER, "c", Version.V1_20_R1, Version.V1_20_R3, PLAYER_CONNECTION_V1205);
     private static final FieldWrapper PLAYER_CONNECTION_V1171 = new FieldWrapper(ClassWrappers.ENTITY_PLAYER, "b", Version.V1_17_R1, Version.V1_19_R3, PLAYER_CONNECTION_V1201);
     public static final FieldWrapper PLAYER_CONNECTION = new FieldWrapper(ClassWrappers.ENTITY_PLAYER, "playerConnection", null, Version.V1_16_R3, PLAYER_CONNECTION_V1171);
 
@@ -41,5 +43,7 @@ public class FieldWrappers {
     private static final FieldWrapper CONTAINERS_ANVIL_V1204 = new FieldWrapper(ClassWrappers.CONTAINERS, "i", Version.V1_20_R2, Version.V1_20_R3);
     private static final FieldWrapper CONTAINERS_ANVIL_V1201 = new FieldWrapper(ClassWrappers.CONTAINERS, "h", Version.V1_16_R3, Version.V1_20_R2, CONTAINERS_ANVIL_V1204);
     public static final FieldWrapper CONTAINERS_ANVIL = new FieldWrapper(ClassWrappers.CONTAINERS, "ANVIL", Version.V1_14_R1, Version.V1_16_R3, CONTAINERS_ANVIL_V1201);
+
+    public static final FieldWrapper DATA_COMPONENTS_CUSTOM_DATA = new FieldWrapper(ClassWrappers.DATA_COMPONENTS, "CUSTOM_DATA", Version.V1_20_5, null);
 
 }

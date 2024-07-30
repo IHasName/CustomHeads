@@ -133,19 +133,11 @@ public class NBTTagUtils {
                     }
                     break;
                 case SHORT:
-                    result = new JsonPrimitive(generic.asShort());
-                    break;
                 case INT:
-                    result = new JsonPrimitive(generic.asInt());
-                    break;
                 case LONG:
-                    result = new JsonPrimitive(generic.asLong());
-                    break;
                 case FLOAT:
-                    result = new JsonPrimitive(generic.asFloat());
-                    break;
                 case DOUBLE:
-                    result = new JsonPrimitive(generic.asDouble());
+                    result = new JsonPrimitive(generic.asNumber());
                     break;
                 case STRING:
                     result = new JsonPrimitive(generic.asString());

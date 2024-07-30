@@ -26,7 +26,7 @@ import java.util.Random;
 public class CategoryEditor {
 
     private final Category category;
-    private Player player;
+    private final Player player;
     
     public CategoryEditor(Category category, Player editor) {
         this.category = category;
