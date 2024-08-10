@@ -6,7 +6,6 @@ import de.likewhat.customheads.utils.ItemEditor;
 import de.likewhat.customheads.utils.Utils;
 import lombok.AccessLevel;
 import lombok.Getter;
-import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 import java.io.File;
@@ -26,6 +25,7 @@ public class HeadFontType {
     private static final char[] AVAILABLE_CHARACTERS = "abcdefghijklmnopqrstuvwxyz0123456789!?#$%&@_'\"()[]{}<>+-/=:,;\\ ".toCharArray();
 
     private static final HashMap<String, HeadFontType> FONT_CACHE = new HashMap<>();
+    @Getter
     private final HashMap<Character, ItemStack> characterItems = new HashMap<>();
 
     @Getter(AccessLevel.NONE)
@@ -47,7 +47,7 @@ public class HeadFontType {
                     if (!Utils.charArrayContains(AVAILABLE_CHARACTERS, key.charAt(0))) {
                         throw new UnsupportedOperationException("Unsupported Character: '" + key.charAt(0) + "'");
                     }
-                    characterItems.put(key.charAt(0), new ItemEditor(Material.SKULL_ITEM,  3).setTexture(fontFile.get().getString("characters." + key)).getItem());
+                    characterItems.put(key.charAt(0), Utils.createPlayerHeadItemEditor().setTexture(fontFile.get().getString("characters." + key)).getItem());
                 }
             }
         }
@@ -63,7 +63,7 @@ public class HeadFontType {
 
     public boolean addCharacter(char character, String texture, boolean forceReplace) {
         if (Utils.charArrayContains(AVAILABLE_CHARACTERS, character) && (!characterItems.containsKey(character) || forceReplace)) {
-            characterItems.put(character, new ItemEditor(Material.SKULL_ITEM,  3).setTexture(texture).getItem());
+            characterItems.put(character, Utils.createPlayerHeadItemEditor().setTexture(texture).getItem());
             return true;
         }
         return false;
@@ -83,10 +83,6 @@ public class HeadFontType {
         cacheID = Utils.randomAlphabetic(6);
         FONT_CACHE.put(cacheID, this);
         return this;
-    }
-
-    public HashMap<Character, ItemStack> getCharacterItems() {
-        return characterItems;
     }
 
     public ItemStack getCharacter(char character) {

@@ -10,6 +10,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -24,12 +25,23 @@ import static de.likewhat.customheads.utils.Utils.format;
  */
 public class JsonToItem {
 
+    private static final List<String> SKULL_ITEMS = Arrays.asList("SKULL_ITEM", "PLAYER_HEAD");
+
     public static ItemStack convertFromJson(String json) {
         JsonParser parser = new JsonParser();
         ItemEditor itemEditor = null;
         try {
             JsonObject itemObj = parser.parse(json).getAsJsonObject();
-            Material material = Material.getMaterial(itemObj.get("item").getAsString());
+            String materialName = itemObj.get("item").getAsString();
+            boolean isSkull = SKULL_ITEMS.contains(materialName.toUpperCase());
+            Material material;
+            if(isSkull) {
+                // Auto-Fix Issue with Legacy Skull Items
+                material = Utils.getPlayerHeadMaterial();
+            } else {
+                material = Material.getMaterial(materialName);
+            }
+
             if(material == null) {
                 throw new IllegalArgumentException("Invalid Material Name: " + itemObj.get("item").getAsString());
             }

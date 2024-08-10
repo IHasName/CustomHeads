@@ -1,11 +1,10 @@
 package de.likewhat.customheads.category;
 
 import de.likewhat.customheads.CustomHeads;
-import de.likewhat.customheads.utils.ItemEditor;
 import de.likewhat.customheads.utils.JsonFile;
+import de.likewhat.customheads.utils.Utils;
 import lombok.Getter;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.permissions.Permission;
 import org.bukkit.plugin.PluginManager;
 
@@ -227,7 +226,7 @@ public class CategoryManager {
     }
 
     public Category createCategory(String name) {
-        return new Category(nextCategoryID(), name, name.toLowerCase(), 0, new ItemEditor(Material.SKULL_ITEM, (byte) 3).setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYmFkYzA0OGE3Y2U3OGY3ZGFkNzJhMDdkYTI3ZDg1YzA5MTY4ODFlNTUyMmVlZWQxZTNkYWYyMTdhMzhjMWEifX19").setDisplayName("Category Icon").setLore("§7Replace this Item\n§7to set the Icon").getItem());
+        return new Category(nextCategoryID(), name, name.toLowerCase(), 0, Utils.createPlayerHeadItemEditor().setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYmFkYzA0OGE3Y2U3OGY3ZGFkNzJhMDdkYTI3ZDg1YzA5MTY4ODFlNTUyMmVlZWQxZTNkYWYyMTdhMzhjMWEifX19").setDisplayName("Category Icon").setLore("§7Replace this Item\n§7to set the Icon").getItem());
     }
 
     public Category getCategory(String id) {

@@ -150,7 +150,7 @@ public class ItemEditor {
     }
 
     public ItemEditor setTexture(String texture) {
-        if (itemStack.getType() != Material.SKULL_ITEM)
+        if (itemStack.getType() != Utils.getPlayerHeadMaterial())
             throw new IllegalArgumentException("ItemStack is not an Player Head");
         GameProfile profile = GameProfileBuilder.createProfileWithTexture(texture);
         try {
@@ -173,7 +173,7 @@ public class ItemEditor {
     }
 
     public ItemEditor setOwner(String owner) {
-        if (itemStack.getType() != Material.SKULL_ITEM)
+        if (itemStack.getType() != Utils.getPlayerHeadMaterial())
             throw new IllegalArgumentException("ItemStack is not an Player Head");
         SkullMeta skullMeta = ((SkullMeta) meta);
         skullMeta.setOwner(owner);

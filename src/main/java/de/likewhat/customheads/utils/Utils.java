@@ -77,7 +77,7 @@ public class Utils {
     }
 
     public static ItemStack getBackButton(String... action) {
-        return CustomHeads.getTagEditor().addTags(new ItemEditor(Material.SKULL_ITEM, 3).setDisplayName(CustomHeads.getLanguageManager().BACK_GENERAL).setLore(CustomHeads.getLanguageManager().BACK_TO_PREVIOUS).setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzM3NjQ4YWU3YTU2NGE1Mjg3NzkyYjA1ZmFjNzljNmI2YmQ0N2Y2MTZhNTU5Y2U4YjU0M2U2OTQ3MjM1YmNlIn19fQ==").getItem(), action);
+        return CustomHeads.getTagEditor().addTags(createPlayerHeadItemEditor().setDisplayName(CustomHeads.getLanguageManager().BACK_GENERAL).setLore(CustomHeads.getLanguageManager().BACK_TO_PREVIOUS).setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzM3NjQ4YWU3YTU2NGE1Mjg3NzkyYjA1ZmFjNzljNmI2YmQ0N2Y2MTZhNTU5Y2U4YjU0M2U2OTQ3MjM1YmNlIn19fQ==").getItem(), action);
     }
 
     public static HashMap<String, String[]> getPermissions() {
@@ -120,11 +120,11 @@ public class Utils {
                         Inventory noRes = Bukkit.createInventory(new CustomHeadsInventoryHolder.BaseHolder("custom_heads:search:no_results", event.getPlayer()), 9 * 3, CustomHeads.getLanguageManager().NO_RESULTS);
                         noRes.setItem(13, CustomHeads.getTagEditor().setTags(new ItemEditor(Material.BARRIER).setDisplayName(CustomHeads.getLanguageManager().NO_RESULTS).getItem(), "blockMoving"));
                         if (action.length > 0) {
-                            noRes.setItem(18, Utils.getBackButton(action));
+                            noRes.setItem(18, getBackButton(action));
                         } else {
-                            noRes.setItem(18, Utils.getBackButton("invAction", "willClose#>"));
+                            noRes.setItem(18, getBackButton("invAction", "willClose#>"));
                         }
-                        noRes.setItem(26, CustomHeads.getTagEditor().setTags(new ItemEditor(Material.SKULL_ITEM,  3).setDisplayName(CustomHeads.getLanguageManager().NO_RESULTS_TRY_AGAIN).setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMWI2ZjFhMjViNmJjMTk5OTQ2NDcyYWVkYjM3MDUyMjU4NGZmNmY0ZTgzMjIxZTU5NDZiZDJlNDFiNWNhMTNiIn19fQ==").getItem(), "invAction", "retrySearch#>" + event.getName()));
+                        noRes.setItem(26, CustomHeads.getTagEditor().setTags(createPlayerHeadItemEditor().setDisplayName(CustomHeads.getLanguageManager().NO_RESULTS_TRY_AGAIN).setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMWI2ZjFhMjViNmJjMTk5OTQ2NDcyYWVkYjM3MDUyMjU4NGZmNmY0ZTgzMjIxZTU5NDZiZDJlNDFiNWNhMTNiIn19fQ==").getItem(), "invAction", "retrySearch#>" + event.getName()));
                         player.closeInventory();
                         new BukkitRunnable() {
                             public void run() {
@@ -163,7 +163,7 @@ public class Utils {
                             return;
                         }
                         CustomHeads.getApi().wrapPlayer(player).getGetHistory().addEntry(event.getName());
-                        event.getPlayer().setItemOnCursor(new ItemEditor(Material.SKULL_ITEM,  3).setDisplayName(CustomHeads.getLanguageManager().GET_HEAD_NAME.replace("{PLAYER}", event.getName())).setOwner(event.getName()).getItem());
+                        event.getPlayer().setItemOnCursor(createPlayerHeadItemEditor().setDisplayName(CustomHeads.getLanguageManager().GET_HEAD_NAME.replace("{PLAYER}", event.getName())).setOwner(event.getName()).getItem());
                     }
                 } else if (event.getSlot() == AnvilGUI.AnvilSlot.INPUT_LEFT || event.getSlot() == AnvilGUI.AnvilSlot.INPUT_RIGHT) {
                     event.setCancelled(true);
@@ -250,32 +250,32 @@ public class Utils {
     public static ItemStack getAlphabetCharacter(char character) {
         if (alphabet == null) {
             alphabet = new HashMap<>();
-            alphabet.put('a', new ItemEditor(Material.SKULL_ITEM,  3).setDisplayName("a").setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYTY3ZDgxM2FlN2ZmZTViZTk1MWE0ZjQxZjJhYTYxOWE1ZTM4OTRlODVlYTVkNDk4NmY4NDk0OWM2M2Q3NjcyZSJ9fX0=").getItem());
-            alphabet.put('b', new ItemEditor(Material.SKULL_ITEM,  3).setDisplayName("b").setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNTBjMWI1ODRmMTM5ODdiNDY2MTM5Mjg1YjJmM2YyOGRmNjc4NzEyM2QwYjMyMjgzZDg3OTRlMzM3NGUyMyJ9fX0=").getItem());
-            alphabet.put('c', new ItemEditor(Material.SKULL_ITEM,  3).setDisplayName("c").setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYWJlOTgzZWM0NzgwMjRlYzZmZDA0NmZjZGZhNDg0MjY3NjkzOTU1MWI0NzM1MDQ0N2M3N2MxM2FmMThlNmYifX19").getItem());
-            alphabet.put('d', new ItemEditor(Material.SKULL_ITEM,  3).setDisplayName("d").setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzE5M2RjMGQ0YzVlODBmZjlhOGEwNWQyZmNmZTI2OTUzOWNiMzkyNzE5MGJhYzE5ZGEyZmNlNjFkNzEifX19").getItem());
-            alphabet.put('e', new ItemEditor(Material.SKULL_ITEM,  3).setDisplayName("e").setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZGJiMjczN2VjYmY5MTBlZmUzYjI2N2RiN2Q0YjMyN2YzNjBhYmM3MzJjNzdiZDBlNGVmZjFkNTEwY2RlZiJ9fX0=").getItem());
-            alphabet.put('f', new ItemEditor(Material.SKULL_ITEM,  3).setDisplayName("f").setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYjE4M2JhYjUwYTMyMjQwMjQ4ODZmMjUyNTFkMjRiNmRiOTNkNzNjMjQzMjU1OWZmNDllNDU5YjRjZDZhIn19fQ==").getItem());
-            alphabet.put('g', new ItemEditor(Material.SKULL_ITEM,  3).setDisplayName("g").setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMWNhM2YzMjRiZWVlZmI2YTBlMmM1YjNjNDZhYmM5MWNhOTFjMTRlYmE0MTlmYTQ3NjhhYzMwMjNkYmI0YjIifX19").getItem());
-            alphabet.put('h', new ItemEditor(Material.SKULL_ITEM,  3).setDisplayName("h").setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzFmMzQ2MmE0NzM1NDlmMTQ2OWY4OTdmODRhOGQ0MTE5YmM3MWQ0YTVkODUyZTg1YzI2YjU4OGE1YzBjNzJmIn19fQ==").getItem());
-            alphabet.put('i', new ItemEditor(Material.SKULL_ITEM,  3).setDisplayName("i").setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNDYxNzhhZDUxZmQ1MmIxOWQwYTM4ODg3MTBiZDkyMDY4ZTkzMzI1MmFhYzZiMTNjNzZlN2U2ZWE1ZDMyMjYifX19").getItem());
-            alphabet.put('j', new ItemEditor(Material.SKULL_ITEM,  3).setDisplayName("j").setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvM2E3OWRiOTkyMzg2N2U2OWMxZGJmMTcxNTFlNmY0YWQ5MmNlNjgxYmNlZGQzOTc3ZWViYmM0NGMyMDZmNDkifX19").getItem());
-            alphabet.put('k', new ItemEditor(Material.SKULL_ITEM,  3).setDisplayName("k").setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTQ2MWIzOGM4ZTQ1NzgyYWRhNTlkMTYxMzJhNDIyMmMxOTM3NzhlN2Q3MGM0NTQyYzk1MzYzNzZmMzdiZTQyIn19fQ==").getItem());
-            alphabet.put('l', new ItemEditor(Material.SKULL_ITEM,  3).setDisplayName("l").setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzE5ZjUwYjQzMmQ4NjhhZTM1OGUxNmY2MmVjMjZmMzU0MzdhZWI5NDkyYmNlMTM1NmM5YWE2YmIxOWEzODYifX19").getItem());
-            alphabet.put('m', new ItemEditor(Material.SKULL_ITEM,  3).setDisplayName("m").setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNDljNDVhMjRhYWFiZjQ5ZTIxN2MxNTQ4MzIwNDg0OGE3MzU4MmFiYTdmYWUxMGVlMmM1N2JkYjc2NDgyZiJ9fX0= ").getItem());
-            alphabet.put('n', new ItemEditor(Material.SKULL_ITEM,  3).setDisplayName("n").setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzViOGIzZDhjNzdkZmI4ZmJkMjQ5NWM4NDJlYWM5NGZmZmE2ZjU5M2JmMTVhMjU3NGQ4NTRkZmYzOTI4In19fQ==").getItem());
-            alphabet.put('o', new ItemEditor(Material.SKULL_ITEM,  3).setDisplayName("o").setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDExZGUxY2FkYjJhZGU2MTE0OWU1ZGVkMWJkODg1ZWRmMGRmNjI1OTI1NWIzM2I1ODdhOTZmOTgzYjJhMSJ9fX0=").getItem());
-            alphabet.put('p', new ItemEditor(Material.SKULL_ITEM,  3).setDisplayName("p").setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYTBhNzk4OWI1ZDZlNjIxYTEyMWVlZGFlNmY0NzZkMzUxOTNjOTdjMWE3Y2I4ZWNkNDM2MjJhNDg1ZGMyZTkxMiJ9fX0=").getItem());
-            alphabet.put('q', new ItemEditor(Material.SKULL_ITEM,  3).setDisplayName("q").setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNDM2MDlmMWZhZjgxZWQ0OWM1ODk0YWMxNGM5NGJhNTI5ODlmZGE0ZTFkMmE1MmZkOTQ1YTU1ZWQ3MTllZDQifX19").getItem());
-            alphabet.put('r', new ItemEditor(Material.SKULL_ITEM,  3).setDisplayName("r").setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYTVjZWQ5OTMxYWNlMjNhZmMzNTEzNzEzNzliZjA1YzYzNWFkMTg2OTQzYmMxMzY0NzRlNGU1MTU2YzRjMzcifX19").getItem());
-            alphabet.put('s', new ItemEditor(Material.SKULL_ITEM,  3).setDisplayName("s").setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvM2U0MWM2MDU3MmM1MzNlOTNjYTQyMTIyODkyOWU1NGQ2Yzg1NjUyOTQ1OTI0OWMyNWMzMmJhMzNhMWIxNTE3In19fQ==").getItem());
-            alphabet.put('t', new ItemEditor(Material.SKULL_ITEM,  3).setDisplayName("t").setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTU2MmU4YzFkNjZiMjFlNDU5YmU5YTI0ZTVjMDI3YTM0ZDI2OWJkY2U0ZmJlZTJmNzY3OGQyZDNlZTQ3MTgifX19").getItem());
-            alphabet.put('u', new ItemEditor(Material.SKULL_ITEM,  3).setDisplayName("u").setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNjA3ZmJjMzM5ZmYyNDFhYzNkNjYxOWJjYjY4MjUzZGZjM2M5ODc4MmJhZjNmMWY0ZWZkYjk1NGY5YzI2In19fQ==").getItem());
-            alphabet.put('v', new ItemEditor(Material.SKULL_ITEM,  3).setDisplayName("v").setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvY2M5YTEzODYzOGZlZGI1MzRkNzk5Mjg4NzZiYWJhMjYxYzdhNjRiYTc5YzQyNGRjYmFmY2M5YmFjNzAxMGI4In19fQ==").getItem());
-            alphabet.put('w', new ItemEditor(Material.SKULL_ITEM,  3).setDisplayName("w").setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMjY5YWQxYTg4ZWQyYjA3NGUxMzAzYTEyOWY5NGU0YjcxMGNmM2U1YjRkOTk1MTYzNTY3ZjY4NzE5YzNkOTc5MiJ9fX0=").getItem());
-            alphabet.put('x', new ItemEditor(Material.SKULL_ITEM,  3).setDisplayName("x").setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNWE2Nzg3YmEzMjU2NGU3YzJmM2EwY2U2NDQ5OGVjYmIyM2I4OTg0NWU1YTY2YjVjZWM3NzM2ZjcyOWVkMzcifX19").getItem());
-            alphabet.put('y', new ItemEditor(Material.SKULL_ITEM,  3).setDisplayName("y").setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzUyZmIzODhlMzMyMTJhMjQ3OGI1ZTE1YTk2ZjI3YWNhNmM2MmFjNzE5ZTFlNWY4N2ExY2YwZGU3YjE1ZTkxOCJ9fX0=").getItem());
-            alphabet.put('z', new ItemEditor(Material.SKULL_ITEM,  3).setDisplayName("z").setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTA1ODJiOWI1ZDk3OTc0YjExNDYxZDYzZWNlZDg1ZjQzOGEzZWVmNWRjMzI3OWY5YzQ3ZTFlMzhlYTU0YWU4ZCJ9fX0=").getItem());
+            alphabet.put('a', createPlayerHeadItemEditor().setDisplayName("a").setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYTY3ZDgxM2FlN2ZmZTViZTk1MWE0ZjQxZjJhYTYxOWE1ZTM4OTRlODVlYTVkNDk4NmY4NDk0OWM2M2Q3NjcyZSJ9fX0=").getItem());
+            alphabet.put('b', createPlayerHeadItemEditor().setDisplayName("b").setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNTBjMWI1ODRmMTM5ODdiNDY2MTM5Mjg1YjJmM2YyOGRmNjc4NzEyM2QwYjMyMjgzZDg3OTRlMzM3NGUyMyJ9fX0=").getItem());
+            alphabet.put('c', createPlayerHeadItemEditor().setDisplayName("c").setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYWJlOTgzZWM0NzgwMjRlYzZmZDA0NmZjZGZhNDg0MjY3NjkzOTU1MWI0NzM1MDQ0N2M3N2MxM2FmMThlNmYifX19").getItem());
+            alphabet.put('d', createPlayerHeadItemEditor().setDisplayName("d").setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzE5M2RjMGQ0YzVlODBmZjlhOGEwNWQyZmNmZTI2OTUzOWNiMzkyNzE5MGJhYzE5ZGEyZmNlNjFkNzEifX19").getItem());
+            alphabet.put('e', createPlayerHeadItemEditor().setDisplayName("e").setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZGJiMjczN2VjYmY5MTBlZmUzYjI2N2RiN2Q0YjMyN2YzNjBhYmM3MzJjNzdiZDBlNGVmZjFkNTEwY2RlZiJ9fX0=").getItem());
+            alphabet.put('f', createPlayerHeadItemEditor().setDisplayName("f").setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYjE4M2JhYjUwYTMyMjQwMjQ4ODZmMjUyNTFkMjRiNmRiOTNkNzNjMjQzMjU1OWZmNDllNDU5YjRjZDZhIn19fQ==").getItem());
+            alphabet.put('g', createPlayerHeadItemEditor().setDisplayName("g").setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMWNhM2YzMjRiZWVlZmI2YTBlMmM1YjNjNDZhYmM5MWNhOTFjMTRlYmE0MTlmYTQ3NjhhYzMwMjNkYmI0YjIifX19").getItem());
+            alphabet.put('h', createPlayerHeadItemEditor().setDisplayName("h").setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzFmMzQ2MmE0NzM1NDlmMTQ2OWY4OTdmODRhOGQ0MTE5YmM3MWQ0YTVkODUyZTg1YzI2YjU4OGE1YzBjNzJmIn19fQ==").getItem());
+            alphabet.put('i', createPlayerHeadItemEditor().setDisplayName("i").setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNDYxNzhhZDUxZmQ1MmIxOWQwYTM4ODg3MTBiZDkyMDY4ZTkzMzI1MmFhYzZiMTNjNzZlN2U2ZWE1ZDMyMjYifX19").getItem());
+            alphabet.put('j', createPlayerHeadItemEditor().setDisplayName("j").setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvM2E3OWRiOTkyMzg2N2U2OWMxZGJmMTcxNTFlNmY0YWQ5MmNlNjgxYmNlZGQzOTc3ZWViYmM0NGMyMDZmNDkifX19").getItem());
+            alphabet.put('k', createPlayerHeadItemEditor().setDisplayName("k").setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTQ2MWIzOGM4ZTQ1NzgyYWRhNTlkMTYxMzJhNDIyMmMxOTM3NzhlN2Q3MGM0NTQyYzk1MzYzNzZmMzdiZTQyIn19fQ==").getItem());
+            alphabet.put('l', createPlayerHeadItemEditor().setDisplayName("l").setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzE5ZjUwYjQzMmQ4NjhhZTM1OGUxNmY2MmVjMjZmMzU0MzdhZWI5NDkyYmNlMTM1NmM5YWE2YmIxOWEzODYifX19").getItem());
+            alphabet.put('m', createPlayerHeadItemEditor().setDisplayName("m").setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNDljNDVhMjRhYWFiZjQ5ZTIxN2MxNTQ4MzIwNDg0OGE3MzU4MmFiYTdmYWUxMGVlMmM1N2JkYjc2NDgyZiJ9fX0= ").getItem());
+            alphabet.put('n', createPlayerHeadItemEditor().setDisplayName("n").setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzViOGIzZDhjNzdkZmI4ZmJkMjQ5NWM4NDJlYWM5NGZmZmE2ZjU5M2JmMTVhMjU3NGQ4NTRkZmYzOTI4In19fQ==").getItem());
+            alphabet.put('o', createPlayerHeadItemEditor().setDisplayName("o").setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDExZGUxY2FkYjJhZGU2MTE0OWU1ZGVkMWJkODg1ZWRmMGRmNjI1OTI1NWIzM2I1ODdhOTZmOTgzYjJhMSJ9fX0=").getItem());
+            alphabet.put('p', createPlayerHeadItemEditor().setDisplayName("p").setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYTBhNzk4OWI1ZDZlNjIxYTEyMWVlZGFlNmY0NzZkMzUxOTNjOTdjMWE3Y2I4ZWNkNDM2MjJhNDg1ZGMyZTkxMiJ9fX0=").getItem());
+            alphabet.put('q', createPlayerHeadItemEditor().setDisplayName("q").setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNDM2MDlmMWZhZjgxZWQ0OWM1ODk0YWMxNGM5NGJhNTI5ODlmZGE0ZTFkMmE1MmZkOTQ1YTU1ZWQ3MTllZDQifX19").getItem());
+            alphabet.put('r', createPlayerHeadItemEditor().setDisplayName("r").setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYTVjZWQ5OTMxYWNlMjNhZmMzNTEzNzEzNzliZjA1YzYzNWFkMTg2OTQzYmMxMzY0NzRlNGU1MTU2YzRjMzcifX19").getItem());
+            alphabet.put('s', createPlayerHeadItemEditor().setDisplayName("s").setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvM2U0MWM2MDU3MmM1MzNlOTNjYTQyMTIyODkyOWU1NGQ2Yzg1NjUyOTQ1OTI0OWMyNWMzMmJhMzNhMWIxNTE3In19fQ==").getItem());
+            alphabet.put('t', createPlayerHeadItemEditor().setDisplayName("t").setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTU2MmU4YzFkNjZiMjFlNDU5YmU5YTI0ZTVjMDI3YTM0ZDI2OWJkY2U0ZmJlZTJmNzY3OGQyZDNlZTQ3MTgifX19").getItem());
+            alphabet.put('u', createPlayerHeadItemEditor().setDisplayName("u").setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNjA3ZmJjMzM5ZmYyNDFhYzNkNjYxOWJjYjY4MjUzZGZjM2M5ODc4MmJhZjNmMWY0ZWZkYjk1NGY5YzI2In19fQ==").getItem());
+            alphabet.put('v', createPlayerHeadItemEditor().setDisplayName("v").setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvY2M5YTEzODYzOGZlZGI1MzRkNzk5Mjg4NzZiYWJhMjYxYzdhNjRiYTc5YzQyNGRjYmFmY2M5YmFjNzAxMGI4In19fQ==").getItem());
+            alphabet.put('w', createPlayerHeadItemEditor().setDisplayName("w").setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMjY5YWQxYTg4ZWQyYjA3NGUxMzAzYTEyOWY5NGU0YjcxMGNmM2U1YjRkOTk1MTYzNTY3ZjY4NzE5YzNkOTc5MiJ9fX0=").getItem());
+            alphabet.put('x', createPlayerHeadItemEditor().setDisplayName("x").setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNWE2Nzg3YmEzMjU2NGU3YzJmM2EwY2U2NDQ5OGVjYmIyM2I4OTg0NWU1YTY2YjVjZWM3NzM2ZjcyOWVkMzcifX19").getItem());
+            alphabet.put('y', createPlayerHeadItemEditor().setDisplayName("y").setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzUyZmIzODhlMzMyMTJhMjQ3OGI1ZTE1YTk2ZjI3YWNhNmM2MmFjNzE5ZTFlNWY4N2ExY2YwZGU3YjE1ZTkxOCJ9fX0=").getItem());
+            alphabet.put('z', createPlayerHeadItemEditor().setDisplayName("z").setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTA1ODJiOWI1ZDk3OTc0YjExNDYxZDYzZWNlZDg1ZjQzOGEzZWVmNWRjMzI3OWY5YzQ3ZTFlMzhlYTU0YWU4ZCJ9fX0=").getItem());
         }
         return alphabet.get(character);
     }
@@ -290,9 +290,9 @@ public class Utils {
 
     public static Inventory getDialog(String title, String[] yesAction, String[] yesActionLore, String[] noAction, String[] noActionLore, ItemStack middleItem) {
         Inventory dialog = Bukkit.createInventory(new CustomHeadsInventoryHolder.BaseHolder("custom_heads:dialog"), 9 * 3, title.length() > 32 ? title.substring(0, 29) + "..." : title);
-        dialog.setItem(11, CustomHeads.getTagEditor().setTags(new ItemEditor(Material.SKULL_ITEM,  3).setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzYxZTViMzMzYzJhMzg2OGJiNmE1OGI2Njc0YTI2MzkzMjM4MTU3MzhlNzdlMDUzOTc3NDE5YWYzZjc3In19fQ==").setDisplayName("§a" + CustomHeads.getLanguageManager().YES).setLore(yesActionLore).getItem(), yesAction));
+        dialog.setItem(11, CustomHeads.getTagEditor().setTags(createPlayerHeadItemEditor().setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzYxZTViMzMzYzJhMzg2OGJiNmE1OGI2Njc0YTI2MzkzMjM4MTU3MzhlNzdlMDUzOTc3NDE5YWYzZjc3In19fQ==").setDisplayName("§a" + CustomHeads.getLanguageManager().YES).setLore(yesActionLore).getItem(), yesAction));
         dialog.setItem(13, CustomHeads.getTagEditor().setTags(middleItem, "blockMoving"));
-        dialog.setItem(15, CustomHeads.getTagEditor().setTags(new ItemEditor(Material.SKULL_ITEM,  3).setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNGJhYzc3NTIwYjllZWU2NTA2OGVmMWNkOGFiZWFkYjAxM2I0ZGUzOTUzZmQyOWFjNjhlOTBlNDg2NjIyNyJ9fX0=").setDisplayName("§c" + CustomHeads.getLanguageManager().NO).setLore(noActionLore).getItem(), noAction));
+        dialog.setItem(15, CustomHeads.getTagEditor().setTags(createPlayerHeadItemEditor().setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNGJhYzc3NTIwYjllZWU2NTA2OGVmMWNkOGFiZWFkYjAxM2I0ZGUzOTUzZmQyOWFjNjhlOTBlNDg2NjIyNyJ9fX0=").setDisplayName("§c" + CustomHeads.getLanguageManager().NO).setLore(noActionLore).getItem(), noAction));
         return dialog;
     }
 
@@ -407,7 +407,7 @@ public class Utils {
                     ItemEditor itemEditor = new ItemEditor(customHead);
                     return CustomHeads.hasEconomy() && CustomHeads.headsBuyable() ? (bought || hasPermission(player, "heads.unlock-all-heads." + baseCategory.getPermission().replaceFirst("heads.viewCategory.", ""))) ? CustomHeads.getTagEditor().addTags(itemEditor.addLoreLine(CustomHeads.getLanguageManager().ECONOMY_BOUGHT).getItem(), "wearable", "clonable") : CustomHeads.getTagEditor().addTags(itemEditor.addLoreLine(formatPrice(customHead.getPrice(), true)).getItem(), "buyHead", "buyHead#>" + customHead.getOriginCategory().getId() + ":" + customHead.getId()) : CustomHeads.getTagEditor().addTags(itemEditor.getItem(), "wearable", "clonable");
                 }).collect(Collectors.toList()));
-                inventory.setBarItem(1, Utils.getBackButton(backAction));
+                inventory.setBarItem(1, getBackButton(backAction));
                 inventory.setBarItem(3, CustomHeads.getTagEditor().setTags(new ItemEditor(Material.PAPER).setDisplayName(CustomHeads.getLanguageManager().ITEMS_INFO).setLore(CustomHeads.getLanguageManager().ITEMS_INFO_LORE).getItem(), "dec", "info-item", "blockMoving"));
                 runSyncedLater(new BukkitRunnable() {
                     public void run() {
@@ -447,6 +447,26 @@ public class Utils {
 
     public static void runAsyncTimer(BukkitRunnable runnable, long delay, long time) {
         runnable.runTaskTimerAsynchronously(CustomHeads.getInstance(), delay, time);
+    }
+
+    public static Material getPlayerHeadMaterial() {
+        if (Version.getCurrentVersion().isOlderThan(Version.V1_13_R1)) {
+            return Material.SKULL_ITEM;
+        } else {
+            return Material.getMaterial("PLAYER_HEAD");
+        }
+    }
+
+    public static ItemStack createPlayerHeadItemStack() {
+        if (Version.getCurrentVersion().isOlderThan(Version.V1_13_R1)) {
+            return new ItemStack(Material.SKULL_ITEM, 1, (short) 3);
+        } else {
+            return new ItemStack(Material.getMaterial("PLAYER_HEAD"));
+        }
+    }
+
+    public static ItemEditor createPlayerHeadItemEditor() {
+        return new ItemEditor(createPlayerHeadItemStack());
     }
 
     // I created this Code at Random just to Split Text
@@ -508,7 +528,7 @@ public class Utils {
             consumer.accept(CustomHeads.UUID_CACHE.get(name));
             return;
         }
-        Utils.runAsync(new BukkitRunnable() {
+        runAsync(new BukkitRunnable() {
             public void run() {
                 try {
                     HttpURLConnection connection = (HttpURLConnection) new URL(String.format("https://api.mojang.com/users/profiles/minecraft/%s", name)).openConnection();
@@ -526,7 +546,7 @@ public class Utils {
                             consumer.accept(null);
                             return;
                         }
-                        Utils.runSynced(new BukkitRunnable() {
+                        runSynced(new BukkitRunnable() {
                             public void run() {
                                 consumer.accept(new JsonParser().parse(json).getAsJsonObject().get("id").getAsString());
                             }
@@ -534,7 +554,7 @@ public class Utils {
                     }
                 } catch (Exception whoops) {
                     CustomHeads.getPluginLogger().log(Level.WARNING, "Couldn't get UUID from " + name, whoops);
-                    Utils.runSynced(new BukkitRunnable() {
+                    runSynced(new BukkitRunnable() {
                         public void run() {
                             consumer.accept(null);
                         }

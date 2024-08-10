@@ -8,7 +8,6 @@ import de.likewhat.customheads.utils.Utils;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 import java.lang.reflect.Type;
@@ -169,7 +168,7 @@ public class Category extends BaseCategory {
                     String subCategoryID = categoryJson.get("id").getAsInt() + ":" + jsonObject.get("id").getAsInt();
                     for (JsonElement rawHeadObject : jsonObject.get("heads").getAsJsonArray()) {
                         JsonObject headObject = rawHeadObject.getAsJsonObject();
-                        ItemEditor head = new ItemEditor(Material.SKULL_ITEM,  3).setTexture(headObject.get("texture").getAsString()).setDisplayName(headObject.get("name").getAsString());
+                        ItemEditor head = Utils.createPlayerHeadItemEditor().setTexture(headObject.get("texture").getAsString()).setDisplayName(headObject.get("name").getAsString());
                         if (headObject.has("description")) {
                             head.setLore(headObject.get("description").getAsString());
                         }
@@ -198,7 +197,7 @@ public class Category extends BaseCategory {
             } else {
                 for (JsonElement rawHeadObject : categoryJson.get("heads").getAsJsonArray()) {
                     JsonObject headObject = rawHeadObject.getAsJsonObject();
-                    ItemEditor head = new ItemEditor(Material.SKULL_ITEM,  3).setTexture(headObject.get("texture").getAsString()).setDisplayName(headObject.get("name").getAsString());
+                    ItemEditor head = Utils.createPlayerHeadItemEditor().setTexture(headObject.get("texture").getAsString()).setDisplayName(headObject.get("name").getAsString());
                     if (headObject.has("description")) {
                         head.setLore(headObject.get("description").getAsString());
                     }

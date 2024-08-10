@@ -11,6 +11,7 @@ import org.apache.commons.lang3.ArrayUtils;
 @Getter
 public class NBTGenericWrapper implements NBTBaseWrapper {
 
+    // Maybe I'm gonna remove these Number Conversions all since asNumber exists
     private static final MethodWrapper<Byte> NBT_AS_BYTE_V1205 = new MethodWrapper<>(Version.V1_20_5, null, "getAsByte", NBTType.ANY_NUMERIC.getNBTClass());
     private static final MethodWrapper<Byte> NBT_AS_BYTE_V1201 = new MethodWrapper<>(Version.V1_20_R1, Version.V1_20_R3, "i", NBTType.ANY_NUMERIC.getNBTClass(), NBT_AS_BYTE_V1205);
     private static final MethodWrapper<Byte> NBT_AS_BYTE_V1181 = new MethodWrapper<>(Version.V1_18_R1, Version.V1_19_R1, "h", NBTType.ANY_NUMERIC.getNBTClass(), NBT_AS_BYTE_V1201);

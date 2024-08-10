@@ -72,7 +72,7 @@ public class CHSearchQuery {
         if (!backAction.equals("willClose"))
             searchInventory.setBarItem(1, Utils.getBackButton("invAction", backAction));
         searchInventory.setBarItem(2, CustomHeads.getTagEditor().setTags(new ItemEditor(Material.PAPER).setDisplayName(CustomHeads.getLanguageManager().ITEMS_INFO).setLore(CustomHeads.getLanguageManager().ITEMS_INFO_LORE).getItem(), "dec", "info-item", "blockMoving"));
-        searchInventory.setBarItem(3, CustomHeads.getTagEditor().setTags(new ItemEditor(Material.SKULL_ITEM,  3).setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZTJiYzYzYzBlNjEzY2UzZmE3ZGVkNDEyM2U2OTkwNzE3OGU2MjI0MGNjYWZlZmNhMjBlZGM5NTM4MTRhNzIifX19").setDisplayName(CustomHeads.getLanguageManager().CYCLE_ARRANGEMENT_PREFIX + CustomHeads.getLanguageManager().CYCLE_ARRANGEMENT_DEFAULT).getItem(), "scrollInv", "reArrange#>next", "originalName", CustomHeads.getLanguageManager().CYCLE_ARRANGEMENT_PREFIX));
+        searchInventory.setBarItem(3, CustomHeads.getTagEditor().setTags(Utils.createPlayerHeadItemEditor().setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZTJiYzYzYzBlNjEzY2UzZmE3ZGVkNDEyM2U2OTkwNzE3OGU2MjI0MGNjYWZlZmNhMjBlZGM5NTM4MTRhNzIifX19").setDisplayName(CustomHeads.getLanguageManager().CYCLE_ARRANGEMENT_PREFIX + CustomHeads.getLanguageManager().CYCLE_ARRANGEMENT_DEFAULT).getItem(), "scrollInv", "reArrange#>next", "originalName", CustomHeads.getLanguageManager().CYCLE_ARRANGEMENT_PREFIX));
         player.openInventory(searchInventory.getAsInventory());
         return searchInventory;
     }

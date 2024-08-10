@@ -7,7 +7,6 @@ import lombok.Getter;
 import lombok.NonNull;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -128,10 +127,10 @@ public class ScrollableInventory {
                     inventory.setItem(index + 47, CustomHeads.getTagEditor().addTags(buttons.get(index), "scInvID", id.toString()));
 
                 if (page < getPages()) {
-                    inventory.setItem(53, CustomHeads.getTagEditor().setTags(new ItemEditor(Material.SKULL_ITEM,  3).setDisplayName(language.NEXT_PAGE).setLore(language.PAGE_GENERAL_PREFIX + " " + (page + 1)).setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMWI2ZjFhMjViNmJjMTk5OTQ2NDcyYWVkYjM3MDUyMjU4NGZmNmY0ZTgzMjIxZTU5NDZiZDJlNDFiNWNhMTNiIn19fQ==").getItem(), "scInvID", id.toString(), "scrollInv", "slidePage#>next"));
+                    inventory.setItem(53, CustomHeads.getTagEditor().setTags(Utils.createPlayerHeadItemEditor().setDisplayName(language.NEXT_PAGE).setLore(language.PAGE_GENERAL_PREFIX + " " + (page + 1)).setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMWI2ZjFhMjViNmJjMTk5OTQ2NDcyYWVkYjM3MDUyMjU4NGZmNmY0ZTgzMjIxZTU5NDZiZDJlNDFiNWNhMTNiIn19fQ==").getItem(), "scInvID", id.toString(), "scrollInv", "slidePage#>next"));
                 }
                 if (page > 1) {
-                    inventory.setItem(45, CustomHeads.getTagEditor().setTags(new ItemEditor(Material.SKULL_ITEM,  3).setDisplayName(language.PREVIOUS_PAGE).setLore(language.PAGE_GENERAL_PREFIX + " " + (page - 1)).setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzM3NjQ4YWU3YTU2NGE1Mjg3NzkyYjA1ZmFjNzljNmI2YmQ0N2Y2MTZhNTU5Y2U4YjU0M2U2OTQ3MjM1YmNlIn19fQ==").getItem(), "scInvID", id.toString(), "scrollInv", "slidePage#>previous"));
+                    inventory.setItem(45, CustomHeads.getTagEditor().setTags(Utils.createPlayerHeadItemEditor().setDisplayName(language.PREVIOUS_PAGE).setLore(language.PAGE_GENERAL_PREFIX + " " + (page - 1)).setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzM3NjQ4YWU3YTU2NGE1Mjg3NzkyYjA1ZmFjNzljNmI2YmQ0N2Y2MTZhNTU5Y2U4YjU0M2U2OTQ3MjM1YmNlIn19fQ==").getItem(), "scInvID", id.toString(), "scrollInv", "slidePage#>previous"));
                 }
             }
         });

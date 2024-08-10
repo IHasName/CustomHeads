@@ -152,13 +152,13 @@ public class CustomHeadsCommand implements CommandExecutor {
                     }
                     if (args[1].equalsIgnoreCase("download")) {
                         Inventory inventory = Bukkit.createInventory(new CustomHeadsInventoryHolder.BaseHolder("heads:download", player), 9 * 4, CustomHeads.getLanguageManager().LANGUAGE_DOWNLOAD_TITLE);
-                        inventory.setItem(13, new ItemEditor(Material.SKULL_ITEM, (byte) 3).setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzMxNmMxNmIxYWM0NzBkMmMxMTQ0MzRmZjg3MzBmMTgxNTcwOTM4M2RiNmYzY2Y3MjBjMzliNmRjZTIxMTYifX19").setDisplayName(CustomHeads.getLanguageManager().LANGUAGE_DOWNLOAD_FETCHING).getItem());
+                        inventory.setItem(13, Utils.createPlayerHeadItemEditor().setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzMxNmMxNmIxYWM0NzBkMmMxMTQ0MzRmZjg3MzBmMTgxNTcwOTM4M2RiNmYzY2Y3MjBjMzliNmRjZTIxMTYifX19").setDisplayName(CustomHeads.getLanguageManager().LANGUAGE_DOWNLOAD_FETCHING).getItem());
                         player.openInventory(inventory);
                         BukkitTask animationTask = new BukkitRunnable() {
                             boolean orange = false;
                             public void run() {
                                 // Fancy Animations =P
-                                inventory.setItem(13, new ItemEditor(Material.SKULL_ITEM, (byte) 3).setTexture((orange = !orange) ? "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMmQ5MzBlZTIxYWQzYmMzOWRkZmRkZmI0YWE2MjA5MDU2ZTJkOWMxMTVmMTM3ZDc2YWQzYmY2MTI3YzNkMiJ9fX0=" : "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzMxNmMxNmIxYWM0NzBkMmMxMTQ0MzRmZjg3MzBmMTgxNTcwOTM4M2RiNmYzY2Y3MjBjMzliNmRjZTIxMTYifX19").setDisplayName(CustomHeads.getLanguageManager().LANGUAGE_DOWNLOAD_FETCHING).getItem());
+                                inventory.setItem(13, Utils.createPlayerHeadItemEditor().setTexture((orange = !orange) ? "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMmQ5MzBlZTIxYWQzYmMzOWRkZmRkZmI0YWE2MjA5MDU2ZTJkOWMxMTVmMTM3ZDc2YWQzYmY2MTI3YzNkMiJ9fX0=" : "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzMxNmMxNmIxYWM0NzBkMmMxMTQ0MzRmZjg3MzBmMTgxNTcwOTM4M2RiNmYzY2Y3MjBjMzliNmRjZTIxMTYifX19").setDisplayName(CustomHeads.getLanguageManager().LANGUAGE_DOWNLOAD_FETCHING).getItem());
                             }
                         }.runTaskTimer(CustomHeads.getInstance(), 20, 20);
 
@@ -173,7 +173,7 @@ public class CustomHeadsCommand implements CommandExecutor {
 
                             public void error(Exception exception) {
                                 animationTask.cancel();
-                                inventory.setItem(13, new ItemEditor(Material.SKULL_ITEM, (byte) 3).setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOWU0MmY2ODJlNDMwYjU1YjYxMjA0YTZmOGI3NmQ1MjI3ZDI3OGVkOWVjNGQ5OGJkYTRhN2E0ODMwYTRiNiJ9fX0=").setDisplayName(CustomHeads.getLanguageManager().LANGUAGE_DOWNLOAD_FETCHFAILED).setLore(Utils.splitEvery(exception.getMessage(), " ", 4)).getItem());
+                                inventory.setItem(13, Utils.createPlayerHeadItemEditor().setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOWU0MmY2ODJlNDMwYjU1YjYxMjA0YTZmOGI3NmQ1MjI3ZDI3OGVkOWVjNGQ5OGJkYTRhN2E0ODMwYTRiNiJ9fX0=").setDisplayName(CustomHeads.getLanguageManager().LANGUAGE_DOWNLOAD_FETCHFAILED).setLore(Utils.splitEvery(exception.getMessage(), " ", 4)).getItem());
                             }
                         });
                         return true;
@@ -529,7 +529,7 @@ public class CustomHeadsCommand implements CommandExecutor {
                     if (query.resultsReturned() == 0) {
                         Inventory noRes = Bukkit.createInventory(new CustomHeadsInventoryHolder.BaseHolder("heads:search", player), 9 * 3, CustomHeads.getLanguageManager().NO_RESULTS);
                         noRes.setItem(13, CustomHeads.getTagEditor().setTags(new ItemEditor(Material.BARRIER).setDisplayName(CustomHeads.getLanguageManager().NO_RESULTS).getItem(), "blockMoving"));
-                        noRes.setItem(26, CustomHeads.getTagEditor().setTags(new ItemEditor(Material.SKULL_ITEM,  3).setDisplayName(CustomHeads.getLanguageManager().NO_RESULTS_TRY_AGAIN).setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMWI2ZjFhMjViNmJjMTk5OTQ2NDcyYWVkYjM3MDUyMjU4NGZmNmY0ZTgzMjIxZTU5NDZiZDJlNDFiNWNhMTNiIn19fQ==").getItem(), "invAction", "retrySearch#>" + args[1]));
+                        noRes.setItem(26, CustomHeads.getTagEditor().setTags(Utils.createPlayerHeadItemEditor().setDisplayName(CustomHeads.getLanguageManager().NO_RESULTS_TRY_AGAIN).setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMWI2ZjFhMjViNmJjMTk5OTQ2NDcyYWVkYjM3MDUyMjU4NGZmNmY0ZTgzMjIxZTU5NDZiZDJlNDFiNWNhMTNiIn19fQ==").getItem(), "invAction", "retrySearch#>" + args[1]));
                         player.openInventory(noRes);
                         return true;
                     }
@@ -581,7 +581,7 @@ public class CustomHeadsCommand implements CommandExecutor {
                             player.sendMessage(CustomHeads.getLanguageManager().NO_PERMISSION);
                             return true;
                         }
-                        ScrollableInventory scrollableInventory = new ScrollableInventory(" ", Bukkit.getOnlinePlayers().stream().map(p -> new ItemEditor(Material.SKULL_ITEM, 3).setOwner(p.getName()).setDisplayName("§a" + p.getName()).getItem()).collect(Collectors.toList()));
+                        ScrollableInventory scrollableInventory = new ScrollableInventory(" ", Bukkit.getOnlinePlayers().stream().map(p -> Utils.createPlayerHeadItemEditor().setOwner(p.getName()).setDisplayName("§a" + p.getName()).getItem()).collect(Collectors.toList()));
                         scrollableInventory.setContentsClonable(true).setContentMovable(false);
                         player.openInventory(scrollableInventory.getAsInventory());
                         return true;
@@ -590,7 +590,7 @@ public class CustomHeadsCommand implements CommandExecutor {
                         player.sendMessage(CustomHeads.getLanguageManager().GET_INVALID.replace("{PLAYER}", args[1]));
                         return true;
                     }
-                    ItemStack playerHead = new ItemEditor(Material.SKULL_ITEM, 3).setDisplayName(CustomHeads.getLanguageManager().GET_HEAD_NAME.replace("{PLAYER}", args[1])).setOwner(args[1]).getItem();
+                    ItemStack playerHead = Utils.createPlayerHeadItemEditor().setDisplayName(CustomHeads.getLanguageManager().GET_HEAD_NAME.replace("{PLAYER}", args[1])).setOwner(args[1]).getItem();
 
                     if(CustomHeads.getGetCommandPrice() > 0 && CustomHeads.hasEconomy()) {
                         Utils.showInteractiveDialog(player, CustomHeads.getLanguageManager().ECONOMY_BUY_CONFIRM.replace("{ITEM}", args[1]).replace("{PRICE}", Utils.formatPrice(CustomHeads.getGetCommandPrice(), false)), yesPressed -> {

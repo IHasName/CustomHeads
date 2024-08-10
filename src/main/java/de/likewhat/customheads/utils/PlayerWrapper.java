@@ -17,7 +17,6 @@ import de.likewhat.customheads.category.CustomHead;
 import de.likewhat.customheads.utils.history.GetHistory;
 import de.likewhat.customheads.utils.history.SearchHistory;
 import lombok.Getter;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -51,7 +50,7 @@ public class PlayerWrapper implements CustomHeadsPlayer {
             if (dataRoot.has(player.getUniqueId().toString())) {
                 JsonObject uuidObject = dataRoot.getAsJsonObject(player.getUniqueId().toString());
                 uuidObject.getAsJsonObject("savedHeads").entrySet().forEach(entry -> {
-                    ItemEditor editor = new ItemEditor(Material.SKULL_ITEM,  3).setDisplayName(entry.getKey());
+                    ItemEditor editor = Utils.createPlayerHeadItemEditor().setDisplayName(entry.getKey());
                     String textureValue = entry.getValue().getAsString();
                     if (textureValue.length() > 16) {
                         editor.setTexture(textureValue);
@@ -181,7 +180,7 @@ public class PlayerWrapper implements CustomHeadsPlayer {
         if (hasHead(name)) {
             return false;
         } else {
-            ItemEditor editor = new ItemEditor(Material.SKULL_ITEM,  3).setDisplayName(name);
+            ItemEditor editor = Utils.createPlayerHeadItemEditor().setDisplayName(name);
             if (texture.length() > 16) {
                 editor.setTexture(texture);
             } else {
