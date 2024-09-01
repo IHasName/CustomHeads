@@ -40,9 +40,9 @@ public class ItemNBTUtils {
         try {
             if(nmsItem != null) {
                 if(Version.getCurrentVersion().isNewerThan(Version.V1_20_R3)) {
-                    return MethodWrappers.ITEMSTACK_HASTAG.invokeOn(nmsItem);
-                } else {
                     return MethodWrappers.ITEMSTACK_DATA_HAS.invokeOn(nmsItem, DataComponentTypes.CUSTOM_DATA.getInstance());
+                } else {
+                    return MethodWrappers.ITEMSTACK_HASTAG.invokeOn(nmsItem);
                 }
             }
         } catch (IllegalAccessException | InvocationTargetException e) {
@@ -66,10 +66,10 @@ public class ItemNBTUtils {
         try {
             Object tag;
             if(Version.getCurrentVersion().isNewerThan(Version.V1_20_R3)) {
-                tag = MethodWrappers.ITEMSTACK_GETTAG.invokeOn(nmsItem);
-            } else {
                 Object customData = MethodWrappers.ITEMSTACK_DATA_GET.invokeOn(nmsItem, DataComponentTypes.CUSTOM_DATA.getInstance());
                 tag = MethodWrappers.COMPONENT_CUSTOM_DATA_COPY_TAG.invokeOn(customData);
+            } else {
+                tag = MethodWrappers.ITEMSTACK_GETTAG.invokeOn(nmsItem);
             }
             return NBTTagCompoundWrapper.of(tag);
         } catch(InvocationTargetException | IllegalAccessException e) {
@@ -86,9 +86,9 @@ public class ItemNBTUtils {
     public static void setTagOnItem(Object nmsItem, Object nbt) throws NBTException, NBTVerifyException  {
         try {
             if(Version.getCurrentVersion().isNewerThan(Version.V1_20_R3)) {
-                MethodWrappers.ITEMSTACK_SETTAG.invokeOn(nmsItem, nbt);
+                MethodWrappers.ITEMSTACK_DATA_SET.invokeOn(nmsItem, DataComponentTypes.CUSTOM_DATA.getInstance(), NBTTagUtils.nbtToCustomData(nbt));
             } else {
-                MethodWrappers.ITEMSTACK_DATA_SET.invokeOn(nmsItem, nbt);
+                MethodWrappers.ITEMSTACK_SETTAG.invokeOn(nmsItem, nbt);
             }
 
             // Verify NBT Set

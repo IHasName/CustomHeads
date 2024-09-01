@@ -66,6 +66,8 @@ public class ClassWrappers {
     // Item Components
     public static final MinecraftServerClassWrapper COMPONENT_CUSTOM_DATA = new MinecraftServerClassWrapper(Version.V1_20_5, null, "CustomData", "world.item.component");
 
+    public static final MinecraftServerClassWrapper RESOLVABLE_PROFILE = new MinecraftServerClassWrapper(Version.V1_20_5, null, "ResolvableProfile", "world.item.component");
+
     // CraftBukkit
     public static final CraftBukkitClassWrapper CRAFTBUKKIT_ITEMSTACK = new CraftBukkitClassWrapper("inventory.CraftItemStack");
     public static final CraftBukkitClassWrapper CRAFTBUKKIT_CRAFT_PLAYER = new CraftBukkitClassWrapper("entity.CraftPlayer");

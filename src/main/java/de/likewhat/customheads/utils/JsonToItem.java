@@ -39,7 +39,7 @@ public class JsonToItem {
                 // Auto-Fix Issue with Legacy Skull Items
                 material = Utils.getPlayerHeadMaterial();
             } else {
-                material = Material.getMaterial(materialName);
+                material = Material.matchMaterial(materialName);
             }
 
             if(material == null) {
@@ -102,13 +102,13 @@ public class JsonToItem {
             }
             if (meta instanceof SkullMeta) {
                 SkullMeta skullMeta = (SkullMeta) meta;
-                if (skullMeta.hasOwner()) {
+                if (Utils.hasCustomTexture(itemStack)) {
+                    itemObject.addProperty("texture", CustomHeads.getApi().getSkullTexture(itemStack));
+                } else if (skullMeta.hasOwner()) {
                     itemObject.addProperty("skullOwner", skullMeta.getOwner());
                 }
             }
-            if (Utils.hasCustomTexture(itemStack)) {
-                itemObject.addProperty("texture", CustomHeads.getApi().getSkullTexture(itemStack));
-            }
+
         }
         return itemObject;
     }

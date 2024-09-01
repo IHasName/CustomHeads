@@ -177,7 +177,7 @@ public class ReflectionUtils {
     }
 
     /**
-     * Check whether the given Method exists or not
+     * Check whether the given Method exists or not via {@link Class#getMethod}
      * @param clazz The Class where the Method could be
      * @param methodName The Method Name
      * @param params Optional Method Parameters
@@ -334,6 +334,5 @@ public class ReflectionUtils {
         }
         return defaultValue;
     }
-
 
 }

@@ -59,6 +59,10 @@ public class MethodWrapper<T> extends WrapperBase<MethodWrapper<?>, Method> {
             this.parameters = Arrays.stream(parametersWrapper).map(WrapperBase::resolve).toArray(Class[]::new);
         }
 
+        if(ReflectionUtils.methodExists(targetClass, methodName, parameters)) {
+            return ReflectionUtils.getMethod(methodName, targetClass, parameters);
+        }
+
         return ReflectionUtils.getDeclaredMethod(methodName, targetClass, parameters);
     }
 
@@ -74,5 +78,9 @@ public class MethodWrapper<T> extends WrapperBase<MethodWrapper<?>, Method> {
     public String toString() {
         MethodWrapper<T> actualResolver = (MethodWrapper<T>) this.getResolver();
         return "MethodWrapper{method=" + LoggingUtils.methodLikeString(actualResolver.methodName, actualResolver.parameters) + " fromVersion=" + actualResolver.from + " toVersion=" + actualResolver.to + "}";
+    }
+
+    public Class<?> getTargetClass() {
+        return targetClassWrapper == null ? targetClass : targetClassWrapper.resolve();
     }
 }

@@ -12,6 +12,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.logging.Level;
 
+/**
+ * A Helper Class for NBT Compound wrapping
+ */
 public class NBTTagCompoundWrapper implements NBTBaseWrapper {
 
     // Misc
@@ -184,7 +187,7 @@ public class NBTTagCompoundWrapper implements NBTBaseWrapper {
 
     @Override
     public boolean isList() {
-        return true;
+        return false;
     }
 
     @Override
@@ -192,6 +195,11 @@ public class NBTTagCompoundWrapper implements NBTBaseWrapper {
         return false;
     }
 
+    /**
+     * Static Caller for Instance Creation
+     * @param nbtObject The NBT Object to be wrapped
+     * @return A new {@link de.likewhat.customheads.utils.reflection.helpers.wrappers.instances.nbt.NBTTagCompoundWrapper} Instance of nbtObject
+     */
     public static NBTTagCompoundWrapper of(Object nbtObject) {
         return new NBTTagCompoundWrapper(nbtObject);
     }

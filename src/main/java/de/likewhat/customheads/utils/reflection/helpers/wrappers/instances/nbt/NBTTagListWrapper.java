@@ -10,6 +10,9 @@ import org.apache.commons.lang3.ArrayUtils;
 import javax.annotation.Nullable;
 import java.util.AbstractList;
 
+/**
+ * A Helper Class for NBT List wrapping
+ */
 public class NBTTagListWrapper extends AbstractList<NBTGenericWrapper> implements NBTBaseWrapper {
 
     public static final MethodWrapper<Integer> SIZE = new MethodWrapper<>(null, null, "size", NBTType.LIST.getNBTClass());
@@ -109,10 +112,18 @@ public class NBTTagListWrapper extends AbstractList<NBTGenericWrapper> implement
         return false;
     }
 
+    /**
+     * Static Caller for Instance Creation
+     * @param nbtObject The NBT Object to be wrapped
+     * @return A new {@link de.likewhat.customheads.utils.reflection.helpers.wrappers.instances.nbt.NBTTagListWrapper} Instance of nbtObject
+     */
     public static NBTTagListWrapper of(Object nbtObject) {
         return new NBTTagListWrapper(nbtObject);
     }
 
+    /**
+     * @return The NBTType contained in this List
+     */
     public NBTType getListType() {
         return NBTType.getById(ReflectionUtils.callWrapperAndGetOrDefault(this.nbtObject, GET_LIST_ELEMENTS_TYPE, (byte) -1));
     }

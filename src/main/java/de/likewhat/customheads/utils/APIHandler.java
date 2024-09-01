@@ -8,6 +8,8 @@ package de.likewhat.customheads.utils;
  */
 
 import com.mojang.authlib.GameProfile;
+import com.mojang.authlib.properties.Property;
+import com.mojang.authlib.properties.PropertyMap;
 import de.likewhat.customheads.CustomHeads;
 import de.likewhat.customheads.api.CustomHeadsAPI;
 import de.likewhat.customheads.api.CustomHeadsPlayer;
@@ -15,6 +17,7 @@ import de.likewhat.customheads.category.Category;
 import de.likewhat.customheads.category.CustomHead;
 import de.likewhat.customheads.headwriter.HeadFontType;
 import de.likewhat.customheads.headwriter.HeadWriter;
+import de.likewhat.customheads.utils.reflection.helpers.DataComponentTypes;
 import de.likewhat.customheads.utils.reflection.helpers.ReflectionUtils;
 import de.likewhat.customheads.utils.reflection.helpers.Version;
 import de.likewhat.customheads.utils.reflection.helpers.wrappers.instances.ClassWrappers;
@@ -35,6 +38,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 import java.util.Random;
 import java.util.logging.Level;
 
@@ -57,13 +61,22 @@ public class APIHandler implements CustomHeadsAPI {
             throw new NullPointerException("Item cannot be null");
         }
         try {
-            return ItemNBTUtils.getTagFromItem(itemStack)
-                    .getCompound("SkullOwner")
-                    .getCompound("Properties")
-                    .getList("textures", NBTType.COMPOUND)
-                    .get(0)
-                    .asCompound()
-                    .getString("Value");
+            if(Version.getCurrentVersion().isNewerThan(Version.V1_20_R3)) {
+                Object profile = MethodWrappers.ITEMSTACK_DATA_GET.invokeOn(ItemNBTUtils.asNMSCopy(itemStack), DataComponentTypes.PROFILE.getInstance());
+                Method propertyMapMethod = ReflectionUtils.getDeclaredMethod("properties", ClassWrappers.RESOLVABLE_PROFILE.resolve());
+                PropertyMap properties = (PropertyMap) ReflectionUtils.invokeMethod(propertyMapMethod, profile);
+                Property property = (Property) properties.get("textures").toArray()[0];
+                Method propertyValueMethod = ReflectionUtils.getDeclaredMethod("value", Property.class);
+                return (String) ReflectionUtils.invokeMethod(propertyValueMethod, property);
+            } else {
+                return ItemNBTUtils.getTagFromItem(itemStack)
+                        .getCompound("SkullOwner")
+                        .getCompound("Properties")
+                        .getList("textures", NBTType.COMPOUND)
+                        .get(0)
+                        .asCompound()
+                        .getString("Value");
+            }
 //            Object tag = ItemNBTUtils.getTagFromItem(itemStack);
 //            Object skullOwner = NBTTagCompoundWrapper.GET_COMPOUND.invokeOn(tag, "SkullOwner");
 //            Object properties = NBTTagCompoundWrapper.GET_COMPOUND.invokeOn(skullOwner, "Properties");

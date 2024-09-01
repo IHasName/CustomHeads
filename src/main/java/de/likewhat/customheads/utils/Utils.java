@@ -68,6 +68,18 @@ public class Utils {
 
     public static final String TEXT_JSON_FORMAT = "{\"text\":\"%s\"}";
 
+    private static final Material PLAYER_HEAD_MATERIAL;
+
+    static {
+        Material headMaterial;
+        try {
+            headMaterial = Material.SKULL_ITEM;
+        } catch (Exception e) {
+            headMaterial = Material.getMaterial("PLAYER_HEAD");
+        }
+        PLAYER_HEAD_MATERIAL = headMaterial;
+    }
+
     public static String getTextureFromProfile(GameProfile profile) {
         String value = "";
         for (Property prop : profile.getProperties().get("textures")) {
@@ -450,18 +462,14 @@ public class Utils {
     }
 
     public static Material getPlayerHeadMaterial() {
-        if (Version.getCurrentVersion().isOlderThan(Version.V1_13_R1)) {
-            return Material.SKULL_ITEM;
-        } else {
-            return Material.getMaterial("PLAYER_HEAD");
-        }
+        return PLAYER_HEAD_MATERIAL;
     }
 
     public static ItemStack createPlayerHeadItemStack() {
-        if (Version.getCurrentVersion().isOlderThan(Version.V1_13_R1)) {
+        if (PLAYER_HEAD_MATERIAL.name().equals("SKULL_ITEM")) {
             return new ItemStack(Material.SKULL_ITEM, 1, (short) 3);
         } else {
-            return new ItemStack(Material.getMaterial("PLAYER_HEAD"));
+            return new ItemStack(getPlayerHeadMaterial());
         }
     }
 

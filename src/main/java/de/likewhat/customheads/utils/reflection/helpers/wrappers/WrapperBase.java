@@ -51,7 +51,7 @@ public abstract class WrapperBase<M extends WrapperBase<M, T>, T> {
             throw new UnsupportedOperationException("Version " + current.name() + " isn't supported yet (from " + from.name() + ")");
         } else if(current.isNewerThan(to)) {
             if(replacedBy == null) {
-                throw new UnsupportedOperationException("This " + wrapperType.getTypeClass().getName() + " hasn't been implemented yet for " + current.name() + (current == Version.LATEST ? ("( " + Version.getCurrentVersionRaw() + ")") : ""));
+                throw new UnsupportedOperationException("This " + wrapperType.getTypeClass().getName() + " hasn't been implemented yet for " + current.name() + " (Up to " + to + ")" + (current == Version.LATEST ? (" ( " + Version.getCurrentVersionRaw() + ")") : ""));
             } else {
                 resolvedValue = replacedBy.getResolver().resolve();
                 return resolvedValue;
@@ -80,7 +80,7 @@ public abstract class WrapperBase<M extends WrapperBase<M, T>, T> {
             throw new UnsupportedOperationException("Version " + current.name() + " isn't supported yet (from " + from.name() + ")");
         } else if(current.isNewerThan(to)) {
             if(replacedBy == null) {
-                throw new UnsupportedOperationException("This " + wrapperType.getTypeClass().getSimpleName() + " hasn't been implemented yet for " + current.name() + (current == Version.LATEST ? ("( " + Version.getCurrentVersionRaw() + ")") : ""));
+                throw new UnsupportedOperationException("This " + wrapperType.getTypeClass().getName() + " hasn't been implemented yet for " + current.name() + (current == Version.LATEST ? ("( " + Version.getCurrentVersionRaw() + ")") : ""));
             } else {
                 return replacedBy.getResolver();
             }

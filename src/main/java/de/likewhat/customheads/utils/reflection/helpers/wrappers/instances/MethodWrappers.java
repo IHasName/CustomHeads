@@ -33,7 +33,9 @@ public class MethodWrappers {
 
     public static final MethodWrapper<Boolean> ITEMSTACK_DATA_HAS = new MethodWrapper<>(Version.V1_20_5, null, "has", ClassWrappers.MINECRAFT_ITEMSTACK, ClassWrappers.DATA_COMPONENT_TYPE);
 
-    public static final MethodWrapper<Void> ITEMSTACK_DATA_SET = new MethodWrapper<>(Version.V1_20_5, null, "set", ClassWrappers.MINECRAFT_ITEMSTACK, ClassWrappers.DATA_COMPONENT_TYPE, ClassWrappers.COMPONENT_CUSTOM_DATA);
+    public static final MethodWrapper<Void> ITEMSTACK_DATA_SET = new MethodWrapper<>(Version.V1_20_5, null, "set", ClassWrappers.MINECRAFT_ITEMSTACK, ClassWrappers.DATA_COMPONENT_TYPE, ClassWrapper.from(Object.class)); // ClassWrappers.COMPONENT_CUSTOM_DATA
+
+    public static final MethodWrapper<Object> ITEMSTACK_GET_COMPONENTS = new MethodWrapper<>(Version.V1_20_5, null, "getComponents", ClassWrappers.MINECRAFT_ITEMSTACK);
 
 
     public static final MethodWrapper<Object> COMPONENT_CUSTOM_DATA_OF = new MethodWrapper<>(Version.V1_20_5, null, "of", ClassWrappers.COMPONENT_CUSTOM_DATA.resolve(), NBTType.COMPOUND.getNBTClass());
@@ -41,7 +43,7 @@ public class MethodWrappers {
     public static final MethodWrapper<Object> COMPONENT_CUSTOM_DATA_COPY_TAG = new MethodWrapper<>(Version.V1_20_5, null, "copyTag", ClassWrappers.COMPONENT_CUSTOM_DATA);
 
     // GameProfile
-    public static final MethodWrapper<Object> GAMEPROFILE_SERIALIZE = new MethodWrapper<>(Version.V1_18_R1, Version.V1_20_R3, "a", ClassWrappers.GAMEPROFILE_SERIALIZER.resolve(), NBTType.COMPOUND.getNBTClass(), GameProfile.class);
+    public static final MethodWrapper<Object> GAMEPROFILE_SERIALIZE = new MethodWrapper<>(Version.V1_18_R1, Version.V1_20_R3, "a", ClassWrappers.GAMEPROFILE_SERIALIZER, ClassWrapper.from(NBTType.COMPOUND.getNBTClass()), ClassWrapper.from(GameProfile.class));
 
     // Player Packet Handling
     private static final MethodWrapper<Void> PLAYER_SEND_PACKET_V1205 = new MethodWrapper<>(Version.V1_20_5, null, "send", ClassWrappers.PLAYER_CONNECTION.resolve(), ClassWrappers.PACKET.resolve()); // Inherited from ServerPlayerConnection

@@ -20,29 +20,37 @@ public enum Version {
     V1_18_R1(1181), V1_18_R2(1182),
     V1_19_R1(1191), V1_19_R2(1192), V1_19_R3(1193),
     V1_20_R1(1201), V1_20_R2(1202), V1_20_R3(1203),
-    V1_20_5(1205), V1_20_6(1206), V1_21_0(1210),
+    V1_20_5(1205), V1_20_6(1206),
+    V1_21_0(1210),
     LATEST(Integer.MAX_VALUE),
 
-    LATEST_UPDATE(V1_20_R3);
+    LATEST_UPDATE(V1_21_0);
 
     private static final String PACKET_NAME = Bukkit.getServer().getClass().getPackage().getName();
     private static final String RAW_VERSION;
 
     static {
         String packetVersion = PACKET_NAME.substring(PACKET_NAME.lastIndexOf('.') + 1);
-        if(packetVersion.isEmpty()) { // We don't have a Craftbukkit Packet Version so we use the Server Version itself (since 1.20.5)
+        String versionString;
+        try {
+            Integer.parseInt(packetVersion.replaceAll("\\D+", ""));
+            versionString = packetVersion;
+        } catch(NumberFormatException e) {
             String bukkitVersionString = Bukkit.getBukkitVersion();
-            RAW_VERSION = bukkitVersionString.substring(0, bukkitVersionString.indexOf("-") - 1);
-        } else {
-            RAW_VERSION = packetVersion;
+            versionString = bukkitVersionString.substring(0, bukkitVersionString.indexOf("-"));
         }
+        RAW_VERSION = versionString;
     }
 
     public static Version getCurrentVersion() {
         if(currentVersion != null) {
             return currentVersion;
         }
-        currentVersion = fromValue(Integer.parseInt(RAW_VERSION.replaceAll("\\D+", "")));
+        String versionString = RAW_VERSION.replaceAll("\\D+", "");
+        if(versionString.equals("121")) { // Something something 1.21 and not 1.21.0
+            versionString += "0";
+        }
+        currentVersion = fromValue(Integer.parseInt(versionString));
         return currentVersion;
     }
 

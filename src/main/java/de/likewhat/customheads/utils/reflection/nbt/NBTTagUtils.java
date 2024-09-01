@@ -12,12 +12,14 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import de.likewhat.customheads.CustomHeads;
+import de.likewhat.customheads.utils.reflection.helpers.wrappers.instances.MethodWrappers;
 import de.likewhat.customheads.utils.reflection.helpers.wrappers.instances.nbt.NBTBaseWrapper;
 import de.likewhat.customheads.utils.reflection.helpers.wrappers.instances.nbt.NBTGenericWrapper;
 import de.likewhat.customheads.utils.reflection.helpers.wrappers.instances.nbt.NBTTagCompoundWrapper;
 import de.likewhat.customheads.utils.reflection.helpers.wrappers.instances.nbt.NBTTagListWrapper;
 import de.likewhat.customheads.utils.reflection.nbt.errors.NBTException;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 
 public class NBTTagUtils {
@@ -172,6 +174,10 @@ public class NBTTagUtils {
             return result;
         }
         return null;
+    }
+
+    public static Object nbtToCustomData(Object nbt) throws InvocationTargetException, IllegalAccessException {
+        return MethodWrappers.COMPONENT_CUSTOM_DATA_OF.invokeOn(null, nbt);
     }
 
 }

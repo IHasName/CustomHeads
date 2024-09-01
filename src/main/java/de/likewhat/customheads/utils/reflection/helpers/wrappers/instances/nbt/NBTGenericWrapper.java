@@ -8,6 +8,9 @@ import de.likewhat.customheads.utils.reflection.nbt.NBTType;
 import lombok.Getter;
 import org.apache.commons.lang3.ArrayUtils;
 
+/**
+ * A Helper Class for NBT Primitive Type wrapping
+ */
 @Getter
 public class NBTGenericWrapper implements NBTBaseWrapper {
 
@@ -79,7 +82,14 @@ public class NBTGenericWrapper implements NBTBaseWrapper {
         this.type = nbtType;
     }
 
+    /**
+     * @throws java.lang.IllegalArgumentException When the nbtObject is not an Instance of NBTBase (Tag since 1.20.5)
+     * @param nbtObject The NBT Object to be wrapped
+     */
     public NBTGenericWrapper(Object nbtObject) {
+        if(!ClassWrappers.NBT_BASE.resolve().isInstance(nbtObject)) {
+            throw new IllegalArgumentException("Generic Type has to be instance of " + ClassWrappers.NBT_BASE.getFinalClassName() + " got: " + nbtObject);
+        }
         this.nbtObject = nbtObject;
         this.type = NBTType.getNBTTypeFromInstance(nbtObject);
     }
@@ -99,6 +109,11 @@ public class NBTGenericWrapper implements NBTBaseWrapper {
         return true;
     }
 
+    /**
+     * Static Caller for Instance Creation
+     * @param nbtObject The NBT Object to be wrapped
+     * @return A new {@link de.likewhat.customheads.utils.reflection.helpers.wrappers.instances.nbt.NBTGenericWrapper} Instance of nbtObject
+     */
     public static NBTGenericWrapper of(Object nbtObject) {
         return new NBTGenericWrapper(nbtObject);
     }
